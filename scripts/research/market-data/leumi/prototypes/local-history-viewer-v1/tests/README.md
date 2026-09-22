@@ -575,3 +575,19 @@ Browser CI was restored after the checkpoint to:
 workflow_dispatch
 workflow_call
 ~~~
+
+
+---
+
+## Stage 9 recorder diagnostics
+
+New coverage:
+
+~~~text
+tests/unit/diagnostics-logic.test.js
+tests/unit/persistence-records.test.js
+tests/unit/recorder-loop-logic.test.js
+tests/automation/specs/recorder-diagnostics.spec.js
+~~~
+
+Verifies normalized errors/storage estimates, failed-cycle records, recorder failure hooks, heartbeat persistence, counters, and no history/latest writes on failed cycles.

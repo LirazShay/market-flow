@@ -11,6 +11,7 @@ const {
     buildSessionStartRecord,
     buildSessionStopRecord,
     buildCompleteCycleRecord,
+    buildFailedCycleRecord,
     buildSecurityRows,
     buildRecorderStateMetaRecord
 } = require(
@@ -654,6 +655,47 @@ test(
                         createCycle()
                 }),
             /cycleId must be a positive integer/
+        );
+    }
+);
+
+
+test(
+    "buildFailedCycleRecord preserves known diagnostics and leaves unknown counters null",
+    () => {
+        const error = {
+            name: "Error",
+            message:
+                "synthetic failure",
+            atMs: 1200
+        };
+
+        const record =
+            buildFailedCycleRecord({
+                sessionId: 7,
+                startedAtMs: 1000,
+                completedAtMs: 1200,
+                requested: 2,
+                chunks: [],
+                error
+            });
+
+        assert.deepEqual(
+            record,
+            {
+                sessionId: 7,
+                status: "failed",
+                startedAtMs: 1000,
+                completedAtMs: 1200,
+                durationMs: 200,
+                requested: 2,
+                received: null,
+                unique: null,
+                missing: null,
+                duplicates: null,
+                chunks: [],
+                error
+            }
         );
     }
 );

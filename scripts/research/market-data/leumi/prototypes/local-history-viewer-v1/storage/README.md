@@ -19,6 +19,7 @@ Stage 8 next — persistence integration
 - `pure/persistence-records.js` — deterministic Stage 8 record builders; no IndexedDB I/O.
 - `lifecycle-persistence.js` — Stage 8.2 atomic session/universe lifecycle transactions.
 - `successful-cycle-persistence.js` — Stage 8.3 atomic full-cycle transaction across cycles/history/latest/meta.
+- `recorder-diagnostics-persistence.js` — Stage 9 heartbeat + failed-cycle diagnostics transactions.
 
 ## Current boundary
 

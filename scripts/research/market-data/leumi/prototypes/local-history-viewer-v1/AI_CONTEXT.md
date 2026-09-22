@@ -134,6 +134,7 @@ storage/
   write.js
   lifecycle-persistence.js
   successful-cycle-persistence.js
+  recorder-diagnostics-persistence.js
   pure/
     persistence-records.js
 
@@ -164,6 +165,7 @@ tests/
     specs/persistence-lifecycle.spec.js
     specs/successful-cycle-persistence.spec.js
     specs/recorder-persistence-integration.spec.js
+    specs/recorder-diagnostics.spec.js
 
 test tooling:
   package.json
@@ -182,11 +184,13 @@ recorder/
     securities-chunk-logic.js
     cycle-logic.js
     recorder-loop-logic.js
+    diagnostics-logic.js
   config.js
   universe-loader.js
   securities-chunk-fetcher.js
   cycle-builder.js
   recorder-loop.js
+  diagnostics.js
 ~~~
 
 ## Current development boundary
@@ -204,8 +208,8 @@ Verified:
 - 8.3 atomic successful-cycle transaction
 - 8.4 recorder integration + failure/rollback behavior
 
-Next:
-Stage 9 — Recorder diagnostics
+Current:
+Stage 9 — Recorder diagnostics implementation complete; Fast/Browser verification pending
 ~~~
 
 Stage 8 explicitly includes:

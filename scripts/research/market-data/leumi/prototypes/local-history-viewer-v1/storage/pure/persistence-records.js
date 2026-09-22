@@ -539,6 +539,101 @@
             });
         }
 
+        function buildFailedCycleRecord({
+            sessionId,
+            startedAtMs,
+            completedAtMs,
+            requested = null,
+            received = null,
+            unique = null,
+            missing = null,
+            duplicates = null,
+            chunks = [],
+            error
+        }) {
+            assertPositiveInteger(
+                sessionId,
+                "sessionId"
+            );
+
+            assertFiniteTime(
+                startedAtMs,
+                "startedAtMs"
+            );
+
+            assertFiniteTime(
+                completedAtMs,
+                "completedAtMs"
+            );
+
+            if (
+                completedAtMs <
+                startedAtMs
+            ) {
+                throw new Error(
+                    "completedAtMs cannot be earlier than startedAtMs."
+                );
+            }
+
+            for (const [
+                name,
+                value
+            ] of [
+                ["requested", requested],
+                ["received", received],
+                ["unique", unique],
+                ["missing", missing],
+                ["duplicates", duplicates]
+            ]) {
+                if (
+                    value !== null &&
+                    value !== undefined
+                ) {
+                    assertNonNegativeInteger(
+                        value,
+                        name
+                    );
+                }
+            }
+
+            if (!Array.isArray(chunks)) {
+                throw new TypeError(
+                    "chunks must be an array."
+                );
+            }
+
+            assertObject(
+                error,
+                "error"
+            );
+
+            return Object.freeze({
+                sessionId,
+                status:
+                    "failed",
+                startedAtMs,
+                completedAtMs,
+                durationMs:
+                    completedAtMs -
+                    startedAtMs,
+                requested:
+                    requested ?? null,
+                received:
+                    received ?? null,
+                unique:
+                    unique ?? null,
+                missing:
+                    missing ?? null,
+                duplicates:
+                    duplicates ?? null,
+                chunks:
+                    Object.freeze([
+                        ...chunks
+                    ]),
+                error
+            });
+        }
+
         function buildSecurityRows({
             sessionId,
             cycleId,
@@ -800,6 +895,7 @@
             buildSessionStartRecord,
             buildSessionStopRecord,
             buildCompleteCycleRecord,
+            buildFailedCycleRecord,
             buildSecurityRows,
             buildRecorderStateMetaRecord
         });

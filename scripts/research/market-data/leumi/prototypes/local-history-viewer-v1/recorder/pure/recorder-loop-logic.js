@@ -100,6 +100,7 @@
             loadUniverse,
             buildCompleteCycle,
             commitCycle = async () => null,
+            recordFailure = async () => null,
             schedule,
             cancelSchedule,
             now
@@ -122,6 +123,11 @@
             assertFunction(
                 commitCycle,
                 "commitCycle"
+            );
+
+            assertFunction(
+                recordFailure,
+                "recordFailure"
             );
 
             assertFunction(
@@ -256,6 +262,9 @@
                         cycleStartedAtMs
                 });
 
+                let builtCycle =
+                    null;
+
                 try {
                     if (
                         cachedUniverse ===
@@ -269,13 +278,13 @@
                             );
                     }
 
-                    const cycle =
+                    builtCycle =
                         await buildCompleteCycle(
                             cachedUniverse
                         );
 
                     await commitCycle(
-                        cycle
+                        builtCycle
                     );
 
                     updateState({
@@ -284,7 +293,7 @@
                                 .completedCycles +
                             1,
                         latestCycle:
-                            cycle,
+                            builtCycle,
                         latestError:
                             null
                     });
@@ -296,6 +305,26 @@
                         errorAtMs,
                         "now()"
                     );
+
+                    try {
+                        await recordFailure({
+                            error,
+                            cycle:
+                                builtCycle,
+                            universe:
+                                cachedUniverse,
+                            cycleStartedAtMs,
+                            failedAtMs:
+                                errorAtMs
+                        });
+                    } catch (
+                        diagnosticsError
+                    ) {
+                        console?.error?.(
+                            "Failed to persist recorder diagnostics.",
+                            diagnosticsError
+                        );
+                    }
 
                     updateState({
                         failedCycles:

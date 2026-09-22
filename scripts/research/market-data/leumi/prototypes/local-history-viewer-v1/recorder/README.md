@@ -212,3 +212,19 @@ Next planned stage:
 ~~~text
 Stage 9 — Recorder diagnostics
 ~~~
+
+
+## Stage 9 recorder diagnostics
+
+Added diagnostics contracts:
+
+- periodic 5-second heartbeat while a persisted recorder session is running;
+- failed cycle persistence in `cycles + meta` only;
+- persisted failed-cycle counters and lastError;
+- on-demand browser storage estimate;
+- `MarketFlowRecorderLoop.getDiagnostics()`;
+- `MarketFlowRecorderLoop.heartbeatNow()` for an immediate heartbeat.
+
+Failed API/validation/DB cycles never write `history` or `latest`.
+
+When exact failed-cycle counts are unavailable, they remain `null` rather than being guessed.

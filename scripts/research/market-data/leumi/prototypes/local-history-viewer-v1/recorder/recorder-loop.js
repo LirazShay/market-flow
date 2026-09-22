@@ -32,6 +32,15 @@
     const cyclePersistence =
         window.MarketFlowSuccessfulCyclePersistence;
 
+    const diagnosticsLogic =
+        window.MarketFlowRecorderDiagnosticsLogic;
+
+    const diagnosticsPersistence =
+        window.MarketFlowRecorderDiagnosticsPersistence;
+
+    const recorderDiagnostics =
+        window.MarketFlowRecorderDiagnostics;
+
     if (!logic) {
         throw new Error(
             "MarketFlowRecorderLoopLogic is not loaded. " +
@@ -46,7 +55,10 @@
         !storageConnection ||
         !storageUpgrade ||
         !lifecyclePersistence ||
-        !cyclePersistence
+        !cyclePersistence ||
+        !diagnosticsLogic ||
+        !diagnosticsPersistence ||
+        !recorderDiagnostics
     ) {
         throw new Error(
             "Persistent recorder loop dependencies are not loaded."
@@ -76,6 +88,18 @@
 
     let stopPersistencePending =
         false;
+
+    const HEARTBEAT_INTERVAL_MS =
+        5000;
+
+    let heartbeatTimerHandle =
+        null;
+
+    let heartbeatWriteInFlight =
+        false;
+
+    let lastHeartbeatError =
+        null;
 
     let fallbackInstanceCounter =
         0;
@@ -145,6 +169,8 @@
         sessionRecord =
             started.sessionRecord;
 
+        scheduleHeartbeat();
+
         return sessionRecord;
     }
 
@@ -207,6 +233,171 @@
         return committed;
     }
 
+    async function heartbeatNow() {
+        if (
+            !database ||
+            !sessionRecord ||
+            heartbeatWriteInFlight
+        ) {
+            return null;
+        }
+
+        heartbeatWriteInFlight =
+            true;
+
+        try {
+            const result =
+                await diagnosticsPersistence
+                    .recordHeartbeat(
+                        database,
+                        {
+                            instanceId,
+                            heartbeatAtMs:
+                                Date.now()
+                        }
+                    );
+
+            lastHeartbeatError =
+                null;
+
+            return result;
+        } catch (error) {
+            lastHeartbeatError =
+                diagnosticsLogic
+                    .normalizeError(
+                        error,
+                        Date.now()
+                    );
+
+            console.error(
+                "Recorder heartbeat failed.",
+                error
+            );
+
+            return null;
+        } finally {
+            heartbeatWriteInFlight =
+                false;
+        }
+    }
+
+    function scheduleHeartbeat() {
+        if (
+            heartbeatTimerHandle !==
+            null
+        ) {
+            return;
+        }
+
+        heartbeatTimerHandle =
+            window.setTimeout(
+                async () => {
+                    heartbeatTimerHandle =
+                        null;
+
+                    if (
+                        controller
+                            .getState()
+                            .isRunning
+                    ) {
+                        await heartbeatNow();
+
+                        scheduleHeartbeat();
+                    }
+                },
+                HEARTBEAT_INTERVAL_MS
+            );
+    }
+
+    function stopHeartbeat() {
+        if (
+            heartbeatTimerHandle !==
+            null
+        ) {
+            window.clearTimeout(
+                heartbeatTimerHandle
+            );
+
+            heartbeatTimerHandle =
+                null;
+        }
+    }
+
+    async function recordFailure(
+        context
+    ) {
+        if (
+            !database ||
+            !sessionRecord
+        ) {
+            return null;
+        }
+
+        const error =
+            diagnosticsLogic
+                .normalizeError(
+                    context.error,
+                    context.failedAtMs
+                );
+
+        const cycle =
+            context.cycle;
+
+        const failure = {
+            startedAtMs:
+                cycle
+                    ?.startedAtMs ??
+                context
+                    .cycleStartedAtMs,
+            completedAtMs:
+                context
+                    .failedAtMs,
+            requested:
+                cycle
+                    ?.requested ??
+                context
+                    .universe
+                    ?.recordCount ??
+                null,
+            received:
+                cycle
+                    ?.received ??
+                null,
+            unique:
+                cycle
+                    ?.unique ??
+                null,
+            missing:
+                cycle
+                    ?.missing ??
+                null,
+            duplicates:
+                cycle
+                    ?.duplicates ??
+                null,
+            chunks:
+                cycle
+                    ?.chunks ??
+                [],
+            error
+        };
+
+        const persisted =
+            await diagnosticsPersistence
+                .recordFailedCycle(
+                    database,
+                    {
+                        instanceId,
+                        failure
+                    }
+                );
+
+        lastHeartbeatError =
+            null;
+
+        return persisted;
+    }
+
     const controller =
         logic.createRecorderController({
             createConfig:
@@ -218,6 +409,7 @@
                 cycleBuilder
                     .buildCompleteCycle,
             commitCycle,
+            recordFailure,
             schedule:
                 (
                     callback,
@@ -253,6 +445,8 @@
     }
 
     async function persistStop() {
+        stopHeartbeat();
+
         await waitUntilCycleSettles();
 
         const finalState =
@@ -332,6 +526,9 @@
         lastCompletedAtMs =
             null;
 
+        lastHeartbeatError =
+            null;
+
         return controller.start(
             configOverrides
         );
@@ -340,6 +537,8 @@
     function stop(
         reason = "manual"
     ) {
+        stopHeartbeat();
+
         const state =
             controller.stop(
                 reason
@@ -360,6 +559,27 @@
 
     function waitForStopPersistence() {
         return stopPersistencePromise;
+    }
+
+    async function getDiagnostics() {
+        return Object.freeze({
+            recorder:
+                controller.getState(),
+            persistence:
+                getPersistenceState(),
+            heartbeat:
+                Object.freeze({
+                    intervalMs:
+                        HEARTBEAT_INTERVAL_MS,
+                    writeInFlight:
+                        heartbeatWriteInFlight,
+                    lastError:
+                        lastHeartbeatError
+                }),
+            storage:
+                await recorderDiagnostics
+                    .getStorageEstimate()
+        });
     }
 
     function getPersistenceState() {
@@ -384,7 +604,9 @@
             getState:
                 controller.getState,
             waitForStopPersistence,
-            getPersistenceState
+            getPersistenceState,
+            heartbeatNow,
+            getDiagnostics
         });
 
     console.log(

@@ -1052,3 +1052,159 @@ test(
         );
     }
 );
+
+
+test(
+    "recordFailure receives cycle context before in-memory failure is exposed",
+    async () => {
+        const scheduler =
+            createFakeScheduler();
+
+        const calls = [];
+
+        const controller =
+            createRecorderController({
+                createConfig,
+                loadUniverse:
+                    async config =>
+                        createUniverse(
+                            config
+                        ),
+                buildCompleteCycle:
+                    async () => {
+                        throw new Error(
+                            "synthetic API failure"
+                        );
+                    },
+                recordFailure:
+                    async context => {
+                        calls.push({
+                            message:
+                                context.error
+                                    .message,
+                            hasCycle:
+                                context.cycle !==
+                                null,
+                            requested:
+                                context.universe
+                                    .recordCount,
+                            startedAtMs:
+                                context
+                                    .cycleStartedAtMs,
+                            failedAtMs:
+                                context
+                                    .failedAtMs
+                        });
+                    },
+                schedule:
+                    scheduler.schedule,
+                cancelSchedule:
+                    scheduler.cancel,
+                now:
+                    () => 100
+            });
+
+        controller.start();
+
+        await scheduler.runNext();
+
+        assert.deepEqual(
+            calls,
+            [
+                {
+                    message:
+                        "synthetic API failure",
+                    hasCycle:
+                        false,
+                    requested:
+                        2,
+                    startedAtMs:
+                        100,
+                    failedAtMs:
+                        100
+                }
+            ]
+        );
+
+        assert.equal(
+            controller
+                .getState()
+                .failedCycles,
+            1
+        );
+    }
+);
+
+test(
+    "recordFailure receives the built cycle when persistence commit fails",
+    async () => {
+        const scheduler =
+            createFakeScheduler();
+
+        const cycle = {
+            status: "complete",
+            requested: 2,
+            received: 2,
+            unique: 2,
+            missing: 0,
+            duplicates: 0,
+            chunks: []
+        };
+
+        let capturedCycle =
+            null;
+
+        const controller =
+            createRecorderController({
+                createConfig,
+                loadUniverse:
+                    async config =>
+                        createUniverse(
+                            config
+                        ),
+                buildCompleteCycle:
+                    async () =>
+                        cycle,
+                commitCycle:
+                    async () => {
+                        throw new Error(
+                            "synthetic DB failure"
+                        );
+                    },
+                recordFailure:
+                    async context => {
+                        capturedCycle =
+                            context.cycle;
+                    },
+                schedule:
+                    scheduler.schedule,
+                cancelSchedule:
+                    scheduler.cancel,
+                now:
+                    () => 100
+            });
+
+        controller.start();
+
+        await scheduler.runNext();
+
+        assert.equal(
+            capturedCycle,
+            cycle
+        );
+
+        assert.equal(
+            controller
+                .getState()
+                .completedCycles,
+            0
+        );
+
+        assert.equal(
+            controller
+                .getState()
+                .failedCycles,
+            1
+        );
+    }
+);

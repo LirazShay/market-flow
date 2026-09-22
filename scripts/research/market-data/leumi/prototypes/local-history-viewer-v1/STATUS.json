@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "9",
     "title": "Recorder diagnostics",
-    "status": "next"
+    "status": "fast-and-browser-verification-pending"
   },
   "stages": [
     {
@@ -94,7 +94,12 @@
     {
       "stage": "9",
       "title": "Recorder diagnostics",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "9.1": "implemented-fast-and-browser-verification-pending — failure records/counters",
+        "9.2": "implemented-fast-and-browser-verification-pending — heartbeat",
+        "9.3": "implemented-fast-and-browser-verification-pending — storage estimate/diagnostics API"
+      }
     },
     {
       "stage": "10",

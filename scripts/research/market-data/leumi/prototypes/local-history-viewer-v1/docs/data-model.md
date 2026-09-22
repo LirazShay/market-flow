@@ -291,6 +291,8 @@ autoIncrement: true
 }
 ~~~
 
+For a failed cycle, diagnostic count fields may be `null` when the failure happened before an exact value was available. Unknown values are never invented. `requested` may still be known from the validated universe even when a chunk request fails.
+
 ## Indexes
 
 ~~~text
