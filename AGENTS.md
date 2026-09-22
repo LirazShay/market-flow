@@ -214,6 +214,12 @@ Stage implementation complete
 
 Broad checkpoints remain useful as additional integration milestones, but they never replace this per-Stage Browser CI gate.
 
+For non-trivial E2E/Playwright failures, follow the RCA/debugging method in:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md
+~~~
+
 For browser work:
 - use real IndexedDB/DOM/BroadcastChannel where their semantics matter;
 - mock Leumi endpoints with deterministic sanitized fixtures;

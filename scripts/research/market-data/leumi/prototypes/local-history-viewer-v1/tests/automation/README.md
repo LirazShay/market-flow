@@ -19,6 +19,8 @@ Additionally, the **full browser suite is mandatory before every numbered Stage 
 
 See `../TESTING_POLICY.md` for the full policy.
 
+For failures, RCA, targeted reruns, Playwright traces, race/selector/RTL/scroll debugging, follow `../E2E_DEBUGGING.md`.
+
 ## Structure
 
 ~~~text

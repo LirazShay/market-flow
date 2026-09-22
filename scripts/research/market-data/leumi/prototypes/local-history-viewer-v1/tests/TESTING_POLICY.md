@@ -54,6 +54,8 @@ Stage implementation complete
 
 Broad checkpoints remain useful as additional integration milestones, but they never replace this per-Stage Browser CI gate.
 
+For E2E failure diagnosis, use `E2E_DEBUGGING.md`. During RCA, prefer targeted reruns of the exact failing test/spec; full Browser CI is required after the fix according to this policy, not after every diagnostic experiment.
+
 ## 1. Default execution rule
 
 For ordinary implementation work:

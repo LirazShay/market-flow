@@ -213,6 +213,8 @@ Verification evidence must be traceable to the code/test state being claimed as 
 
 ---
 
+For browser/E2E failures, the workstream's dedicated RCA method is `scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md`. Diagnose narrowly before broad reruns; do not use retries, sleeps, or weakened assertions as substitutes for root-cause analysis.
+
 # 10. Legacy-code strategy
 
 When touching fragile or tightly coupled code:
