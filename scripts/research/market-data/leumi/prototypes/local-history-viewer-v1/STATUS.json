@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "19",
-    "substep": "19.2",
-    "title": "Runtime assembly + Bookmarklet packaging — remove residual percent-encoding",
-    "status": "in-progress"
+    "substep": "19.3",
+    "title": "Integrated V1 validation — live Leumi browser verification",
+    "status": "verification-pending"
   },
   "stages": [
     {
@@ -207,8 +207,8 @@
       "status": "in-progress",
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-        "19.2": "in-progress — remove residual %20 URL encoding from generated Bookmarklet and reverify",
-        "19.3": "blocked-by-19.2-packaging-repair — live verification resumes after reverified clean Bookmarklet",
+        "19.2": "complete-browser-ci-verified — raw compact self-contained Bookmarklet; no %20/percent encoding; no arbitrary absolute size ceiling; stable rolling release verified",
+        "19.3": "verification-pending — requires execution in a real authenticated Leumi browser session using the latest verified Bookmarklet",
         "19.4": "planned — long-run live report using the assembled runtime"
       }
     },
@@ -226,16 +226,17 @@
     "liveLeumiV1Integration": "verification-pending",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35790395791,
-      "jobId": 106957217212,
-      "publishJobId": 106957588155,
-      "activationCommit": "3f5c70165cf75f7e897f39376d74eda973779d49",
-      "workflowRestoreCommit": "915875c39beccdda05974d79089aad6a7bc8050b",
+      "runId": 35791124103,
+      "jobId": 106959592817,
+      "publishJobId": 106959929632,
+      "activationCommit": "80f56233ce275bef2292c99d241be4d795a8bc0f",
+      "workflowRestoreCommit": "b8604d105131936778e535d191af9812fc80e3d1",
       "conclusion": "success",
       "tests": [
         "54 Chromium tests",
         "54 passed / 0 failed",
-        "compact Bookmarklet size guard verified",
+        "raw Bookmarklet contains no %20 and executes successfully",
+        "Bookmarklet packaging has no arbitrary absolute size ceiling",
         "assembled Bookmarklet initial/repeated/restart behavior verified",
         "rolling stable GitHub Release publication verified"
       ]
@@ -249,11 +250,12 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35790381554,
-      "commit": "f3a5aad2f7e9156e32414b7dc8ade79b446c7254",
+      "runId": 35791044782,
+      "jobId": 106959332179,
+      "commit": "94ed3e0cfa1fe42764a67e0a8c380b9e95c979fb",
       "conclusion": "success",
-      "tests": 153,
-      "passed": 153,
+      "tests": 154,
+      "passed": 154,
       "failed": 0
     },
     "testingRefactor": {
@@ -1556,7 +1558,7 @@
     "runtimeAssembly": {
       "status": "complete",
       "requiredBeforeLiveLeumi": true,
-      "reason": "Current source modules are individually verified through the test harness, but no verified production-style assembly/Bookmarklet delivery path exists yet.",
+      "reason": "Deterministic runtime assembly and Bookmarklet delivery are implemented and verified in Fast CI, full Chromium CI, artifact inspection, and rolling GitHub Release publication.",
       "acceptanceIntent": [
         "deterministic dependency ordering",
         "single runnable browser payload generated from repository sources",
@@ -1569,43 +1571,48 @@
       ],
       "sourceCount": 34,
       "runtimeBytes": 318628,
-      "bookmarkletBytes": 148753,
+      "bookmarkletBytes": 141623,
       "buildCommand": "npm run build:runtime",
       "runtimeArtifact": "runtime/dist/market-flow-v1.runtime.js",
       "bookmarkletArtifact": "runtime/dist/market-flow-v1.bookmarklet.txt",
       "browserArtifact": {
-        "workflowRunId": 35788387620,
-        "artifactId": 10721225096,
+        "workflowRunId": 35791124103,
+        "artifactId": 10722375773,
         "name": "local-history-viewer-v1-runtime",
-        "compressedSizeBytes": 89690,
+        "compressedSizeBytes": 66747,
         "retentionDays": 14
       },
       "fastCi": {
-        "runId": 35788333222,
-        "jobId": 106950495352,
-        "tests": 153,
-        "passed": 153,
+        "runId": 35791044782,
+        "jobId": 106959332179,
+        "tests": 154,
+        "passed": 154,
         "failed": 0
       },
       "browserCi": {
-        "runId": 35788387620,
-        "jobId": 106950678086,
+        "runId": 35791124103,
+        "jobId": 106959592817,
+        "publishJobId": 106959929632,
         "tests": 54,
         "passed": 54,
-        "failed": 0
+        "failed": 0,
+        "duration": "35.2s"
       },
       "verifiedBehaviors": [
         "deterministic dependency ordering from repository source files",
         "single generated browser-runnable runtime payload",
-        "Bookmarklet decodes to the exact generated runtime payload",
+        "Bookmarklet body is exactly the compact runtime prefixed by javascript:",
+        "generated Bookmarklet is single-line raw JavaScript with no %20 or other percent-encoded sequences",
+        "no arbitrary absolute Bookmarklet size ceiling; a >256 KiB synthetic runtime packages successfully",
         "generated delivery contains existing modules rather than duplicated business logic",
         "clean Chromium page launches recorder and same-origin viewer through the generated Bookmarklet",
         "repeated Bookmarklet launch reuses the running recorder instance and named viewer window",
         "runtime can restart after clean recorder stop persistence completes",
         "generated artifacts are ignored by Git and published by Browser CI",
+        "rolling GitHub Release is updated only after full Browser CI succeeds",
         "no external runtime host is required by the Bookmarklet delivery path"
       ],
-      "workflowRestoreCommit": "915875c39beccdda05974d79089aad6a7bc8050b",
+      "workflowRestoreCommit": "b8604d105131936778e535d191af9812fc80e3d1",
       "regression": {
         "discoveredAt": "2026-09-23",
         "issue": "Previous Bookmarklet percent-encoded the entire readable runtime, producing an opaque ~718 KB URL and weak practical packaging.",
@@ -1653,31 +1660,79 @@
           "failed": 0,
           "duration": "36.2s"
         },
-        "resolved": true
+        "resolved": true,
+        "residualPercentEncodingRepair": {
+          "discoveredAt": "2026-09-23",
+          "issue": "Compact Bookmarklet still replaced spaces with %20 and retained a fixed 256 KiB packaging ceiling.",
+          "testsFirstRuns": [
+            35790863423,
+            35791007501,
+            35791025415
+          ],
+          "fix": [
+            "Bookmarklet now emits javascript: + compact runtime directly",
+            "removed %20 and all percent-encoding from generated Bookmarklet",
+            "removed fixed 256 KiB build rejection",
+            "added exact no-inflation byte contract",
+            "added >256 KiB synthetic packaging regression test",
+            "added Browser assertion that generated artifact contains no %20"
+          ],
+          "finalFastCi": {
+            "runId": 35791044782,
+            "jobId": 106959332179,
+            "conclusion": "success",
+            "tests": 154,
+            "passed": 154,
+            "failed": 0
+          },
+          "finalBrowserCi": {
+            "runId": 35791124103,
+            "browserJobId": 106959592817,
+            "publishJobId": 106959929632,
+            "conclusion": "success",
+            "tests": 54,
+            "passed": 54,
+            "failed": 0,
+            "duration": "35.2s"
+          },
+          "artifactInspection": {
+            "artifactId": 10722375773,
+            "bookmarkletBytes": 141623,
+            "startsWithJavascript": true,
+            "containsPercent20": false,
+            "containsNewline": false,
+            "containsMarketFlowRuntime": true,
+            "percentEncodedSequenceCount": 0
+          },
+          "resolved": true
+        }
       },
       "compactRuntimeBytes": 141612,
-      "maxBookmarkletBytes": 262144,
       "packaging": {
-        "mode": "self-contained compact JavaScript",
+        "mode": "raw self-contained compact single-line JavaScript",
         "minifier": "terser 5.51.2",
         "compress": false,
         "mangle": false,
-        "urlEscaping": "minimal URL-sensitive escaping only",
+        "prefix": "javascript:",
+        "percentEncoding": false,
+        "arbitraryAbsoluteSizeCeiling": false,
+        "sizeContract": "bookmarklet bytes must equal compact runtime bytes plus the javascript: prefix; large runtimes are not rejected solely for size",
         "externalRuntimeHostRequired": false
       },
       "stableRelease": {
         "tag": "local-history-viewer-v1-runtime-latest",
         "releaseId": 394155593,
         "releaseName": "Market Flow V1 Runtime — Latest Verified",
-        "sourceCommit": "3f5c70165cf75f7e897f39376d74eda973779d49",
+        "sourceCommit": "80f56233ce275bef2292c99d241be4d795a8bc0f",
+        "tagVerifiedCommit": "80f56233ce275bef2292c99d241be4d795a8bc0f",
         "bookmarkletAsset": {
-          "id": 582350774,
+          "id": 582362195,
           "name": "market-flow-v1.bookmarklet.txt",
-          "sizeBytes": 148753,
+          "sizeBytes": 141623,
           "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.bookmarklet.txt"
         },
         "runtimeAsset": {
-          "id": 582350775,
+          "id": 582362193,
           "name": "market-flow-v1.runtime.js",
           "sizeBytes": 318628,
           "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.runtime.js"
@@ -1762,11 +1817,11 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "A residual Bookmarklet packaging defect was found: the generated text still percent-encodes spaces as %20.",
+    "reached": true,
+    "reason": "Stage 19.2 Bookmarklet packaging repair is fully verified. The latest stable artifact is raw compact JavaScript with no %20/percent encoding and no arbitrary absolute size ceiling.",
     "nextStage": "19",
-    "nextSubstep": "19.2",
-    "nextAction": "Change the generated Bookmarklet contract to raw compact single-line JavaScript after javascript:, verify no %20 encoding, rerun Fast and full Browser CI, and republish the rolling release."
+    "nextSubstep": "19.3",
+    "nextAction": "Download the latest verified Bookmarklet from the stable release and execute docs/live-verification.md in the authenticated Leumi browser, then record sanitized Verified/Inferred/Unknown outcomes."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
