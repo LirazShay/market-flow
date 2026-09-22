@@ -6,6 +6,7 @@ on:
       - ".github/workflows/local-history-viewer-v1-ci.yml"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/debug/**"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/source-order.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/entry.js"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/harness.html"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/debug-bundle.spec.js"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/runtime-assembly.spec.js"
