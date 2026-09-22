@@ -697,7 +697,9 @@ tests/automation/specs/viewer-current-table.spec.js
 
 Fast unit tests cover join/model/formatting contracts.
 
-The Playwright spec covers real IndexedDB → DOM rendering and EMPTY state, but its scheduled Chromium verification is deferred to Checkpoint C after Stage 12, per `TESTING_POLICY.md`.
+Historical note: at Stage 11 the Playwright spec was added but Chromium execution was deferred to Checkpoint C. That historical workflow is preserved here only as a record of what happened.
+
+**Policy correction:** this pattern is no longer allowed. Under the current `TESTING_POLICY.md`, any added or modified browser test must run in Chromium after its final edit before development advances, even when the next broad Browser checkpoint is later.
 
 
 ---
@@ -710,12 +712,7 @@ Run 35755728772
 132 passed / 0 failed
 ~~~
 
-Browser test implementation exists but is intentionally not run as a standalone checkpoint. It will execute with Stage 12 at Checkpoint C:
-
-~~~text
-Stages 10–12
-→ Browser CI
-~~~
+Historical Browser execution occurred later with Checkpoint C. Do not copy that sequencing into new work; changed browser tests now require immediate Chromium verification.
 
 
 ---
