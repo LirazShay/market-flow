@@ -56,3 +56,66 @@ jobs:
             scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/test-results
           if-no-files-found: ignore
           retention-days: 7
+
+  publish-runtime:
+    name: Publish rolling runtime download
+    needs: browser-tests
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Checkout verified commit
+        uses: actions/checkout@v4
+
+      - name: Download verified runtime artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: local-history-viewer-v1-runtime
+          path: runtime-release
+
+      - name: Publish stable rolling release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNTIME_TAG: local-history-viewer-v1-runtime-latest
+        run: |
+          set -euo pipefail
+
+          BOOKMARKLET="runtime-release/market-flow-v1.bookmarklet.txt"
+          RUNTIME="runtime-release/market-flow-v1.runtime.js"
+
+          test -s "$BOOKMARKLET"
+          test -s "$RUNTIME"
+
+          NOTES="Verified Local History Viewer V1 runtime generated from commit $GITHUB_SHA. Full Browser CI passed before publication. The release is rolling; assets always represent the latest verified main-branch runtime."
+
+          if gh release view "$RUNTIME_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            git tag -f "$RUNTIME_TAG" "$GITHUB_SHA"
+            git push origin "refs/tags/$RUNTIME_TAG" --force
+
+            gh release upload "$RUNTIME_TAG" \
+              "$BOOKMARKLET" \
+              "$RUNTIME" \
+              --clobber \
+              --repo "$GITHUB_REPOSITORY"
+
+            gh release edit "$RUNTIME_TAG" \
+              --title "Market Flow V1 Runtime — Latest Verified" \
+              --notes "$NOTES" \
+              --prerelease \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$RUNTIME_TAG" \
+              "$BOOKMARKLET" \
+              "$RUNTIME" \
+              --target "$GITHUB_SHA" \
+              --title "Market Flow V1 Runtime — Latest Verified" \
+              --notes "$NOTES" \
+              --prerelease \
+              --repo "$GITHUB_REPOSITORY"
+          fi
+
