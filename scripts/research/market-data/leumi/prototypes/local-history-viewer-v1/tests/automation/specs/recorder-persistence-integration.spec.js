@@ -524,7 +524,24 @@ test(
 
         expect(
             afterFailure.cycles
-        ).toHaveLength(1);
+        ).toHaveLength(2);
+
+        const persistedFailure =
+            afterFailure.cycles.find(
+                cycle =>
+                    cycle.status ===
+                    "failed"
+            );
+
+        expect(
+            persistedFailure
+        ).toBeTruthy();
+
+        expect(
+            persistedFailure
+                .error
+                .name
+        ).toBe("ConstraintError");
 
         expect(
             afterFailure.latest
@@ -565,7 +582,7 @@ test(
 );
 
 test(
-    "Stage 8.4 API failure never writes cycle history or latest rows",
+    "Stage 9 API failure records diagnostics but never writes history or latest rows",
     async ({ page }) => {
         await page.unrouteAll();
 
@@ -649,7 +666,18 @@ test(
 
         expect(
             persisted.cycles
-        ).toHaveLength(0);
+        ).toHaveLength(1);
+
+        expect(
+            persisted.cycles[0]
+                .status
+        ).toBe("failed");
+
+        expect(
+            persisted.cycles[0]
+                .error
+                .message
+        ).toContain("HTTP 500");
 
         expect(
             persisted.history
