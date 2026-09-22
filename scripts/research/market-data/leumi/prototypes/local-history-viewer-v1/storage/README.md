@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 5.2 — connection lifecycle
+Stage 5.3 — version 1 schema creation
 ~~~
 
 התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
@@ -12,23 +12,42 @@ Stage 5.2 — connection lifecycle
 
 - `schema.js` — database/store/index names and schema metadata.
 - `connection.js` — Promise-based open/close helpers.
+- `upgrade.js` — version 1 object-store/index creation.
 
 ## Current boundary
 
-Stage 5.2 מוסיף רק lifecycle של connection:
+Stage 5.3 מוסיף את upgrade handler עבור יצירה ראשונה של DB version 1.
+
+ה-handler יוצר בדיוק את ששת ה-stores:
 
 ~~~text
-indexedDB.open
-Promise success/error
-blocked warning
-close helper
+meta
+sessions
+universe
+cycles
+latest
+history
 ~~~
 
-עדיין אין schema creation.
+ואת ה-indexes שמוגדרים ב-`schema.js`.
 
-אם פתיחה דורשת `onupgradeneeded` ואין upgrade handler, ה-transaction מבוטל בכוונה כדי לא ליצור DB ריק בטעות.
+ה-upgrade path הנתמך כרגע הוא רק:
 
-Stage 5.3 יספק את יצירת stores/indexes.
+~~~text
+0 -> 1
+~~~
+
+כל upgrade path אחר נכשל במפורש במקום לנחש migration.
+
+שימוש עתידי בפתיחה:
+
+~~~text
+MarketFlowStorageConnection.openDatabase({
+    onUpgradeNeeded: MarketFlowStorageUpgrade.upgradeDatabase
+})
+~~~
+
+עדיין אין generic read/write helpers; הם מתחילים ב-Stage 5.4.
 
 Source of truth:
 
