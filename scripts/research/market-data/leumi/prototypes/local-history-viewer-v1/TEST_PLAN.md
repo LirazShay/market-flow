@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 4.1 + Stage 4.2 complete
+Stage 4.1 + Stage 4.2 + Stage 4.3 complete
 ~~~
 
 המסמך נבנה בהדרגה. כרגע מוגדר רק תת-השלב הראשון.
@@ -473,3 +473,302 @@ notification only after commit
 ~~~
 
 בדיקות UI/sorting/history presentation אינן חלק מ-Stage 4.2.
+
+
+---
+
+# Stage 4.3 — Viewer / Sorting / History Test Cases
+
+מטרה: להוכיח שה-viewer מציג את current state נכון, ממיין בצורה דטרמיניסטית ומציג history של נייר יחיד בלי לערבב נתונים מניירות אחרים.
+
+## T4.3.1 — Current table loads from latest only
+
+Fixture:
+
+~~~text
+latest: 3 securities
+history: many rows for the same securities
+~~~
+
+Pass criteria:
+
+- main table renders exactly 3 rows.
+- row count equals latest count.
+- rendering does not depend on scanning history.
+
+---
+
+## T4.3.2 — Universe metadata joins by securityId
+
+Fixture:
+
+~~~text
+latest.securityId = "604611"
+universe.securityId = "604611"
+paperName = "Test Security"
+~~~
+
+Pass criteria:
+
+- row displays the matching paperName.
+- join is by securityId, never by array position.
+- missing universe metadata does not corrupt another row.
+
+---
+
+## T4.3.3 — Default sort
+
+Fixture should contain different DailyDealsQuantity values.
+
+Expected default:
+
+~~~text
+DailyDealsQuantity DESC
+paperName ASC as tie-breaker
+~~~
+
+Pass criteria:
+
+- highest DailyDealsQuantity appears first.
+- equal values are ordered consistently by paperName ASC.
+
+---
+
+## T4.3.4 — Numeric sort toggle
+
+For a numeric column:
+
+~~~text
+first click  → DESC
+second click → ASC
+third click  → DESC
+~~~
+
+Pass criteria:
+
+- order matches numeric values, not string comparison.
+- "100" sorts after "20" numerically in ASC.
+
+---
+
+## T4.3.5 — String sort toggle
+
+For a string column:
+
+~~~text
+first click  → ASC
+second click → DESC
+~~~
+
+Pass criteria:
+
+- paperName order changes correctly.
+- repeated toggles are deterministic.
+
+---
+
+## T4.3.6 — Null / empty / zero rendering
+
+Fixture contains:
+
+~~~text
+BuyLimit1 = null
+LastDealTimeOnly = ""
+BuyVolume1 = 0
+BaseRateChangePercentage = 0
+~~~
+
+Expected display:
+
+~~~text
+null         → —
+empty string → —
+0            → 0
+~~~
+
+Pass criteria:
+
+- zero is never rendered as dash.
+- null and empty may share the visual dash but remain distinct in data.
+
+---
+
+## T4.3.7 — Null-safe sorting
+
+Fixture contains mixed values:
+
+~~~text
+10
+0
+null
+25
+~~~
+
+Pass criteria:
+
+- valid numeric values sort numerically.
+- null does not cause exception.
+- null ordering is deterministic.
+- null stays after real values in both ASC and DESC according to V1 UX rule.
+
+---
+
+## T4.3.8 — Percentage formatting
+
+Fixture:
+
+~~~text
+-1.25
+0
+2.5
+~~~
+
+Pass criteria:
+
+- each displays with % suffix.
+- sign is preserved.
+- 0 remains visible as 0%.
+- visual class may differ, but numeric text is always present.
+
+---
+
+## T4.3.9 — Row opens the correct security detail
+
+Procedure:
+
+1. render 3 latest rows.
+2. activate one specific row.
+
+Pass criteria:
+
+- detail view uses that row's securityId.
+- header shows matching paperName/securityId.
+- no data from adjacent row is used.
+
+---
+
+## T4.3.10 — History query is isolated to one security
+
+Fixture:
+
+~~~text
+security A: 5 history rows
+security B: 7 history rows
+~~~
+
+Open A.
+
+Pass criteria:
+
+- only A rows are returned/rendered.
+- no B row appears.
+- query uses bySecurityTime or equivalent targeted access.
+
+---
+
+## T4.3.11 — History newest-first
+
+Fixture contains collectedAtMs values in non-sorted insertion order.
+
+Pass criteria:
+
+- newest collectedAtMs appears first.
+- oldest appears last within loaded page.
+- order does not depend on insertion order.
+
+---
+
+## T4.3.12 — Initial history page size
+
+Fixture:
+
+~~~text
+650 history rows for one security
+~~~
+
+Expected:
+
+~~~text
+initially rendered = 500
+remaining = 150
+~~~
+
+Pass criteria:
+
+- DOM does not receive all 650 rows at startup.
+- "טען ישנים יותר" is available.
+
+---
+
+## T4.3.13 — Load older history
+
+After T4.3.12:
+
+activate:
+
+~~~text
+טען ישנים יותר
+~~~
+
+Pass criteria:
+
+- remaining older rows are appended.
+- already loaded rows are not duplicated.
+- chronological newest-first order is preserved.
+
+---
+
+## T4.3.14 — Main table sort state survives detail round-trip
+
+Procedure:
+
+1. sort main table by ASK1 ASC.
+2. open a security.
+3. return to main table.
+
+Pass criteria:
+
+- selected sort column remains ASK1.
+- direction remains ASC.
+- table order is restored accordingly.
+
+---
+
+## T4.3.15 — Empty DB viewer state
+
+Fixture:
+
+~~~text
+latest count = 0
+~~~
+
+Pass criteria:
+
+- viewer shows explicit empty state.
+- no misleading empty table is shown as if data loaded normally.
+- no exception.
+
+---
+
+# Stage 4.3 completion rule
+
+Stage 4.3 נחשב מתוכנן כאשר implementation עתידי יכול להוכיח:
+
+~~~text
+current table uses latest
+metadata join correctness
+default sort
+numeric sort
+string sort
+null-safe sort
+null/zero rendering
+percentage formatting
+correct row-to-detail navigation
+per-security history isolation
+newest-first history
+history paging
+sort-state preservation
+empty viewer state
+~~~
+
+Cross-tab/reload/recovery behavior אינו חלק מ-Stage 4.3.
