@@ -369,7 +369,7 @@ There is no default preset rule such as "one substep per message" or a fixed num
 
 Choose scope based on the work itself.
 
-Exception: when the user explicitly writes `תמשיך לשלב הבא`, advance one planned stage only and finish its implementation/tests/required verification before advancing further.
+When the user explicitly writes `תמשיך לשלב הבא`, continue into the next planned work from the authoritative status/roadmap, but still choose a natural implementation + verification boundary. The user does not require a whole numbered stage to fit in one response.
 
 A good implementation unit:
 

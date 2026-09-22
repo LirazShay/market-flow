@@ -18,7 +18,7 @@ decisions.md
 |---|---|---|---|
 | [D-001](decisions/D-001.md) | Evidence before architecture | Accepted | architecture, evidence |
 | [D-002](decisions/D-002.md) | Repository is the project memory | Accepted | repository, project-memory |
-| [D-003](decisions/D-003.md) | Adaptive work batches + explicit next-stage semantics | Accepted / evolved | workflow, delivery, chat-handoff |
+| [D-003](decisions/D-003.md) | Adaptive work batches + natural continuation boundaries | Accepted / evolved | workflow, delivery, chat-handoff |
 | [D-004](decisions/D-004.md) | MapHeat2 role | Accepted based on observed behavior | leumi-api, mapheat2 |
 | [D-005](decisions/D-005.md) | GetSecuritiesData role | Accepted based on observed behavior | leumi-api, securities-data |
 | [D-006](decisions/D-006.md) | Join key | Verified | data, join |

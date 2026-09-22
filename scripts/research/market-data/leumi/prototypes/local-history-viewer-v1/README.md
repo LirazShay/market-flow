@@ -10,6 +10,7 @@ Browser-only research prototype שמקליט snapshots של Leumi market data ל
 | איפה אנחנו עכשיו? | [STATUS.json](STATUS.json) |
 | מה AI צריך לדעת כדי להמשיך? | [AI_CONTEXT.md](AI_CONTEXT.md) |
 | מה צריך לקרוא בצ'אט/agent חדש? | [HANDOFF.md](HANDOFF.md) |
+| מה להדביק כהודעה ראשונה בצ'אט הפיתוח הבא? | [NEXT_CHAT_PROMPT.md](NEXT_CHAT_PROMPT.md) |
 | מה הארכיטקטורה וה-data model? | [docs/](docs/README.md) |
 | איך הטסטים עובדים? | [tests/README.md](tests/README.md) |
 | מה מדיניות ה-CI/checkpoints? | [tests/TESTING_POLICY.md](tests/TESTING_POLICY.md) |
@@ -23,6 +24,7 @@ local-history-viewer-v1/
 ├── STATUS.json
 ├── AI_CONTEXT.md
 ├── HANDOFF.md
+├── NEXT_CHAT_PROMPT.md
 │
 ├── docs/
 │   ├── README.md

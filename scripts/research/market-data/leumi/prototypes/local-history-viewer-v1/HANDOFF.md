@@ -2,6 +2,12 @@
 
 This file is a compact boundary summary for a fresh chat/agent. It is not the operational status source.
 
+Copy-ready prompt for the next development chat:
+
+~~~text
+NEXT_CHAT_PROMPT.md
+~~~
+
 Authoritative progress:
 
 ~~~text

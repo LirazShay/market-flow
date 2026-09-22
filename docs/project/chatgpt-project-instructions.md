@@ -1,98 +1,106 @@
-# ChatGPT Project Instructions — Market Flow
+# Market Flow — ChatGPT Project Instructions
 
-Copy the content of this document into the ChatGPT Project Instructions for Market Flow.
+הקובץ הזה מיועד להדבקה ב-**Project Instructions** של ChatGPT עבור Market Flow.
 
-These instructions are intentionally stable. They do **not** contain the current stage number; current progress must always be read from the repository.
+הוא בכוונה יציב ולא מכיל stage נוכחי. את המצב העדכני תמיד קוראים מה-repository.
 
 ---
 
-You are working on the **Market Flow** software project.
-
-Repository:
+## Repository
 
 ~~~text
 LirazShay/market-flow
 branch: main
 ~~~
 
-Default response language for this project: **Hebrew**, while keeping code, identifiers and technical terms in their natural form.
+ברירת מחדל לתשובות בפרויקט: **עברית**, כאשר code, identifiers ומונחים טכניים נשארים בצורה הטבעית שלהם.
 
-## Repository is the source of truth
+## העיקרון החשוב ביותר
 
-Do not rely on old chat memory when repository state is available.
+ה-repository הוא ה-source of truth.
 
-At the start of a fresh chat:
+אל תסתמך על זיכרון מצ'אט קודם כאשר אפשר לקרוא את המצב מה-Git.
 
-1. read `AGENTS.md`;
-2. identify the active workstream;
-3. read that workstream's `AI_CONTEXT.md` and `STATUS.json` when present;
-4. if the workstream declares a chat boundary and has `HANDOFF.md`, read it;
-5. read only the target files and directly relevant tests;
-6. expand to project/domain/decision documents only when required.
+בצ'אט חדש:
 
-For Local History Viewer V1 the active path is:
+1. קרא `AGENTS.md`.
+2. זהה את ה-workstream הפעיל.
+3. קרא את `AI_CONTEXT.md` ואת `STATUS.json` של אותו workstream.
+4. אם קיים `HANDOFF.md`, קרא אותו.
+5. קרא רק את הקבצים שעומדים להשתנות ואת הטסטים הרלוונטיים.
+6. פתח תיעוד רחב יותר רק אם צריך architecture/schema/decision/API evidence.
+
+ה-workstream הפעיל כרגע נמצא תחת:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
-Never infer the current stage from this Project Instruction. Read `STATUS.json`.
+לעולם אל תניח מהו השלב הנוכחי מתוך Project Instructions; קרא `STATUS.json`.
 
-## Work directly on the repository
+## לעבוד ישירות על ה-repository
 
-When the user asks to develop/continue and the change is implementable:
+כאשר המשתמש מבקש להמשיך פיתוח:
 
-- inspect current repository state;
-- implement the change in GitHub;
-- add/update tests;
-- commit coherent changes;
-- inspect relevant CI results;
-- fix failures before reporting success;
-- update operational status/documentation at the correct cadence.
+- בדוק קודם את מצב `main` הנוכחי.
+- קרא את קבצי ה-source of truth.
+- כתוב/עדכן טסטים כחלק מהשינוי.
+- בצע את המימוש ב-GitHub.
+- צור commit קוהרנטי.
+- בדוק GitHub Actions רלוונטי.
+- אם CI נכשל — קרא logs, תקן והריץ שוב לפני דיווח הצלחה.
+- עדכן `STATUS.json` בקצב הנכון.
 
-Do not merely provide code snippets when the task is to continue repository development.
+אל תסתפק בהצעת snippets כאשר הבקשה היא להמשיך לפתח את ה-repository בפועל.
 
-Before replacing an existing file, fetch its current content/SHA. Do not overwrite newer work.
+לפני עדכון קובץ קיים, קרא את הגרסה/ה-SHA הנוכחיים כדי לא לדרוס עבודה חדשה.
 
-## Stage-control command
+## גודל יחידת העבודה
 
-When the user writes:
+המשתמש מעדיף **יחידות עבודה טבעיות מבחינה הנדסית**, לא התאמה מלאכותית בין הודעה לבין stage.
+
+כלומר הודעה אחת יכולה לכלול:
+
+- חלק מ-substep;
+- substep שלם;
+- stage שלם;
+- או כמה חלקים סמוכים אם הם באמת שייכים לאותה יחידת implementation + verification.
+
+כאשר המשתמש כותב:
 
 ~~~text
 תמשיך לשלב הבא
 ~~~
 
-advance exactly **one planned stage** according to the authoritative workstream `STATUS.json` / `ROADMAP.md`.
+המשמעות היא: המשך מה-pointer הנוכחי בתוכנית אל העבודה הבאה בצורה מסודרת. **אין חובה לסיים stage שלם באותה הודעה** אם boundary קטן יותר הוא טבעי ונכון יותר.
 
-For that stage:
+עצור בנקודת verification/engineering טבעית והשאר את `STATUS.json` מדויק.
 
-~~~text
-tests/acceptance behavior
-→ implementation
-→ Fast CI
-→ required browser/live checkpoint if due
-→ status/documentation
-~~~
+אל תדלג על stages מתוכננים ואל תתחיל עבודה לא קשורה רק כדי "להתקדם מהר".
 
-Do not silently begin the next stage in the same response.
-
-When the user does not use that command, choose implementation scope naturally according to technical coherence and verification boundaries.
-
-Only write:
+המילה:
 
 ~~~text
 סיימתי
 ~~~
 
-at the very end when the **entire planned process/version requested by the user** is complete. Never use it for an individual stage, checkpoint or mini-project.
+נכתבת רק כאשר **כל התהליך/הגרסה המתוכננת שהמשתמש ביקש הושלמו לחלוטין**, ולא בסיום stage, checkpoint או mini-project.
 
-## Tests-first engineering
+## Tests First
 
-Testing is part of every implementation change.
+Testing הוא חלק מהמימוש ולא שלב נפרד בסוף.
 
-For new behavior, define meaningful externally observable tests first whenever practical.
+ל-feature חדש, כאשר מעשי:
 
-For bugs:
+~~~text
+define observable behavior/tests
+→ add/update tests
+→ implement
+→ Fast CI
+→ browser checkpoint only when required
+~~~
+
+לתיקון bug:
 
 ~~~text
 regression test
@@ -100,26 +108,24 @@ regression test
 → keep regression test
 ~~~
 
-Avoid brittle tests of private/internal details unless those details are intentionally a public/durable contract.
+הטסטים צריכים להגן על contracts/behavior ציבוריים ומשמעותיים, לא על private implementation details מקריים.
 
-Testing pyramid:
+### Testing pyramid
 
 ~~~text
 pure deterministic logic
-→ fast unit tests
+→ fast Node unit tests
 
-IndexedDB / DOM / BroadcastChannel / browser adapter integration
-→ Playwright + Chromium checkpoint tests
+IndexedDB / DOM / BroadcastChannel / browser integration
+→ Playwright + Chromium at planned checkpoints
 
 real provider behavior
-→ live verification only when necessary
+→ live verification only when required
 ~~~
 
-Fast tests should dominate test count.
+Fast tests צריכים להיות רוב הטסטים.
 
-Browser tests should be sparse and run at meaningful integration checkpoints, not after every small deterministic change.
-
-For Local History Viewer V1, follow its local:
+Browser CI לא אמור לרוץ על כל שינוי קטן. עבור Local History Viewer V1, פעל לפי:
 
 ~~~text
 tests/TESTING_POLICY.md
@@ -127,9 +133,9 @@ tests/TESTING_POLICY.md
 
 ## Data integrity
 
-Never silently accept partial/corrupt data.
+אל תקבל partial/corrupt data בשקט.
 
-Validate where relevant:
+בדוק לפי הצורך:
 
 - requested count;
 - received count;
@@ -139,15 +145,15 @@ Validate where relevant:
 - response structure;
 - atomic persistence boundaries.
 
-Preserve:
+שמור על ההבחנה:
 
 ~~~text
 null != 0 != ""
 ~~~
 
-Do not guess schema semantics.
+אל תנחש semantics של fields.
 
-Material evidence should be classified as:
+כאשר עובדה מהותית אינה מוכחת, השתמש ב:
 
 ~~~text
 Verified
@@ -155,73 +161,65 @@ Inferred
 Unknown
 ~~~
 
+## Local History Viewer V1 — invariants
+
+- אין hardcode ל-universe size 561.
+- join שנבדק: `MapHeat2.PaperId == GetSecuritiesData.Key`.
+- canonical ID: `securityId = String(PaperId or Key)`.
+- baseline מאומת ל-batching: 187, אך הוא configurable ולא contract של provider.
+- chunk requests נשארים sequential כל עוד אין evidence אחר.
+- שומרים raw MapHeat record ב-universe.
+- שומרים raw GetSecuritiesData Security object ב-history/latest.
+- IndexedDB הוא source of truth; BroadcastChannel הוא notification בלבד.
+- successful cycle persistence חייב להיות atomic.
+- failure של API/validation/DB commit לא יכול להשאיר latest/history חלקיים.
+
 ## Architecture discipline
 
-Do not invent or prematurely choose a production stack.
+אל תבחר production stack לפני החלטה מפורשת ומתועדת.
 
-Existing browser JavaScript and Node/Playwright test tooling do not decide the final production technology stack.
+JavaScript browser prototype ו-Node/Playwright test tooling אינם החלטה על production stack.
 
-Preserve proven behavior unless an intentional change is being made.
+שמור behavior שכבר אומת, והעדף שינוי ממוקד על rewrite רחב.
 
-Prefer focused changes over broad rewrites.
-
-For durable decisions, read the compact decision index first:
+להחלטות durable:
 
 ~~~text
 docs/project/decisions.md
+→ ואז רק D-NNN.md הרלוונטי
 ~~~
-
-then only the relevant `docs/project/decisions/D-NNN.md`.
 
 ## Documentation ownership
 
-Operational progress:
-
 ~~~text
 STATUS.json
-~~~
+    operational progress: current/next/completed
 
-Compact current AI context:
-
-~~~text
-AI_CONTEXT.md
-~~~
-
-Plan/order/stage definitions:
-
-~~~text
 ROADMAP.md
-~~~
+    plan/order/scope only
 
-Do not put completion status into ROADMAP. Update ROADMAP only when the plan/scope/order changes.
+AI_CONTEXT.md
+    compact continuation context
 
-At a chat boundary:
-
-~~~text
 HANDOFF.md
+    chat/agent boundary context
+
+local docs/
+    durable component design
+
+tests/TESTING_POLICY.md
+    testing/checkpoint policy
 ~~~
 
-may capture the next-stage boundary and important implementation traps.
+אל תשכפל operational status לתוך ROADMAP או design docs.
 
-Meaningful project/workstream milestone:
-
-~~~text
-docs/project/current-state.md
-~~~
-
-Durable decision:
-
-~~~text
-docs/project/decisions/D-NNN.md
-+
-docs/project/decisions.md
-~~~
+עדכן `ROADMAP.md` רק אם plan/scope/order השתנו.
 
 ## Security
 
-The repository is public.
+ה-repository ציבורי.
 
-Never commit:
+לעולם אל תכניס:
 
 - cookies;
 - session tokens;
@@ -232,17 +230,18 @@ Never commit:
 - unnecessary personal data;
 - sensitive raw dumps.
 
-Use sanitized synthetic fixtures.
+השתמש ב-fixtures סינתטיים ומנוקים.
 
-Never attempt to bypass provider access controls/WAF behavior.
+אל תנסה לעקוף WAF/access controls.
 
-## Completion reporting
+## Completion report
 
-After a development batch, report concisely:
+בסוף יחידת עבודה דווח בקצרה:
 
-- what changed;
-- what tests/CI ran and their result;
-- what remains pending/unknown;
-- the next authoritative stage when relevant.
+1. מה השתנה.
+2. איזה files נוספו/עודכנו.
+3. אילו tests/CI רצו ומה התוצאה.
+4. מה עדיין pending/unknown.
+5. מה ה-pointer הבא ב-`STATUS.json` כאשר רלוונטי.
 
-Do not claim completion while required tests/checkpoints are failing or still pending.
+אל תכריז על completion אם checkpoint נדרש עדיין נכשל או לא בוצע.

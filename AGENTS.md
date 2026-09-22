@@ -68,7 +68,7 @@ over
 arbitrary numbering/message boundary
 ~~~
 
-### Explicit next-stage command
+### Continuation command
 
 When the user writes:
 
@@ -76,11 +76,13 @@ When the user writes:
 תמשיך לשלב הבא
 ~~~
 
-advance **one planned stage** from the authoritative workstream `STATUS.json` / `ROADMAP.md`.
+continue from the authoritative workstream `STATUS.json` / `ROADMAP.md` into the next planned work.
 
-Complete that stage's implementation, tests, required CI/checkpoint verification and status/documentation before advancing further.
+The user explicitly prefers natural engineering/verification boundaries. A single response does **not** have to complete an entire numbered stage.
 
-Do not silently start the following stage in the same response.
+It is valid to complete a coherent substep or part of a stage, verify it, update `STATUS.json`, and stop there.
+
+Do not skip planned work or jump to an unrelated later stage.
 
 The word:
 
