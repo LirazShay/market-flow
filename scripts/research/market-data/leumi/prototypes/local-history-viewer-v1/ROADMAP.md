@@ -169,7 +169,7 @@ storage/schema.js
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נממש רק:
@@ -181,6 +181,12 @@ Next
 עדיין ללא schema creation.
 
 #### Stage 5.3 — Version 1 schema creation
+
+Status:
+
+~~~text
+Next
+~~~
 
 נממש רק:
 - onupgradeneeded.
