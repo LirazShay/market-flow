@@ -10,11 +10,15 @@
 
 לפני כתיבת קוד:
 
-1. קרא את `README.md`.
-2. קרא את התיעוד הרלוונטי תחת `docs/`.
-3. בדוק את הקוד הקיים הקשור למשימה.
-4. בדוק מה כבר הוכח בפועל ומה עדיין בגדר השערה.
-5. אל תשכתב פתרון קיים שעובד בלי סיבה ברורה.
+1. קרא את `AGENTS.md` במלואו.
+2. קרא את `PROJECT_CONTEXT.md`.
+3. קרא את `docs/project/current-state.md`.
+4. קרא את `README.md`.
+5. קרא את התיעוד הרלוונטי תחת `docs/`.
+6. בדוק את הקוד הקיים הקשור למשימה.
+7. בדוק את `docs/project/decisions.md` כדי לא לפתוח מחדש החלטה קיימת בלי סיבה.
+8. בדוק מה כבר הוכח בפועל ומה עדיין בגדר השערה.
+9. אל תשכתב פתרון קיים שעובד בלי סיבה ברורה.
 
 המאגר עצמו הוא ה-source of truth. אין להסתמך על זיכרון משיחה קודמת כאשר המידע נמצא בפרויקט.
 
@@ -183,7 +187,27 @@ try {
 
 ---
 
-## 9. תיעוד API של לאומי
+## 9. ניווט בפרויקט
+
+מסמכי ה-context המשותפים לכל ה-workstreams:
+
+~~~text
+PROJECT_CONTEXT.md
+docs/project/current-state.md
+docs/project/system-scope.md
+docs/project/decisions.md
+docs/project/chat-map.md
+~~~
+
+כאשר מצב הפרויקט משתנה באופן מהותי, יש לעדכן את `current-state.md`.
+
+כאשר מתקבלת החלטה ארכיטקטונית/טכנית/התנהגותית שחשוב לא לפתוח מחדש, יש להוסיף אותה ל-`decisions.md`.
+
+כאשר נפתח workstream/chat משמעותי חדש, יש לעדכן את `chat-map.md`.
+
+---
+
+## 10. תיעוד API של לאומי
 
 ה-source of truth הנוכחי נמצא תחת:
 
@@ -208,7 +232,7 @@ scripts/research/leumi/
 
 ---
 
-## 10. אין לשמור secrets
+## 11. אין לשמור secrets
 
 אין להכניס ל-Git:
 
@@ -224,7 +248,7 @@ scripts/research/leumi/
 
 ---
 
-## 11. אל תנחש schema
+## 12. אל תנחש schema
 
 כאשר API משתנה או מופיע שדה חדש:
 
@@ -237,7 +261,7 @@ scripts/research/leumi/
 
 ---
 
-## 12. אל תשבור flow שעובד
+## 13. אל תשבור flow שעובד
 
 לפני שינוי script שכבר הוכח:
 
@@ -250,7 +274,7 @@ scripts/research/leumi/
 
 ---
 
-## 13. Logging
+## 14. Logging
 
 כאשר נבנים רכיבים מתמשכים, ה-logging צריך לאפשר להבין מה קרה בלי debugging אקראי.
 
@@ -267,7 +291,7 @@ scripts/research/leumi/
 
 ---
 
-## 14. Definition of Done לכל micro-step
+## 15. Definition of Done לכל micro-step
 
 שלב נחשב גמור רק כאשר כל מה שרלוונטי ממנו מתקיים:
 
@@ -282,7 +306,7 @@ scripts/research/leumi/
 
 ---
 
-## 15. מה לכתוב בסיום כל משימה
+## 16. מה לכתוב בסיום כל משימה
 
 בסיום שינוי, ה-AI צריך לדווח בקצרה:
 
@@ -294,7 +318,7 @@ scripts/research/leumi/
 
 ---
 
-## 16. עקרון עליון
+## 17. עקרון עליון
 
 העדיפות בפרויקט היא:
 
