@@ -293,3 +293,39 @@ Why:
 - moving/renaming code should not leave a detached manual elsewhere.
 - raw evidence belongs to the test that generated it.
 - docs should remain a knowledge base rather than a second copy of code documentation.
+
+
+---
+
+## D-019 — Local History Viewer V1 is a browser-only prototype
+
+Status: Accepted for V1 planning
+
+Decision:
+
+~~~text
+Persistence: IndexedDB
+Cross-tab notification: BroadcastChannel
+Viewer: same-origin browser tab
+Server: none
+Filtering: postponed to V2
+~~~
+
+Why:
+
+- the user wants to experiment quickly with current + historical market data.
+- IndexedDB provides persistent local history without introducing a server or external DB.
+- the already verified market-data flow runs in the Leumi browser session.
+- same-origin storage is required for direct IndexedDB sharing between recorder and viewer.
+
+Important:
+
+IndexedDB is source of truth. BroadcastChannel is notification only.
+
+The V1 design must preserve full-cycle validation, null semantics and non-atomic chunk timestamps learned from the API research.
+
+Details:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
+~~~
