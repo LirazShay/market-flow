@@ -13,7 +13,8 @@ Browser-only research prototype inside Market Flow.
 | full V1 plan/order | ROADMAP.md |
 | fresh-chat instructions | HANDOFF.md |
 | reusable continuation prompt | NEXT_CHAT_PROMPT.md |
-| durable V1 design | docs/ |
+| durable normative contracts / Specs | specs/README.md |
+| durable V1 design / rationale | docs/ |
 | testing / CI policy | tests/TESTING_POLICY.md |
 | engineering / safe-change policy | [project engineering practices](../../../../../../docs/project/engineering-practices.md) |
 
@@ -36,6 +37,7 @@ local-history-viewer-v1/
 ├── HANDOFF.md
 ├── NEXT_CHAT_PROMPT.md
 │
+├── specs/
 ├── docs/
 ├── recorder/
 ├── storage/
@@ -95,8 +97,11 @@ AI_CONTEXT.md
 HANDOFF.md
     fresh-chat read/continuation instructions
 
+specs/
+    durable normative behavior/contracts/invariants
+
 docs/
-    durable design/evidence
+    durable design/evidence/rationale
 
 tests/TESTING_POLICY.md
     verification policy
