@@ -1,87 +1,92 @@
 # Local History Viewer V1
 
-Status:
+Browser-only research prototype for recording Leumi market-data snapshots into IndexedDB and viewing current + historical data from a same-origin tab.
+
+## Fast continuation
+
+Current operational state is intentionally **not duplicated in this README**.
+
+Use:
 
 ~~~text
-Implementation — Stage 5 complete
+AI_CONTEXT.md
+STATUS.json
 ~~~
 
-מטרת V1 היא לאפשר ניסוי מקומי מלא ב-browser בלבד:
+Rules:
+
+~~~text
+STATUS.json = current/next/completed/pending
+ROADMAP.md  = scope/order only
+README.md   = stable component overview
+~~~
+
+## V1 flow
 
 ~~~text
 Leumi market-data recorder
+→ full-cycle validation
 → IndexedDB
-→ same-origin viewer tab
-→ current market table
-→ dynamic sorting
-→ per-security history
+→ BroadcastChannel notification
+→ same-origin viewer
+→ current table + sorting + per-security history
 ~~~
 
 ## V1 scope
 
-- הקלטת כל 561 הניירות בכל full cycle.
-- שמירת כל היסטוריית ההקלטה ב-IndexedDB.
-- latest state נפרד לכל נייר כדי להציג current table במהירות.
-- viewer בטאב נוסף.
-- עדכון viewer בזמן אמת.
-- מיון עולה/יורד לפי עמודות.
-- לחיצה על נייר ופתיחת history table עבורו.
-- diagnostics בסיסיים: recorder alive, last cycle, counts, failures, storage estimate.
-- ללא filtering ב-V1.
+- dynamic universe; do not hardcode the number of securities.
+- persistent local history in IndexedDB.
+- one latest record per security for efficient current-state display.
+- same-origin viewer tab.
+- live refresh notifications.
+- deterministic column sorting.
+- per-security history drill-down.
+- basic recorder/storage diagnostics.
+- filtering intentionally excluded from V1.
 
 ## V1 non-goals
 
-- אין server.
-- אין database חיצוני.
-- אין production architecture.
-- אין execution/trading.
-- אין charts מתקדמים.
-- אין filtering מורכב.
-- אין derived momentum metrics חדשים בשלב הראשון.
-- אין ניסיון לקבל snapshot מלא כל שנייה אם ה-flow המוכח כרגע לוקח בערך 5 שניות.
+- no server.
+- no external database.
+- no production architecture.
+- no execution/trading.
+- no advanced charts.
+- no complex filtering.
+- no new derived momentum metrics in V1.
+- no assumption that target polling cadence equals actual full-cycle cadence.
 
-## Important browser constraint
+## Browser constraint
 
-IndexedDB, BroadcastChannel ו-storage הם origin-scoped.
+IndexedDB, BroadcastChannel and browser storage are origin-scoped.
 
-לכן recorder וה-viewer צריכים לרוץ באותו origin של אתר לאומי.
+Therefore recorder and viewer must share the Leumi origin in V1.
 
-ה-viewer יכול להיות tab חדש שנפתח מתוך tab של לאומי ומקבל את אותו origin context.
+Do not design V1 as a localhost viewer expecting direct access to the Leumi-origin IndexedDB.
 
-אין לתכנן V1 כ-localhost viewer שקורא ישירות את אותו IndexedDB, משום שזה origin אחר.
-
-## Proposed V1 components
+## Durable design documents
 
 ~~~text
-recorder/
-    polling + normalization + IndexedDB writes
-
-storage/
-    IndexedDB schema + transactions + queries
-
-viewer/
-    current table + sorting + history drill-down
-
-shared/
-    constants + field definitions + messages
+REQUIREMENTS.md
+ARCHITECTURE.md
+DATA_MODEL.md
+VIEWER_UX.md
+TEST_PLAN.md
+ROADMAP.md
 ~~~
 
-בשלבי implementation נחליט אם כל אלה יהיו קבצים נפרדים או bundle browser-friendly קטן, בלי framework בשלב הראשון.
+Read them only when the task requires the relevant design detail.
 
-## Planning documents
+## Current code areas
 
-- REQUIREMENTS.md
-- ARCHITECTURE.md
-- ROADMAP.md
-- DATA_MODEL.md
-- TEST_PLAN.md
+~~~text
+storage/
+    IndexedDB schema/connection/upgrade/read/write foundation
 
+tests/
+    browser self-tests and future automated browser tests
 
-## Implementation
+recorder/
+    recorder configuration and collection components
+~~~
 
-- `storage/` — IndexedDB implementation.
-  - `schema.js` — schema constants.
-  - `connection.js` — open/close.
-  - `upgrade.js` — version 1 schema creation.
-  - `read.js` — basic reads.
-  - `write.js` — basic writes.
+For the exact current file/stage map, use `AI_CONTEXT.md` and `STATUS.json`.

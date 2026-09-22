@@ -175,7 +175,7 @@ VIEWER_UX.md
 TEST_PLAN.md
 ROADMAP.md
 docs/leumi-api/
-docs/project/decisions.md
+docs/project/decisions.md → then only relevant docs/project/decisions/D-NNN.md
 ~~~
 
 ## Conflict rule

@@ -22,7 +22,7 @@
 
 - [Current State](docs/project/current-state.md)
 - [System Scope](docs/project/system-scope.md)
-- [Decision Log](docs/project/decisions.md)
+- [Decision Index](docs/project/decisions.md)
 - [Chat / Workstream Map](docs/project/chat-map.md)
 - [Repository Structure](docs/project/repository-structure.md)
 
@@ -60,7 +60,6 @@ scripts/research/market-data/leumi/
 לפרטים:
 
 [Leumi API Research](docs/leumi-api/README.md)
-
 
 ### Active prototype — Local History Viewer V1
 
