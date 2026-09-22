@@ -80,6 +80,25 @@
         "commit": "085101f786968ce65c4edcef502dd258178fd846",
         "conclusion": "success"
       }
+    },
+    "t5": {
+      "fastCi": {
+        "workflow": "Local History Viewer V1 Fast CI",
+        "runId": 35741459430,
+        "commit": "c8668b6ac953602d6c387e9db27a76e8df8fa94a",
+        "conclusion": "success",
+        "browserInstalled": false,
+        "dependencyInstallStep": false
+      },
+      "browserCi": {
+        "trigger": "workflow_dispatch or workflow_call",
+        "automaticPushTrigger": false
+      },
+      "discoveryFix": {
+        "firstRunId": 35741307752,
+        "issue": "node --test default discovery included browser-only *-test.js files",
+        "fix": "tests/unit/run-unit-tests.js loads only tests/unit/*.test.js"
+      }
     }
   },
   "fastUnitBase": {
