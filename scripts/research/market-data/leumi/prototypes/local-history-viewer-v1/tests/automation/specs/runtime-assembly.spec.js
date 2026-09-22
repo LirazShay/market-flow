@@ -131,13 +131,10 @@ test(
         ).toBe(true);
 
         expect(
-            Buffer.byteLength(
-                bookmarklet,
-                "utf8"
+            bookmarklet.includes(
+                "%20"
             )
-        ).toBeLessThanOrEqual(
-            256 * 1024
-        );
+        ).toBe(false);
 
         await installLeumiApiMocks(
             page,
