@@ -78,3 +78,24 @@ Coverage includes:
 - deterministic mocked failure scenarios.
 
 These tests deliberately do not duplicate IndexedDB/DOM/BroadcastChannel behavior, which remains browser-test territory.
+
+
+## Stage 8 persistence contracts
+
+~~~text
+persistence-records.test.js
+~~~
+
+Covers deterministic mapping for:
+
+- universe records;
+- session start/stop records;
+- complete cycle records;
+- history/latest rows;
+- recorderState meta records;
+- raw field preservation;
+- null/zero/empty-string preservation;
+- duplicate/mismatch rejection;
+- generated ID validation.
+
+IndexedDB transaction behavior remains a Chromium concern for later Stage 8 substeps.

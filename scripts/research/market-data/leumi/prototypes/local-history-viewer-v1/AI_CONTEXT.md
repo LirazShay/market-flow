@@ -132,6 +132,8 @@ storage/
   upgrade.js
   read.js
   write.js
+  pure/
+    persistence-records.js
 
 tests/
   unit/
@@ -143,6 +145,7 @@ tests/
     securities-chunk-logic.test.js
     cycle-logic.test.js
     recorder-loop-logic.test.js
+    persistence-records.test.js
     leumi-api-fixtures.test.js
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
@@ -185,10 +188,11 @@ recorder/
 
 Stage 7 recorder skeleton is complete and browser-verified.
 
-Next work:
+Current work:
 
 ~~~text
 Stage 8 — Persistence integration
+8.1 persistence record builders/contracts implemented; Fast CI verification pending
 ~~~
 
 Stage 8 explicitly includes:

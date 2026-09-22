@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "8",
-    "title": "Persistence integration",
-    "status": "next"
+    "stage": "8.1",
+    "title": "Persistence record builders/contracts",
+    "status": "fast-ci-verification-pending"
   },
   "stages": [
     {
@@ -83,9 +83,9 @@
     {
       "stage": "8",
       "title": "Persistence integration",
-      "status": "next",
+      "status": "in-progress",
       "substeps": {
-        "8.1": "planned — persistence record builders/contracts",
+        "8.1": "implemented-fast-ci-verification-pending",
         "8.2": "planned — session + universe persistence",
         "8.3": "planned — atomic successful-cycle transaction",
         "8.4": "planned — recorder integration + persistence failure/rollback tests"
@@ -281,8 +281,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 7 recorder skeleton is complete and browser-verified; Stage 8 begins persistence integration.",
+    "reached": false,
+    "reason": "Development continues in the current chat; Stage 8 persistence integration is active.",
     "nextStage": "8"
   },
   "navigation": {

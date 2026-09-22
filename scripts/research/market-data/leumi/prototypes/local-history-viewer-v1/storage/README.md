@@ -16,6 +16,7 @@ Stage 8 next — persistence integration
 - `upgrade.js` — version 1 object-store/index creation.
 - `read.js` — generic readonly helpers: get/getAll/count.
 - `write.js` — generic readwrite helpers: put/add/deleteRecord/clear.
+- `pure/persistence-records.js` — deterministic Stage 8 record builders; no IndexedDB I/O.
 
 ## Current boundary
 
