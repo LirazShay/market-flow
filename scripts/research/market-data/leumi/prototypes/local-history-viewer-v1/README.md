@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Implementation — Stage 5.1 complete
+Implementation — Stage 5 complete
 ~~~
 
 מטרת V1 היא לאפשר ניסוי מקומי מלא ב-browser בלבד:
@@ -80,4 +80,8 @@ shared/
 ## Implementation
 
 - `storage/` — IndexedDB implementation.
-  - `schema.js` — schema constants; no DB open yet.
+  - `schema.js` — schema constants.
+  - `connection.js` — open/close.
+  - `upgrade.js` — version 1 schema creation.
+  - `read.js` — basic reads.
+  - `write.js` — basic writes.
