@@ -24,6 +24,7 @@
 - [System Scope](docs/project/system-scope.md)
 - [Decision Log](docs/project/decisions.md)
 - [Chat / Workstream Map](docs/project/chat-map.md)
+- [Repository Structure](docs/project/repository-structure.md)
 
 ## Phase 01 — Market Data / Leumi API Research
 
