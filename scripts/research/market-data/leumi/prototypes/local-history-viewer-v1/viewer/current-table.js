@@ -520,9 +520,11 @@
             documentRef
         );
 
-        captureViewport(
-            targetWindow
-        );
+        if (!panel.hidden) {
+            captureViewport(
+                targetWindow
+            );
+        }
 
         clearPanel(
             panel
