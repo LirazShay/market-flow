@@ -1860,11 +1860,19 @@
       },
       "D3": {
         "title": "Runtime JSON export/download API",
-        "status": "in-progress"
+        "status": "complete-browser-ci-verified",
+        "browserCiRunId": 35794162494,
+        "browserJobId": 106969430341,
+        "tests": "55/55",
+        "verified": [
+          "assembled Bookmarklet exposes createDebugBundle()",
+          "assembled Bookmarklet exposes downloadDebugBundle()",
+          "downloaded JSON parses and retains safety contract"
+        ]
       },
       "D4": {
         "title": "Viewer Export Debug action + Chromium verification",
-        "status": "planned"
+        "status": "in-progress"
       },
       "D5": {
         "title": "Live after-market evidence collection and recorder-policy decision",
