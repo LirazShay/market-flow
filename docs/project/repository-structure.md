@@ -283,3 +283,67 @@ README שמסביר script, configuration, run procedure או test output שיי
 Raw reports של test suite נשמרים ליד אותו test suite.
 
 `docs/` נשאר בסיס הידע של הפרויקט: API semantics, architecture/context, decisions ומסקנות שאינן שייכות לקובץ קוד יחיד.
+
+---
+
+# Fast AI context for active workstreams
+
+A long-running workstream may include:
+
+~~~text
+AI_CONTEXT.md
+STATUS.json
+~~~
+
+These files are operational navigation aids.
+
+## AI_CONTEXT.md
+
+Purpose:
+
+- compact current architecture/invariants.
+- current focus.
+- relevant working-set files.
+- rules for when broader documentation must be consulted.
+
+It does **not** replace durable design, API evidence or decision documents.
+
+## STATUS.json
+
+Purpose:
+
+- machine-readable current stage.
+- next work item.
+- verification state.
+- compact progress pointer.
+
+For a normal continuation inside that workstream, the preferred read path is:
+
+~~~text
+AGENTS.md
+→ AI_CONTEXT.md
+→ STATUS.json
+→ target files
+→ directly relevant tests
+~~~
+
+Do not require a full-repository documentation scan unless the task crosses a boundary, changes architecture/schema, finds a conflict, or requires evidence re-verification.
+
+## Update cadence
+
+~~~text
+normal implementation:
+  code + tests + STATUS.json
+
+meaningful stage boundary:
+  ROADMAP + local README
+  AI_CONTEXT only when focus/invariants change
+
+durable decision:
+  docs/project/decisions.md
+
+project/workstream milestone:
+  docs/project/current-state.md
+~~~
+
+This reduces duplicate reads and documentation churn while preserving durable sources of truth.
