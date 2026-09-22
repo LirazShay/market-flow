@@ -570,8 +570,8 @@ meta
 Sequence:
 
 1. create `cycles` record and obtain `cycleId`.
-2. write 561 history rows.
-3. upsert 561 latest rows.
+2. write one history row for every security in the validated universe.
+3. upsert one latest row for every security in the validated universe.
 4. update recorderState counters/heartbeat.
 5. commit transaction.
 6. רק לאחר commit:

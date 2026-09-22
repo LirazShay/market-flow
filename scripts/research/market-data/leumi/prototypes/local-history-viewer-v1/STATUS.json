@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "8.3",
     "title": "Atomic successful-cycle transaction",
-    "status": "next"
+    "status": "browser-verification-pending"
   },
   "stages": [
     {
@@ -87,7 +87,7 @@
       "substeps": {
         "8.1": "complete-fast-ci-verified",
         "8.2": "complete-browser-ci-verified",
-        "8.3": "planned — atomic successful-cycle transaction",
+        "8.3": "implemented-browser-verification-pending",
         "8.4": "planned — recorder integration + persistence failure/rollback tests"
       }
     },

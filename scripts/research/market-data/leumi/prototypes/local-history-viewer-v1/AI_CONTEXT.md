@@ -133,6 +133,7 @@ storage/
   read.js
   write.js
   lifecycle-persistence.js
+  successful-cycle-persistence.js
   pure/
     persistence-records.js
 
@@ -161,6 +162,7 @@ tests/
     specs/mock-leumi-api.spec.js
     specs/recorder-stage-7.spec.js
     specs/persistence-lifecycle.spec.js
+    specs/successful-cycle-persistence.spec.js
 
 test tooling:
   package.json

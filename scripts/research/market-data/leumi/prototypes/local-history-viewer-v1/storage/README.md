@@ -18,6 +18,7 @@ Stage 8 next — persistence integration
 - `write.js` — generic readwrite helpers: put/add/deleteRecord/clear.
 - `pure/persistence-records.js` — deterministic Stage 8 record builders; no IndexedDB I/O.
 - `lifecycle-persistence.js` — Stage 8.2 atomic session/universe lifecycle transactions.
+- `successful-cycle-persistence.js` — Stage 8.3 atomic full-cycle transaction across cycles/history/latest/meta.
 
 ## Current boundary
 
@@ -150,3 +151,24 @@ Next persistence boundary:
 Stage 8.3 — one atomic successful-cycle transaction
 cycles + history + latest + meta
 ~~~
+
+
+## Stage 8.3 successful-cycle transaction
+
+~~~text
+commitSuccessfulCycle
+→ read and verify persisted recorderState ownership
+→ add cycles row and obtain autoIncrement cycleId
+→ add all history rows
+→ upsert all latest rows
+→ update recorderState
+→ one transaction commit
+~~~
+
+The transaction spans exactly:
+
+~~~text
+cycles + history + latest + meta
+~~~
+
+A request error aborts the whole transaction. No partial new cycle/latest/meta state is committed.
