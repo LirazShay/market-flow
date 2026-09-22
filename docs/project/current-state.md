@@ -163,7 +163,7 @@ scripts/research/market-data/leumi/tests/field-coverage/reports/2026-09-22-1451-
 - fields דינמיים בין שני endpoints אינם atomic snapshot משותף.
 - כל 561 records שנבדקו היו ItemType = Equity.
 
-## Long-running polling test — code ready
+## Long-running polling stability — verified 40-minute run
 
 קיים:
 
@@ -188,32 +188,31 @@ target snapshot cadence ≈ 3 sec
 
 ה-script כולל configurable timing, status counters, duration metrics, full-snapshot validation, missing/duplicate detection, stop after consecutive failures ו-manual report/stop.
 
----
-
-# Pending verification
-
-## Long-running polling stability
-
-עדיין צריך להריץ בפועל לאורך זמן ולתעד:
+Verified run:
 
 ~~~text
-runtime
-cycles
-HTTP status counts
-403/429/5xx
-failed cycles
-average request duration
-average cycle duration
-missing / duplicates
+Runtime:              40.03 minutes
+Cycles completed:     481
+Cycles failed:          0
+HTTP requests:        1447
+HTTP 200:             1447
+HTTP 403/429/5xx:        0
+Average request:       662 ms
+Average cycle:        4986 ms
+Latest snapshot:       561 securities
+Missing:                 0
+Duplicates:              0
 ~~~
 
-עד שתוצאות אלה נשמרות ב-repo:
+Report:
 
 ~~~text
-status = Pending
+scripts/research/market-data/leumi/tests/polling-stability/reports/2026-09-22-1555-polling-stability.md
 ~~~
 
-אין לטעון שהאתר הוכח כיציב ל-polling ממושך.
+Important:
+
+`SNAPSHOT_INTERVAL_MS=3000` הוא target. בפועל ה-full snapshot cadence שנמדד היה בערך 5 שניות כי ה-cycle הממוצע לקח 4986ms ואין overlapping cycles.
 
 ---
 
@@ -267,7 +266,7 @@ Data
 
 - exact 403 cause.
 - exact request-size limit.
-- long-run polling stability.
+- long-run polling stability beyond the verified 40-minute window.
 - site polling cadence in all states.
 - best production polling cadence.
 - order-book depth source for levels 2–5.
