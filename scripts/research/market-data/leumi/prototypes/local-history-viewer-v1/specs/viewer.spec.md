@@ -20,6 +20,7 @@ The viewer owns:
 - per-security history;
 - continuation/load-older;
 - diagnostics presentation;
+- explicit sanitized Debug Bundle export action;
 - BroadcastChannel-triggered DB reread;
 - manual DB-only refresh;
 - user-visible empty/error states;
@@ -145,6 +146,25 @@ DB read only
 
 It must never call the market-data provider.
 
+### Debug export
+
+The viewer header exposes:
+
+~~~text
+הורד קובץ Debug
+~~~
+
+The action delegates to the normal runtime Debug Bundle exporter.
+
+It:
+
+- does not start another recorder;
+- does not call the market-data provider;
+- downloads bounded sanitized JSON from already available runtime/IndexedDB evidence;
+- disables itself while one export is in progress;
+- reports the downloaded file name on success;
+- reports a non-blocking visible error status on failure.
+
 ## Invariants
 
 1. IndexedDB is the viewer data authority.
@@ -160,6 +180,7 @@ It must never call the market-data provider.
 11. UI error states are explicit; failed reads are not rendered as successful emptiness.
 12. Keyboard-visible focus and real interactive controls are preserved where defined.
 13. The viewer is a research display, not a trading recommendation engine.
+14. Debug export is observational and must not trigger provider collection or mutate persisted market state.
 
 ## Failure semantics
 
@@ -224,6 +245,7 @@ Browser behavior:
 ../tests/automation/specs/viewer-live-refresh.spec.js
 ../tests/automation/specs/viewer-recovery.spec.js
 ../tests/automation/specs/integrated-v1-e2e.spec.js
+../tests/automation/specs/debug-bundle.spec.js
 ~~~
 
 ## Change triggers
@@ -239,6 +261,7 @@ Review this spec whenever changing:
 - history query order/page size/continuation;
 - refresh behavior;
 - diagnostics;
+- Debug Bundle export UI/status behavior;
 - recovery;
 - accessibility baseline;
 - V1 UI scope.
@@ -250,4 +273,5 @@ Review this spec whenever changing:
 - `../viewer/`
 - `persistence.spec.md`
 - `messaging.spec.md`
+- `debug-bundle.spec.md`
 - `../tests/TESTING_POLICY.md`
