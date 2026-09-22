@@ -1131,20 +1131,55 @@ test(
             "503"
         );
 
-        const returnedScrollLeft =
+        const returnedViewport =
             await viewer.evaluate(
-                () =>
-                    document
-                        .querySelector(
+                async () => {
+                    await new Promise(
+                        resolve =>
+                            requestAnimationFrame(
+                                () =>
+                                    resolve()
+                            )
+                    );
+
+                    const panel =
+                        document.querySelector(
+                            "[data-role='current-market-panel']"
+                        );
+
+                    const wrapper =
+                        document.querySelector(
                             "[data-role='current-market-table-wrap']"
-                        )
-                        .scrollLeft
+                        );
+
+                    return {
+                        panelHidden:
+                            panel.hidden,
+                        panelWidth:
+                            panel
+                                .getBoundingClientRect()
+                                .width,
+                        scrollLeft:
+                            wrapper.scrollLeft,
+                        scrollWidth:
+                            wrapper.scrollWidth,
+                        clientWidth:
+                            wrapper.clientWidth,
+                        direction:
+                            getComputedStyle(
+                                wrapper
+                            ).direction
+                    };
+                }
             );
 
         expect(
-            returnedScrollLeft
-        ).toBe(
-            savedScrollLeft
-        );
+            returnedViewport
+        ).toMatchObject({
+            panelHidden:
+                false,
+            scrollLeft:
+                savedScrollLeft
+        });
     }
 );
