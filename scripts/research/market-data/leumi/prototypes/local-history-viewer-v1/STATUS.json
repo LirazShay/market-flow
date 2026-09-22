@@ -12,7 +12,7 @@
     "stage": "15",
     "substep": "15.2",
     "title": "Viewer diagnostics — recorder health derivation and presentation model",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -165,7 +165,7 @@
       "status": "in-progress",
       "substeps": {
         "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
-        "15.2": "planned — recorder health derivation + diagnostics presentation model",
+        "15.2": "in-progress — pure recorder-health semantics + diagnostics presentation model",
         "15.3": "planned — always-visible diagnostics UI + refresh integration",
         "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
       }
@@ -1008,8 +1008,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 15.1 is complete and verified. Stage 15 remains open; the next natural work is Stage 15.2 recorder-health derivation and presentation model.",
+    "reached": false,
+    "reason": "Stage 15.2 is in progress. Pure health/presentation contract will be tested before implementation.",
     "nextStage": "15",
     "nextSubstep": "15.2"
   },
