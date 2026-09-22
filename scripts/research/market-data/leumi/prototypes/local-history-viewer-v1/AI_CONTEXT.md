@@ -131,10 +131,14 @@ tests/
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
   storage-cleanup-reopen-self-test.js
+  fixtures/
+    leumi-api-fixtures.js
   automation/
     server.js
     harness.html
+    helpers/mock-leumi-api.js
     specs/harness-smoke.spec.js
+    specs/mock-leumi-api.spec.js
 
 test tooling:
   package.json

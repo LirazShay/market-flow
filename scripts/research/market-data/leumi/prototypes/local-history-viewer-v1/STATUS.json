@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "6.7",
     "title": "Mock API fixture infrastructure",
-    "status": "next"
+    "status": "ci-verification-pending"
   },
   "recommendedNaturalBatch": [
     {
@@ -75,7 +75,7 @@
         "6.4": "complete",
         "6.5": "complete",
         "6.6": "complete",
-        "6.7": "planned"
+        "6.7": "implemented-ci-verification-pending"
       }
     },
     {
@@ -166,7 +166,7 @@
     "storageSelfTests": "verified-in-github-actions",
     "playwrightHarness": "verified-in-github-actions",
     "githubActions": "verified-success",
-    "mockedApiInfrastructure": "not-started",
+    "mockedApiInfrastructure": "implemented-ci-verification-pending",
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 CI",

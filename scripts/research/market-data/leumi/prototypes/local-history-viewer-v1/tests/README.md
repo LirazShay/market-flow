@@ -293,3 +293,54 @@ During the first automated run, CI exposed a real bug in the existing Stage 6.3 
 That bug was fixed, then the full browser suite passed.
 
 Stage 6.1–6.3 are now verified automatically in real Chromium IndexedDB, not only implemented.
+
+
+---
+
+## Stage 6.7 — Mock API fixture infrastructure
+
+Files:
+
+~~~text
+fixtures/leumi-api-fixtures.js
+automation/helpers/mock-leumi-api.js
+automation/specs/mock-leumi-api.spec.js
+~~~
+
+The fixtures are synthetic and sanitized. They are not captured account/session data.
+
+The mock layer intercepts only the two expected relative endpoint paths:
+
+~~~text
+/lti/lti-app/api/MarketFast/MapHeat2
+/lti/lti-app/api/SecuritiesFast/GetSecuritiesData
+~~~
+
+Supported deterministic scenarios:
+
+~~~text
+success
+duplicatePaperId
+missingPaperId
+mapHeatHttpFailure
+invalidMapHeatStructure
+securitiesHttpFailure
+invalidSecuritiesStructure
+~~~
+
+The success fixture intentionally includes both `0` and `null` market values to protect their distinction.
+
+The Stage 6.7 Playwright suite verifies:
+
+- successful dynamic universe loading.
+- arbitrary chunk planning with a small fixture universe.
+- duplicate PaperId rejection.
+- missing PaperId rejection.
+- MapHeat2 HTTP failure.
+- invalid MapHeat2 structure.
+- GetSecuritiesData success fixture.
+- preservation of null vs zero.
+- GetSecuritiesData HTTP failure fixture.
+- invalid GetSecuritiesData structure fixture.
+
+No live Leumi API request is made by these tests.
