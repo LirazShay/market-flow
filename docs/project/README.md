@@ -2,43 +2,36 @@
 
 מסמכי context שחלים על כל Market Flow.
 
+## Start here
+
+~~~text
+AGENTS.md
+→ workstreams.md
+→ target workstream context/status
+~~~
+
 ## Files
 
-- `current-state.md` — milestones ומצב רוחבי של הפרויקט; לא pointer לכל micro-step.
-- `system-scope.md` — scope ארוך טווח ללא קיבוע architecture.
-- `decisions.md` — compact decision index.
-- `decisions/D-NNN.md` — התוכן המלא של כל החלטה.
-- `chat-map.md` — workstreams/chats.
-- `repository-structure.md` — מבנה התיקיות והאחריות של כל אזור.
-- `ai-engineering-guidelines.md` — כללים מפורטים שנקראים רק לפי צורך.
-- `chatgpt-project-instructions.md` — Project Instructions יציבים, מוכנים להדבקה ב-ChatGPT Project.
+- workstreams.md — routing table: מה קיים, מה פעיל ולאן נכנסים.
+- current-state.md — milestone snapshot רוחבי; לא pointer לכל micro-step.
+- system-scope.md — scope ארוך טווח ללא קיבוע architecture.
+- decisions.md — compact decision index.
+- decisions/D-NNN.md — החלטות durable מלאות.
+- repository-structure.md — מבנה התיקיות והאחריות של כל אזור.
+- ai-engineering-guidelines.md — כללים מפורטים שנקראים לפי צורך.
+- chat-map.md — compatibility pointer ל-workstreams.md; אינו source of truth נפרד.
 
-## AI navigation
-
-הכניסה המחייבת היא:
+## Status ownership
 
 ~~~text
-AGENTS.md
+project-level active workstream routing
+→ workstreams.md
+
+exact workstream progress
+→ workstream/STATUS.json
+
+workstream technical context
+→ workstream/AI_CONTEXT.md
 ~~~
 
-ב-workstream פעיל עם fast context:
-
-~~~text
-AGENTS.md
-→ AI_CONTEXT.md
-→ STATUS.json
-→ target files
-→ relevant tests
-~~~
-
-אין חובה לקרוא את `current-state.md` או את כל ההחלטות לפני כל שינוי קטן.
-
-כאשר נדרשת החלטה קיימת:
-
-~~~text
-decisions.md
-→ identify relevant ID/tag
-→ decisions/D-NNN.md
-~~~
-
-קוראים context רחב רק כאשר המשימה משנה architecture/schema/decision, עוברת workstream, מזהה סתירה או דורשת evidence נוסף.
+אין לשכפל micro-status במסמכי project כלליים.

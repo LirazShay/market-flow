@@ -1,97 +1,88 @@
 # Handoff — Local History Viewer V1
 
-This file is a compact boundary summary for a fresh chat/agent. It is not the operational status source.
+Use this when entering this workstream in a fresh chat.
 
-Copy-ready prompt for the next development chat:
-
-~~~text
-NEXT_CHAT_PROMPT.md
-~~~
-
-Authoritative progress:
-
-~~~text
-STATUS.json
-~~~
-
-Complete plan:
-
-~~~text
-ROADMAP.md
-~~~
+It is not the operational status source; STATUS.json is authoritative.
 
 ## Current boundary
 
 ~~~text
-Stages 1–7 complete
-Stage 7 browser checkpoint green
-Stage 8 persistence integration next
+Stages 1–12 complete
+Next: Stage 13 — Dynamic sorting
 ~~~
 
-Latest verified checkpoints:
+Latest verified checkpoint:
 
 ~~~text
 Fast CI
-Run 35744733541
-104 passed / 0 failed
+Run 35756792160
+136 passed / 0 failed
 
-Browser CI
-Run 35744806678
-13 passed / 0 failed
+Viewer Checkpoint C
+Run 35756990977
+34 Chromium tests passed / 0 failed
 ~~~
 
-## Stage 8 reading order
+Verified viewer foundation:
 
 ~~~text
+same-origin viewer
+→ IndexedDB current table
+→ BroadcastChannel notification
+→ IndexedDB reread
+→ manual refresh fallback
+~~~
+
+## Read in this order
+
+~~~text
+/AGENTS.md
 AI_CONTEXT.md
 STATUS.json
-ROADMAP.md — Stage 8 only
-docs/data-model.md — stores + transaction boundaries
-docs/architecture.md — write/success boundary
-storage/README.md
-storage/schema.js
-storage/connection.js
-storage/write.js
-recorder/pure/recorder-loop-logic.js
-recorder/recorder-loop.js
-tests/TESTING_POLICY.md
-relevant tests
+ROADMAP.md          # Stage 13 section
+docs/viewer-ux.md   # sorting behavior
+viewer/pure/current-table-logic.js
+viewer/current-table.js
+relevant unit/browser tests
 ~~~
 
-## Stage 8 scope
+Do not reconstruct current state from old chat history.
+
+## Next implementation: Stage 13
 
 ~~~text
-8.1 persistence record builders/contracts
-8.2 session + universe persistence
-8.3 atomic successful-cycle transaction
-8.4 recorder integration + rollback/failure tests
+Dynamic sorting
+- clickable headers
+- single-column sort
+- numeric/time first click DESC
+- string first click ASC
+- toggle ASC/DESC
+- deterministic null-safe sorting
+- equal values → paperName ASC tie-breaker
+- visual indicator ▲ / ▼
 ~~~
 
-## Critical traps
-
-1. Do not hardcode 561 or exactly three chunks.
-2. Preserve canonical `securityId = String(...)`.
-3. Preserve raw GetSecuritiesData Security fields.
-4. Preserve raw MapHeat record in universe storage.
-5. Preserve `null != 0 != ""`.
-6. Do not compose single-store write helpers to simulate atomicity.
-7. Successful cycle persistence must use one transaction across:
+Default V1 sort:
 
 ~~~text
-cycles + history + latest + meta
+DailyDealsQuantity DESC
+tie-breaker: paperName ASC
 ~~~
 
-8. Recorder completed/latest in-memory state must advance only after DB commit succeeds.
-9. Failed API/validation/DB commit must not partially update latest/history.
-10. Browser CI is required at the end of Stage 8 because IndexedDB transaction semantics are part of the contract.
+This is a UX default, not a trading recommendation.
 
-## Testing rule
+## Invariants to preserve
 
-~~~text
-tests/behavior first where practical
-→ implementation
-→ Fast CI
-→ Stage 8 Browser CI checkpoint
-~~~
+- IndexedDB remains source of truth.
+- BroadcastChannel carries notifications, not market row payloads.
+- null != 0 != "" internally.
+- display: null/undefined/empty → —, zero → 0.
+- never hardcode universe size 561.
+- current-table rows must not be dropped because universe metadata is missing.
+- tests protect behavior, not private implementation details.
 
-Tests should protect observable contracts, not private implementation details.
+## Verification rule
+
+Stage 13 should use fast deterministic tests for sorting logic.
+
+The next planned Chromium checkpoint is after Stages 14–15 unless a real browser-only regression justifies the early-browser exception.

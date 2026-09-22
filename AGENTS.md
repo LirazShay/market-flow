@@ -8,6 +8,32 @@ The repository is the source of truth.
 
 ---
 
+## 0. Fresh-chat entry point
+
+When a chat starts without enough current context, do not guess which part of Market Flow is active.
+
+Use:
+
+~~~text
+AGENTS.md
+→ docs/project/workstreams.md
+→ target workstream AI_CONTEXT.md
+→ target workstream STATUS.json
+→ HANDOFF.md if present/relevant
+→ target files
+→ relevant tests
+~~~
+
+If the user names a concrete workstream/path, you may go directly to that workstream after reading this file.
+
+For "continue the project" with no more detail, docs/project/workstreams.md is the project-wide routing table.
+
+The workstream-local STATUS.json is authoritative for the exact next implementation pointer.
+
+Do not hardcode the currently active workstream into project-wide operating rules.
+
+---
+
 ## 1. Choose the correct context depth
 
 ### Normal continuation inside an existing workstream

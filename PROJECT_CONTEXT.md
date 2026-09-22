@@ -1,22 +1,6 @@
 # PROJECT_CONTEXT.md — Market Flow
 
-זהו מסמך הכניסה הראשי לכל AI, agent או מפתח שמגיע לפרויקט.
-
-נקודת הכניסה היא:
-
-1. `AGENTS.md`
-2. אם ממשיכים workstream פעיל שיש בו `AI_CONTEXT.md` ו-`STATUS.json` — קוראים אותם ואת הקבצים הרלוונטיים בלבד.
-3. רק כאשר צריך context רוחבי/ארכיטקטוני/היסטורי — קוראים את `PROJECT_CONTEXT.md`, `docs/project/current-state.md` והתיעוד הרחב הרלוונטי.
-
-ה-repository הוא ה-source of truth. אין להניח שזיכרון מצ'אט קודם מעודכן יותר מהתיעוד שב-Git.
-
----
-
-## מהו Market Flow
-
-Market Flow הוא פרויקט שמטרתו לבנות בהדרגה מערכת מלאה לעבודה עם נתוני שוק ומסחר.
-
-הכוונה ארוכת הטווח היא לכסות את ה-flow הבא:
+Market Flow הוא פרויקט רחב שנבנה בהדרגה סביב flow עתידי של:
 
 ~~~text
 Market Data
@@ -30,174 +14,100 @@ Market Data
 → UI / Monitoring
 ~~~
 
-חשוב: זוהי מפת scope, לא טענה שכל הרכיבים כבר קיימים.
+זו מפת scope ארוכת טווח, לא טענה שכל הרכיבים כבר קיימים.
 
----
+## Source of truth
 
-## עקרון הפיתוח
-
-הפרויקט נבנה בהדרגה ביחידות עבודה קוהרנטיות וניתנות לאימות.
-
-היקף יחידת העבודה נקבע לפי boundary הנדסי/בדיקתי אמיתי. גם כאשר המשתמש כותב `תמשיך לשלב הבא`, אין חובה לסיים stage שלם באותה הודעה; ממשיכים אל העבודה המתוכננת הבאה ועוצרים בנקודת implementation + verification טבעית, תוך שמירה על `STATUS.json` מדויק.
-
----
-
-## מצב נוכחי
-
-השלב הראשון של הפרויקט עוסק ב:
-
-~~~text
-01 – Market Data / Leumi API Research
-~~~
-
-בשלב זה נחקרו ונבדקו קריאות market data מתוך אתר לאומי.
-
-הוכח בפועל:
-
-- MapHeat2 מספק universe/metadata של ניירות.
-- GetSecuritiesData מספק detailed/live-like market snapshot עבור רשימת IDs.
-- MapHeat2.PaperId == GetSecuritiesData.Key הוא join key שנבדק ב-561/561.
-- ניתן לקבל 561 ניירות מ-MapHeat2.
-- ניתן לקבל את כל 561 הרשומות מ-GetSecuritiesData ב-3 batches של 187.
-- בוצע field coverage מלא על 561 הרשומות.
-- נבנה browser proof-of-concept שמציג את כל הנתונים בטבלה.
-- נבנה long-running polling test ונבדקה בפועל ריצה של 40.03 דקות: 481 cycles הושלמו, 0 נכשלו.
-
-לפרטים מלאים:
-
-~~~text
-docs/leumi-api/
-~~~
-
-
-Workstream פעיל נוסף בתוך Phase 01:
-
-~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
-~~~
-
-ה-Local History Viewer V1 כבר נמצא ב-implementation. Stage 7 recorder הושלם ואומת; Stage 8 — persistence integration — הוא השלב הבא. IndexedDB schema/foundation קיים, אך atomic full-cycle persistence עדיין לא מחובר ל-recorder.
-
-להמשך מהיר של workstream זה:
-
-~~~text
-AI_CONTEXT.md
-STATUS.json
-~~~
-
----
-
-## מה עדיין לא נבנה
-
-נכון לעכשיו אין production implementation של:
-
-- collector מתמשך.
-- production database/persistence.
-- production historical time-series store.
-- production scanner.
-- momentum ranking engine.
-- signal engine.
-- buy/sell execution engine.
-- order management.
-- position management.
-- production UI.
-- monitoring/alerting production stack.
-
-אין להניח שאחד מהרכיבים האלה קיים רק בגלל שהוא נמצא ב-scope העתידי.
-
----
-
-## מבנה ידע מרכזי
+לצ'אט/agent חדש:
 
 ~~~text
 AGENTS.md
-    כללי העבודה הקבועים
-
-PROJECT_CONTEXT.md
-    הקשר עליון לפרויקט
-
-docs/project/
-    מצב הפרויקט, scope, decisions, חלוקת chats
-
-docs/leumi-api/
-    כל המחקר וה-evidence על Leumi market APIs
-
-scripts/research/market-data/leumi/
-    browser probes / PoCs / test scripts
+→ docs/project/workstreams.md
+→ workstream-local AI_CONTEXT.md
+→ workstream-local STATUS.json
+→ target files/tests
 ~~~
 
----
+אין להסתמך על זיכרון מצ'אט קודם כאשר ה-repository יכול לענות.
 
-## מסמכי project
+## Workstreams
 
-- docs/project/current-state.md — מה קיים עכשיו ומה עדיין Pending.
-- docs/project/system-scope.md — גבולות המערכת וה-flow העתידי ברמה גבוהה.
-- docs/project/decisions.md — החלטות שכבר התקבלו והסיבות להן.
-- docs/project/chat-map.md — חלוקת העבודה בין chats/streams.
-- docs/project/repository-structure.md — איפה כל סוג קוד/בדיקה/תיעוד צריך לחיות.
+הרשימה והסטטוס הרוחבי של workstreams נמצאים ב:
 
----
+~~~text
+docs/project/workstreams.md
+~~~
 
-## Source of truth לפי נושא
+מצב micro-stage של workstream אינו נשמר במסמך הזה; הוא נשמר ב-STATUS.json המקומי שלו.
 
-כללי עבודה:
+## המצב הנוכחי ברמה גבוהה
+
+Phase 01 עוסק ב-Market Data / Leumi API Research.
+
+מחקר ה-foundation כבר הוכיח, בין היתר:
+
+- MapHeat2 כ-universe/metadata source.
+- GetSecuritiesData כ-detailed market snapshot source.
+- join מאומת: MapHeat2.PaperId == GetSecuritiesData.Key.
+- snapshot שנבדק עם 561 securities.
+- full collection שנבדק באמצעות 3 × 187 באותו snapshot.
+- field coverage.
+- long-running polling test של 40.03 דקות: 481 completed cycles, 0 failed cycles.
+
+אלו point-in-time observations, לא provider contracts קבועים.
+
+ה-workstream הפעיל כרגע הוא Local History Viewer V1, אך הוא רק חלק מ-Market Flow ולא הגדרת הפרויקט כולו.
+
+## מה עדיין future scope
+
+Production workstreams עתידיים כוללים בין היתר:
+
+~~~text
+collector
+production storage/history
+scanner/ranking
+analysis/signals
+execution
+order/position management
+production UI/monitoring
+~~~
+
+אין להניח שהם קיימים רק משום שהם ב-scope.
+
+## Technology discipline
+
+לא נבחר stack סופי לכל המערכת.
+
+קוד JavaScript/IndexedDB/Playwright הנוכחי הוא research/prototype implementation של workstream מסוים, לא הכרעה על stack production עתידי.
+
+Durable technology/architecture decisions נכנסים ל:
+
+~~~text
+docs/project/decisions.md
+docs/project/decisions/D-NNN.md
+~~~
+
+## Documentation ownership
+
+~~~text
 AGENTS.md
+    universal working rules
 
-מצב הפרויקט:
+docs/project/workstreams.md
+    project-wide routing / active workstreams
+
 docs/project/current-state.md
+    project-level milestone snapshot
 
-Leumi market data:
-docs/leumi-api/
+workstream/AI_CONTEXT.md
+    compact technical continuation context
 
-API field semantics / availability:
-docs/leumi-api/fields/field-reference-he.md
-docs/leumi-api/fields/field-availability.md
+workstream/STATUS.json
+    exact current pointer
 
-Verified tests:
-scripts/research/market-data/leumi/collection/README.md
-scripts/research/market-data/leumi/tests/field-coverage/reports/
+workstream/ROADMAP.md
+    plan/order/scope
 
-Browser research scripts:
-scripts/research/market-data/leumi/
-
-Project-level ChatGPT instructions:
-docs/project/chatgpt-project-instructions.md
-
----
-
-## כלל חשוב ל-AI חדש
-
-אם המשתמש מבקש להמשיך עבודה קיימת:
-
-1. קרא את ה-repo לפני שאתה שואל שאלות שכבר נענו בו.
-2. אל תמציא architecture, technology או business rule שלא הוחלטו.
-3. אל תבצע refactor רחב של script שעובד בלי צורך.
-4. כאשר נלמד משהו חדש — תעד אותו ב-repo באותו שלב.
-5. כאשר משהו לא הוכח — סמן אותו Unknown או Inferred.
-6. בצ'אט חדש שנפתח בגבול workstream/stage, אם קיים `HANDOFF.md` מקומי — קרא אותו אחרי `AI_CONTEXT.md` ו-`STATUS.json`.
-
----
-
-## Technology decisions
-
-נכון לעכשיו לא נבחר stack סופי למערכת המלאה.
-
-אין להניח Node, C#, SQL, NoSQL, Redis, React, Angular או כל stack אחר עד שתתקבל החלטה מפורשת ותירשם ב-docs/project/decisions.md.
-
-קוד JavaScript הקיים כרגע הוא browser research code, לא הכרעה על stack עתידי.
-
----
-
-## Naming
-
-שם הפרויקט:
-
-~~~text
-Market Flow
-~~~
-
-שם מומלץ לצ'אט/stream הראשון:
-
-~~~text
-01 – Market Data / Leumi API Research
+workstream/HANDOFF.md
+    fresh-chat boundary summary when useful
 ~~~

@@ -1,19 +1,35 @@
 # Local History Viewer V1
 
-Browser-only research prototype שמקליט snapshots של Leumi market data ל-IndexedDB ומציג current + historical data באותו origin.
+Browser-only research prototype inside Market Flow.
+
+It is the currently active workstream, not the entire Market Flow project.
 
 ## 30-second orientation
 
-| שאלה | קובץ |
+| Question | File |
 |---|---|
-| מהם כל השלבים? | [ROADMAP.md](ROADMAP.md) |
-| איפה אנחנו עכשיו? | [STATUS.json](STATUS.json) |
-| מה AI צריך לדעת כדי להמשיך? | [AI_CONTEXT.md](AI_CONTEXT.md) |
-| מה צריך לקרוא בצ'אט/agent חדש? | [HANDOFF.md](HANDOFF.md) |
-| מה להדביק כהודעה ראשונה בצ'אט הפיתוח הבא? | [NEXT_CHAT_PROMPT.md](NEXT_CHAT_PROMPT.md) |
-| מה הארכיטקטורה וה-data model? | [docs/](docs/README.md) |
-| איך הטסטים עובדים? | [tests/README.md](tests/README.md) |
-| מה מדיניות ה-CI/checkpoints? | [tests/TESTING_POLICY.md](tests/TESTING_POLICY.md) |
+| exact current/next stage | STATUS.json |
+| compact technical context | AI_CONTEXT.md |
+| full V1 plan/order | ROADMAP.md |
+| fresh-chat boundary | HANDOFF.md |
+| durable V1 design | docs/ |
+| testing / CI policy | tests/TESTING_POLICY.md |
+
+## Current milestone
+
+~~~text
+Stages 1–12 complete
+Next: Stage 13 — Dynamic sorting
+~~~
+
+Latest verification:
+
+~~~text
+Fast CI: 136 passed / 0 failed
+Viewer Checkpoint C: 34 Chromium passed / 0 failed
+~~~
+
+Always trust STATUS.json over this milestone text if development has advanced.
 
 ## Folder map
 
@@ -24,39 +40,13 @@ local-history-viewer-v1/
 ├── STATUS.json
 ├── AI_CONTEXT.md
 ├── HANDOFF.md
-├── NEXT_CHAT_PROMPT.md
 │
-├── docs/
-│   ├── README.md
-│   ├── requirements.md
-│   ├── architecture.md
-│   ├── data-model.md
-│   ├── viewer-ux.md
-│   ├── test-plan.md
-│   └── history/
-│       └── testing-refactor/
-│
-├── recorder/
-│   ├── README.md
-│   ├── pure/
-│   └── browser adapters / loop
-│
-├── storage/
-│   ├── README.md
-│   └── IndexedDB modules
-│
-├── viewer/
-│   ├── README.md
-│   ├── bootstrap.js
-│   └── pure/
-│       └── viewer-state.js
-│
-└── tests/
-    ├── README.md
-    ├── TESTING_POLICY.md
-    ├── unit/
-    ├── automation/
-    └── fixtures/
+├── docs/          stable V1 design
+├── recorder/      market-data recorder
+├── storage/       IndexedDB persistence
+├── messaging/     BroadcastChannel notification
+├── viewer/        same-origin viewer
+└── tests/         unit + Playwright + policy
 ~~~
 
 ## V1 flow
@@ -64,17 +54,12 @@ local-history-viewer-v1/
 ~~~text
 MapHeat2
 → dynamic universe
-→ GetSecuritiesData sequential chunks
-→ validated complete cycle
-→ IndexedDB
-   ├── sessions
-   ├── universe
-   ├── cycles
-   ├── latest
-   ├── history
-   └── meta
-→ BroadcastChannel notification
-→ same-origin viewer
+→ sequential GetSecuritiesData chunks
+→ validated cycle
+→ atomic IndexedDB persistence
+→ metadata-only BroadcastChannel notification
+→ viewer re-reads IndexedDB
+→ current/history UI
 ~~~
 
 ## Stable V1 boundaries
@@ -84,47 +69,40 @@ V1 includes:
 - dynamic universe; never hardcode 561.
 - sequential collection baseline.
 - complete-cycle validation.
-- local IndexedDB history.
-- latest row per security.
+- IndexedDB local history.
 - same-origin viewer.
-- sorting and per-security history.
-- basic diagnostics.
+- current table, sorting and per-security history.
+- recorder/viewer diagnostics.
 - tests-first development with Fast CI + sparse Chromium checkpoints.
 
 V1 intentionally excludes:
 
-- server / external DB.
+- server/external DB.
 - production architecture.
-- execution/trading.
+- execution.
 - advanced charts.
 - filtering.
 - derived momentum metrics.
 - automatic retention.
 
-## Source-of-truth rules
+## Source-of-truth ownership
 
 ~~~text
-ROADMAP.md
-    scope / order / stage definitions
-
 STATUS.json
-    current / next / completed / verification state
+    exact progress
+
+ROADMAP.md
+    stage definitions/order
 
 AI_CONTEXT.md
-    compact continuation context
+    compact technical continuation
+
+HANDOFF.md
+    current fresh-chat boundary
 
 docs/
-    durable V1 design
+    durable design
 
 tests/TESTING_POLICY.md
-    durable test/checkpoint policy
+    verification policy
 ~~~
-
-Do not duplicate operational status into design documents.
-
-## Browser constraint
-
-IndexedDB ו-BroadcastChannel הם origin-scoped.
-
-Recorder ו-viewer חייבים לרוץ באותו Leumi origin ב-V1. Localhost viewer לא יכול להניח גישה ל-IndexedDB של Leumi origin.
-

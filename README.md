@@ -1,21 +1,59 @@
 # Market Flow
 
-Market Flow הוא repository מחקר ופיתוח למערכת market-data רחבה יותר.
+Market Flow הוא repository רחב למחקר ופיתוח של מערכת market-data / analysis / trading infrastructure.
 
-## Start here
+ה-repository אינו שייך ל-workstream אחד. כרגע יש workstream פעיל אחד משמעותי, ובהמשך יתווספו אחרים.
 
-אם נכנסת ל-repository בפעם הראשונה, אל תנסה לקרוא הכול.
+## כניסה מהירה
 
-| אני רוצה... | לך לכאן |
+אם נכנסת בפעם הראשונה:
+
+~~~text
+README.md
+→ AGENTS.md
+→ docs/project/workstreams.md
+→ workstream מקומי
+   ├── AI_CONTEXT.md
+   ├── STATUS.json
+   ├── HANDOFF.md   # אם קיים ורלוונטי
+   └── files/tests הרלוונטיים
+~~~
+
+### איפה נמצא מה?
+
+| צורך | קובץ |
 |---|---|
-| להמשיך את הפיתוח הפעיל | [Local History Viewer V1](scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/README.md) |
-| לראות את כל שלבי V1 | [V1 ROADMAP](scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/ROADMAP.md) |
-| לדעת בדיוק איפה הפיתוח עומד עכשיו | [V1 STATUS](scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json) |
-| להבין את מחקר Leumi API | [Leumi API docs](docs/leumi-api/README.md) |
-| להבין את מצב הפרויקט כולו | [Current State](docs/project/current-state.md) |
-| לראות החלטות ארכיטקטוניות | [Decision Index](docs/project/decisions.md) |
-| להבין איך repository מסודר | [Repository Structure](docs/project/repository-structure.md) |
-| לעבוד כ-AI/agent | [AGENTS.md](AGENTS.md) |
+| כללי עבודה קבועים ל-AI/agent | AGENTS.md |
+| מטרת Market Flow וה-scope הכללי | PROJECT_CONTEXT.md |
+| איזה workstreams קיימים ומה פעיל | docs/project/workstreams.md |
+| מצב רוחבי של הפרויקט | docs/project/current-state.md |
+| החלטות durable | docs/project/decisions.md |
+| מבנה repository | docs/project/repository-structure.md |
+| Leumi market-data evidence | docs/leumi-api/README.md |
+
+## Workstream פעיל כרגע
+
+כרגע הפיתוח הפעיל נמצא ב:
+
+~~~text
+01A — Local History Viewer V1
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
+~~~
+
+ה-pointer המדויק תמיד נמצא ב:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
+~~~
+
+נכון לעדכון האחרון:
+
+~~~text
+Stages 1–12 complete
+Next: Stage 13 — Dynamic sorting
+~~~
+
+אל תשתמש ב-README הראשי כמקור אמת ל-micro-status; הוא רק דלת כניסה.
 
 ## Repository map
 
@@ -26,65 +64,22 @@ market-flow/
 ├── PROJECT_CONTEXT.md
 │
 ├── docs/
-│   ├── project/          cross-project context / decisions / structure
-│   └── leumi-api/        durable Leumi API knowledge/evidence
+│   ├── project/          project-wide context / workstreams / decisions
+│   └── leumi-api/        durable Leumi market-data knowledge
 │
 ├── scripts/
-│   └── research/
-│       └── market-data/
-│           └── leumi/
-│               ├── capture/
-│               ├── collection/
-│               ├── demos/
-│               ├── tests/
-│               └── prototypes/
-│                   └── local-history-viewer-v1/   ← active implementation
+│   └── research/         research / prototypes / evidence
 │
-├── src/                  reserved for future production code
-└── tests/                reserved for future production tests
+├── src/                  future production code
+└── tests/                future production tests
 ~~~
 
-## Active development
+## כללי יסוד
 
-ה-workstream הפעיל הוא:
-
-~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
-~~~
-
-בתוך התיקייה הזו יש חלוקה ברורה:
-
-~~~text
-README.md       front door / navigation
-ROADMAP.md      all V1 stages and order
-STATUS.json     authoritative current progress
-AI_CONTEXT.md   compact AI continuation context
-HANDOFF.md      optional fresh-chat handoff
-
-docs/           stable V1 design documents
-recorder/       recorder implementation
-storage/        IndexedDB implementation
-tests/          executable tests + testing policy
-~~~
-
-## Verified Leumi foundation
-
-המחקר עד כה הוכיח, בנקודת הזמן שנבדקה:
-
-- MapHeat2 סיפק universe של 561 ניירות.
-- GetSecuritiesData סיפק full coverage ב-3 batches של 187 באותו snapshot שנבדק.
-- `MapHeat2.PaperId == GetSecuritiesData.Key` נבדק ב-561/561.
-- field coverage נמדד.
-- polling stability נבדק במשך 40.03 דקות: 481 cycles הושלמו, 0 נכשלו.
-
-אלה observations שנבדקו, לא API contracts קבועים. אין hardcode ל-561.
-
-## Project rules
-
-- repository הוא source of truth.
-- operational progress נמצא ב-`STATUS.json`, לא ב-ROADMAP.
-- unknown API behavior נשאר `Unknown` ולא הופך להנחה.
-- `null != 0 != ""`.
+- GitHub repository הוא ה-source of truth, לא היסטוריית chat.
+- כל workstream משמעותי מחזיק context/status מקומי משלו.
+- STATUS.json = operational pointer.
+- ROADMAP.md = plan/order, לא live status.
 - research code אינו production code.
-- secrets/session data לא נכנסים ל-repository.
-
+- אין לבחור production stack בלי decision מפורש.
+- אין להכניס secrets/session/account data ל-repository הציבורי.

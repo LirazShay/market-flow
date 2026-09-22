@@ -2,43 +2,22 @@
 
 Updated: 2026-09-22
 
-This is the fast context entry point for AI work on this workstream.
+This is the fast technical entry point for this workstream.
 
-## Fast continuation rule
-
-For a normal continuation inside this workstream, read only:
-
-1. `AI_CONTEXT.md`
-2. `STATUS.json`
-3. the files being changed
-4. the directly relevant tests
-
-At a fresh-chat boundary also read:
+## Read order
 
 ~~~text
-HANDOFF.md
+AI_CONTEXT.md
+→ STATUS.json
+→ target files
+→ directly relevant tests
 ~~~
 
-Read the wider project documentation only when:
-- entering a different workstream;
-- changing architecture, schema, or a durable decision;
-- a conflict or stale status is detected;
-- API evidence must be re-verified.
+In a fresh chat also read HANDOFF.md.
 
-## Operational status
+STATUS.json is the only authoritative source for exact current/next progress.
 
-`STATUS.json` is the **only authoritative source for current progress, current stage and next stage**.
-
-Do not infer operational status from `ROADMAP.md`.
-
-~~~text
-STATUS.json = current / next / completed / pending
-ROADMAP.md  = scope / order / stage definitions
-~~~
-
-The roadmap is intentionally status-free to prevent drift.
-
-## V1 architecture
+## Architecture
 
 ~~~text
 Leumi browser tab
@@ -51,27 +30,26 @@ Leumi browser tab
    ├── cycles
    ├── latest
    └── history
-→ BroadcastChannel notification
-→ same-origin Viewer tab
+→ BroadcastChannel metadata notification
+→ same-origin Viewer
+→ viewer re-reads IndexedDB
 ~~~
 
-V1 is browser-only.
-
-No server. No external database. No filtering in V1.
+V1 is browser-only. No server/external DB.
 
 ## Critical invariants
 
 ### API/data
 
-- Never hardcode universe size 561.
-- `MapHeat2.PaperId == GetSecuritiesData.Key` is the verified join.
-- Canonical `securityId = String(PaperId or Key)`.
-- Conservative verified batching baseline: 187.
-- Chunk requests remain sequential until evidence supports otherwise.
-- `null`, `0`, and `""` are distinct.
-- Preserve the full GetSecuritiesData Security object in `data`.
-- Preserve the full MapHeat record in `universe.rawMapHeat`.
-- MapHeat2 and GetSecuritiesData are not one atomic shared snapshot.
+- never hardcode universe size 561;
+- verified join: MapHeat2.PaperId == GetSecuritiesData.Key;
+- canonical securityId = String(PaperId or Key);
+- conservative verified chunk baseline = 187, configurable;
+- sequential chunk requests until evidence supports otherwise;
+- null, 0, "" are distinct;
+- preserve full raw Security in history/latest;
+- preserve full raw MapHeat in universe;
+- MapHeat2 + GetSecuritiesData are not one atomic shared snapshot.
 
 ### Persistence
 
@@ -82,288 +60,121 @@ market-flow-leumi-history-v1
 version 1
 ~~~
 
-History primary key:
-
-~~~text
-[cycleId, securityId]
-~~~
-
-Successful full-cycle persistence must be atomic across:
+Successful cycle is atomic across:
 
 ~~~text
 cycles + history + latest + meta
 ~~~
 
-If that transaction fails:
-- no partial history rows;
-- no partially updated latest snapshot;
-- no complete cycle becomes visible.
+DB commit succeeds before recorder exposes completed/latest in memory.
 
-Failed API/validation cycles must not update `latest` or `history`.
+Failed API/validation/DB work never partially updates history/latest.
 
-IndexedDB is source of truth. BroadcastChannel is notification only.
+### Viewer/messaging
 
-### Time
+- IndexedDB is source of truth.
+- BroadcastChannel is notification-only.
+- viewer is same-origin.
+- manual DB-only refresh remains fallback.
+- current table joins latest + universe by securityId.
+- missing universe metadata must not drop a latest row.
 
-Use numeric epoch milliseconds for our indexed/query timestamps.
+## Current milestone
 
-Do not invent a separate timestamp per security inside one API chunk.
+~~~text
+Stages 1–12 complete
+Next: Stage 13 — Dynamic sorting
+~~~
 
-## Verified evidence carried forward
+Latest verification:
 
-- MapHeat2 snapshot observed with 561 records.
-- Full GetSecuritiesData collection verified using 3 × 187 for that snapshot.
-- Join verified 561/561.
-- 40-minute polling run:
-  - 481 completed cycles
-  - 0 failed cycles
-  - 1447 HTTP 200 responses
-  - average full cycle ≈ 4986 ms
-- 3000 ms snapshot interval is a target cadence, not a guarantee.
+~~~text
+Fast CI
+Run 35756792160
+136 passed / 0 failed
 
-These are point-in-time observations, not API contracts.
+Viewer Checkpoint C
+Run 35756990977
+34 Chromium tests passed / 0 failed
+~~~
 
 ## Current implementation map
 
 ~~~text
-storage/
-  schema.js
-  connection.js
-  upgrade.js
-  read.js
-  write.js
-  lifecycle-persistence.js
-  successful-cycle-persistence.js
-  recorder-diagnostics-persistence.js
+recorder/
   pure/
-    persistence-records.js
+  browser adapters + loop + diagnostics
+
+storage/
+  schema/read/write
+  lifecycle persistence
+  successful-cycle persistence
+  diagnostics persistence
+  pure record builders
+
+messaging/
+  channel.js
+  pure/channel-message-logic.js
+
+viewer/
+  bootstrap.js
+  current-table.js
+  live-refresh.js
+  pure/
+    viewer-state.js
+    current-table-logic.js
 
 tests/
   unit/
-    run-unit-tests.js
-    harness-smoke.test.js
-    pure-module-smoke.test.js
-    config-logic.test.js
-    universe-logic.test.js
-    securities-chunk-logic.test.js
-    cycle-logic.test.js
-    recorder-loop-logic.test.js
-    persistence-records.test.js
-    leumi-api-fixtures.test.js
-  storage-schema-self-test.js
-  storage-fixture-roundtrip-self-test.js
-  storage-cleanup-reopen-self-test.js
-  fixtures/
-    leumi-api-fixtures.js
   automation/
-    server.js
-    harness.html
-    helpers/mock-leumi-api.js
-    specs/harness-smoke.spec.js
-    specs/mock-leumi-api.spec.js
-    specs/recorder-stage-7.spec.js
-    specs/persistence-lifecycle.spec.js
-    specs/successful-cycle-persistence.spec.js
-    specs/recorder-persistence-integration.spec.js
-    specs/recorder-diagnostics.spec.js
-
-test tooling:
-  package.json
-  playwright.config.js
-
-CI:
-  .github/workflows/local-history-viewer-v1-fast-ci.yml
-    automatic fast unit tests
-  .github/workflows/local-history-viewer-v1-ci.yml
-    manual/reusable Chromium checkpoint
-
-recorder/
-  pure/
-    config-logic.js
-    universe-logic.js
-    securities-chunk-logic.js
-    cycle-logic.js
-    recorder-loop-logic.js
-    diagnostics-logic.js
-  config.js
-  universe-loader.js
-  securities-chunk-fetcher.js
-  cycle-builder.js
-  recorder-loop.js
-  diagnostics.js
+  fixtures/
+  TESTING_POLICY.md
 ~~~
 
-## Current development boundary
+## Next working set — Stage 13
 
-Stage 7 recorder skeleton is complete and browser-verified.
-
-Current work:
+Read:
 
 ~~~text
-Stage 8 — Persistence integration COMPLETE + Chromium checkpoint verified
-
-Verified:
-- 8.1 persistence record builders/contracts
-- 8.2 session + universe persistence
-- 8.3 atomic successful-cycle transaction
-- 8.4 recorder integration + failure/rollback behavior
-
-Stage 9 — Recorder diagnostics COMPLETE + Fast/Chromium verified
-
-Verified:
-- failed-cycle records + counters
-- heartbeat
-- storage estimate / diagnostics API
-
-Stage 10 — Viewer bootstrap COMPLETE + Fast/Chromium verified
-
-Verified:
-- named same-origin about:blank child viewer
-- Hebrew / RTL shell
-- BOOTING viewer state
-- shared IndexedDB origin access
-- duplicate viewer tabs avoided
-
-Stage 11 — Current table from IndexedDB COMPLETE + Fast CI verified
-
-Verified in fast tests:
-- latest + universe join
-- 16-column V1 current-table model
-- zero/null/empty display contract
-- MAIN/EMPTY model inputs
-- duplicate/corrupt ID rejection
-
-Browser spec is implemented but intentionally deferred to Checkpoint C after Stage 12.
-
-Stages 10–12 viewer live-refresh foundation COMPLETE + Chromium Checkpoint C verified
-
-Verified:
-- same-origin viewer bootstrap
-- IndexedDB current table
-- BroadcastChannel metadata-only notifications
-- CYCLE_COMMITTED → IndexedDB reread
-- manual DB-only refresh
-- degraded fallback when BroadcastChannel is unavailable
-
-Next:
-Stage 13 — Dynamic sorting
-~~~
-
-Stage 8 explicitly includes:
-
-~~~text
-8.1 record builders/contracts
-8.2 session + universe persistence
-8.3 atomic cycles + history + latest + meta transaction
-8.4 recorder integration + rollback/failure tests
-~~~
-
-Critical rule:
-
-~~~text
-DB commit succeeds
-before
-recorder exposes the cycle as completed/latest
-~~~
-
-The generic `storage/write.js` helpers are single-store transactions and must not be composed to fake a multi-store atomic cycle commit.
-
-## Testing policy
-
-The testing-refactor mini-project is complete.
-
-Durable policy:
-
-~~~text
-ordinary relevant changes
-→ fast Node unit tests / automatic Fast CI
-
-planned browser integration checkpoints
-→ Playwright + Chromium Browser CI
-
-provider-dependent behavior
-→ live Leumi verification only when required
-~~~
-
-Authoritative policy:
-
-~~~text
+ROADMAP.md                  # Stage 13
+docs/viewer-ux.md           # sections 8–9
+viewer/pure/current-table-logic.js
+viewer/current-table.js
+tests/unit/current-table-logic.test.js
 tests/TESTING_POLICY.md
 ~~~
 
-Historical refactor plan/status:
+Implement deterministic sorting behavior in pure logic first, then UI header interaction.
+
+Default:
 
 ~~~text
-docs/history/testing-refactor/
+DailyDealsQuantity DESC
+paperName ASC tie-breaker
 ~~~
 
-CI must not contain Leumi cookies, tokens, credentials, or account data.
+Single-column sorting only in V1.
 
-## Documentation/update cadence
+## Testing
 
-For a normal implementation batch:
-- update code;
-- update tests;
-- update `STATUS.json`.
+~~~text
+deterministic sorting
+→ Fast unit tests
 
-Update this file only when current focus, invariants, or the relevant working set changes.
+DOM/browser sorting interaction
+→ browser spec may be added now
+→ planned Chromium checkpoint after Stages 14–15 unless early-browser exception is justified
+~~~
 
-At a meaningful stage/substage boundary:
-- update the local README when useful;
-- update `ROADMAP.md` only if scope/order/stage definitions changed.
-
-For durable decisions update:
-- `docs/project/decisions/D-NNN.md`;
-- `docs/project/decisions.md`.
-
-Update `docs/project/current-state.md` only for meaningful project/workstream milestones.
-
-## Durable sources — read only when needed
+## Durable docs — only when needed
 
 ~~~text
 docs/architecture.md
 docs/data-model.md
 docs/viewer-ux.md
 docs/test-plan.md
-ROADMAP.md
+docs/project/decisions.md
 docs/leumi-api/
-docs/project/decisions.md → then only relevant docs/project/decisions/D-NNN.md
 ~~~
 
-## Conflict rule
-
-If this fast context conflicts with a durable design/decision document:
-1. do not guess;
-2. inspect the authoritative document;
-3. resolve the conflict;
-4. update this file in the same work batch.
-
-
-## Viewer implementation
-
-~~~text
-viewer/
-  README.md
-  bootstrap.js
-  current-table.js
-  pure/
-    viewer-state.js
-    current-table-logic.js
-~~~
-
-Stage 10 establishes a same-origin named about:blank viewer shell. Stage 11 will load the current table from IndexedDB.
-
-
-## Cross-tab messaging
-
-~~~text
-messaging/
-  channel.js
-  pure/
-    channel-message-logic.js
-
-viewer/
-  live-refresh.js
-~~~
-
-BroadcastChannel is notification-only. The viewer always re-reads IndexedDB after CYCLE_COMMITTED. Manual refresh is the fallback when BroadcastChannel is unavailable.
+If this file conflicts with durable design or STATUS.json, inspect the authoritative source and fix the conflict in the same work batch.

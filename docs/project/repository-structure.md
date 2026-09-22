@@ -55,7 +55,7 @@ docs/
 - current state.
 - system scope.
 - compact decision index + individual durable decisions.
-- chat/workstream map.
+- workstream registry/routing.
 - repository structure.
 - copy-ready ChatGPT Project Instructions.
 
@@ -402,3 +402,24 @@ tests/        executable tests + testing policy
 ~~~
 
 Completed temporary planning mini-projects should move to a local historical-docs area rather than remain mixed into executable test/code directories.
+
+
+---
+
+## Project-wide workstream registry
+
+The project-wide routing table is:
+
+~~~text
+docs/project/workstreams.md
+~~~
+
+It answers:
+
+- which workstreams exist;
+- which one is active;
+- where its local source-of-truth files live.
+
+Exact stage/substage progress stays inside each workstream's STATUS.json.
+
+Do not duplicate exact operational status in multiple project-wide files.
