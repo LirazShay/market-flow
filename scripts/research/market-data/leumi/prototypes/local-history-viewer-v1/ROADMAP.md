@@ -48,33 +48,65 @@ DATA_MODEL.md
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
-נגדיר:
+Output:
 
-- current table columns.
-- default sort.
-- row click behavior.
-- history columns.
-- status header.
-- null display.
-- date/time display.
+~~~text
+VIEWER_UX.md
+~~~
 
 עדיין ללא implementation.
 
 ### Stage 4 — Test plan
 
-נגדיר tests ידניים/אוטומטיים ל:
+Stage 4 מחולק לתת-שלבים קטנים:
 
-- schema creation.
-- writes.
-- reload.
-- cross-tab.
+#### Stage 4.1 — Storage/schema test cases
+
+Status:
+
+~~~text
+Next
+~~~
+
+נגדיר רק בדיקות ל:
+- DB creation.
+- stores.
+- indexes.
+- reopen/persistence.
+
+#### Stage 4.2 — Write/atomicity test cases
+
+נגדיר רק:
+- successful writes.
+- latest/history consistency.
+- rollback on failure.
+
+#### Stage 4.3 — Viewer/sorting/history test cases
+
+נגדיר רק:
+- current table.
 - sorting.
-- history.
-- failure recovery.
-- storage growth.
+- null/zero.
+- per-security history.
+
+#### Stage 4.4 — Cross-tab/reload/recovery test cases
+
+נגדיר רק:
+- BroadcastChannel.
+- viewer reopen.
+- recorder independence.
+- stale/error states.
+
+#### Stage 4.5 — Storage-growth + integrated test plan
+
+נגדיר רק:
+- storage growth measurements.
+- long-run integrated verification.
+
+אין לבצע את כל Stage 4 בהודעה אחת.
 
 ---
 
