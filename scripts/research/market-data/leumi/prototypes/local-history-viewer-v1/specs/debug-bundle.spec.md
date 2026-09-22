@@ -40,6 +40,19 @@ The bundle is generated from the already-running normal runtime.
 
 It is not a separate recorder and must not require replaying the problem in a second tool.
 
+Runtime entry points:
+
+~~~text
+MarketFlowRuntime.createDebugBundle(options)
+MarketFlowRuntime.downloadDebugBundle(options)
+~~~
+
+The download entry point writes UTF-8 JSON with a deterministic diagnostic filename pattern:
+
+~~~text
+market-flow-debug-YYYYMMDD-HHMMSS.json
+~~~
+
 Intended flow:
 
 ~~~text
