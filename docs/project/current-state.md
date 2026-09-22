@@ -29,7 +29,7 @@ Phase 01 — Market Data / Leumi API Research
 קיים:
 
 ~~~text
-scripts/research/leumi/api-recorder.js
+scripts/research/market-data/leumi/capture/api-recorder.js
 ~~~
 
 תפקיד:
@@ -103,7 +103,7 @@ Verified:
 Script:
 
 ~~~text
-scripts/research/leumi/fetch-all-securities.js
+scripts/research/market-data/leumi/collection/fetch-all-securities.js
 ~~~
 
 ## Join בין שתי הקריאות
@@ -123,7 +123,7 @@ MapHeat2.PaperId == GetSecuritiesData.Key
 קיים:
 
 ~~~text
-scripts/research/leumi/show-all-securities-table.js
+scripts/research/market-data/leumi/demos/show-all-securities-table.js
 ~~~
 
 ה-script קורא את ה-universe, מבצע 3 batches, עושה join, פותח טאב חדש, מציג טבלה ומבצע validation של completeness.
@@ -135,7 +135,7 @@ scripts/research/leumi/show-all-securities-table.js
 קיים:
 
 ~~~text
-scripts/research/leumi/analyze-field-coverage.js
+scripts/research/market-data/leumi/tests/field-coverage/analyze-field-coverage.js
 ~~~
 
 Verified snapshot:
@@ -168,7 +168,7 @@ docs/leumi-api/reports/2026-09-22-1451-field-coverage.md
 קיים:
 
 ~~~text
-scripts/research/leumi/long-running-poll-test.js
+scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js
 docs/leumi-api/polling-stability-test.md
 ~~~
 
