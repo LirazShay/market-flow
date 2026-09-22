@@ -203,14 +203,13 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35769912343,
-      "commit": "b7473ffac5688335c84ca3d5fec02bd0efe06d43",
-      "conclusion": "failure",
+      "runId": 35774639107,
+      "commit": "323cf18eca73694ddbd76ba2d30c41eb15c82dee",
+      "conclusion": "failure-diagnostic-by-design",
       "tests": [
-        "42 Chromium tests",
-        "41 passed",
-        "1 failed",
-        "Stage 14.4 scroll-restoration regression: expected -180, received 0"
+        "1 targeted Chromium test",
+        "Stage 14.4 only",
+        "diagnostic assertion exposed Playwright auto-scroll: beforeClick=-180, atClickCapture=-1285"
       ]
     },
     "fastCi": "verified-success",
@@ -846,17 +845,21 @@
       ],
       "nextRequiredAction": "Fix scroll restoration, rerun the changed Stage 14.4 browser test/suite in Chromium, and do not advance currentFocus until green.",
       "diagnosticRca": {
-        "latestDiagnosticRun": 35773233442,
-        "diagnosticCommit": "cefd75d6eeada70082e3ee5c7d6af63b2e1ca027",
-        "observation": "After one animation frame following return to MAIN, panelHidden=false and scrollLeft=-1285; prior expectation was savedScrollLeft=-180.",
-        "rejectedOrInsufficientHypothesis": "The failure is not explained simply by restore occurring too early and leaving scrollLeft at zero.",
-        "nextHypotheses": [
-          "Playwright auto-scrolls the activated row before production captureViewport runs",
-          "production capture point stores -1285 rather than the earlier test-set -180",
-          "RTL/layout clamping changes the raw scrollLeft representation",
-          "exact raw pixel preservation may not be the correct semantic contract"
+        "latestDiagnosticRun": 35774639107,
+        "diagnosticCommit": "323cf18eca73694ddbd76ba2d30c41eb15c82dee",
+        "experiment": "Capture current-table scrollLeft immediately before Playwright locator.click and again in a capture-phase click listener before the product row handler.",
+        "observation": {
+          "beforeClick": -180,
+          "atClickCapture": -1285
+        },
+        "conclusion": "Confirmed: Playwright scrolls the target row into view before dispatching click. Product captureViewport therefore sees the Playwright-mutated -1285 value, not the test-set -180 value.",
+        "confirmedHypothesis": "Playwright auto-scroll changes scrollLeft before production captureViewport executes.",
+        "rejectedHypotheses": [
+          "The failure is explained only by restore running too early.",
+          "The original -180 value survives unchanged until the production row-activation handler."
         ],
-        "nextExperiment": "Instrument the exact value immediately before row activation and at production capture point, preferably with a targeted Stage 14.4 run only."
+        "unresolvedDesignQuestion": "Define the intended user contract: preserve viewport before activation, preserve viewport at actual activation, or preserve a semantic visible anchor/context rather than raw RTL scrollLeft pixels.",
+        "nextExperiment": "Avoid Playwright auto-scroll in the test (e.g. dispatch a DOM click at the already-established viewport) and determine whether production correctly restores the pre-activation viewport. Do not change production scroll logic until this isolates test-driver behavior from product behavior."
       }
     }
   },
@@ -888,10 +891,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "E2E debugging methodology is now documented and linked. Stage 14.4 remains blocked; next work is one targeted RCA experiment, not a speculative production fix.",
+    "reason": "Targeted RCA experiment confirmed Playwright auto-scroll mutates the viewport before the product click handler. No production fix was made.",
     "nextStage": "14",
     "nextSubstep": "14.4",
-    "nextAction": "Targeted experiment: compare scrollLeft immediately before row activation with the value captured by production captureViewport, accounting for Playwright auto-scroll and RTL."
+    "nextAction": "Run one targeted experiment that activates the row without Playwright auto-scroll and test whether the product restores the pre-activation viewport correctly."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
