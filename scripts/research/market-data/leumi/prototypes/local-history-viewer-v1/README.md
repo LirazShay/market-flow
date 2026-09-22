@@ -12,6 +12,7 @@ It is the currently active workstream, not the entire Market Flow project.
 | compact technical context | AI_CONTEXT.md |
 | full V1 plan/order | ROADMAP.md |
 | fresh-chat boundary | HANDOFF.md |
+| copy-ready next development chat | NEXT_CHAT_PROMPT.md |
 | durable V1 design | docs/ |
 | testing / CI policy | tests/TESTING_POLICY.md |
 
