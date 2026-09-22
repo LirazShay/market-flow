@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "15",
-    "substep": "15.1",
-    "title": "Viewer diagnostics — raw diagnostic snapshot from IndexedDB and storage estimate",
-    "status": "in-progress"
+    "substep": "15.2",
+    "title": "Viewer diagnostics — recorder health derivation and presentation model",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -164,7 +164,7 @@
       "title": "Viewer diagnostics",
       "status": "in-progress",
       "substeps": {
-        "15.1": "in-progress — raw diagnostics snapshot: recorderState, last cycle, all DB row counts, storage estimate",
+        "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
         "15.2": "planned — recorder health derivation + diagnostics presentation model",
         "15.3": "planned — always-visible diagnostics UI + refresh integration",
         "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
@@ -209,16 +209,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35775603207,
-      "runAttempt": 2,
-      "jobId": 106909519960,
-      "commit": "2132ece133fcc2c94be26bc5e750d60753713c27",
+      "runId": 35776989818,
+      "jobId": 106912597984,
+      "commit": "013762b4ded9488671fb79d6bef31789c8b0a577",
       "conclusion": "success",
       "tests": [
-        "42 Chromium tests",
-        "42 passed / 0 failed",
-        "fresh mandatory Stage 14 closure rerun",
-        "final Stage 14 code/test state unchanged since the verified commits"
+        "2 targeted Chromium tests",
+        "Stage 15.1 diagnostics snapshot",
+        "2 passed / 0 failed"
       ]
     },
     "fastCi": "verified-success",
@@ -230,16 +228,14 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35775462689,
-      "runAttempt": 2,
-      "jobId": 106909493044,
-      "commit": "a09b70745e7c2ccbe58fe2912255c16de206193b",
+      "runId": 35776954535,
+      "jobId": 106912484175,
+      "commit": "d9fef945e945639795cd84d5fd85eb20f0b965d1",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 342.249941,
-      "note": "Fresh rerun against the unchanged final Stage 14 code/test state."
+      "durationMs": 69.033519
     },
     "testingRefactor": {
       "status": "complete",
@@ -945,6 +941,44 @@
         "passed": 42,
         "failed": 0
       }
+    },
+    "stage15_1": {
+      "status": "complete",
+      "testsFirst": true,
+      "testContractCommit": "5913bd88c44e8b2ef32b91762027eb681f23a9a4",
+      "expectedRedRun": {
+        "runId": 35776781542,
+        "conclusion": "failure",
+        "tests": 2,
+        "passed": 0,
+        "failed": 2,
+        "cause": "MarketFlowViewerDiagnosticsData.loadSnapshot was intentionally not implemented yet."
+      },
+      "implementationCommit": "d9fef945e945639795cd84d5fd85eb20f0b965d1",
+      "fastCi": {
+        "runId": 35776954535,
+        "jobId": 106912484175,
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "targetedBrowser": {
+        "runId": 35776989818,
+        "jobId": 106912597984,
+        "conclusion": "success",
+        "tests": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "recorderState is read from meta.recorderState",
+        "last completed cycle is read directly by recorderState.lastCompletedCycleId",
+        "missing referenced last cycle is treated as data-integrity failure instead of silently returning partial diagnostics",
+        "row counts are returned for meta/sessions/universe/cycles/latest/history without scanning history rows",
+        "storage usage is reused from the existing normalized navigator.storage.estimate diagnostics API",
+        "fresh database returns null recorderState/lastCycle and zero row counts"
+      ]
     }
   },
   "fastContext": {
@@ -974,10 +1008,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 15.1 is in progress. Health semantics are intentionally deferred until the raw persisted diagnostics contract is verified.",
+    "reached": true,
+    "reason": "Stage 15.1 is complete and verified. Stage 15 remains open; the next natural work is Stage 15.2 recorder-health derivation and presentation model.",
     "nextStage": "15",
-    "nextSubstep": "15.1"
+    "nextSubstep": "15.2"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
