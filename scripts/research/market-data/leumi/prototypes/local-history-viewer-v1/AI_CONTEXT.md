@@ -154,12 +154,24 @@ recorder/
 
 ## Testing policy
 
+A testing-refactor mini-project is active:
+
 ~~~text
-Automated CI first
-→ Chromium/Playwright
-→ real browser APIs where practical
-→ mocked Leumi endpoints
-→ live Leumi verification after CI passes
+tests/testing-refactor/
+~~~
+
+Temporary objective:
+
+~~~text
+many fast unit tests on every change
+→ Playwright only at meaningful checkpoints
+→ live Leumi only for provider-dependent verification
+~~~
+
+Current detailed mini-project status:
+
+~~~text
+tests/testing-refactor/STATUS.json
 ~~~
 
 CI must not contain Leumi cookies, tokens, credentials, or account data.

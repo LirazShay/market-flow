@@ -9,20 +9,20 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "7.3",
-    "title": "Single chunk fetch",
+    "stage": "testing-refactor/T2",
+    "title": "Fast unit-test harness",
     "status": "next"
   },
   "recommendedNaturalBatch": [
     {
-      "stage": "7.3",
-      "title": "Single chunk fetch"
+      "stage": "T2",
+      "title": "Fast unit-test harness"
     }
   ],
-  "stopBoundaryAfterRecommendedBatch": "7.3",
+  "stopBoundaryAfterRecommendedBatch": "T2",
   "nextAfterRecommendedBatch": {
-    "stage": "7.4",
-    "title": "Single complete cycle builder"
+    "stage": "T3",
+    "title": "Extract deterministic logic from browser adapters"
   },
   "stages": [
     {
@@ -193,5 +193,13 @@
       "target files",
       "directly relevant tests"
     ]
+  },
+  "activeMiniProject": {
+    "id": "testing-refactor",
+    "path": "tests/testing-refactor/",
+    "currentStage": "T1",
+    "currentStatus": "complete",
+    "nextStage": "T2",
+    "resumeMainStage": "7.3"
   }
 }

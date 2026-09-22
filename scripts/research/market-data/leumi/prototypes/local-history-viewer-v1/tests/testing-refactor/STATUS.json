@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "miniProject": "testing-refactor",
+  "parentWorkstream": "local-history-viewer-v1",
+  "updatedAt": "2026-09-22",
+  "overallStatus": "in-progress",
+  "currentStage": {
+    "id": "T1",
+    "title": "Audit + target architecture",
+    "status": "complete"
+  },
+  "nextStage": {
+    "id": "T2",
+    "title": "Fast unit-test harness",
+    "status": "next"
+  },
+  "resumeParentAt": {
+    "stage": "7.3",
+    "title": "Single chunk fetch"
+  },
+  "stages": [
+    {
+      "id": "T1",
+      "title": "Audit + target architecture",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "title": "Fast unit-test harness",
+      "status": "planned"
+    },
+    {
+      "id": "T3",
+      "title": "Extract deterministic logic from browser adapters",
+      "status": "planned"
+    },
+    {
+      "id": "T4",
+      "title": "Build the fast unit-test base",
+      "status": "planned"
+    },
+    {
+      "id": "T5",
+      "title": "Split CI by speed and purpose",
+      "status": "planned"
+    },
+    {
+      "id": "T6",
+      "title": "Migration + checkpoint policy",
+      "status": "planned"
+    },
+    {
+      "id": "T7",
+      "title": "End-to-end verification of the testing system",
+      "status": "planned"
+    }
+  ],
+  "baseline": {
+    "unitTests": "not-implemented",
+    "browserTests": "playwright-chromium-working",
+    "currentBrowserTrigger": "most prototype code changes",
+    "identifiedProblem": "browser setup dominates feedback time for small changes"
+  }
+}
