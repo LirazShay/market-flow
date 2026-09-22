@@ -11,8 +11,8 @@
   "currentFocus": {
     "stage": "14",
     "substep": "14.4",
-    "title": "Security history drill-down — detail live refresh and return-state preservation",
-    "status": "in-progress"
+    "title": "Security history drill-down — stabilize verification before continuing",
+    "status": "blocked-by-browser-regression"
   },
   "stages": [
     {
@@ -203,16 +203,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35769024909,
-      "commit": "3acb5d1e4296518ff3edd5e1867459629b6ed3f3",
-      "conclusion": "success",
+      "runId": 35769912343,
+      "commit": "b7473ffac5688335c84ca3d5fec02bd0efe06d43",
+      "conclusion": "failure",
       "tests": [
-        "41 Chromium tests",
-        "Stage 14.3 keyboard and mouse row activation",
-        "DETAIL summary for the selected security",
-        "500-row history table + load-older to 502 rows",
-        "explicit empty-history state and return to MAIN",
-        "existing recorder/storage/viewer regressions"
+        "42 Chromium tests",
+        "41 passed",
+        "1 failed",
+        "Stage 14.4 scroll-restoration regression: expected -180, received 0"
       ]
     },
     "fastCi": "verified-success",
@@ -812,6 +810,41 @@
         "security with no history renders an explicit empty-history message",
         "basic back action returns to MAIN and hides the detail panel"
       ]
+    },
+    "stage14_4": {
+      "status": "blocked-red-browser-test",
+      "testsFirst": true,
+      "testContractCommit": "34a51adf7d08ff988f3d0e12a6a1c324b2c138cd",
+      "implementationCommit": "f394f8694a1ae7a04570d1fb3ecdd6b66d96f589",
+      "latestFastCi": {
+        "runId": 35769870437,
+        "commit": "a31262b598b70ad28f307886f9e387fe79b28241",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserRuns": [
+        {
+          "runId": 35769709899,
+          "commit": "13f8daf0e708595b4e1299a3098a5277fe542738",
+          "conclusion": "failure",
+          "tests": 42,
+          "passed": 41,
+          "failed": 1,
+          "cause": "Stage 14.4 test selector was ambiguous because both hidden history and current tables had LastKnownRate headers; selector was corrected to scope the current table."
+        },
+        {
+          "runId": 35769912343,
+          "commit": "b7473ffac5688335c84ca3d5fec02bd0efe06d43",
+          "conclusion": "failure",
+          "tests": 42,
+          "passed": 41,
+          "failed": 1,
+          "cause": "Real unresolved scroll-restoration regression: expected current-table scrollLeft -180 after return from DETAIL, received 0."
+        }
+      ],
+      "nextRequiredAction": "Fix scroll restoration, rerun the changed Stage 14.4 browser test/suite in Chromium, and do not advance currentFocus until green."
     }
   },
   "fastContext": {
@@ -828,8 +861,9 @@
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
     "default": "fast-unit-ci",
-    "browser": "checkpoint-only",
-    "live": "provider-dependent-only"
+    "browser": "checkpoint-full-suite-plus-immediate-verification-for-any-changed-browser-test",
+    "live": "provider-dependent-only",
+    "hardGate": "No added/modified test may be deferred unexecuted to a later stage. Red or unexecuted changed tests block progression."
   },
   "lastCompletedMiniProject": {
     "id": "testing-refactor",
@@ -839,10 +873,11 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 14.4 is in progress.",
+    "reached": true,
+    "reason": "Feature progression is intentionally paused. Engineering/test-process hardening is complete, but Stage 14.4 remains blocked by a reproducible Browser CI scroll-restoration failure.",
     "nextStage": "14",
-    "nextSubstep": "14.4"
+    "nextSubstep": "14.4",
+    "nextAction": "Fix stabilization task S4, then complete S5 before any new feature work."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
@@ -878,5 +913,56 @@
     ],
     "tests": "tests/",
     "historicalDocs": "docs/history/"
+  },
+  "stabilizationPlan": {
+    "reason": "Engineering-process hardening requested after a changed browser test exposed an unresolved regression. No new feature/substep work may start until these tasks are green.",
+    "tasks": [
+      {
+        "id": "S1",
+        "title": "Restore Browser CI workflow to manual/reusable triggers",
+        "status": "complete",
+        "commit": "6a021a9d0c922502e53ee7b5ba6cf0c58c9837cd"
+      },
+      {
+        "id": "S2",
+        "title": "Make immediate execution of every added/modified test a non-negotiable repository rule in all test guidance",
+        "status": "complete",
+        "commits": [
+          "8bede519939956319fc05a9a5836d3d856603f50",
+          "65e88b0733d2e026731b13988ea02a07fc813ff4",
+          "a03ae2df63b2db4b66d982bf6d0073369c1fc887"
+        ]
+      },
+      {
+        "id": "S3",
+        "title": "Add repository-wide Clean Code, design, refactoring, and legacy-safe-change practices",
+        "status": "complete",
+        "commit": "8bede519939956319fc05a9a5836d3d856603f50"
+      },
+      {
+        "id": "S4",
+        "title": "Fix the Stage 14.4 scroll-restoration regression exposed by Chromium",
+        "status": "pending",
+        "lastFailure": {
+          "workflow": "Local History Viewer V1 Browser CI",
+          "runId": 35769912343,
+          "commit": "b7473ffac5688335c84ca3d5fec02bd0efe06d43",
+          "tests": 42,
+          "passed": 41,
+          "failed": 1,
+          "failure": "Stage 14.4 expected current-table scrollLeft -180 after returning from DETAIL, received 0."
+        }
+      },
+      {
+        "id": "S5",
+        "title": "Run Fast CI and Browser CI on the final Stage 14.4 code/test state until both are green",
+        "status": "pending"
+      },
+      {
+        "id": "S6",
+        "title": "Only after S4-S5 are green, resume normal Stage 14.4 completion work",
+        "status": "pending"
+      }
+    ]
   }
 }
