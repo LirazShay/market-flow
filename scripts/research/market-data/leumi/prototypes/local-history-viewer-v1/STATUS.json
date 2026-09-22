@@ -10,7 +10,7 @@
   },
   "currentFocus": {
     "stage": "8",
-    "title": "Persist complete cycles",
+    "title": "Persistence integration",
     "status": "next"
   },
   "stages": [
@@ -82,8 +82,14 @@
     },
     {
       "stage": "8",
-      "title": "Persist complete cycles",
-      "status": "planned"
+      "title": "Persistence integration",
+      "status": "next",
+      "substeps": {
+        "8.1": "planned — persistence record builders/contracts",
+        "8.2": "planned — session + universe persistence",
+        "8.3": "planned — atomic successful-cycle transaction",
+        "8.4": "planned — recorder integration + persistence failure/rollback tests"
+      }
     },
     {
       "stage": "9",
@@ -278,5 +284,23 @@
     "reached": true,
     "reason": "Stage 7 recorder skeleton is complete and browser-verified; Stage 8 begins persistence integration.",
     "nextStage": "8"
+  },
+  "navigation": {
+    "allStages": "ROADMAP.md",
+    "currentProgress": "STATUS.json",
+    "fastContext": "AI_CONTEXT.md",
+    "freshChatBoundary": "HANDOFF.md"
+  },
+  "contextAudit": {
+    "date": "2026-09-22",
+    "status": "complete",
+    "gapsResolved": [
+      "single canonical location for all V1 stages",
+      "Stage 8 expanded to include session and universe persistence required by DATA_MODEL",
+      "atomic commit-before-recorder-success invariant made explicit",
+      "stale design-document status labels synchronized",
+      "dynamic universe wording replaces hardcoded three-chunk requirement",
+      "missing HANDOFF.md added"
+    ]
   }
 }

@@ -13,6 +13,12 @@ For a normal continuation inside this workstream, read only:
 3. the files being changed
 4. the directly relevant tests
 
+At a fresh-chat boundary also read:
+
+~~~text
+HANDOFF.md
+~~~
+
 Read the wider project documentation only when:
 - entering a different workstream;
 - changing architecture, schema, or a durable decision;
@@ -182,10 +188,27 @@ Stage 7 recorder skeleton is complete and browser-verified.
 Next work:
 
 ~~~text
-Stage 8 — Persist complete cycles
+Stage 8 — Persistence integration
 ~~~
 
-This is a natural chat/handoff boundary because Stage 8 begins the persistence integration layer.
+Stage 8 explicitly includes:
+
+~~~text
+8.1 record builders/contracts
+8.2 session + universe persistence
+8.3 atomic cycles + history + latest + meta transaction
+8.4 recorder integration + rollback/failure tests
+~~~
+
+Critical rule:
+
+~~~text
+DB commit succeeds
+before
+recorder exposes the cycle as completed/latest
+~~~
+
+The generic `storage/write.js` helpers are single-store transactions and must not be composed to fake a multi-store atomic cycle commit.
 
 ## Testing policy
 
@@ -228,12 +251,14 @@ For a normal implementation batch:
 Update this file only when current focus, invariants, or the relevant working set changes.
 
 At a meaningful stage/substage boundary:
-- update `ROADMAP.md`;
-- update the local README when useful.
+- update the local README when useful;
+- update `ROADMAP.md` only if scope/order/stage definitions changed.
 
-Only update:
-- `docs/project/decisions.md` for durable decisions;
-- `docs/project/current-state.md` for meaningful project/workstream milestones.
+For durable decisions update:
+- `docs/project/decisions/D-NNN.md`;
+- `docs/project/decisions.md`.
+
+Update `docs/project/current-state.md` only for meaningful project/workstream milestones.
 
 ## Durable sources — read only when needed
 

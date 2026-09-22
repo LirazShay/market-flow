@@ -2,16 +2,31 @@
 
 Browser-only research prototype for recording Leumi market-data snapshots into IndexedDB and viewing current + historical data from a same-origin tab.
 
-## Fast continuation
-
-Current operational state is intentionally **not duplicated in this README**.
-
-Use:
+## Planning / progress — where everything lives
 
 ~~~text
-AI_CONTEXT.md
+ROADMAP.md
+    complete V1 plan: Stages 1–20 and their order
+
 STATUS.json
+    authoritative operational progress
+
+AI_CONTEXT.md
+    compact technical continuation context
+
+HANDOFF.md
+    compact boundary summary for a fresh chat/agent
 ~~~
+
+Quick rule:
+
+~~~text
+"What are all the stages?" → ROADMAP.md
+"Where are we now?"       → STATUS.json
+"What must I know to code?" → AI_CONTEXT.md
+~~~
+
+Current operational state is intentionally not duplicated in this README.
 
 Rules:
 
@@ -83,10 +98,13 @@ storage/
     IndexedDB schema/connection/upgrade/read/write foundation
 
 tests/
-    browser self-tests and future automated browser tests
+    fast unit tests + Chromium integration/checkpoint tests
 
 recorder/
-    recorder configuration and collection components
+    Stage 7 verified in-memory recorder components
+
+storage/
+    IndexedDB schema/basic helpers; Stage 8 persistence integration is next
 ~~~
 
 For the exact current file/stage map, use `AI_CONTEXT.md` and `STATUS.json`.

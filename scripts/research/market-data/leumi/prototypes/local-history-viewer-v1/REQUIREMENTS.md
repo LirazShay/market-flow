@@ -19,16 +19,17 @@ MapHeat2
 → universe
 
 GetSecuritiesData
-→ 3 sequential chunks of 187
-→ full 561-security cycle
+→ sequential chunks planned dynamically from the current universe
+→ validated full-universe cycle
 ~~~
 
 ברירת המחדל נשענת על ה-baseline המאומת:
 
 ~~~text
-CHUNK_SIZE = 187
+CHUNK_SIZE = 187      # conservative verified baseline, configurable
 CHUNK_DELAY_MS = 1000
 no overlapping cycles
+dynamic universe size; never hardcode 561
 ~~~
 
 ## R2 — Persistent local history
@@ -108,7 +109,7 @@ response structure
 
 ## R9 — Preserve time semantics
 
-מאחר ש-3 chunks נאספים sequentially, snapshot מלא אינו atomic.
+מאחר ש-multiple chunks נאספים sequentially, snapshot מלא אינו atomic.
 
 יש לשמור:
 
@@ -120,7 +121,7 @@ response structure
 - server AsOfDate כאשר קיים.
 - collectedAt per security record.
 
-אין לתת לכל 561 הרשומות timestamp מזויף אחד כאילו נאספו באותה מילישנייה.
+אין לתת לכל רשומות ה-universe timestamp מזויף אחד כאילו נאספו באותה מילישנייה.
 
 ## R10 — Preserve null semantics
 

@@ -4,6 +4,7 @@ Status:
 
 ~~~text
 Stage 5 complete — basic storage module foundation
+Stage 8 next — persistence integration
 ~~~
 
 התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
@@ -47,6 +48,23 @@ clear(database, storeName)
 `clear` הוא helper נמוך-רמה בלבד. אין שום auto-clear ב-V1.
 
 Atomic multi-store writes של full cycle עדיין **לא** ממומשים כאן; הם שייכים ל-Stage 8.
+
+Important:
+
+~~~text
+put/add/deleteRecord/clear
+= single-store transaction helpers
+~~~
+
+אסור לחבר כמה calls נפרדים של helpers אלה כדי לדמות atomic commit של cycle.
+
+Stage 8 צריך transaction ייעודי אחד עבור:
+
+~~~text
+cycles + history + latest + meta
+~~~
+
+וכן persistence מינימלי ל-`sessions` ול-`universe` לפי `DATA_MODEL.md`.
 
 Source of truth:
 

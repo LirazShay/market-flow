@@ -27,6 +27,37 @@
 - [Repository Structure](docs/project/repository-structure.md)
 - [ChatGPT Project Instructions](docs/project/chatgpt-project-instructions.md)
 
+## איפה כתובים כל השלבים
+
+הפיתוח הפעיל כרגע הוא:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
+~~~
+
+שלושת קבצי הניווט המחייבים שם הם:
+
+~~~text
+ROADMAP.md
+    כל שלבי V1, הסדר וה-scope שלהם
+
+STATUS.json
+    מה הושלם, מה נוכחי ומה הבא
+
+AI_CONTEXT.md
+    context טכני קצר להמשך עבודה
+~~~
+
+כלומר:
+
+~~~text
+רוצה לראות את כל התוכנית? → ROADMAP.md
+רוצה לדעת איפה אנחנו עכשיו? → STATUS.json
+רוצה להמשיך לפתח? → AI_CONTEXT.md + STATUS.json
+~~~
+
+אין לשכפל status לתוך ROADMAP; כך לא נוצרים שני מקורות אמת שסותרים זה את זה.
+
 ## Phase 01 — Market Data / Leumi API Research
 
 ה-workstream הראשון:

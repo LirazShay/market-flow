@@ -6,7 +6,7 @@ Status:
 Stage 4.1 + Stage 4.2 + Stage 4.3 + Stage 4.4 + Stage 4.5 complete
 ~~~
 
-המסמך נבנה בהדרגה. כרגע מוגדר רק תת-השלב הראשון.
+המסמך מתאר את תוכנית הבדיקות המלאה של Stage 4. המימוש בפועל מתקדם לפי `STATUS.json` ו-`tests/TESTING_POLICY.md`.
 
 ---
 

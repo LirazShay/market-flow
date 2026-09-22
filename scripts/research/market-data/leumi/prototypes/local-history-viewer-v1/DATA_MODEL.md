@@ -3,7 +3,9 @@
 Status:
 
 ~~~text
-Stage 2 complete — schema planned, no implementation yet
+Stage 2 design complete
+Stage 5 schema/basic storage foundation implemented + browser verified
+Stage 8 persistence integration next
 ~~~
 
 מטרת המסמך היא להגדיר במדויק מה נשמר ב-IndexedDB, באילו keys/indexes, ומהם גבולות ה-transaction.

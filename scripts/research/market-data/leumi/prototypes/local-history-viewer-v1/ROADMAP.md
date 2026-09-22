@@ -25,6 +25,33 @@ STATUS.json = current/next/completed/pending
 
 This prevents duplicated status markers from drifting out of sync.
 
+# Stage index
+
+~~~text
+1  Requirements + architecture
+2  Data model / IndexedDB schema
+3  Viewer UX plan
+4  Test plan
+5  IndexedDB module
+6  Test infrastructure + IndexedDB self-tests
+7  Recorder skeleton
+8  Persistence integration
+9  Recorder diagnostics
+10 Viewer bootstrap
+11 Current table from IndexedDB
+12 Cross-tab live refresh
+13 Dynamic sorting
+14 Security history drill-down
+15 Viewer diagnostics
+16 Reload and recovery
+17 Failure simulation
+18 Storage growth test
+19 Integrated V1 validation
+20 V1 freeze
+~~~
+
+For completion/progress, always read `STATUS.json`.
+
 ---
 
 # Planning
@@ -260,27 +287,56 @@ CI coverage:
 
 # Persistence
 
-## Stage 8 — Persist complete cycles
+## Stage 8 — Persistence integration
 
-Connect recorder to IndexedDB.
+Connect the verified Stage 7 recorder to IndexedDB.
 
-Persist:
+Substeps:
 
 ~~~text
-cycles
-history
-latest
-meta
+8.1 Persistence record builders/contracts
+
+8.2 Session + universe persistence
+    sessions + meta
+    universe + meta
+
+8.3 Atomic successful-cycle transaction
+    cycles + history + latest + meta
+    one IndexedDB readwrite transaction
+
+8.4 Recorder integration + persistence failure/rollback tests
 ~~~
+
+Why session/universe are included here:
+
+- persisted cycle/history rows require a valid `sessionId`;
+- the future viewer needs persisted universe metadata for joins;
+- both responsibilities are already part of the durable `DATA_MODEL.md` transaction model.
+
+Critical invariant:
+
+~~~text
+validated in-memory cycle
+→ one atomic DB commit succeeds
+→ only then recorder exposes success/latest state
+~~~
+
+Do not compose separate single-store helper calls to simulate the atomic full-cycle commit.
 
 Required automated integration coverage:
 
+- session creation and binding;
+- universe persistence with full raw MapHeat preservation;
 - successful atomic commit;
+- generated cycleId used consistently by history/latest/meta;
 - latest/history consistency;
 - second cycle replaces latest while preserving history;
-- rollback on injected failure;
+- rollback on injected transaction failure;
+- DB commit failure is surfaced as recorder failure;
 - failed API/validation cycle leaves latest/history unchanged;
-- full raw field preservation.
+- failed-cycle persistence never writes partial latest/history;
+- full raw GetSecuritiesData field preservation;
+- null/zero/empty distinctions remain intact.
 
 ## Stage 9 — Recorder diagnostics
 

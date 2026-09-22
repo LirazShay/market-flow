@@ -3,7 +3,9 @@
 Status:
 
 ~~~text
-Proposed for V1
+Accepted V1 architecture
+Stages 1–7 implemented through the in-memory recorder boundary
+Stage 8 persistence integration next
 ~~~
 
 ---
@@ -17,9 +19,9 @@ Leumi tab
   |
   |  GetSecuritiesData chunk 1
   |  delay
-  |  GetSecuritiesData chunk 2
+  |  ...
   |  delay
-  |  GetSecuritiesData chunk 3
+  |  GetSecuritiesData chunk N
   v
 Recorder
   |
@@ -117,7 +119,7 @@ stored once in universe, not duplicated in every history row
 
 # 4. Write transaction strategy
 
-לאחר שכל 3 chunks עברו validation:
+לאחר שכל ה-chunks שתוכננו עבור ה-universe הנוכחי עברו validation:
 
 1. create/complete cycle record.
 2. write all history records.
@@ -127,6 +129,27 @@ stored once in universe, not duplicated in every history row
 6. רק לאחר commit לשלוח BroadcastChannel notification.
 
 המטרה היא שה-viewer לעולם לא יקבל notification על data שטרם commit.
+
+## Stage 8 success boundary
+
+Stage 7 currently produces a validated complete cycle in memory.
+
+Once persistence is connected:
+
+~~~text
+validated cycle
+→ atomic IndexedDB commit
+→ only after commit: recorder completed/latest state
+→ later: BroadcastChannel notification
+~~~
+
+A DB transaction failure must be treated as recorder failure.
+
+The successful cycle commit must be one transaction spanning:
+
+~~~text
+cycles + history + latest + meta
+~~~
 
 ---
 
