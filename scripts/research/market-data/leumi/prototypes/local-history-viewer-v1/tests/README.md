@@ -632,3 +632,22 @@ The browser layer verifies:
 - required current/detail regions;
 - same-origin IndexedDB visibility from the about:blank viewer;
 - named viewer-window reuse.
+
+
+---
+
+## Stage 10 final verification
+
+~~~text
+Fast CI
+Run 35754581099
+127 passed / 0 failed
+
+Browser CI
+Run 35754648747
+29 passed / 0 failed
+~~~
+
+The early-browser exception was used because Stage 10 establishes a real DOM/window/origin contract.
+
+Browser CI was restored to manual/reusable triggers after verification.

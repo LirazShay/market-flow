@@ -46,3 +46,24 @@ MarketFlowViewerBootstrap.getViewerSnapshot()
 ~~~
 
 V1 continues to use IndexedDB as the source of truth. The child window itself does not receive copied market-data arrays from the opener.
+
+
+## Stage 10 verification
+
+~~~text
+Fast CI
+Run 35754581099
+127 passed / 0 failed
+
+Browser CI
+Run 35754648747
+29 passed / 0 failed
+~~~
+
+Browser verification proves that the child viewer can read an IndexedDB record created by its opener, so the V1 same-origin storage requirement is actually satisfied rather than inferred.
+
+Next:
+
+~~~text
+Stage 11 — Current table from IndexedDB
+~~~

@@ -224,8 +224,8 @@ Status:
 
 ~~~text
 Implementation in progress
-Stages 7–9 recorder + persistence + diagnostics: complete + Chromium verified
-Current focus: Stage 10 — viewer bootstrap
+Stages 7–10 recorder/persistence/diagnostics/viewer bootstrap: complete + Chromium verified
+Current focus: Stage 11 — current table from IndexedDB
 ~~~
 
 Location:
@@ -431,4 +431,28 @@ Next workstream boundary inside V1:
 
 ~~~text
 Stage 10 — Viewer bootstrap
+~~~
+
+
+## Stage 10 viewer bootstrap — completed
+
+Verified:
+
+- named about:blank viewer child;
+- Hebrew / RTL shell;
+- same-origin IndexedDB access;
+- BOOTING initial state;
+- reuse of an already-open viewer.
+
+Evidence:
+
+~~~text
+Fast CI: 127 passed / 0 failed
+Browser CI: 29 passed / 0 failed
+~~~
+
+Next:
+
+~~~text
+Stage 11 — Current table from IndexedDB
 ~~~

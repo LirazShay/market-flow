@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "10",
-    "title": "Viewer bootstrap",
-    "status": "fast-and-browser-verification-pending"
+    "stage": "11",
+    "title": "Current table from IndexedDB",
+    "status": "next"
   },
   "stages": [
     {
@@ -104,12 +104,12 @@
     {
       "stage": "10",
       "title": "Viewer bootstrap",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "10.1": "implemented — viewer state contract",
-        "10.2": "implemented — same-origin about:blank shell",
-        "10.3": "implemented — named-window reuse + RTL/accessible shell",
-        "10.4": "fast-and-browser-verification-pending"
+        "10.1": "complete-fast-ci-verified — viewer state contract",
+        "10.2": "complete-browser-ci-verified — same-origin about:blank shell",
+        "10.3": "complete-browser-ci-verified — named-window reuse + RTL/accessible shell",
+        "10.4": "complete-browser-ci-verified"
       }
     },
     {
@@ -176,14 +176,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35753430439,
-      "commit": "aa9f674d4b1294499bba1188b313d0df8f83966e",
+      "runId": 35754648747,
+      "commit": "64f10b4b166e783bbb36a764604396c255cf666a",
       "conclusion": "success",
       "tests": [
-        "26 Chromium tests",
-        "Stage 9 failed-cycle diagnostics",
-        "heartbeat + storage estimate",
-        "updated Stage 8 failure expectations",
+        "29 Chromium tests",
+        "Stage 10 same-origin viewer bootstrap",
+        "shared IndexedDB origin proof",
+        "named viewer reuse",
         "existing recorder/storage regressions"
       ]
     },
@@ -196,13 +196,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35753214911,
-      "commit": "903b462fc2e67bb632c21726a2ca005651255ccb",
+      "runId": 35754581099,
+      "commit": "bdf10c54dc01bd93efb8af65370f10b4f9eccabf",
       "conclusion": "success",
-      "tests": 124,
-      "passed": 124,
+      "tests": 127,
+      "passed": 127,
       "failed": 0,
-      "durationMs": 54.402409
+      "durationMs": 53.605974
     },
     "testingRefactor": {
       "status": "complete",
@@ -423,6 +423,35 @@
         "storage estimate exposes usage/quota/free/ratio",
         "existing rollback semantics remain intact"
       ]
+    },
+    "stage10": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35754581099,
+        "commit": "bdf10c54dc01bd93efb8af65370f10b4f9eccabf",
+        "conclusion": "success",
+        "tests": 127,
+        "passed": 127,
+        "failed": 0
+      },
+      "browserVerification": {
+        "runId": 35754648747,
+        "commit": "64f10b4b166e783bbb36a764604396c255cf666a",
+        "conclusion": "success",
+        "tests": 29,
+        "passed": 29,
+        "failed": 0,
+        "reason": "early-browser exception: Stage 10 establishes a DOM/bootstrap and same-origin IndexedDB contract"
+      },
+      "verifiedBehaviors": [
+        "viewer opens as a named about:blank child window",
+        "viewer shell is Hebrew and RTL",
+        "initial viewer state is BOOTING with UNKNOWN recorder health",
+        "viewer child can read IndexedDB data written by the opener, proving shared origin storage",
+        "repeated openViewer calls reuse the existing viewer window",
+        "current-market and detail shell regions exist without prematurely implementing Stage 11/14 data loading"
+      ]
     }
   },
   "fastContext": {
@@ -451,8 +480,8 @@
   },
   "recommendedChatBoundary": {
     "reached": false,
-    "reason": "Development continues in the current chat; Stage 9 diagnostics is complete and viewer work begins at Stage 10.",
-    "nextStage": "10"
+    "reason": "Development continues in the current chat; Stage 10 viewer bootstrap is complete.",
+    "nextStage": "11"
   },
   "navigation": {
     "allStages": "ROADMAP.md",

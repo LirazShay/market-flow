@@ -215,8 +215,17 @@ Verified:
 - heartbeat
 - storage estimate / diagnostics API
 
-Current:
-Stage 10 — Viewer bootstrap implemented; Fast/Browser verification pending
+Stage 10 — Viewer bootstrap COMPLETE + Fast/Chromium verified
+
+Verified:
+- named same-origin about:blank child viewer
+- Hebrew / RTL shell
+- BOOTING viewer state
+- shared IndexedDB origin access
+- duplicate viewer tabs avoided
+
+Next:
+Stage 11 — Current table from IndexedDB
 ~~~
 
 Stage 8 explicitly includes:
