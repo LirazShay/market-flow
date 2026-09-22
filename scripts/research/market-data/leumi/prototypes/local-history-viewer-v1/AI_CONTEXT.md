@@ -109,6 +109,8 @@ messaging/
 viewer/
   bootstrap.js
   current-table.js
+  history-data.js
+  security-detail.js
   live-refresh.js
   pure/
     viewer-state.js
@@ -193,7 +195,23 @@ provider/session behavior
 → live verification only when mocks cannot prove it
 ~~~
 
-For sorting, prefer unit tests for comparison/state logic. Add browser coverage for meaningful DOM/accessibility interaction, but follow `tests/TESTING_POLICY.md` for checkpoint timing.
+Hard verification invariant:
+
+~~~text
+any added/modified test
+→ run it in its real layer after the final edit
+→ green before continuing
+~~~
+
+Browser checkpoints control broad-suite cadence only. They never permit a changed Playwright/browser test, fixture, harness, or helper to remain unexecuted. A red or unexecuted changed test blocks progression and must be reflected in `STATUS.json`.
+
+For code quality, refactoring, and safe changes in existing/legacy code, follow:
+
+~~~text
+docs/project/engineering-practices.md
+~~~
+
+For sorting and other pure behavior, prefer unit tests for comparison/state logic. Browser DOM/accessibility behavior belongs in Chromium.
 
 ## Durable docs — read only when needed
 
