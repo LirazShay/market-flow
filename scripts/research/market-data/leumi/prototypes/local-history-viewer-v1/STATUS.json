@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "19",
-    "substep": "19.3",
-    "title": "Integrated V1 validation — live Leumi browser verification",
-    "status": "verification-pending"
+    "substep": "19.2",
+    "title": "Runtime assembly + Bookmarklet packaging — packaging regression repair",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -207,8 +207,8 @@
       "status": "in-progress",
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-        "19.2": "complete-browser-ci-verified — deterministic runtime assembly + generated runtime/Bookmarklet + Chromium smoke",
-        "19.3": "verification-pending — requires execution in a real authenticated Leumi browser session; safe procedure prepared in docs/live-verification.md",
+        "19.2": "in-progress — repairing oversized percent-encoded Bookmarklet packaging and adding stable verified download delivery",
+        "19.3": "blocked-by-19.2-regression-repair — live verification remains pending after packaging is reverified",
         "19.4": "planned — long-run live report using the assembled runtime"
       }
     },
@@ -1554,7 +1554,7 @@
       "closureDecision": "Stage 19.1 complete. Mocked CI gate is green; live verification may begin."
     },
     "runtimeAssembly": {
-      "status": "complete",
+      "status": "in-progress",
       "requiredBeforeLiveLeumi": true,
       "reason": "Current source modules are individually verified through the test harness, but no verified production-style assembly/Bookmarklet delivery path exists yet.",
       "acceptanceIntent": [
@@ -1605,7 +1605,19 @@
         "generated artifacts are ignored by Git and published by Browser CI",
         "no external runtime host is required by the Bookmarklet delivery path"
       ],
-      "workflowRestoreCommit": "813320a82a7eb91f46ec5f1bea2a697031049f54"
+      "workflowRestoreCommit": "813320a82a7eb91f46ec5f1bea2a697031049f54",
+      "regression": {
+        "discoveredAt": "2026-09-23",
+        "issue": "Generated Bookmarklet percent-encoded the entire readable runtime, producing an unnecessarily opaque ~718 KB URL; previous Chromium smoke proved javascript: execution through an anchor but not practical bookmark packaging.",
+        "repairGoals": [
+          "self-contained Bookmarklet remains executable without external code hosting",
+          "Bookmarklet body is compact JavaScript rather than whole-payload encodeURIComponent output",
+          "runtime source remains readable as a separate artifact",
+          "packaging size is materially reduced and guarded by tests",
+          "full Chromium regression verifies generated Bookmarklet",
+          "successful Browser CI publishes a stable rolling GitHub Release download"
+        ]
+      }
     },
     "documentationStatusSourceGuardRepair": {
       "status": "complete",
@@ -1684,11 +1696,11 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 19.3 is blocked only on provider-dependent execution in the user's real authenticated Leumi browser. The safe verification procedure is prepared; Stage 19.4 must not start until live evidence is recorded.",
+    "reached": false,
+    "reason": "Stage 19.2 packaging regression is under repair.",
     "nextStage": "19",
-    "nextSubstep": "19.3",
-    "nextAction": "Execute docs/live-verification.md in the authenticated Leumi browser using the verified generated runtime/Bookmarklet, then record sanitized Verified/Inferred/Unknown outcomes in STATUS.json."
+    "nextSubstep": "19.2",
+    "nextAction": "Repair Bookmarklet packaging, add stable rolling release delivery, run changed unit/browser tests, Fast CI and full Browser CI, then return to 19.3."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
