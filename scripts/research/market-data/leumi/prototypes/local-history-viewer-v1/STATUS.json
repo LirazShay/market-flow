@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "19",
-    "substep": "19.2",
-    "title": "Runtime assembly + Bookmarklet packaging — packaging regression repair",
-    "status": "in-progress"
+    "substep": "19.3",
+    "title": "Integrated V1 validation — live Leumi browser verification",
+    "status": "verification-pending"
   },
   "stages": [
     {
@@ -207,8 +207,8 @@
       "status": "in-progress",
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-        "19.2": "in-progress — repairing oversized percent-encoded Bookmarklet packaging and adding stable verified download delivery",
-        "19.3": "blocked-by-19.2-regression-repair — live verification remains pending after packaging is reverified",
+        "19.2": "complete-browser-ci-verified — compact self-contained Bookmarklet packaging repaired; stable rolling GitHub Release delivery verified",
+        "19.3": "verification-pending — requires execution in a real authenticated Leumi browser session using the repaired verified Bookmarklet",
         "19.4": "planned — long-run live report using the assembled runtime"
       }
     },
@@ -226,16 +226,18 @@
     "liveLeumiV1Integration": "verification-pending",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35788387620,
-      "jobId": 106950678086,
-      "activationCommit": "62ad6666f50eae6cd38e6c372be9902c5eb2ba2d",
-      "codeTestState": "545415412d53bd3906ded831cd5e5eb98d580b0c",
-      "workflowRestoreCommit": "813320a82a7eb91f46ec5f1bea2a697031049f54",
+      "runId": 35790395791,
+      "jobId": 106957217212,
+      "publishJobId": 106957588155,
+      "activationCommit": "3f5c70165cf75f7e897f39376d74eda973779d49",
+      "workflowRestoreCommit": "915875c39beccdda05974d79089aad6a7bc8050b",
       "conclusion": "success",
       "tests": [
         "54 Chromium tests",
         "54 passed / 0 failed",
-        "Stage 19.2 assembled Bookmarklet smoke included in full Browser suite"
+        "compact Bookmarklet size guard verified",
+        "assembled Bookmarklet initial/repeated/restart behavior verified",
+        "rolling stable GitHub Release publication verified"
       ]
     },
     "fastCi": "verified-success",
@@ -247,14 +249,12 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35788333222,
-      "jobId": 106950495352,
-      "commit": "0bac1c5271944a34186e9681be6bbd50be5ee155",
+      "runId": 35790381554,
+      "commit": "f3a5aad2f7e9156e32414b7dc8ade79b446c7254",
       "conclusion": "success",
       "tests": 153,
       "passed": 153,
-      "failed": 0,
-      "durationMs": 109.187929
+      "failed": 0
     },
     "testingRefactor": {
       "status": "complete",
@@ -1554,7 +1554,7 @@
       "closureDecision": "Stage 19.1 complete. Mocked CI gate is green; live verification may begin."
     },
     "runtimeAssembly": {
-      "status": "in-progress",
+      "status": "complete",
       "requiredBeforeLiveLeumi": true,
       "reason": "Current source modules are individually verified through the test harness, but no verified production-style assembly/Bookmarklet delivery path exists yet.",
       "acceptanceIntent": [
@@ -1569,7 +1569,7 @@
       ],
       "sourceCount": 34,
       "runtimeBytes": 318628,
-      "bookmarkletBytes": 718259,
+      "bookmarkletBytes": 148753,
       "buildCommand": "npm run build:runtime",
       "runtimeArtifact": "runtime/dist/market-flow-v1.runtime.js",
       "bookmarkletArtifact": "runtime/dist/market-flow-v1.bookmarklet.txt",
@@ -1605,18 +1605,84 @@
         "generated artifacts are ignored by Git and published by Browser CI",
         "no external runtime host is required by the Bookmarklet delivery path"
       ],
-      "workflowRestoreCommit": "813320a82a7eb91f46ec5f1bea2a697031049f54",
+      "workflowRestoreCommit": "915875c39beccdda05974d79089aad6a7bc8050b",
       "regression": {
         "discoveredAt": "2026-09-23",
-        "issue": "Generated Bookmarklet percent-encoded the entire readable runtime, producing an unnecessarily opaque ~718 KB URL; previous Chromium smoke proved javascript: execution through an anchor but not practical bookmark packaging.",
-        "repairGoals": [
-          "self-contained Bookmarklet remains executable without external code hosting",
-          "Bookmarklet body is compact JavaScript rather than whole-payload encodeURIComponent output",
-          "runtime source remains readable as a separate artifact",
-          "packaging size is materially reduced and guarded by tests",
-          "full Chromium regression verifies generated Bookmarklet",
-          "successful Browser CI publishes a stable rolling GitHub Release download"
-        ]
+        "issue": "Previous Bookmarklet percent-encoded the entire readable runtime, producing an opaque ~718 KB URL and weak practical packaging.",
+        "testsFirstRun": {
+          "runId": 35789801645,
+          "jobId": 106955311016,
+          "conclusion": "failure",
+          "tests": 153,
+          "passed": 152,
+          "failed": 1,
+          "reason": "new compact-packaging contract correctly failed because buildCompactRuntimeText did not yet exist"
+        },
+        "dependencyCiFailures": {
+          "runIds": [
+            35789894595,
+            35789898462
+          ],
+          "reason": "Fast CI did not install npm dependencies before Terser was introduced; workflow corrected to run npm install"
+        },
+        "firstBrowserRun": {
+          "runId": 35790049999,
+          "jobId": 106956104361,
+          "conclusion": "failure",
+          "tests": 54,
+          "passed": 53,
+          "failed": 1,
+          "category": "test timing/contract bug",
+          "rootCause": "Playwright read MarketFlowRuntime snapshot immediately after clicking the javascript: URL. Trace proved the Bookmarklet re-executed and began mocked MapHeat2/GetSecuritiesData requests after the click API had returned.",
+          "fix": "wait for the public restart condition: recorder.isRunning and a new persistence.instanceId"
+        },
+        "finalFastCi": {
+          "runId": 35790381554,
+          "conclusion": "success",
+          "tests": 153,
+          "passed": 153,
+          "failed": 0
+        },
+        "finalBrowserCi": {
+          "runId": 35790395791,
+          "browserJobId": 106957217212,
+          "publishJobId": 106957588155,
+          "conclusion": "success",
+          "tests": 54,
+          "passed": 54,
+          "failed": 0,
+          "duration": "36.2s"
+        },
+        "resolved": true
+      },
+      "compactRuntimeBytes": 141612,
+      "maxBookmarkletBytes": 262144,
+      "packaging": {
+        "mode": "self-contained compact JavaScript",
+        "minifier": "terser 5.51.2",
+        "compress": false,
+        "mangle": false,
+        "urlEscaping": "minimal URL-sensitive escaping only",
+        "externalRuntimeHostRequired": false
+      },
+      "stableRelease": {
+        "tag": "local-history-viewer-v1-runtime-latest",
+        "releaseId": 394155593,
+        "releaseName": "Market Flow V1 Runtime — Latest Verified",
+        "sourceCommit": "3f5c70165cf75f7e897f39376d74eda973779d49",
+        "bookmarkletAsset": {
+          "id": 582350774,
+          "name": "market-flow-v1.bookmarklet.txt",
+          "sizeBytes": 148753,
+          "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.bookmarklet.txt"
+        },
+        "runtimeAsset": {
+          "id": 582350775,
+          "name": "market-flow-v1.runtime.js",
+          "sizeBytes": 318628,
+          "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.runtime.js"
+        },
+        "publicationRule": "updated only after full Browser CI succeeds on main"
       }
     },
     "documentationStatusSourceGuardRepair": {
@@ -1696,11 +1762,11 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 19.2 packaging regression is under repair.",
+    "reached": true,
+    "reason": "Stage 19.2 packaging regression is repaired and reverified. Compact self-contained Bookmarklet and stable rolling release are available. Live provider-dependent verification remains pending.",
     "nextStage": "19",
-    "nextSubstep": "19.2",
-    "nextAction": "Repair Bookmarklet packaging, add stable rolling release delivery, run changed unit/browser tests, Fast CI and full Browser CI, then return to 19.3."
+    "nextSubstep": "19.3",
+    "nextAction": "Download the latest verified Bookmarklet from the stable release and execute docs/live-verification.md in the authenticated Leumi browser, then record sanitized Verified/Inferred/Unknown outcomes."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
