@@ -216,6 +216,39 @@ Important:
 
 ---
 
+# In planning
+
+## Local History Viewer V1
+
+Status:
+
+~~~text
+Planning only — no implementation yet
+~~~
+
+Location:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
+~~~
+
+Planned V1:
+
+- browser-only IndexedDB persistence.
+- latest state + full local history.
+- same-origin viewer tab.
+- live cross-tab notification.
+- sortable current table.
+- per-security history table.
+- diagnostics/storage visibility.
+- filtering intentionally postponed to V2.
+
+Important constraint:
+
+IndexedDB is origin-scoped, therefore recorder and viewer must share the Leumi origin in V1.
+
+---
+
 # Not started
 
 ~~~text
