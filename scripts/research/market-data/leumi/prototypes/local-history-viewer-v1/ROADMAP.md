@@ -138,13 +138,70 @@ Complete
 
 ### Stage 5 — IndexedDB module
 
+Stage 5 מחולק לתת-שלבים קטנים:
+
+#### Stage 5.1 — Storage module skeleton + schema constants
+
+Status:
+
+~~~text
+Complete
+~~~
+
+Outputs:
+
+~~~text
+storage/README.md
+storage/schema.js
+~~~
+
+מוגדרים רק:
+- database name/version.
+- store names.
+- keyPath.
+- autoIncrement.
+- index names/keyPaths.
+
+אין עדיין פתיחת DB.
+
+#### Stage 5.2 — Open/close database connection
+
 Status:
 
 ~~~text
 Next
 ~~~
 
-רק create/open/upgrade + stores + basic read/write helpers.
+נממש רק:
+- indexedDB.open.
+- Promise wrapper.
+- open success/error.
+- close helper.
+
+עדיין ללא schema creation.
+
+#### Stage 5.3 — Version 1 schema creation
+
+נממש רק:
+- onupgradeneeded.
+- create object stores.
+- create indexes.
+
+#### Stage 5.4 — Basic generic read helpers
+
+נממש רק helpers קטנים לקריאה:
+- get.
+- getAll.
+- count.
+
+#### Stage 5.5 — Basic generic write helpers
+
+נממש רק helpers קטנים ל:
+- put.
+- add.
+- delete/clear כאשר נדרש.
+
+Atomic full-cycle persistence עדיין שייך ל-Stage 8.
 
 ### Stage 6 — IndexedDB self-test
 
