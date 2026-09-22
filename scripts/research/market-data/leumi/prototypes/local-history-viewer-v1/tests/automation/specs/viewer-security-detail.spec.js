@@ -910,11 +910,64 @@ test(
             savedScrollLeft
         ).not.toBe(0);
 
+        await viewer.evaluate(
+            () => {
+                const row =
+                    document.querySelector(
+                        "tr[data-security-id='1001']"
+                    );
+
+                const wrapper =
+                    document.querySelector(
+                        "[data-role='current-market-table-wrap']"
+                    );
+
+                window
+                    .__marketFlowStage144ScrollDiagnostic =
+                    {
+                        beforeClick:
+                            wrapper.scrollLeft,
+                        atClickCapture:
+                            null
+                    };
+
+                row.addEventListener(
+                    "click",
+                    () => {
+                        window
+                            .__marketFlowStage144ScrollDiagnostic
+                            .atClickCapture =
+                            wrapper.scrollLeft;
+                    },
+                    {
+                        capture: true,
+                        once: true
+                    }
+                );
+            }
+        );
+
         await viewer
             .locator(
                 "tr[data-security-id='1001']"
             )
             .click();
+
+        const clickScrollDiagnostic =
+            await viewer.evaluate(
+                () =>
+                    window
+                        .__marketFlowStage144ScrollDiagnostic
+            );
+
+        expect(
+            clickScrollDiagnostic
+        ).toEqual({
+            beforeClick:
+                savedScrollLeft,
+            atClickCapture:
+                savedScrollLeft
+        });
 
         await viewer.waitForFunction(
             () =>
