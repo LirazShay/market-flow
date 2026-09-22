@@ -3,6 +3,7 @@ name: Local History Viewer V1 Browser CI
 on:
   push:
     paths:
+      - ".github/workflows/local-history-viewer-v1-ci.yml"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/debug-bundle.spec.js"
   workflow_dispatch:
   workflow_call:
