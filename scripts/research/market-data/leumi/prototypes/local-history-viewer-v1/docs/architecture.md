@@ -73,7 +73,7 @@ V1 לא משתמש ב-localhost viewer.
 ה-schema המפורט נסגר בשלב 2 ומתועד ב:
 
 ~~~text
-DATA_MODEL.md
+data-model.md
 ~~~
 
 Database:

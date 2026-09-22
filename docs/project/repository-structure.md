@@ -366,3 +366,39 @@ project/workstream milestone:
 ~~~
 
 This reduces duplicate reads and documentation churn while preserving durable sources of truth.
+
+
+---
+
+# Active workstream layout pattern
+
+For a substantial active workstream, prefer a small operational root and move stable design material into a local `docs/` folder.
+
+Example:
+
+~~~text
+workstream/
+├── README.md
+├── ROADMAP.md
+├── STATUS.json
+├── AI_CONTEXT.md
+├── HANDOFF.md
+├── docs/
+├── implementation-area-a/
+├── implementation-area-b/
+└── tests/
+~~~
+
+Ownership:
+
+~~~text
+README        navigation/front door
+ROADMAP       scope/order
+STATUS        live progress
+AI_CONTEXT    compact continuation context
+HANDOFF       optional boundary handoff
+docs/         stable component design
+tests/        executable tests + testing policy
+~~~
+
+Completed temporary planning mini-projects should move to a local historical-docs area rather than remain mixed into executable test/code directories.

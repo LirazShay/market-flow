@@ -64,10 +64,10 @@ Stage 8 צריך transaction ייעודי אחד עבור:
 cycles + history + latest + meta
 ~~~
 
-וכן persistence מינימלי ל-`sessions` ול-`universe` לפי `DATA_MODEL.md`.
+וכן persistence מינימלי ל-`sessions` ול-`universe` לפי `docs/data-model.md`.
 
 Source of truth:
 
 ~~~text
-../DATA_MODEL.md
+../docs/data-model.md
 ~~~

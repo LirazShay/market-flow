@@ -1,110 +1,122 @@
 # Local History Viewer V1
 
-Browser-only research prototype for recording Leumi market-data snapshots into IndexedDB and viewing current + historical data from a same-origin tab.
+Browser-only research prototype שמקליט snapshots של Leumi market data ל-IndexedDB ומציג current + historical data באותו origin.
 
-## Planning / progress — where everything lives
+## 30-second orientation
 
-~~~text
-ROADMAP.md
-    complete V1 plan: Stages 1–20 and their order
+| שאלה | קובץ |
+|---|---|
+| מהם כל השלבים? | [ROADMAP.md](ROADMAP.md) |
+| איפה אנחנו עכשיו? | [STATUS.json](STATUS.json) |
+| מה AI צריך לדעת כדי להמשיך? | [AI_CONTEXT.md](AI_CONTEXT.md) |
+| מה צריך לקרוא בצ'אט/agent חדש? | [HANDOFF.md](HANDOFF.md) |
+| מה הארכיטקטורה וה-data model? | [docs/](docs/README.md) |
+| איך הטסטים עובדים? | [tests/README.md](tests/README.md) |
+| מה מדיניות ה-CI/checkpoints? | [tests/TESTING_POLICY.md](tests/TESTING_POLICY.md) |
 
-STATUS.json
-    authoritative operational progress
-
-AI_CONTEXT.md
-    compact technical continuation context
-
-HANDOFF.md
-    compact boundary summary for a fresh chat/agent
-~~~
-
-Quick rule:
+## Folder map
 
 ~~~text
-"What are all the stages?" → ROADMAP.md
-"Where are we now?"       → STATUS.json
-"What must I know to code?" → AI_CONTEXT.md
-~~~
-
-Current operational state is intentionally not duplicated in this README.
-
-Rules:
-
-~~~text
-STATUS.json = current/next/completed/pending
-ROADMAP.md  = scope/order only
-README.md   = stable component overview
+local-history-viewer-v1/
+├── README.md
+├── ROADMAP.md
+├── STATUS.json
+├── AI_CONTEXT.md
+├── HANDOFF.md
+│
+├── docs/
+│   ├── README.md
+│   ├── requirements.md
+│   ├── architecture.md
+│   ├── data-model.md
+│   ├── viewer-ux.md
+│   ├── test-plan.md
+│   └── history/
+│       └── testing-refactor/
+│
+├── recorder/
+│   ├── README.md
+│   ├── pure/
+│   └── browser adapters / loop
+│
+├── storage/
+│   ├── README.md
+│   └── IndexedDB modules
+│
+└── tests/
+    ├── README.md
+    ├── TESTING_POLICY.md
+    ├── unit/
+    ├── automation/
+    └── fixtures/
 ~~~
 
 ## V1 flow
 
 ~~~text
-Leumi market-data recorder
-→ full-cycle validation
+MapHeat2
+→ dynamic universe
+→ GetSecuritiesData sequential chunks
+→ validated complete cycle
 → IndexedDB
+   ├── sessions
+   ├── universe
+   ├── cycles
+   ├── latest
+   ├── history
+   └── meta
 → BroadcastChannel notification
 → same-origin viewer
-→ current table + sorting + per-security history
 ~~~
 
-## V1 scope
+## Stable V1 boundaries
 
-- dynamic universe; do not hardcode the number of securities.
-- persistent local history in IndexedDB.
-- one latest record per security for efficient current-state display.
-- same-origin viewer tab.
-- live refresh notifications.
-- deterministic column sorting.
-- per-security history drill-down.
-- basic recorder/storage diagnostics.
-- filtering intentionally excluded from V1.
+V1 includes:
 
-## V1 non-goals
+- dynamic universe; never hardcode 561.
+- sequential collection baseline.
+- complete-cycle validation.
+- local IndexedDB history.
+- latest row per security.
+- same-origin viewer.
+- sorting and per-security history.
+- basic diagnostics.
+- tests-first development with Fast CI + sparse Chromium checkpoints.
 
-- no server.
-- no external database.
-- no production architecture.
-- no execution/trading.
-- no advanced charts.
-- no complex filtering.
-- no new derived momentum metrics in V1.
-- no assumption that target polling cadence equals actual full-cycle cadence.
+V1 intentionally excludes:
+
+- server / external DB.
+- production architecture.
+- execution/trading.
+- advanced charts.
+- filtering.
+- derived momentum metrics.
+- automatic retention.
+
+## Source-of-truth rules
+
+~~~text
+ROADMAP.md
+    scope / order / stage definitions
+
+STATUS.json
+    current / next / completed / verification state
+
+AI_CONTEXT.md
+    compact continuation context
+
+docs/
+    durable V1 design
+
+tests/TESTING_POLICY.md
+    durable test/checkpoint policy
+~~~
+
+Do not duplicate operational status into design documents.
 
 ## Browser constraint
 
-IndexedDB, BroadcastChannel and browser storage are origin-scoped.
+IndexedDB ו-BroadcastChannel הם origin-scoped.
 
-Therefore recorder and viewer must share the Leumi origin in V1.
+Recorder ו-viewer חייבים לרוץ באותו Leumi origin ב-V1. Localhost viewer לא יכול להניח גישה ל-IndexedDB של Leumi origin.
 
-Do not design V1 as a localhost viewer expecting direct access to the Leumi-origin IndexedDB.
-
-## Durable design documents
-
-~~~text
-REQUIREMENTS.md
-ARCHITECTURE.md
-DATA_MODEL.md
-VIEWER_UX.md
-TEST_PLAN.md
-ROADMAP.md
-~~~
-
-Read them only when the task requires the relevant design detail.
-
-## Current code areas
-
-~~~text
-storage/
-    IndexedDB schema/connection/upgrade/read/write foundation
-
-tests/
-    fast unit tests + Chromium integration/checkpoint tests
-
-recorder/
-    Stage 7 verified in-memory recorder components
-
-storage/
-    IndexedDB schema/basic helpers; Stage 8 persistence integration is next
-~~~
-
-For the exact current file/stage map, use `AI_CONTEXT.md` and `STATUS.json`.

@@ -40,5 +40,5 @@ provider-dependent milestone
 Durable checkpoint details now live in:
 
 ~~~text
-../TESTING_POLICY.md
+../../../tests/TESTING_POLICY.md
 ~~~

@@ -62,8 +62,8 @@ Outputs:
 
 ~~~text
 README.md
-REQUIREMENTS.md
-ARCHITECTURE.md
+docs/requirements.md
+docs/architecture.md
 ROADMAP.md
 ~~~
 
@@ -74,7 +74,7 @@ Defines V1 boundaries and browser-only architecture.
 Output:
 
 ~~~text
-DATA_MODEL.md
+docs/data-model.md
 ~~~
 
 Defines:
@@ -91,7 +91,7 @@ Defines:
 Output:
 
 ~~~text
-VIEWER_UX.md
+docs/viewer-ux.md
 ~~~
 
 Defines current table, history detail, sorting, live-update behavior and diagnostics.
@@ -101,7 +101,7 @@ Defines current table, history detail, sorting, live-update behavior and diagnos
 Output:
 
 ~~~text
-TEST_PLAN.md
+docs/test-plan.md
 ~~~
 
 Substeps:
@@ -311,7 +311,7 @@ Why session/universe are included here:
 
 - persisted cycle/history rows require a valid `sessionId`;
 - the future viewer needs persisted universe metadata for joins;
-- both responsibilities are already part of the durable `DATA_MODEL.md` transaction model.
+- both responsibilities are already part of the durable `docs/data-model.md` transaction model.
 
 Critical invariant:
 

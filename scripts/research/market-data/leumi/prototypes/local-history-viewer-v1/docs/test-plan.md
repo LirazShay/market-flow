@@ -6,13 +6,13 @@ Status:
 Stage 4.1 + Stage 4.2 + Stage 4.3 + Stage 4.4 + Stage 4.5 complete
 ~~~
 
-המסמך מתאר את תוכנית הבדיקות המלאה של Stage 4. המימוש בפועל מתקדם לפי `STATUS.json` ו-`tests/TESTING_POLICY.md`.
+המסמך מתאר את תוכנית הבדיקות המלאה של Stage 4. המימוש בפועל מתקדם לפי `../STATUS.json` ו-`tests/TESTING_POLICY.md`.
 
 ---
 
 # Stage 4.1 — Storage / Schema Test Cases
 
-מטרה: להוכיח שה-IndexedDB נוצר בדיוק לפי DATA_MODEL.md וששורד reopen בלי לשנות schema.
+מטרה: להוכיח שה-IndexedDB נוצר בדיוק לפי data-model.md וששורד reopen בלי לשנות schema.
 
 ## T4.1.1 — Database creation
 
@@ -114,7 +114,7 @@ bySession
 Pass criteria:
 
 - כל index קיים.
-- keyPath של כל index תואם ל-DATA_MODEL.md.
+- keyPath של כל index תואם ל-data-model.md.
 
 ---
 

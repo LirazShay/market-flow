@@ -40,8 +40,8 @@ Run 35744806678
 AI_CONTEXT.md
 STATUS.json
 ROADMAP.md — Stage 8 only
-DATA_MODEL.md — stores + transaction boundaries
-ARCHITECTURE.md — write/success boundary
+docs/data-model.md — stores + transaction boundaries
+docs/architecture.md — write/success boundary
 storage/README.md
 storage/schema.js
 storage/connection.js

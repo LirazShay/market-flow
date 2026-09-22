@@ -275,7 +275,7 @@
   },
   "lastCompletedMiniProject": {
     "id": "testing-refactor",
-    "path": "tests/testing-refactor/",
+    "path": "docs/history/testing-refactor/",
     "status": "complete",
     "completedAt": "2026-09-22",
     "resumeMainStage": "7.3"
@@ -289,7 +289,8 @@
     "allStages": "ROADMAP.md",
     "currentProgress": "STATUS.json",
     "fastContext": "AI_CONTEXT.md",
-    "freshChatBoundary": "HANDOFF.md"
+    "freshChatBoundary": "HANDOFF.md",
+    "designDocs": "docs/README.md"
   },
   "contextAudit": {
     "date": "2026-09-22",
@@ -302,5 +303,21 @@
       "dynamic universe wording replaces hardcoded three-chunk requirement",
       "missing HANDOFF.md added"
     ]
+  },
+  "repositoryLayout": {
+    "operationalRoot": [
+      "README.md",
+      "ROADMAP.md",
+      "STATUS.json",
+      "AI_CONTEXT.md",
+      "HANDOFF.md"
+    ],
+    "designDocs": "docs/",
+    "implementation": [
+      "recorder/",
+      "storage/"
+    ],
+    "tests": "tests/",
+    "historicalDocs": "docs/history/"
   }
 }

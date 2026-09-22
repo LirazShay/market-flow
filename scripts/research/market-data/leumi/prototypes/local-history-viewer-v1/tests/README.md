@@ -468,3 +468,20 @@ The Browser CI workflow was restored after verification to checkpoint-only trigg
 workflow_dispatch
 workflow_call
 ~~~
+
+
+---
+
+## Historical testing-refactor notes
+
+The completed testing-refactor mini-project documentation was moved out of the executable test tree to:
+
+~~~text
+../docs/history/testing-refactor/
+~~~
+
+Current test policy remains:
+
+~~~text
+TESTING_POLICY.md
+~~~

@@ -1,127 +1,90 @@
 # Market Flow
 
-מאגר מרכזי למערכת Market Flow.
+Market Flow הוא repository מחקר ופיתוח למערכת market-data רחבה יותר.
 
-המטרה ארוכת הטווח של הפרויקט היא לבנות בהדרגה מערכת מלאה ל-market data, collection, scanning, analysis ובהמשך execution וניהול מסחר.
+## Start here
 
-הפרויקט נבנה בהתקדמות הדרגתית וביחידות עבודה קוהרנטיות שניתנות לבדיקה. גבולות הנדסיים ובדיקתיים קודמים לחלוקה שרירותית לפי הודעות.
+אם נכנסת ל-repository בפעם הראשונה, אל תנסה לקרוא הכול.
 
-## Start here — AI / Developers
+| אני רוצה... | לך לכאן |
+|---|---|
+| להמשיך את הפיתוח הפעיל | [Local History Viewer V1](scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/README.md) |
+| לראות את כל שלבי V1 | [V1 ROADMAP](scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/ROADMAP.md) |
+| לדעת בדיוק איפה הפיתוח עומד עכשיו | [V1 STATUS](scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json) |
+| להבין את מחקר Leumi API | [Leumi API docs](docs/leumi-api/README.md) |
+| להבין את מצב הפרויקט כולו | [Current State](docs/project/current-state.md) |
+| לראות החלטות ארכיטקטוניות | [Decision Index](docs/project/decisions.md) |
+| להבין איך repository מסודר | [Repository Structure](docs/project/repository-structure.md) |
+| לעבוד כ-AI/agent | [AGENTS.md](AGENTS.md) |
 
-נקודת הכניסה הקבועה:
+## Repository map
 
-1. [AGENTS.md](AGENTS.md) — כללי העבודה הקצרים והמחייבים.
-2. ב-workstream פעיל, אם קיימים `AI_CONTEXT.md` ו-`STATUS.json`, משתמשים בהם כ-fast continuation context.
-3. קוראים מסמכי project/domain רחבים רק כאשר המשימה דורשת אותם.
+~~~text
+market-flow/
+├── README.md
+├── AGENTS.md
+├── PROJECT_CONTEXT.md
+│
+├── docs/
+│   ├── project/          cross-project context / decisions / structure
+│   └── leumi-api/        durable Leumi API knowledge/evidence
+│
+├── scripts/
+│   └── research/
+│       └── market-data/
+│           └── leumi/
+│               ├── capture/
+│               ├── collection/
+│               ├── demos/
+│               ├── tests/
+│               └── prototypes/
+│                   └── local-history-viewer-v1/   ← active implementation
+│
+├── src/                  reserved for future production code
+└── tests/                reserved for future production tests
+~~~
 
-ה-repository הוא ה-source of truth המשותף בין chats ו-agents.
+## Active development
 
-המטרה היא להימנע מקריאה מחדש של כל ה-repository בכל שינוי קטן, בלי לוותר על durable documentation.
-
-## Project map
-
-- [Current State](docs/project/current-state.md)
-- [System Scope](docs/project/system-scope.md)
-- [Decision Index](docs/project/decisions.md)
-- [Chat / Workstream Map](docs/project/chat-map.md)
-- [Repository Structure](docs/project/repository-structure.md)
-- [ChatGPT Project Instructions](docs/project/chatgpt-project-instructions.md)
-
-## איפה כתובים כל השלבים
-
-הפיתוח הפעיל כרגע הוא:
+ה-workstream הפעיל הוא:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
-שלושת קבצי הניווט המחייבים שם הם:
+בתוך התיקייה הזו יש חלוקה ברורה:
 
 ~~~text
-ROADMAP.md
-    כל שלבי V1, הסדר וה-scope שלהם
+README.md       front door / navigation
+ROADMAP.md      all V1 stages and order
+STATUS.json     authoritative current progress
+AI_CONTEXT.md   compact AI continuation context
+HANDOFF.md      optional fresh-chat handoff
 
-STATUS.json
-    מה הושלם, מה נוכחי ומה הבא
-
-AI_CONTEXT.md
-    context טכני קצר להמשך עבודה
+docs/           stable V1 design documents
+recorder/       recorder implementation
+storage/        IndexedDB implementation
+tests/          executable tests + testing policy
 ~~~
 
-כלומר:
+## Verified Leumi foundation
 
-~~~text
-רוצה לראות את כל התוכנית? → ROADMAP.md
-רוצה לדעת איפה אנחנו עכשיו? → STATUS.json
-רוצה להמשיך לפתח? → AI_CONTEXT.md + STATUS.json
-~~~
+המחקר עד כה הוכיח, בנקודת הזמן שנבדקה:
 
-אין לשכפל status לתוך ROADMAP; כך לא נוצרים שני מקורות אמת שסותרים זה את זה.
+- MapHeat2 סיפק universe של 561 ניירות.
+- GetSecuritiesData סיפק full coverage ב-3 batches של 187 באותו snapshot שנבדק.
+- `MapHeat2.PaperId == GetSecuritiesData.Key` נבדק ב-561/561.
+- field coverage נמדד.
+- polling stability נבדק במשך 40.03 דקות: 481 cycles הושלמו, 0 נכשלו.
 
-## Phase 01 — Market Data / Leumi API Research
+אלה observations שנבדקו, לא API contracts קבועים. אין hardcode ל-561.
 
-ה-workstream הראשון:
+## Project rules
 
-~~~text
-01 – Market Data / Leumi API Research
-~~~
+- repository הוא source of truth.
+- operational progress נמצא ב-`STATUS.json`, לא ב-ROADMAP.
+- unknown API behavior נשאר `Unknown` ולא הופך להנחה.
+- `null != 0 != ""`.
+- research code אינו production code.
+- secrets/session data לא נכנסים ל-repository.
 
-תיעוד:
-
-~~~text
-docs/leumi-api/
-~~~
-
-קוד מחקר:
-
-~~~text
-scripts/research/market-data/leumi/
-~~~
-
-### Verified foundation
-
-- MapHeat2 מחזיר universe/metadata.
-- snapshot שנבדק כלל 561 ניירות.
-- GetSecuritiesData מחזיר detailed/dynamic market data לפי IDs.
-- כל 561 הניירות התקבלו בהצלחה ב-3 batches של 187.
-- PaperId == Key נבדק ב-561/561.
-- בוצע field coverage מלא.
-- browser table PoC עבד.
-- long-running polling stability נבדק בפועל במשך 40.03 דקות: 481 cycles הושלמו ללא cycle failure.
-
-לפרטים:
-
-[Leumi API Research](docs/leumi-api/README.md)
-
-### Active prototype — Local History Viewer V1
-
-~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
-~~~
-
-Current fast context:
-
-~~~text
-AI_CONTEXT.md
-STATUS.json
-~~~
-
-ה-prototype כבר נמצא ב-implementation: IndexedDB foundation קיים, Stage 7 recorder הושלם ואומת ב-Fast CI וב-Chromium, והשלב הבא הוא Stage 8 — persistence integration.
-
-## Important
-
-הפרויקט עדיין לא כולל production collector, database, scanner, execution engine או production UI.
-
-אין להסיק מקיומו של scope עתידי שרכיב כבר נבנה.
-
-## Core principle
-
-אין להניח משמעות לשדה, endpoint, behavior או architecture שלא נבדקו או הוחלטו.
-
-יש לסמן ידע כ:
-
-~~~text
-Verified
-Inferred
-Unknown
-~~~

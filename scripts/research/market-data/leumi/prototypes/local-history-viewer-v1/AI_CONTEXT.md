@@ -236,7 +236,7 @@ tests/TESTING_POLICY.md
 Historical refactor plan/status:
 
 ~~~text
-tests/testing-refactor/
+docs/history/testing-refactor/
 ~~~
 
 CI must not contain Leumi cookies, tokens, credentials, or account data.
@@ -263,10 +263,10 @@ Update `docs/project/current-state.md` only for meaningful project/workstream mi
 ## Durable sources — read only when needed
 
 ~~~text
-ARCHITECTURE.md
-DATA_MODEL.md
-VIEWER_UX.md
-TEST_PLAN.md
+docs/architecture.md
+docs/data-model.md
+docs/viewer-ux.md
+docs/test-plan.md
 ROADMAP.md
 docs/leumi-api/
 docs/project/decisions.md → then only relevant docs/project/decisions/D-NNN.md
