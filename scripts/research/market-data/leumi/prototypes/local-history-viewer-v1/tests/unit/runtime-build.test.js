@@ -206,22 +206,61 @@ test(
             Buffer.byteLength(
                 bookmarklet,
                 "utf8"
-            ) <=
-                runtimeBuilder
-                    .MAX_BOOKMARKLET_BYTES,
-            true,
-            "Bookmarklet exceeds the packaging guardrail."
-        );
-
-        assert.equal(
-            runtimeBuilder
-                .MAX_BOOKMARKLET_BYTES,
-            256 * 1024
+            ),
+            Buffer.byteLength(
+                compactRuntimeText,
+                "utf8"
+            ) +
+                Buffer.byteLength(
+                    "javascript:",
+                    "utf8"
+                )
         );
 
         assert.equal(
             compactRuntimeText.length <
                 runtimeText.length,
+            true
+        );
+    }
+);
+
+test(
+    "Stage 19.2 Bookmarklet packaging has no arbitrary absolute size ceiling",
+    () => {
+        const largeRuntimeText =
+            "(()=>{const payload=\"" +
+            "x".repeat(
+                300 * 1024
+            ) +
+            "\";window.__marketFlowLargePayload=payload.length;})();";
+
+        const bookmarklet =
+            runtimeBuilder
+                .buildBookmarkletText(
+                    largeRuntimeText
+                );
+
+        assert.equal(
+            bookmarklet.startsWith(
+                "javascript:"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "%20"
+            ),
+            false
+        );
+
+        assert.equal(
+            Buffer.byteLength(
+                bookmarklet,
+                "utf8"
+            ) >
+                256 * 1024,
             true
         );
     }
