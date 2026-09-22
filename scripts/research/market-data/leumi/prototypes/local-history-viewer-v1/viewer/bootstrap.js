@@ -25,6 +25,9 @@
     const diagnostics =
         window.MarketFlowViewerDiagnostics;
 
+    const debugBundle =
+        window.MarketFlowDebugBundle;
+
     if (!stateLogic) {
         throw new Error(
             "MarketFlowViewerStateLogic is not loaded."
@@ -56,6 +59,13 @@
         throw new Error(
             "MarketFlowViewerDiagnostics is not loaded. " +
             "Load viewer/diagnostics.js before viewer/bootstrap.js."
+        );
+    }
+
+    if (!debugBundle) {
+        throw new Error(
+            "MarketFlowDebugBundle is not loaded. " +
+            "Load debug/debug-bundle.js before viewer/bootstrap.js."
         );
     }
 
@@ -300,6 +310,86 @@
                     "live-refresh-status"
             }
         );
+
+        const exportDebugButton =
+            documentRef.createElement(
+                "button"
+            );
+
+        exportDebugButton.type =
+            "button";
+
+        exportDebugButton.dataset.role =
+            "export-debug";
+
+        exportDebugButton.textContent =
+            "הורד קובץ Debug";
+
+        actions.appendChild(
+            exportDebugButton
+        );
+
+        const debugExportStatus =
+            appendTextElement(
+                documentRef,
+                actions,
+                "span",
+                "",
+                {
+                    "data-role":
+                        "debug-export-status",
+                    class:
+                        "live-refresh-status",
+                    "aria-live":
+                        "polite"
+                }
+            );
+
+        exportDebugButton
+            .addEventListener(
+                "click",
+                async () => {
+                    if (
+                        exportDebugButton
+                            .disabled
+                    ) {
+                        return;
+                    }
+
+                    exportDebugButton
+                        .disabled =
+                        true;
+
+                    debugExportStatus
+                        .textContent =
+                        "מכין קובץ Debug...";
+
+                    try {
+                        const result =
+                            await debugBundle
+                                .download();
+
+                        debugExportStatus
+                            .textContent =
+                            "הורד: " +
+                            result
+                                .fileName;
+                    } catch (error) {
+                        console.error(
+                            "Debug Bundle export failed.",
+                            error
+                        );
+
+                        debugExportStatus
+                            .textContent =
+                            "ייצוא Debug נכשל.";
+                    } finally {
+                        exportDebugButton
+                            .disabled =
+                            false;
+                    }
+                }
+            );
 
         header.appendChild(
             actions
