@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.1 — recorder skeleton + configuration
+Stage 7.2 — universe loader
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
@@ -26,6 +26,7 @@ MapHeat2
 
 ~~~text
 config.js
+universe-loader.js
 ~~~
 
 מוגדרים:
@@ -36,9 +37,20 @@ config.js
 - policy לגבי refresh של universe.
 - validation של overrides.
 
-אין:
-- fetch.
-- timers.
+Stage 7.2 מוסיף:
+
+- MapHeat2 count request.
+- full universe request לפי recordCount.
+- validation ל-recordCount ול-records length.
+- validation ל-PaperId חסר/כפול.
+- canonical securityId כמחרוזת.
+- chunk planning לפי config.chunkSize.
+
+אם recordCount משתנה בין קריאת count לקריאה המלאה, הטעינה נכשלת במפורש במקום לקבל universe לא עקבי.
+
+עדיין אין:
+
+- GetSecuritiesData.
 - polling loop.
 - DB writes.
 - viewer integration.
