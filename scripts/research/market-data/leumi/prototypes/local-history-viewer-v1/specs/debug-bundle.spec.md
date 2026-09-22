@@ -58,9 +58,12 @@ Intended flow:
 ~~~text
 run normal Bookmarklet
 → problem occurs
-→ generate/download Debug Bundle
+→ click "הורד קובץ Debug" in the Viewer
+→ Debug Bundle is generated/downloaded from the existing runtime
 → inspect bounded sanitized evidence
 ~~~
+
+The Viewer action is a convenience surface over the same Debug Bundle API. It must not create another collector/recorder or make provider requests.
 
 A cycle diagnostic must include:
 
@@ -96,8 +99,9 @@ market changed + provider time changed
 8. Recent-cycle comparison reports changed-security counts rather than assuming repeated cycles are identical.
 9. A missing previous cycle yields unknown/no comparison rather than inventing zero changes.
 10. Debugging output must be JSON-serializable.
-11. Diagnostic evidence does not itself decide whether the exchange is open or closed.
-12. Operational stage/status snapshots remain owned by `STATUS.json`, not this spec.
+11. Viewer export is observational and must not make provider requests or mutate market persistence.
+12. Diagnostic evidence does not itself decide whether the exchange is open or closed.
+13. Operational stage/status snapshots remain owned by `STATUS.json`, not this spec.
 
 ## Failure semantics
 
@@ -136,7 +140,7 @@ Pure fingerprint/change-detection behavior:
 ../tests/unit/debug-bundle-logic.test.js
 ~~~
 
-Browser/IndexedDB/runtime integration will be covered by Playwright once the bundle collector/export API is connected to the assembled runtime.
+Browser/IndexedDB/runtime integration is covered by Playwright for the collector, assembled runtime API/download, and Viewer export action.
 
 Real provider usefulness remains live verification.
 
