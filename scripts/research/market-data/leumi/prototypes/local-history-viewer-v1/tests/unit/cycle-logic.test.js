@@ -405,7 +405,7 @@ test(
 );
 
 test(
-    "finalizeCompleteCycle rejects cross-chunk duplicate response keys",
+    "finalizeCompleteCycle rejects a cross-chunk duplicate attempt at the affected chunk boundary",
     () => {
         const universe =
             createUniverse();
@@ -455,13 +455,13 @@ test(
                     startedAtMs: 0,
                     completedAtMs: 10
                 }),
-            /duplicate security Keys across chunks/
+            /response membership does not match requested IDs/
         );
     }
 );
 
 test(
-    "finalizeCompleteCycle rejects globally missing or unexpected IDs",
+    "finalizeCompleteCycle rejects a missing or unexpected ID at the affected chunk boundary",
     () => {
         const universe =
             createUniverse();
@@ -511,7 +511,7 @@ test(
                     startedAtMs: 0,
                     completedAtMs: 10
                 }),
-            /cycle membership mismatch/
+            /response membership does not match requested IDs/
         );
     }
 );
