@@ -318,7 +318,7 @@ recorder/config.js
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נממש רק:
@@ -328,6 +328,12 @@ Next
 - chunk planning לפי chunkSize.
 
 #### Stage 7.3 — Single chunk fetch
+
+Status:
+
+~~~text
+Next
+~~~
 
 נממש רק:
 - GetSecuritiesData request עבור chunk אחד.
