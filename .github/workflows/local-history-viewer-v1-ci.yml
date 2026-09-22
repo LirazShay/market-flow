@@ -4,11 +4,19 @@ on:
   push:
     paths:
       - ".github/workflows/local-history-viewer-v1-ci.yml"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.html"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.css"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/package.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/fixtures/**"
   pull_request:
     paths:
       - ".github/workflows/local-history-viewer-v1-ci.yml"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.html"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.css"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/package.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/fixtures/**"
 
 permissions:
   contents: read

@@ -9,24 +9,20 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "6.4-6.5",
-    "title": "Playwright harness + GitHub Actions CI verification",
-    "status": "verification-pending"
+    "stage": "6.6",
+    "title": "Automate existing storage self-tests",
+    "status": "next"
   },
   "recommendedNaturalBatch": [
     {
-      "stage": "6.4",
-      "title": "Verify Playwright browser-test harness"
-    },
-    {
-      "stage": "6.5",
-      "title": "Verify GitHub Actions workflow"
+      "stage": "6.6",
+      "title": "Automate existing storage self-tests"
     }
   ],
-  "stopBoundaryAfterRecommendedBatch": "6.5",
+  "stopBoundaryAfterRecommendedBatch": "6.6",
   "nextAfterRecommendedBatch": {
-    "stage": "6.6",
-    "title": "Automate existing storage self-tests"
+    "stage": "6.7",
+    "title": "Mock API fixture infrastructure"
   },
   "stages": [
     {
@@ -76,8 +72,8 @@
         "6.1": "implemented-browser-execution-pending",
         "6.2": "implemented-browser-execution-pending",
         "6.3": "implemented-browser-execution-pending",
-        "6.4": "implemented-ci-verification-pending",
-        "6.5": "implemented-ci-verification-pending",
+        "6.4": "complete",
+        "6.5": "complete",
         "6.6": "planned",
         "6.7": "planned"
       }
@@ -168,10 +164,16 @@
   ],
   "verification": {
     "storageSelfTests": "implemented-browser-execution-pending",
-    "playwrightHarness": "implemented-ci-verification-pending",
-    "githubActions": "implemented-ci-verification-pending",
+    "playwrightHarness": "verified-in-github-actions",
+    "githubActions": "verified-success",
     "mockedApiInfrastructure": "not-started",
-    "liveLeumiV1Integration": "not-started"
+    "liveLeumiV1Integration": "not-started",
+    "lastCiVerification": {
+      "workflow": "Local History Viewer V1 CI",
+      "runId": 35737659820,
+      "commit": "ff65a6b0c971a0ba8683effb95dae87f87dccafe",
+      "conclusion": "success"
+    }
   },
   "fastContext": {
     "file": "AI_CONTEXT.md",

@@ -221,3 +221,26 @@ Workflow:
 ~~~
 
 It runs the Playwright browser suite on relevant push/PR changes, uses no Leumi credentials/session, and uploads Playwright diagnostics on failure.
+
+
+### Verified CI run
+
+Stage 6.4 + 6.5 were verified in GitHub Actions:
+
+~~~text
+Workflow: Local History Viewer V1 CI
+Run: 35737659820
+Commit: ff65a6b0c971a0ba8683effb95dae87f87dccafe
+Conclusion: success
+~~~
+
+Verified steps:
+
+- dependency installation.
+- Chromium installation.
+- browser-test server startup.
+- Playwright smoke test.
+- real Chromium IndexedDB availability.
+- storage/self-test modules loaded without browser page errors.
+
+The workflow path filter intentionally ignores documentation/status-only changes so normal project-status updates do not spend CI time unnecessarily.
