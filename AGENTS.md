@@ -52,37 +52,36 @@ Do not mechanically read every project file.
 
 ---
 
-## 2. Work in natural verification batches
+## 2. Choose implementation scope naturally
 
-The user often writes:
+When the user asks to continue existing work, continue from the current repository state and choose the implementation scope according to technical coherence and verification needs.
 
-~~~text
-תמשיך לשלב הבא
-~~~
+There is **no fixed relationship between one chat message and one stage/substage**.
 
-Interpret this as:
+A response may implement:
 
-> advance one **natural, reviewable work batch**.
+- part of a substage;
+- one complete stage;
+- several adjacent stages;
 
-A batch may include 1–3 adjacent substeps when:
-
-- they belong to the same component;
-- there is no meaningful user decision between them;
-- they can be tested together;
-- combining them reduces tool/Git overhead;
-- the resulting change remains easy to review.
+when that is the most coherent and efficient way to work.
 
 Prefer:
 
 ~~~text
-natural verification boundary
+meaningful implementation + verification boundary
 over
-arbitrary numbering boundary
+arbitrary numbering/message boundary
 ~~~
 
-Do not automatically continue past that boundary.
+Do not stop merely because a numbered stage ended if the next adjacent work belongs to the same coherent change.
 
-Do not jump into unrelated future stages.
+Stop when there is a real reason, such as:
+
+- a meaningful verification boundary;
+- a user/product decision is needed;
+- the next work is unrelated;
+- continuing would make the change hard to review or validate.
 
 ---
 

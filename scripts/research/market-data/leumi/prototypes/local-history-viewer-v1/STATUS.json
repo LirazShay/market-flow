@@ -13,17 +13,6 @@
     "title": "Split CI by speed and purpose",
     "status": "next"
   },
-  "recommendedNaturalBatch": [
-    {
-      "stage": "T5",
-      "title": "Split CI by speed and purpose"
-    }
-  ],
-  "stopBoundaryAfterRecommendedBatch": "T5",
-  "nextAfterRecommendedBatch": {
-    "stage": "T6",
-    "title": "Migration + checkpoint policy"
-  },
   "stages": [
     {
       "stage": "1",
@@ -194,5 +183,6 @@
     "currentStatus": "complete",
     "nextStage": "T5",
     "resumeMainStage": "7.3"
-  }
+  },
+  "executionScopePolicy": "adaptive-no-fixed-stage-per-message"
 }

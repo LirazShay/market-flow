@@ -350,19 +350,23 @@ Examples/fixtures should be minimized and sanitized.
 
 ---
 
-# 15. Natural work-batch sizing
+# 15. Natural implementation sizing
 
-The project uses small increments, but over-fragmentation is also a cost.
+The project uses incremental development, but chat-message boundaries must not dictate engineering boundaries.
 
-A good work batch:
+There is no preset rule such as "one substep per message", "one stage per message", or a fixed number of adjacent substeps.
 
-- has one coherent objective;
-- usually touches one component/boundary;
-- can be tested as a unit;
+Choose scope based on the work itself.
+
+A good implementation unit:
+
+- has a coherent objective;
+- can be verified meaningfully;
 - does not require user feedback in the middle;
-- creates a reviewable Git change.
+- leaves the repository in a clear state;
+- remains understandable and reviewable.
 
-It is acceptable to combine 2–3 neighboring numbered substeps when they form one natural verification boundary.
+It may be smaller than a numbered substage, equal to a full stage, or span several adjacent stages when they naturally belong together.
 
 Do not combine unrelated architecture, storage, polling, and UI work merely to reduce message count.
 
