@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "15",
-    "substep": "15.3",
-    "title": "Viewer diagnostics — always-visible diagnostics UI and refresh integration",
-    "status": "in-progress"
+    "substep": "15.4",
+    "title": "Viewer diagnostics — Stage 15 acceptance and closure",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -166,7 +166,7 @@
       "substeps": {
         "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
         "15.2": "complete-fast-ci-verified — pure recorder-health semantics + diagnostics presentation model",
-        "15.3": "in-progress — always-visible diagnostics metrics + initial/manual/broadcast DB refresh",
+        "15.3": "complete-browser-ci-verified — always-visible diagnostics metrics + initial/manual/broadcast IndexedDB refresh",
         "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
       }
     },
@@ -209,14 +209,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35776989818,
-      "jobId": 106912597984,
-      "commit": "013762b4ded9488671fb79d6bef31789c8b0a577",
+      "runId": 35778938866,
+      "jobId": 106919156250,
+      "commit": "277aab8e8b106593af507045960d048a85a87cb5",
       "conclusion": "success",
       "tests": [
-        "2 targeted Chromium tests",
-        "Stage 15.1 diagnostics snapshot",
-        "2 passed / 0 failed"
+        "12 targeted viewer-cluster Chromium tests",
+        "viewer diagnostics + bootstrap + live-refresh + security detail",
+        "12 passed / 0 failed"
       ]
     },
     "fastCi": "verified-success",
@@ -228,14 +228,14 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35777567499,
-      "jobId": 106914538606,
-      "commit": "5ce647fd9c52f19ec1f40c01b8ad4ef4e5364c23",
+      "runId": 35778918364,
+      "jobId": 106919086007,
+      "commit": "1a1d4ed9b71497e9b64e95a04c3eb29e8e9628a3",
       "conclusion": "success",
       "tests": 148,
       "passed": 148,
       "failed": 0,
-      "durationMs": 72.841112
+      "durationMs": 81.243135
     },
     "testingRefactor": {
       "status": "complete",
@@ -1028,6 +1028,64 @@
         "unknown recorder-derived metrics stay null while DB row counts can legitimately be zero",
         "unsupported persisted recorder status is rejected instead of silently guessed"
       ]
+    },
+    "stage15_3": {
+      "status": "complete",
+      "testsFirst": true,
+      "testContractCommit": "92c3595b5999e714c7efd8556653cf2e78d3e552",
+      "expectedRedRun": {
+        "runId": 35778016166,
+        "conclusion": "failure",
+        "tests": 2,
+        "passed": 0,
+        "failed": 2,
+        "cause": "Diagnostics UI had not been implemented yet: recorder-health remained placeholder and new metrics were absent."
+      },
+      "implementationCommit": "9e0253788c4bcd6946a0fe77180f95382edd294c",
+      "targetedBrowser": {
+        "runId": 35778299834,
+        "jobId": 106917010243,
+        "conclusion": "success",
+        "tests": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "relatedClusterFirstRun": {
+        "runId": 35778483545,
+        "jobId": 106917628396,
+        "conclusion": "failure",
+        "tests": 12,
+        "passed": 8,
+        "failed": 4,
+        "cause": "Historical Stage 12–14 tests used the header last-cycle metric as a current-table synchronization signal. Stage 15 makes that metric authoritative from meta.recorderState, so fixtures without recorderState correctly rendered —. The tests were migrated to synchronize/assert the behavior they actually own: current-row data, refreshCount, sort/order and viewport."
+      },
+      "contractMigrationCommit": "1a1d4ed9b71497e9b64e95a04c3eb29e8e9628a3",
+      "fastCi": {
+        "runId": 35778918364,
+        "jobId": 106919086007,
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "finalViewerCluster": {
+        "runId": 35778938866,
+        "jobId": 106919156250,
+        "conclusion": "success",
+        "tests": 12,
+        "passed": 12,
+        "failed": 0
+      },
+      "workflowRestoreCommit": "20b0737138dde25862b746c990cd1c2d03a092ca",
+      "verifiedBehaviors": [
+        "diagnostics metrics are visible in the persistent header in MAIN and DETAIL",
+        "initial viewer load reads recorderState, latest cycle, DB counts and storage estimate from authoritative sources",
+        "recorder health is written to both visible Hebrew status and viewer shell state",
+        "header exposes last update, last cycle, cycle duration, latest security count, successful/failed cycle counts, history count and storage usage",
+        "manual refresh rereads diagnostics from IndexedDB without invoking the market API",
+        "CYCLE_COMMITTED refresh rereads diagnostics from IndexedDB through the same live-refresh path",
+        "existing bootstrap/live-refresh/detail behavior remains green after migrating stale last-cycle synchronization assertions"
+      ]
     }
   },
   "fastContext": {
@@ -1057,10 +1115,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 15.3 is in progress. Browser contract will run before implementation.",
+    "reached": true,
+    "reason": "Stage 15.3 is complete and verified. Stage 15 remains open; the next natural work is Stage 15.4 acceptance review and mandatory Stage-closure Fast + full Browser CI.",
     "nextStage": "15",
-    "nextSubstep": "15.3"
+    "nextSubstep": "15.4"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
