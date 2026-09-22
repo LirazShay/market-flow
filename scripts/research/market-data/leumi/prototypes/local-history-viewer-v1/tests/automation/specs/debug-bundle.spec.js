@@ -207,17 +207,48 @@ test(
         );
 
         expect(
+            bundle.safety
+                .authorizationHeadersIncluded
+        ).toBe(false);
+
+        expect(
+            bundle.safety
+                .cookiesIncluded
+        ).toBe(false);
+
+        expect(
+            bundle.safety
+                .browserStorageDumpIncluded
+        ).toBe(false);
+
+        expect(
             serialized
-                .toLowerCase()
-        ).not.toContain(
-            "authorization"
+        ).not.toMatch(
+            /"authorization"\s*:/i
         );
 
         expect(
             serialized
-                .toLowerCase()
-        ).not.toContain(
-            "cookie"
+        ).not.toMatch(
+            /"cookie"\s*:/i
+        );
+
+        expect(
+            serialized
+        ).not.toMatch(
+            /"accountNumber"\s*:/i
+        );
+
+        expect(
+            serialized
+        ).not.toMatch(
+            /"sessionStorage"\s*:/i
+        );
+
+        expect(
+            serialized
+        ).not.toMatch(
+            /"localStorage"\s*:/i
         );
 
         await page.evaluate(
