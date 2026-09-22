@@ -1788,6 +1788,38 @@
         "browserCiTests": "54 passed / 0 failed",
         "runtimeArtifact": "local-history-viewer-v1-runtime"
       }
+    },
+    "specificationHardening": {
+      "status": "complete",
+      "repositoryPolicy": "docs/project/specification-policy.md",
+      "workstreamSpecIndex": "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/specs/README.md",
+      "specs": [
+        "system.spec.md",
+        "provider-data-contract.spec.md",
+        "recorder.spec.md",
+        "persistence.spec.md",
+        "messaging.spec.md",
+        "viewer.spec.md",
+        "runtime-delivery.spec.md",
+        "research-evolution.spec.md"
+      ],
+      "maintenanceHooks": [
+        "AGENTS.md mandatory SPEC impact review",
+        "docs/project/engineering-practices.md Definition of Done",
+        ".github/pull_request_template.md checklist",
+        "major component README → owning spec links",
+        "tests/unit/spec-architecture.test.js guard"
+      ],
+      "fastCi": {
+        "runId": 35792454254,
+        "jobId": 106963909907,
+        "conclusion": "success",
+        "tests": 158,
+        "passed": 158,
+        "failed": 0
+      },
+      "browserCi": "not-required — documentation/spec architecture plus Node unit guard only; no browser behavior changed",
+      "sourceOfTruthGuard": "verified green in same Fast CI run"
     }
   },
   "fastContext": {
@@ -1799,19 +1831,7 @@
       "directly relevant tests"
     ]
   },
-  "activeMiniProject": {
-    "id": "specification-hardening",
-    "title": "Durable specification system and Local History Viewer V1 specification set",
-    "status": "in-progress",
-    "reason": "Create a multi-spec documentation layer for system intent, contracts, rationale, reuse/evolution, and mandatory spec-impact maintenance without duplicating live operational status.",
-    "scope": [
-      "repository-wide specification policy",
-      "mandatory spec-impact review in agent/engineering rules",
-      "workstream spec index and component/system specs",
-      "spec architecture guard test",
-      "navigation from durable documentation"
-    ]
-  },
+  "activeMiniProject": null,
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
@@ -1822,18 +1842,18 @@
     "hardGate": "No added/modified test may be deferred unexecuted. Red or unexecuted changed tests block progression. No numbered Stage may be marked complete without fresh full Browser CI on its final state."
   },
   "lastCompletedMiniProject": {
-    "id": "testing-refactor",
-    "path": "docs/history/testing-refactor/",
+    "id": "specification-hardening",
+    "path": "specs/",
     "status": "complete",
-    "completedAt": "2026-09-22",
-    "resumeMainStage": "7.3"
+    "completedAt": "2026-09-23",
+    "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Stage 19.2 Bookmarklet packaging repair is fully verified. The latest stable artifact is raw compact JavaScript with no %20/percent encoding and no arbitrary absolute size ceiling.",
+    "reason": "Specification hardening mini-project is complete and Fast CI verified. Main workstream remains at provider-dependent live verification.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Download the latest verified Bookmarklet from the stable release and execute docs/live-verification.md in the authenticated Leumi browser, then record sanitized Verified/Inferred/Unknown outcomes."
+    "nextAction": "Execute docs/live-verification.md in the authenticated Leumi browser using the latest verified Bookmarklet, then record sanitized Verified/Inferred/Unknown outcomes."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
