@@ -2,43 +2,78 @@
 
 מאגר מרכזי למערכת Market Flow.
 
-המטרה ארוכת הטווח של הפרויקט היא לאפשר איסוף נתוני שוק, סריקה וניתוח, ובהמשך רכיבי ביצוע מסחר. כרגע המאגר נשמר בכוונה בשלב מחקרי קטן ומבוסס-ראיות: מתעדים רק דברים שבדקנו בפועל.
+המטרה ארוכת הטווח של הפרויקט היא לבנות בהדרגה מערכת מלאה ל-market data, collection, scanning, analysis ובהמשך execution וניהול מסחר.
 
-## הוראות עבודה ל-AI ולמפתחים
+הפרויקט נבנה בכוונה micro-step by micro-step, כאשר כל שלב נבדק ומתועד לפני שמתקדמים.
 
-לפני כל שינוי בפרויקט יש לקרוא את [AGENTS.md](AGENTS.md).
+## Start here — AI / Developers
 
-המסמך מגדיר את דרך העבודה הקבועה בפרויקט: עבודה בשלבים קטנים, תיעוד חובה, הבחנה בין Verified / Inferred / Unknown, מדיניות בדיקות, טיפול בשגיאות ושמירה על ידע בתוך ה-repository.
+לפני כל שינוי בפרויקט יש לקרוא:
 
-## מצב נוכחי — 2026-09-22
+1. [AGENTS.md](AGENTS.md) — כללי העבודה המחייבים.
+2. [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) — ההקשר הכולל של הפרויקט.
+3. [docs/project/current-state.md](docs/project/current-state.md) — מה קיים עכשיו ומה עדיין לא.
+4. [docs/project/decisions.md](docs/project/decisions.md) — החלטות שכבר התקבלו.
+5. את התיעוד הספציפי ל-domain שעליו עובדים.
 
-הוכח בפועל מול אתר לאומי:
+ה-repository הוא ה-source of truth המשותף בין chats ו-agents.
 
-- `MarketFast/MapHeat2` מחזיר את רשימת הניירות ואת המטא-דאטה שלהם.
-- התקבל `recordCount = 561`.
-- בקשה עם `pageCount=561` החזירה את כל 561 הרשומות.
-- `SecuritiesFast/GetSecuritiesData` מחזיר נתוני שוק מפורטים ועדכניים עבור רשימת `securityIds`.
-- חלוקה של כל 561 ה-IDs לשלוש קבוצות של 187 עבדה:
-  - 187/187
-  - 187/187
-  - 187/187
-- בדיקת השלמות הסתיימה עם:
-  - Requested: 561
-  - Received: 561
-  - Unique: 561
-  - Duplicates: 0
-  - Missing: 0
+## Project map
 
-## תיעוד לאומי
+- [Current State](docs/project/current-state.md)
+- [System Scope](docs/project/system-scope.md)
+- [Decision Log](docs/project/decisions.md)
+- [Chat / Workstream Map](docs/project/chat-map.md)
 
-כל המחקר הנוכחי נמצא תחת:
+## Phase 01 — Market Data / Leumi API Research
 
-`docs/leumi-api/`
+ה-workstream הראשון:
 
-קוד המחקר שעבד בפועל נמצא תחת:
+~~~text
+01 – Market Data / Leumi API Research
+~~~
 
-`scripts/research/leumi/`
+תיעוד:
 
-## עיקרון עבודה
+~~~text
+docs/leumi-api/
+~~~
 
-אין להניח משמעות לשדה, endpoint או התנהגות שלא נבדקו. כאשר משהו הוא השערה ולא עובדה שנצפתה, יש לסמן זאת במפורש.
+קוד מחקר:
+
+~~~text
+scripts/research/leumi/
+~~~
+
+### Verified foundation
+
+- MapHeat2 מחזיר universe/metadata.
+- snapshot שנבדק כלל 561 ניירות.
+- GetSecuritiesData מחזיר detailed/dynamic market data לפי IDs.
+- כל 561 הניירות התקבלו בהצלחה ב-3 batches של 187.
+- PaperId == Key נבדק ב-561/561.
+- בוצע field coverage מלא.
+- browser table PoC עבד.
+- long-running polling test נכתב, אך ריצת stability ממושכת עדיין Pending verification.
+
+לפרטים:
+
+[Leumi API Research](docs/leumi-api/README.md)
+
+## Important
+
+הפרויקט עדיין לא כולל production collector, database, scanner, execution engine או production UI.
+
+אין להסיק מקיומו של scope עתידי שרכיב כבר נבנה.
+
+## Core principle
+
+אין להניח משמעות לשדה, endpoint, behavior או architecture שלא נבדקו או הוחלטו.
+
+יש לסמן ידע כ:
+
+~~~text
+Verified
+Inferred
+Unknown
+~~~
