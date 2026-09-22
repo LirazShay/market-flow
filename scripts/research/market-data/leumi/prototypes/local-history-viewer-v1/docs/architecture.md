@@ -174,7 +174,7 @@ Channel name:
 market-flow-leumi-v1
 ~~~
 
-Messages מינימליים:
+Messages מינימליים (Stage 12 implementation uses metadata-only payloads):
 
 ~~~text
 RECORDER_STARTED
@@ -195,6 +195,16 @@ completedAt
 ~~~
 
 ה-viewer קורא את הנתונים מה-DB.
+
+Stage 12 verified boundary:
+
+~~~text
+successful IndexedDB commit
+→ CYCLE_COMMITTED metadata notification
+→ viewer rereads IndexedDB
+~~~
+
+If BroadcastChannel is unavailable, IndexedDB remains usable and the viewer falls back to explicit manual DB refresh.
 
 ---
 

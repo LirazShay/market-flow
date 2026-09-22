@@ -235,8 +235,18 @@ Verified in fast tests:
 
 Browser spec is implemented but intentionally deferred to Checkpoint C after Stage 12.
 
-Current:
-Stage 12 — Cross-tab live refresh implemented; Fast CI + planned Viewer Checkpoint C pending.
+Stages 10–12 viewer live-refresh foundation COMPLETE + Chromium Checkpoint C verified
+
+Verified:
+- same-origin viewer bootstrap
+- IndexedDB current table
+- BroadcastChannel metadata-only notifications
+- CYCLE_COMMITTED → IndexedDB reread
+- manual DB-only refresh
+- degraded fallback when BroadcastChannel is unavailable
+
+Next:
+Stage 13 — Dynamic sorting
 ~~~
 
 Stage 8 explicitly includes:

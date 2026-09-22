@@ -706,3 +706,30 @@ Checkpoint C now covers Stages 10–12 together:
 - recorder commit → viewer DB reread;
 - manual DB-only refresh;
 - BroadcastChannel-unavailable degraded fallback.
+
+
+---
+
+## Viewer Checkpoint C — complete
+
+Stages:
+
+~~~text
+10 viewer bootstrap
+11 current table
+12 cross-tab live refresh
+~~~
+
+Evidence:
+
+~~~text
+Fast CI
+Run 35756792160
+136 passed / 0 failed
+
+Browser CI
+Run 35756990977
+34 passed / 0 failed
+~~~
+
+The Browser CI workflow was restored to manual/reusable triggers after the checkpoint.

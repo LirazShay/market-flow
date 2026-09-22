@@ -225,7 +225,7 @@ Status:
 ~~~text
 Implementation in progress
 Stages 7–10 recorder/persistence/diagnostics/viewer bootstrap: complete + Chromium verified
-Current focus: Stage 12 — cross-tab live refresh
+Current focus: Stage 13 — dynamic sorting
 ~~~
 
 Location:
@@ -479,4 +479,38 @@ Next:
 
 ~~~text
 Stage 12 — Cross-tab live refresh
+~~~
+
+
+## Stages 10–12 viewer foundation — completed
+
+The viewer foundation is now browser-verified:
+
+~~~text
+same-origin viewer
+→ IndexedDB current table
+→ BroadcastChannel notification
+→ IndexedDB reread
+~~~
+
+Fallback:
+
+~~~text
+BroadcastChannel unavailable
+→ startup still reads IndexedDB
+→ degraded live-update message
+→ manual DB-only refresh remains usable
+~~~
+
+Evidence:
+
+~~~text
+Fast CI: 136 passed / 0 failed
+Viewer Checkpoint C: 34 Chromium tests passed / 0 failed
+~~~
+
+Next:
+
+~~~text
+Stage 13 — Dynamic sorting
 ~~~

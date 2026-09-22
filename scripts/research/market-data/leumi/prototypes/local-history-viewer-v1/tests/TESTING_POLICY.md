@@ -196,20 +196,28 @@ Verified:
 
 Stage 9 recorder diagnostics does not require another browser run by itself unless it changes browser-only behavior.
 
-### Checkpoint C — Viewer live-refresh foundation complete
+### Checkpoint C — Viewer live-refresh foundation complete ✅
 
-Run after Stages 10–12:
+Completed after Stages 10–12:
 
 ~~~text
-10 viewer bootstrap
-11 current table
-12 cross-tab live refresh
-→ Browser CI
+Fast CI
+Run 35756792160
+136 passed / 0 failed
+
+Browser CI
+Run 35756990977
+34 passed / 0 failed
 ~~~
 
-Purpose:
+Verified:
 
-- verify DOM + IndexedDB + BroadcastChannel integration.
+- DOM + same-origin viewer bootstrap;
+- IndexedDB current-table rendering;
+- BroadcastChannel metadata-only notifications;
+- recorder commit → viewer DB reread;
+- manual DB-only refresh;
+- BroadcastChannel-unavailable degraded fallback.
 
 Stage 13 sorting should primarily use fast unit tests unless browser/UI behavior changes materially.
 

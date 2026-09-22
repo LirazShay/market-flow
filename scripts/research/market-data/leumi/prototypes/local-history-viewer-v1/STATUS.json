@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "12",
-    "title": "Cross-tab live refresh",
-    "status": "fast-and-browser-checkpoint-pending"
+    "stage": "13",
+    "title": "Dynamic sorting",
+    "status": "next"
   },
   "stages": [
     {
@@ -126,13 +126,13 @@
     {
       "stage": "12",
       "title": "Cross-tab live refresh",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "12.1": "implemented — minimal BroadcastChannel message contract",
-        "12.2": "implemented — recorder post-commit/lifecycle notifications",
-        "12.3": "implemented — viewer DB reread on CYCLE_COMMITTED",
-        "12.4": "implemented — manual refresh + degraded fallback",
-        "12.5": "Fast CI + Viewer Checkpoint C pending"
+        "12.1": "complete-fast-ci-verified — minimal BroadcastChannel message contract",
+        "12.2": "complete-browser-ci-verified — recorder post-commit/lifecycle notifications",
+        "12.3": "complete-browser-ci-verified — viewer DB reread on CYCLE_COMMITTED",
+        "12.4": "complete-browser-ci-verified — manual refresh + degraded fallback",
+        "12.5": "complete — Viewer Checkpoint C passed"
       }
     },
     {
@@ -189,14 +189,16 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35754648747,
-      "commit": "64f10b4b166e783bbb36a764604396c255cf666a",
+      "runId": 35756990977,
+      "commit": "88bdca83190b949fb426e3dd0d4ea463f54fcfdc",
       "conclusion": "success",
       "tests": [
-        "29 Chromium tests",
-        "Stage 10 same-origin viewer bootstrap",
-        "shared IndexedDB origin proof",
-        "named viewer reuse",
+        "34 Chromium tests",
+        "Stages 10–12 Viewer Checkpoint C",
+        "Stage 11 IndexedDB current-table rendering",
+        "Stage 12 BroadcastChannel live refresh",
+        "manual refresh fallback",
+        "BroadcastChannel unavailable degraded mode",
         "existing recorder/storage regressions"
       ]
     },
@@ -209,13 +211,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35755728772,
-      "commit": "7ecf414a860c3de91cf2feeeecbe783ac13fe6ea",
+      "runId": 35756792160,
+      "commit": "3e1cda4f3e01788ca52c555d74fa4ee1d41cc6ea",
       "conclusion": "success",
-      "tests": 132,
-      "passed": 132,
+      "tests": 136,
+      "passed": 136,
       "failed": 0,
-      "durationMs": 91.176645
+      "durationMs": 134.153527
     },
     "testingRefactor": {
       "status": "complete",
@@ -489,6 +491,54 @@
         "summary rowCount/lastCycleId/lastCollectedAtMs",
         "duplicate latest/universe IDs rejected"
       ]
+    },
+    "stage12": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35756792160,
+        "commit": "3e1cda4f3e01788ca52c555d74fa4ee1d41cc6ea",
+        "conclusion": "success",
+        "tests": 136,
+        "passed": 136,
+        "failed": 0
+      },
+      "browserCheckpoint": {
+        "firstRun": {
+          "runId": 35756858976,
+          "commit": "828e3851d052a44003417a6806dbebef2e9524df",
+          "conclusion": "failure",
+          "cause": "one new Stage 12 assertion incorrectly counted the initial Stage 11 load as a live-refresh operation; implementation correctly reported one notification-driven refresh"
+        },
+        "finalRun": {
+          "runId": 35756990977,
+          "commit": "88bdca83190b949fb426e3dd0d4ea463f54fcfdc",
+          "conclusion": "success",
+          "tests": 34,
+          "passed": 34,
+          "failed": 0
+        }
+      },
+      "verifiedBehaviors": [
+        "BroadcastChannel name is market-flow-leumi-v1",
+        "notifications contain metadata only, not market row arrays",
+        "CYCLE_COMMITTED is emitted only after successful IndexedDB commit",
+        "viewer responds to CYCLE_COMMITTED by rereading IndexedDB",
+        "manual refresh rereads IndexedDB without invoking market APIs",
+        "BroadcastChannel-unavailable viewer remains usable and surfaces degraded live-update mode",
+        "named same-origin viewer and Stage 11 current table work under real Chromium"
+      ]
+    },
+    "viewerCheckpointC": {
+      "status": "complete",
+      "stages": [
+        "10",
+        "11",
+        "12"
+      ],
+      "browserRunId": 35756990977,
+      "passed": 34,
+      "failed": 0
     }
   },
   "fastContext": {
@@ -517,8 +567,8 @@
   },
   "recommendedChatBoundary": {
     "reached": false,
-    "reason": "Stage 11 current table implementation is complete; Stage 12 will add BroadcastChannel live refresh and then run the planned Viewer Checkpoint C.",
-    "nextStage": "12"
+    "reason": "Stages 10–12 viewer live-refresh foundation is complete and Chromium-verified. Stage 13 sorting is next.",
+    "nextStage": "13"
   },
   "navigation": {
     "allStages": "ROADMAP.md",

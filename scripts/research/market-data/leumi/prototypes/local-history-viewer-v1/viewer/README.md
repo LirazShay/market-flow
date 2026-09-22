@@ -156,3 +156,33 @@ The viewer also exposes:
 Manual refresh is DB-only and never calls the market API.
 
 If BroadcastChannel is unavailable, startup still reads IndexedDB and the UI explicitly reports degraded live-update mode while manual refresh remains available.
+
+
+## Stage 12 verification
+
+~~~text
+Fast CI
+Run 35756792160
+136 passed / 0 failed
+
+Viewer Checkpoint C / Browser CI
+Run 35756990977
+34 passed / 0 failed
+~~~
+
+Checkpoint C verifies Stages 10–12 together in Chromium:
+
+- same-origin viewer bootstrap;
+- real IndexedDB → current-table rendering;
+- recorder commit → BroadcastChannel notification;
+- viewer notification → IndexedDB reread;
+- manual refresh;
+- degraded fallback when BroadcastChannel is unavailable.
+
+The first Checkpoint C run exposed one test-expectation mistake: the initial Stage 11 load is not a live-refresh operation. The assertion was corrected to count only the notification-driven refresh; the implementation itself did not require a behavior change.
+
+Next:
+
+~~~text
+Stage 13 — Dynamic sorting
+~~~
