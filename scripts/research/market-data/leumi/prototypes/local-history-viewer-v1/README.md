@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Planning — Stage 2 complete
+Implementation — Stage 5.1 complete
 ~~~
 
 מטרת V1 היא לאפשר ניסוי מקומי מלא ב-browser בלבד:
@@ -75,3 +75,9 @@ shared/
 - ROADMAP.md
 - DATA_MODEL.md
 - TEST_PLAN.md
+
+
+## Implementation
+
+- `storage/` — IndexedDB implementation.
+  - `schema.js` — schema constants; no DB open yet.
