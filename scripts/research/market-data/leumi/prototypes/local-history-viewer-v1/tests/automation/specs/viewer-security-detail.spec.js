@@ -319,6 +319,193 @@ async function seedDetailFixture(
     );
 }
 
+async function seedDetailRefreshCycle(
+    page
+) {
+    await page.evaluate(
+        async () => {
+            const {
+                MarketFlowStorageConnection:
+                    connection,
+                MarketFlowStorageUpgrade:
+                    upgrade,
+                MarketFlowStorageWrite:
+                    write,
+                MarketFlowStorageSchema:
+                    schema
+            } = window;
+
+            const database =
+                await connection
+                    .openDatabase({
+                        onUpgradeNeeded:
+                            upgrade
+                                .upgradeDatabase
+                    });
+
+            try {
+                const updatedLatest = [
+                    {
+                        securityId:
+                            "1001",
+                        cycleId: 503,
+                        sessionId: 1,
+                        chunkIndex: 0,
+                        cycleStartedAtMs:
+                            3000,
+                        chunkReceivedAtMs:
+                            3010,
+                        collectedAtMs:
+                            3020,
+                        serverAsOfDate:
+                            null,
+                        data: {
+                            Key: 1001,
+                            LastKnownRate:
+                                9000,
+                            BaseRateChangePercentage:
+                                2.25,
+                            BuyLimit1:
+                                8990,
+                            BuyVolume1:
+                                30,
+                            SellLimit1:
+                                9010,
+                            SellVolume1:
+                                40,
+                            DailyDealsQuantity:
+                                15,
+                            LastDealVolume:
+                                7,
+                            DailyTurnover:
+                                90,
+                            DailyNISRevenue:
+                                9000,
+                            DailyLowestRate:
+                                8800,
+                            DailyHighestRate:
+                                9050,
+                            LastDealTimeOnly:
+                                "10:17"
+                        }
+                    },
+                    {
+                        securityId:
+                            "1002",
+                        cycleId: 503,
+                        sessionId: 1,
+                        chunkIndex: 0,
+                        cycleStartedAtMs:
+                            3000,
+                        chunkReceivedAtMs:
+                            3010,
+                        collectedAtMs:
+                            3021,
+                        serverAsOfDate:
+                            null,
+                        data: {
+                            Key: 1002,
+                            LastKnownRate:
+                                1000,
+                            BaseRateChangePercentage:
+                                -0.5,
+                            BuyLimit1:
+                                990,
+                            BuyVolume1:
+                                20,
+                            SellLimit1:
+                                1010,
+                            SellVolume1:
+                                25,
+                            DailyDealsQuantity:
+                                20,
+                            LastDealVolume:
+                                4,
+                            DailyTurnover:
+                                100,
+                            DailyNISRevenue:
+                                10000,
+                            DailyLowestRate:
+                                950,
+                            DailyHighestRate:
+                                1100,
+                            LastDealTimeOnly:
+                                "10:17"
+                        }
+                    }
+                ];
+
+                for (
+                    const row of
+                    updatedLatest
+                ) {
+                    await write.put(
+                        database,
+                        schema
+                            .stores
+                            .latest
+                            .name,
+                        row
+                    );
+                }
+
+                await write.put(
+                    database,
+                    schema
+                        .stores
+                        .history
+                        .name,
+                    {
+                        cycleId: 503,
+                        sessionId: 1,
+                        securityId:
+                            "1001",
+                        chunkIndex: 0,
+                        cycleStartedAtMs:
+                            3000,
+                        chunkReceivedAtMs:
+                            3010,
+                        collectedAtMs:
+                            3020,
+                        serverAsOfDate:
+                            "server-503",
+                        data: {
+                            Key: 1001,
+                            LastKnownRate:
+                                9000,
+                            BaseRateChangePercentage:
+                                2.25,
+                            BuyLimit1:
+                                8990,
+                            BuyVolume1:
+                                30,
+                            SellLimit1:
+                                9010,
+                            SellVolume1:
+                                40,
+                            DailyDealsQuantity:
+                                15,
+                            LastDealVolume:
+                                7,
+                            DailyTurnover:
+                                90,
+                            DailyNISRevenue:
+                                9000,
+                            LastDealTimeOnly:
+                                "10:17"
+                        }
+                    }
+                );
+            } finally {
+                connection
+                    .closeDatabase(
+                        database
+                    );
+            }
+        }
+    );
+}
+
 async function openViewer(
     page
 ) {
@@ -631,6 +818,333 @@ test(
             )
         ).toHaveCount(
             0
+        );
+    }
+);
+
+
+test(
+    "Stage 14.4 live refresh keeps DETAIL active, refreshes selected history and restores main sort plus scroll",
+    async ({ page }) => {
+        const viewer =
+            await openViewer(
+                page
+            );
+
+        const rateSort =
+            viewer.locator(
+                "button[data-sort-column='LastKnownRate']"
+            );
+
+        await rateSort.click();
+        await rateSort.click();
+
+        await expect(
+            viewer.locator(
+                "th[data-column='LastKnownRate']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "ascending"
+        );
+
+        const initialOrder =
+            await viewer.evaluate(
+                () =>
+                    Array.from(
+                        document
+                            .querySelectorAll(
+                                "[data-role='current-market-table'] tbody tr"
+                            )
+                    ).map(
+                        row =>
+                            row.dataset
+                                .securityId
+                    )
+            );
+
+        expect(
+            initialOrder
+        ).toEqual([
+            "1001",
+            "1002"
+        ]);
+
+        const savedScrollLeft =
+            await viewer.evaluate(
+                () => {
+                    const panel =
+                        document
+                            .querySelector(
+                                "[data-role='current-market-panel']"
+                            );
+
+                    const wrapper =
+                        document
+                            .querySelector(
+                                "[data-role='current-market-table-wrap']"
+                            );
+
+                    panel.style.width =
+                        "360px";
+
+                    const distance =
+                        Math.min(
+                            180,
+                            Math.max(
+                                1,
+                                wrapper.scrollWidth -
+                                wrapper.clientWidth
+                            )
+                        );
+
+                    wrapper.scrollLeft =
+                        -distance;
+
+                    return wrapper
+                        .scrollLeft;
+                }
+            );
+
+        expect(
+            savedScrollLeft
+        ).not.toBe(0);
+
+        await viewer
+            .locator(
+                "tr[data-security-id='1001']"
+            )
+            .click();
+
+        await viewer.waitForFunction(
+            () =>
+                document
+                    .querySelector(
+                        "[data-role='viewer-status']"
+                    )
+                    ?.dataset
+                    .viewState ===
+                "DETAIL"
+        );
+
+        await viewer
+            .locator(
+                "[data-role='history-load-older']"
+            )
+            .click();
+
+        await expect(
+            viewer.locator(
+                "[data-role='security-history-table'] tbody tr"
+            )
+        ).toHaveCount(
+            502
+        );
+
+        const refreshCountBefore =
+            await viewer.evaluate(
+                () =>
+                    window.opener
+                        .MarketFlowViewerLiveRefresh
+                        .getState(
+                            window
+                        )
+                        .refreshCount
+            );
+
+        await seedDetailRefreshCycle(
+            page
+        );
+
+        await page.evaluate(
+            () => {
+                const now =
+                    Date.now();
+
+                window
+                    .MarketFlowChannel
+                    .publish(
+                        window
+                            .MarketFlowChannel
+                            .MESSAGE_TYPES
+                            .CYCLE_COMMITTED,
+                        {
+                            cycleId:
+                                503,
+                            completedAtMs:
+                                now
+                        },
+                        now
+                    );
+            }
+        );
+
+        await viewer.waitForFunction(
+            refreshCountBefore =>
+                window.opener
+                    .MarketFlowViewerLiveRefresh
+                    .getState(
+                        window
+                    )
+                    .refreshCount >
+                refreshCountBefore,
+            refreshCountBefore
+        );
+
+        await expect(
+            viewer.locator(
+                "[data-role='viewer-status']"
+            )
+        ).toHaveAttribute(
+            "data-view-state",
+            "DETAIL"
+        );
+
+        await expect(
+            viewer.locator(
+                "[data-role='security-detail-panel']"
+            )
+        ).toBeVisible();
+
+        await expect(
+            viewer.locator(
+                "[data-role='detail-security-id']"
+            )
+        ).toHaveText(
+            "1001"
+        );
+
+        await expect(
+            viewer.locator(
+                "[data-role='detail-last-rate']"
+            )
+        ).toHaveText(
+            "9,000"
+        );
+
+        await expect(
+            viewer.locator(
+                "[data-role='detail-daily-change']"
+            )
+        ).toHaveText(
+            "2.25%"
+        );
+
+        const refreshedHistoryRows =
+            viewer.locator(
+                "[data-role='security-history-table'] tbody tr"
+            );
+
+        await expect(
+            refreshedHistoryRows
+        ).toHaveCount(
+            503
+        );
+
+        await expect(
+            refreshedHistoryRows
+                .first()
+                .locator(
+                    "td[data-column='cycleId']"
+                )
+        ).toHaveText(
+            "503"
+        );
+
+        await expect(
+            viewer.locator(
+                "[data-role='history-load-older']"
+            )
+        ).toHaveCount(
+            0
+        );
+
+        const detailState =
+            await viewer.evaluate(
+                () =>
+                    window.opener
+                        .MarketFlowViewerSecurityDetail
+                        .getState(
+                            window
+                        )
+            );
+
+        expect(
+            detailState.securityId
+        ).toBe("1001");
+
+        expect(
+            detailState.loadedCount
+        ).toBe(503);
+
+        await viewer
+            .locator(
+                "[data-role='detail-back']"
+            )
+            .click();
+
+        await expect(
+            viewer.locator(
+                "[data-role='viewer-status']"
+            )
+        ).toHaveAttribute(
+            "data-view-state",
+            "MAIN"
+        );
+
+        await expect(
+            viewer.locator(
+                "th[data-column='LastKnownRate']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "ascending"
+        );
+
+        const returnedOrder =
+            await viewer.evaluate(
+                () =>
+                    Array.from(
+                        document
+                            .querySelectorAll(
+                                "[data-role='current-market-table'] tbody tr"
+                            )
+                    ).map(
+                        row =>
+                            row.dataset
+                                .securityId
+                    )
+            );
+
+        expect(
+            returnedOrder
+        ).toEqual([
+            "1002",
+            "1001"
+        ]);
+
+        await expect(
+            viewer.locator(
+                "[data-role='last-cycle']"
+            )
+        ).toHaveText(
+            "503"
+        );
+
+        const returnedScrollLeft =
+            await viewer.evaluate(
+                () =>
+                    document
+                        .querySelector(
+                            "[data-role='current-market-table-wrap']"
+                        )
+                        .scrollLeft
+            );
+
+        expect(
+            returnedScrollLeft
+        ).toBe(
+            savedScrollLeft
         );
     }
 );
