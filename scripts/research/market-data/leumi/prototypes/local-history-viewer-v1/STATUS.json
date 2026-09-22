@@ -10,8 +10,9 @@
   },
   "currentFocus": {
     "stage": "13",
-    "title": "Dynamic sorting",
-    "status": "ready-to-start"
+    "substep": "13.1",
+    "title": "Dynamic sorting — pure sorting contract",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -138,7 +139,13 @@
     {
       "stage": "13",
       "title": "Dynamic sorting",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "13.1": "in-progress — pure sorting state/comparator contract + unit tests",
+        "13.2": "planned — current-table sorting UI integration",
+        "13.3": "planned — preserve sort across rerender/live refresh + browser coverage",
+        "13.4": "planned — Fast CI verification and Stage 13 closure"
+      }
     },
     {
       "stage": "14",
@@ -493,8 +500,8 @@
       ]
     },
     "stage12": {
-      "status": "not-complete",
-      "note": "Prior implementation and CI evidence are retained as historical technical evidence only. Per project-status correction, Stage 12 is not accepted/closed and must be reviewed/completed before Stage 13.",
+      "status": "historical-pre-closure-evidence",
+      "note": "Historical Stage 12 evidence captured before explicit closure review. Operational closure is recorded in verification.stage12Closure and stages[].",
       "historicalTechnicalEvidence": {
         "fastCi": {
           "runId": 35756792160,
@@ -601,8 +608,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 12 is explicitly complete and verified. The next planned work is Stage 13.",
+    "reached": false,
+    "reason": "Stage 13 is in progress at substep 13.1.",
     "nextStage": "13"
   },
   "navigation": {
