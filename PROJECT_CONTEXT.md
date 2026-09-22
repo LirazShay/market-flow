@@ -139,8 +139,8 @@ docs/leumi-api/fields/field-reference-he.md
 docs/leumi-api/fields/field-availability.md
 
 Verified tests:
-docs/leumi-api/testing/verified-tests.md
-docs/leumi-api/reports/
+scripts/research/market-data/leumi/collection/README.md
+scripts/research/market-data/leumi/tests/field-coverage/reports/
 
 Browser research scripts:
 scripts/research/market-data/leumi/
