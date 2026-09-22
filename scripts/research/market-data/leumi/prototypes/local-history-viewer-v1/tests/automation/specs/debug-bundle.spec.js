@@ -251,6 +251,62 @@ test(
             /"localStorage"\s*:/i
         );
 
+        const popupPromise =
+            page.waitForEvent(
+                "popup"
+            );
+
+        await page.evaluate(
+            () =>
+                window
+                    .MarketFlowViewerBootstrap
+                    .openViewer()
+        );
+
+        const viewer =
+            await popupPromise;
+
+        const exportButton =
+            viewer.locator(
+                "[data-role='export-debug']"
+            );
+
+        await expect(
+            exportButton
+        ).toBeVisible();
+
+        await expect(
+            exportButton
+        ).toHaveText(
+            "הורד קובץ Debug"
+        );
+
+        const downloadPromise =
+            page.waitForEvent(
+                "download"
+            );
+
+        await exportButton.click();
+
+        const debugDownload =
+            await downloadPromise;
+
+        expect(
+            debugDownload
+                .suggestedFilename()
+        ).toMatch(
+            /^market-flow-debug-\d{8}-\d{6}\.json$/
+        );
+
+        await expect(
+            viewer.locator(
+                "[data-role='debug-export-status']"
+            )
+        ).toContainText(
+            debugDownload
+                .suggestedFilename()
+        );
+
         await page.evaluate(
             async () => {
                 const recorder =
@@ -263,6 +319,10 @@ test(
 
                 await recorder
                     .waitForStopPersistence();
+
+                window
+                    .MarketFlowViewerBootstrap
+                    .closeViewer();
 
                 window
                     .MarketFlowChannel
