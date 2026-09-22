@@ -163,6 +163,7 @@ tests/
     specs/recorder-stage-7.spec.js
     specs/persistence-lifecycle.spec.js
     specs/successful-cycle-persistence.spec.js
+    specs/recorder-persistence-integration.spec.js
 
 test tooling:
   package.json

@@ -99,6 +99,7 @@
             createConfig,
             loadUniverse,
             buildCompleteCycle,
+            commitCycle = async () => null,
             schedule,
             cancelSchedule,
             now
@@ -116,6 +117,11 @@
             assertFunction(
                 buildCompleteCycle,
                 "buildCompleteCycle"
+            );
+
+            assertFunction(
+                commitCycle,
+                "commitCycle"
             );
 
             assertFunction(
@@ -267,6 +273,10 @@
                         await buildCompleteCycle(
                             cachedUniverse
                         );
+
+                    await commitCycle(
+                        cycle
+                    );
 
                     updateState({
                         completedCycles:

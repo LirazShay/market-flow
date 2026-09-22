@@ -535,3 +535,19 @@ tests/automation/specs/successful-cycle-persistence.spec.js
 ~~~
 
 The normal Browser CI workflow is restored to manual/reusable checkpoint triggers after verification.
+
+
+---
+
+## Stage 8.4 recorder persistence integration
+
+Coverage added for the full recorder→IndexedDB success boundary:
+
+~~~text
+tests/unit/recorder-loop-logic.test.js
+tests/automation/specs/recorder-persistence-integration.spec.js
+~~~
+
+The unit layer proves that in-memory success is not exposed before `commitCycle` resolves.
+
+The browser layer proves success persistence, DB-commit failure handling, API-failure no-write behavior, and durable session stop state.

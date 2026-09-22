@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "8.4",
     "title": "Recorder integration + persistence failure/rollback tests",
-    "status": "next"
+    "status": "fast-and-browser-checkpoint-pending"
   },
   "stages": [
     {
@@ -88,7 +88,7 @@
         "8.1": "complete-fast-ci-verified",
         "8.2": "complete-browser-ci-verified",
         "8.3": "complete-browser-ci-verified",
-        "8.4": "planned — recorder integration + persistence failure/rollback tests"
+        "8.4": "implemented-checkpoint-verification-pending"
       }
     },
     {

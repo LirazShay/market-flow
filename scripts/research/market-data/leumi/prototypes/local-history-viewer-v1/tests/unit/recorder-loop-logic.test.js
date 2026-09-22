@@ -815,3 +815,240 @@ test(
         );
     }
 );
+
+
+test(
+    "does not expose a completed cycle until commitCycle resolves",
+    async () => {
+        const scheduler =
+            createFakeScheduler();
+
+        let resolveCommit;
+
+        const commitPromise =
+            new Promise(
+                resolve => {
+                    resolveCommit =
+                        resolve;
+                }
+            );
+
+        const cycle = {
+            status: "complete",
+            marker: "persist-first"
+        };
+
+        const controller =
+            createRecorderController({
+                createConfig,
+                loadUniverse:
+                    async config =>
+                        createUniverse(
+                            config
+                        ),
+                buildCompleteCycle:
+                    async () =>
+                        cycle,
+                commitCycle:
+                    async committedCycle => {
+                        assert.equal(
+                            committedCycle,
+                            cycle
+                        );
+
+                        await commitPromise;
+                    },
+                schedule:
+                    scheduler.schedule,
+                cancelSchedule:
+                    scheduler.cancel,
+                now:
+                    () => 100
+            });
+
+        controller.start();
+
+        const running =
+            scheduler.runNext();
+
+        await Promise.resolve();
+        await Promise.resolve();
+
+        const beforeCommit =
+            controller.getState();
+
+        assert.equal(
+            beforeCommit
+                .completedCycles,
+            0
+        );
+
+        assert.equal(
+            beforeCommit
+                .latestCycle,
+            null
+        );
+
+        assert.equal(
+            beforeCommit
+                .cycleInFlight,
+            true
+        );
+
+        resolveCommit();
+
+        await running;
+
+        const afterCommit =
+            controller.getState();
+
+        assert.equal(
+            afterCommit
+                .completedCycles,
+            1
+        );
+
+        assert.equal(
+            afterCommit
+                .latestCycle,
+            cycle
+        );
+    }
+);
+
+test(
+    "commitCycle failure is a recorder failure and never exposes the uncommitted cycle",
+    async () => {
+        const scheduler =
+            createFakeScheduler();
+
+        const cycle = {
+            status: "complete",
+            marker: "must-not-be-visible"
+        };
+
+        const controller =
+            createRecorderController({
+                createConfig,
+                loadUniverse:
+                    async config =>
+                        createUniverse(
+                            config
+                        ),
+                buildCompleteCycle:
+                    async () =>
+                        cycle,
+                commitCycle:
+                    async () => {
+                        throw new Error(
+                            "synthetic persistence failure"
+                        );
+                    },
+                schedule:
+                    scheduler.schedule,
+                cancelSchedule:
+                    scheduler.cancel,
+                now:
+                    () => 100
+            });
+
+        controller.start();
+
+        await scheduler.runNext();
+
+        const state =
+            controller.getState();
+
+        assert.equal(
+            state.completedCycles,
+            0
+        );
+
+        assert.equal(
+            state.failedCycles,
+            1
+        );
+
+        assert.equal(
+            state.latestCycle,
+            null
+        );
+
+        assert.equal(
+            state.latestError.message,
+            "synthetic persistence failure"
+        );
+    }
+);
+
+test(
+    "a later persistence failure preserves the last committed in-memory cycle",
+    async () => {
+        const scheduler =
+            createFakeScheduler();
+
+        let commitCalls = 0;
+
+        const controller =
+            createRecorderController({
+                createConfig,
+                loadUniverse:
+                    async config =>
+                        createUniverse(
+                            config
+                        ),
+                buildCompleteCycle:
+                    async () => ({
+                        status: "complete",
+                        marker:
+                            commitCalls + 1
+                    }),
+                commitCycle:
+                    async () => {
+                        commitCalls++;
+
+                        if (
+                            commitCalls === 2
+                        ) {
+                            throw new Error(
+                                "second commit failed"
+                            );
+                        }
+                    },
+                schedule:
+                    scheduler.schedule,
+                cancelSchedule:
+                    scheduler.cancel,
+                now:
+                    () => 100
+            });
+
+        controller.start();
+
+        await scheduler.runNext();
+        await scheduler.runNext();
+
+        const state =
+            controller.getState();
+
+        assert.equal(
+            state.completedCycles,
+            1
+        );
+
+        assert.equal(
+            state.failedCycles,
+            1
+        );
+
+        assert.equal(
+            state.latestCycle.marker,
+            1
+        );
+
+        assert.equal(
+            state.latestError.message,
+            "second commit failed"
+        );
+    }
+);

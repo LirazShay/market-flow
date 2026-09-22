@@ -160,3 +160,24 @@ MapHeat2
 ~~~
 
 Stage 7 intentionally performs no IndexedDB cycle persistence. That begins in Stage 8.
+
+
+## Stage 8.4 persistence integration
+
+The browser recorder now uses persistence as part of its success boundary.
+
+~~~text
+load universe
+→ persist universe/session lifecycle
+→ build validated cycle
+→ commit cycle atomically to IndexedDB
+→ only then increment completedCycles / expose latestCycle
+~~~
+
+A persistence failure follows the same recorder failure path as an API/validation failure.
+
+`MarketFlowRecorderLoop.stop()` keeps the immediate in-memory stop behavior and starts session-stop persistence. Tests or callers that require the durable stop boundary can await:
+
+~~~text
+MarketFlowRecorderLoop.waitForStopPersistence()
+~~~
