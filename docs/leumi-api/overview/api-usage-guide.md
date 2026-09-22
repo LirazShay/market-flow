@@ -538,15 +538,55 @@ collector עתידי צריך לזהות:
 
 ## 18. Polling frequency
 
-### Unknown
+### Verified baseline
 
-עדיין לא תועדה cadence מדויקת של האתר בכל מצב.
+בהרצה של 40.03 דקות עם:
+
+~~~text
+CHUNK_SIZE = 187
+CHUNK_DELAY_MS = 1000
+3 sequential chunks
+SNAPSHOT_INTERVAL_MS = 3000
+REFRESH_MAP_EVERY_CYCLE = false
+~~~
+
+נמדדו:
+
+~~~text
+481 completed cycles
+0 failed cycles
+1447 HTTP requests
+1447 HTTP 200
+0 HTTP 403/429/5xx
+average request = 662 ms
+average full cycle = 4986 ms
+~~~
+
+Raw evidence:
+
+~~~text
+scripts/research/market-data/leumi/tests/polling-stability/reports/2026-09-22-1555-polling-stability.md
+~~~
+
+### Important
+
+`SNAPSHOT_INTERVAL_MS=3000` אינו מבטיח full snapshot כל 3 שניות.
+
+ב-config שנבדק:
+
+~~~text
+averageCycleDurationMs = 4986
+~~~
+
+ולכן cadence בפועל היה בערך 5 שניות ל-full snapshot.
+
+ה-cycle הבא אינו מתחיל לפני שהקודם הסתיים, ולכן אין overlapping cycles.
 
 ### Recommendation
 
-לא לקבוע תדירות אגרסיבית שרירותית.
+ה-config שנבדק הוא כרגע baseline מוכח וסביר למחקר/collector ראשוני.
 
-קודם למדוד את האתר עצמו, ואז לבחור cadence דומה או שמרנית יותר.
+אין להסיק ממנו שהאתר יתמוך באותה יציבות במשך שעות, ביום מסחר שלם, בקצב אגרסיבי יותר או עם parallel batches.
 
 ---
 
@@ -625,7 +665,7 @@ END
 - הסיבה המדויקת ל-403 בבקשות גדולות.
 - הגבול המדויק של IDs/URL.
 - האם batching מקבילי מומלץ.
-- polling cadence המדויק של האתר.
+- polling cadence של האתר עצמו בכל מצב; הקצב של collector שלנו נמדד רק עבור config אחד.
 - semantics רשמי של `DailyAverageVolume`.
 - semantics המדויק של `ReturnStartMonths`.
 - semantics/scale רשמי של `DailyAvrageRateMaof`.
