@@ -860,10 +860,11 @@
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
-    "default": "fast-unit-ci",
-    "browser": "checkpoint-full-suite-plus-immediate-verification-for-any-changed-browser-test",
+    "default": "fast-ci-every-commit",
+    "browser": "immediate-on-browser-change-plus-full-suite-at-every-numbered-stage-closure",
+    "additionalCheckpoints": "cross-stage integration milestones only; never a substitute for per-stage Browser CI",
     "live": "provider-dependent-only",
-    "hardGate": "No added/modified test may be deferred unexecuted to a later stage. Red or unexecuted changed tests block progression."
+    "hardGate": "No added/modified test may be deferred unexecuted. Red or unexecuted changed tests block progression. No numbered Stage may be marked complete without fresh full Browser CI on its final state."
   },
   "lastCompletedMiniProject": {
     "id": "testing-refactor",
@@ -938,6 +939,11 @@
         "title": "Add repository-wide Clean Code, design, refactoring, and legacy-safe-change practices",
         "status": "complete",
         "commit": "8bede519939956319fc05a9a5836d3d856603f50"
+      },
+      {
+        "id": "S3.1",
+        "title": "Increase Browser CI cadence: full suite mandatory at every numbered Stage closure",
+        "status": "complete"
       },
       {
         "id": "S4",
