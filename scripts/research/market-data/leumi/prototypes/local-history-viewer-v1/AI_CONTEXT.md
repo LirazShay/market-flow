@@ -175,6 +175,18 @@ recorder/
   recorder-loop.js
 ~~~
 
+## Current development boundary
+
+Stage 7 recorder skeleton is complete and browser-verified.
+
+Next work:
+
+~~~text
+Stage 8 — Persist complete cycles
+~~~
+
+This is a natural chat/handoff boundary because Stage 8 begins the persistence integration layer.
+
 ## Testing policy
 
 The testing-refactor mini-project is complete.

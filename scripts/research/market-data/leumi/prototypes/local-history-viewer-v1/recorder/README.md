@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.5 + 7.6 implemented — Stage 7 browser checkpoint pending
+Stage 7 complete and browser-verified — next: Stage 8 persistence
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
@@ -127,3 +127,36 @@ sequential chunk requests
 `SNAPSHOT_INTERVAL_MS` הוא target cadence בלבד. הוא אינו מבטיח cycle כל 3 שניות.
 
 אין hardcode למספר הניירות; universe size מגיע מ-MapHeat2.
+
+
+## Stage 7 verification
+
+Fast CI:
+
+~~~text
+Run: 35744733541
+104 passed
+0 failed
+~~~
+
+Browser checkpoint:
+
+~~~text
+Run: 35744806678
+13 passed
+0 failed
+Chromium
+~~~
+
+Verified end-to-end with synthetic mocked API data:
+
+~~~text
+MapHeat2
+→ dynamic universe
+→ sequential GetSecuritiesData chunks
+→ validated complete in-memory cycle
+→ recorder loop
+→ start/stop + no-overlap
+~~~
+
+Stage 7 intentionally performs no IndexedDB cycle persistence. That begins in Stage 8.

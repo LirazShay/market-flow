@@ -442,3 +442,29 @@ provider-dependent verification
 ~~~
 
 See `TESTING_POLICY.md` for the durable checkpoint map.
+
+
+---
+
+## Stage 7 recorder checkpoint
+
+Recorder Stage 7 was verified after implementing the loop shell and mocked browser coverage.
+
+~~~text
+Fast CI
+Run: 35744733541
+104 passed / 0 failed
+
+Browser CI
+Run: 35744806678
+13 passed / 0 failed
+~~~
+
+The Chromium checkpoint covers dynamic universe loading, sequential chunk fetches, complete-cycle validation, missing/duplicate failures, HTTP failure propagation, recorder start/stop, no-overlap scheduling and existing IndexedDB regressions.
+
+The Browser CI workflow was restored after verification to checkpoint-only triggers:
+
+~~~text
+workflow_dispatch
+workflow_call
+~~~

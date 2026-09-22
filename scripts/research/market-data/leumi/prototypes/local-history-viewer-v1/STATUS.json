@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "7-checkpoint",
-    "title": "Recorder Stage 7 browser checkpoint",
-    "status": "verification-pending"
+    "stage": "8",
+    "title": "Persist complete cycles",
+    "status": "next"
   },
   "stages": [
     {
@@ -70,14 +70,14 @@
     {
       "stage": "7",
       "title": "Recorder skeleton",
-      "status": "partially-complete",
+      "status": "complete",
       "substeps": {
         "7.1": "complete",
         "7.2": "complete",
         "7.3": "complete-fast-ci-verified",
         "7.4": "complete-fast-ci-verified",
-        "7.5": "complete-fast-ci-verification-pending",
-        "7.6": "implemented-browser-verification-pending"
+        "7.5": "complete-fast-ci-verified",
+        "7.6": "complete-browser-ci-verified"
       }
     },
     {
@@ -159,13 +159,13 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35741876693,
-      "commit": "8a2342c9dd027eccfb5176629e2c8a9ade184e99",
+      "runId": 35744806678,
+      "commit": "0afadaf761dd9a217ec5c6946a5dd1299cc6c70d",
       "conclusion": "success",
       "tests": [
-        "browser harness smoke",
-        "mocked MapHeat2/GetSecuritiesData integration",
-        "real Chromium IndexedDB storage self-tests"
+        "13 Chromium tests",
+        "Stage 7 complete mocked recorder path",
+        "existing IndexedDB storage regression coverage"
       ]
     },
     "fastCi": "verified-success",
@@ -177,13 +177,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35743848319,
-      "commit": "cc028cc7d5b1db139b3a26868ef5b49755039d57",
+      "runId": 35744733541,
+      "commit": "52e40f6bebb0d629d4515065c1c4cf5c4223744b",
       "conclusion": "success",
-      "tests": 94,
-      "passed": 94,
+      "tests": 104,
+      "passed": 104,
       "failed": 0,
-      "durationMs": 44.803074
+      "durationMs": 37.823706
     },
     "testingRefactor": {
       "status": "complete",
@@ -218,6 +218,36 @@
         "failed": 0
       },
       "browserCheckpoint": "deferred-until-stage-7-complete"
+    },
+    "stage7": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35744733541,
+        "commit": "52e40f6bebb0d629d4515065c1c4cf5c4223744b",
+        "conclusion": "success",
+        "tests": 104,
+        "passed": 104,
+        "failed": 0
+      },
+      "browserCheckpoint": {
+        "runId": 35744806678,
+        "commit": "0afadaf761dd9a217ec5c6946a5dd1299cc6c70d",
+        "conclusion": "success",
+        "tests": 13,
+        "passed": 13,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "dynamic universe loading",
+        "sequential chunk execution",
+        "complete cycle validation",
+        "HTTP failure propagation",
+        "missing/duplicate security rejection",
+        "recorder start/stop",
+        "no-overlap scheduling",
+        "latest in-memory cycle/error state"
+      ]
     }
   },
   "fastContext": {
@@ -243,5 +273,10 @@
     "status": "complete",
     "completedAt": "2026-09-22",
     "resumeMainStage": "7.3"
+  },
+  "recommendedChatBoundary": {
+    "reached": true,
+    "reason": "Stage 7 recorder skeleton is complete and browser-verified; Stage 8 begins persistence integration.",
+    "nextStage": "8"
   }
 }
