@@ -192,7 +192,8 @@ Current work:
 
 ~~~text
 Stage 8 — Persistence integration
-8.1 persistence record builders/contracts implemented; Fast CI verification pending
+8.1 persistence record builders/contracts complete + Fast CI verified
+Next: 8.2 session + universe persistence
 ~~~
 
 Stage 8 explicitly includes:
