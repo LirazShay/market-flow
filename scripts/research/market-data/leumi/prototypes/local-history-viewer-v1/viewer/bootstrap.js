@@ -19,6 +19,9 @@
     const liveRefresh =
         window.MarketFlowViewerLiveRefresh;
 
+    const securityDetail =
+        window.MarketFlowViewerSecurityDetail;
+
     if (!stateLogic) {
         throw new Error(
             "MarketFlowViewerStateLogic is not loaded."
@@ -36,6 +39,13 @@
         throw new Error(
             "MarketFlowViewerLiveRefresh is not loaded. " +
             "Load viewer/live-refresh.js before viewer/bootstrap.js."
+        );
+    }
+
+    if (!securityDetail) {
+        throw new Error(
+            "MarketFlowViewerSecurityDetail is not loaded. " +
+            "Load viewer/security-detail.js before viewer/bootstrap.js."
         );
     }
 
@@ -506,6 +516,10 @@
 
         viewerWindow.focus();
 
+        securityDetail.attach(
+            viewerWindow
+        );
+
         liveRefresh.attach(
             viewerWindow
         );
@@ -529,6 +543,10 @@
                 null;
             return;
         }
+
+        securityDetail.detach(
+            viewerWindow
+        );
 
         liveRefresh.detach(
             viewerWindow

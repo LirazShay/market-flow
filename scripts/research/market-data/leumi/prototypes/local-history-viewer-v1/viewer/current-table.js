@@ -28,6 +28,9 @@
     const sortStateByWindow =
         new WeakMap();
 
+    const rowActivationHandlers =
+        new WeakMap();
+
     if (
         !schema ||
         !connection ||
@@ -113,7 +116,9 @@
             ".current-table-sort-button { width: 100%; border: 0; background: transparent; padding: 0; font: inherit; font-weight: inherit; color: inherit; cursor: pointer; text-align: inherit; white-space: nowrap; }",
             ".current-table-sort-button:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }",
             ".current-table-sort-indicator { display: inline-block; min-width: 1em; margin-inline-start: 4px; }",
+            ".current-table tbody tr[data-security-id] { cursor: pointer; }",
             ".current-table tbody tr:hover { background: #f8fafc; }",
+            ".current-table tbody tr[data-security-id]:focus-visible { outline: 3px solid currentColor; outline-offset: -3px; }",
             ".current-table td.numeric { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }",
             ".current-table td.positive { font-weight: 700; }",
             ".current-table td.negative { font-weight: 700; }",
@@ -324,6 +329,84 @@
             "asc"
             ? "▲"
             : "▼";
+    }
+
+    function setRowActivationHandler(
+        targetWindow,
+        handler
+    ) {
+        if (
+            !targetWindow ||
+            typeof targetWindow !==
+                "object"
+        ) {
+            throw new TypeError(
+                "targetWindow is required."
+            );
+        }
+
+        if (handler === null) {
+            rowActivationHandlers.delete(
+                targetWindow
+            );
+
+            return;
+        }
+
+        if (
+            typeof handler !==
+                "function"
+        ) {
+            throw new TypeError(
+                "row activation handler must be a function or null."
+            );
+        }
+
+        rowActivationHandlers.set(
+            targetWindow,
+            handler
+        );
+    }
+
+    function activateRow(
+        targetWindow,
+        row
+    ) {
+        const handler =
+            rowActivationHandlers.get(
+                targetWindow
+            );
+
+        if (!handler) {
+            return;
+        }
+
+        try {
+            const result =
+                handler(
+                    row
+                );
+
+            if (
+                result &&
+                typeof result.catch ===
+                    "function"
+            ) {
+                result.catch(
+                    error => {
+                        console.error(
+                            "Market Flow viewer row activation failed.",
+                            error
+                        );
+                    }
+                );
+            }
+        } catch (error) {
+            console.error(
+                "Market Flow viewer row activation failed.",
+                error
+            );
+        }
     }
 
     function renderModel(
@@ -542,6 +625,47 @@
             tr.dataset.securityId =
                 row.securityId;
 
+            tr.tabIndex =
+                0;
+
+            tr.setAttribute(
+                "aria-label",
+                "פתח היסטוריה עבור " +
+                (
+                    row.paperName ??
+                    row.securityId
+                )
+            );
+
+            tr.addEventListener(
+                "click",
+                () => {
+                    activateRow(
+                        targetWindow,
+                        row
+                    );
+                }
+            );
+
+            tr.addEventListener(
+                "keydown",
+                event => {
+                    if (
+                        event.key !== "Enter" &&
+                        event.key !== " "
+                    ) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    activateRow(
+                        targetWindow,
+                        row
+                    );
+                }
+            );
+
             for (
                 const column of
                 model.columns
@@ -754,7 +878,8 @@
         Object.freeze({
             loadSnapshot,
             renderModel,
-            loadAndRender
+            loadAndRender,
+            setRowActivationHandler
         });
 
     console.log(
