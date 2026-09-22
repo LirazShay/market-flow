@@ -12,7 +12,7 @@
     "stage": "14",
     "substep": "14.5",
     "title": "Security history drill-down — Stage 14 acceptance and closure",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -156,7 +156,7 @@
         "14.2": "complete-browser-ci-verified — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
         "14.3": "complete-browser-ci-verified — accessible row activation + detail summary + paged history table UI",
         "14.4": "complete-browser-ci-verified — DETAIL stays active on live refresh, selected security rereads IndexedDB, and MAIN sort/viewport are preserved on return",
-        "14.5": "planned — Stage 14 acceptance review + mandatory Stage-closure Browser CI"
+        "14.5": "in-progress — acceptance review passed; running mandatory Stage-closure Fast + full Browser CI"
       }
     },
     {
@@ -868,6 +868,28 @@
         "return to MAIN applies fresh current-table data under the preserved sort",
         "return to MAIN restores the application viewport that existed before activation"
       ]
+    },
+    "stage14Acceptance": {
+      "status": "verification-in-progress",
+      "reviewedAgainst": [
+        "ROADMAP.md Stage 14",
+        "docs/viewer-ux.md sections 14–18",
+        "docs/test-plan.md Stage 4.3",
+        "tests/TESTING_POLICY.md Stage-closure gate"
+      ],
+      "gapsFound": [],
+      "acceptanceCoverage": [
+        "row activation opens the selected security",
+        "detail summary uses matching paperName/securityId/current values",
+        "history query is isolated by canonical securityId via bySecurityTime",
+        "history is newest-first",
+        "initial history page is capped at 500 rows",
+        "load-older appends without duplicates/skips",
+        "15-column V1 history table is rendered",
+        "empty-history state is explicit",
+        "DETAIL stays active on CYCLE_COMMITTED and rereads IndexedDB",
+        "return to MAIN preserves selected sort and application viewport"
+      ]
     }
   },
   "fastContext": {
@@ -897,11 +919,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 14.4 is complete. The browser regression was traced to Playwright auto-scroll, the regression test contract was corrected, targeted Chromium is green, and the full 42-test Browser suite is green.",
+    "reached": false,
+    "reason": "Stage 14.5 acceptance review found no scope gaps. Mandatory Stage-closure verification is in progress.",
     "nextStage": "14",
-    "nextSubstep": "14.5",
-    "nextAction": "Run Stage 14 acceptance review and the mandatory Stage-closure verification. Do not start Stage 15 until Stage 14 is explicitly closed."
+    "nextSubstep": "14.5"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
