@@ -12,7 +12,7 @@
     "stage": "15",
     "substep": "15.4",
     "title": "Viewer diagnostics — Stage 15 acceptance and closure",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -167,7 +167,7 @@
         "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
         "15.2": "complete-fast-ci-verified — pure recorder-health semantics + diagnostics presentation model",
         "15.3": "complete-browser-ci-verified — always-visible diagnostics metrics + initial/manual/broadcast IndexedDB refresh",
-        "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
+        "15.4": "in-progress — acceptance review found missing Browser coverage for stale/error/stopped recorder-health rendering; adding targeted UI regression before closure"
       }
     },
     {
@@ -1115,8 +1115,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 15.3 is complete and verified. Stage 15 remains open; the next natural work is Stage 15.4 acceptance review and mandatory Stage-closure Fast + full Browser CI.",
+    "reached": false,
+    "reason": "Stage 15.4 acceptance review found one verification gap: viewer-level stale/error/stopped health rendering is not yet covered in Chromium.",
     "nextStage": "15",
     "nextSubstep": "15.4"
   },
