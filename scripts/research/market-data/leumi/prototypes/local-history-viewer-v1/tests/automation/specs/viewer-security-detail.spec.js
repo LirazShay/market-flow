@@ -1141,14 +1141,6 @@ test(
             "1001"
         ]);
 
-        await expect(
-            viewer.locator(
-                "[data-role='last-cycle']"
-            )
-        ).toHaveText(
-            "503"
-        );
-
         const returnedScrollLeft =
             await viewer.evaluate(
                 async () => {

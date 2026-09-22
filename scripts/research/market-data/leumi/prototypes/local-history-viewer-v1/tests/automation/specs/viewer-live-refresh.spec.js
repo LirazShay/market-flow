@@ -533,10 +533,10 @@ test(
             () =>
                 document
                     .querySelector(
-                        "[data-role='last-cycle']"
+                        "tr[data-security-id='1001'] td[data-column='LastKnownRate']"
                     )
                     ?.textContent ===
-                "1"
+                "100"
         );
 
         await seedSingleCurrentRow(
@@ -547,45 +547,40 @@ test(
             }
         );
 
+        const refreshCountBefore =
+            await viewer.evaluate(
+                () =>
+                    window.opener
+                        .MarketFlowViewerLiveRefresh
+                        .getState(
+                            window
+                        )
+                        .refreshCount
+            );
+
         await viewer.click(
             "[data-role='manual-refresh']"
         );
 
         await viewer.waitForFunction(
-            () =>
-                document
-                    .querySelector(
-                        "[data-role='last-cycle']"
+            refreshCountBefore =>
+                window.opener
+                    .MarketFlowViewerLiveRefresh
+                    .getState(
+                        window
                     )
-                    ?.textContent ===
-                "2"
+                    .refreshCount >
+                refreshCountBefore,
+            refreshCountBefore
         );
 
-        const result =
-            await viewer.evaluate(
-                () => ({
-                    rate:
-                        document
-                            .querySelector(
-                                "tr[data-security-id='1001'] td[data-column='LastKnownRate']"
-                            )
-                            ?.textContent,
-                    cycle:
-                        document
-                            .querySelector(
-                                "[data-role='last-cycle']"
-                            )
-                            ?.textContent
-                })
-            );
-
-        expect(
-            result.rate
-        ).toBe("200");
-
-        expect(
-            result.cycle
-        ).toBe("2");
+        await expect(
+            viewer.locator(
+                "tr[data-security-id='1001'] td[data-column='LastKnownRate']"
+            )
+        ).toHaveText(
+            "200"
+        );
     }
 );
 
@@ -692,23 +687,13 @@ test(
                 "[data-role='manual-refresh']"
             );
 
-            await viewer.waitForFunction(
-                () =>
-                    document
-                        .querySelector(
-                            "[data-role='last-cycle']"
-                        )
-                        ?.textContent ===
-                    "3"
+            await expect(
+                viewer.locator(
+                    "tr[data-security-id='1001'] td[data-column='LastKnownRate']"
+                )
+            ).toHaveText(
+                "300"
             );
-
-            expect(
-                await viewer
-                    .locator(
-                        "tr[data-security-id='1001'] td[data-column='LastKnownRate']"
-                    )
-                    .textContent()
-            ).toBe("300");
         } finally {
             await context.close();
         }
@@ -744,14 +729,12 @@ test(
         const viewer =
             await popupPromise;
 
-        await viewer.waitForFunction(
-            () =>
-                document
-                    .querySelector(
-                        "[data-role='last-cycle']"
-                    )
-                    ?.textContent ===
-                "1"
+        await expect(
+            viewer.locator(
+                "[data-role='current-market-table'] tbody tr"
+            )
+        ).toHaveCount(
+            2
         );
 
         const lastRateButton =
@@ -838,16 +821,6 @@ test(
                         now
                     );
             }
-        );
-
-        await viewer.waitForFunction(
-            () =>
-                document
-                    .querySelector(
-                        "[data-role='last-cycle']"
-                    )
-                    ?.textContent ===
-                "2"
         );
 
         await viewer.waitForFunction(
