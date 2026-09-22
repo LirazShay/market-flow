@@ -10,8 +10,9 @@
   },
   "currentFocus": {
     "stage": "18",
-    "title": "Storage growth test",
-    "status": "ready-to-start"
+    "substep": "18.1",
+    "title": "Storage growth test — reproducible Chromium IndexedDB benchmark",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -193,7 +194,12 @@
     {
       "stage": "18",
       "title": "Storage growth test",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "18.1": "in-progress — benchmark steady-state IndexedDB growth with representative full Security payload",
+        "18.2": "planned — calculate rows/minute, MB/minute, bytes/history-row and hours-to-quota; document Verified/Inferred/Unknown",
+        "18.3": "planned — Stage 18 acceptance + mandatory Stage-closure Fast/Browser CI"
+      }
     },
     {
       "stage": "19",
@@ -1395,9 +1401,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 17 is accepted and complete. All seven failure-simulation cases are covered and mandatory Fast CI plus full Browser CI are green.",
-    "nextStage": "18"
+    "reached": false,
+    "reason": "Stage 18 is in progress. Storage growth will be measured in real Chromium IndexedDB before documenting extrapolated capacity.",
+    "nextStage": "18",
+    "nextSubstep": "18.1"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
