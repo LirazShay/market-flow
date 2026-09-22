@@ -72,3 +72,22 @@ Source of truth:
 ~~~text
 ../docs/data-model.md
 ~~~
+
+
+## Stage 8 progress
+
+~~~text
+Stage 8.1 complete
+Fast CI: 115 passed / 0 failed
+Next: 8.2 session + universe persistence
+~~~
+
+Stage 8.1 now defines deterministic record contracts before IndexedDB I/O:
+
+- universe records;
+- session start/stop records;
+- complete-cycle metadata;
+- history/latest rows;
+- recorderState meta record.
+
+Browser transaction semantics remain deferred to the later Stage 8 persistence substeps and final Stage 8 Chromium checkpoint.
