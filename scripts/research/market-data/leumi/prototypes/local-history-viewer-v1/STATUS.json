@@ -1853,11 +1853,14 @@
       },
       "D2": {
         "title": "Bounded IndexedDB/runtime debug bundle collector",
-        "status": "in-progress"
+        "status": "complete-browser-ci-verified",
+        "browserCiRunId": 35793819458,
+        "tests": "55/55",
+        "rca": "First implementation run exposed an over-broad secret-leak assertion; collector output was safe. Assertion was narrowed to actual sensitive property names and safety flags remain explicit."
       },
       "D3": {
         "title": "Runtime JSON export/download API",
-        "status": "planned"
+        "status": "in-progress"
       },
       "D4": {
         "title": "Viewer Export Debug action + Chromium verification",
