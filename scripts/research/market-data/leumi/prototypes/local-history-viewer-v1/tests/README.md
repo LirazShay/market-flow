@@ -59,7 +59,20 @@ npm run test:all
 
 `npm test` intentionally means the fast unit suite.
 
-Browser verification is no longer the default test command and no longer runs on every prototype code push. **However, any added/modified browser test must be executed in Chromium immediately; checkpoint scheduling never permits deferring verification of a changed test.**
+Browser verification does not run on every prototype code push. The mandatory cadence is now:
+
+~~~text
+every commit
+→ Fast CI
+
+browser behavior/test changed
+→ Chromium immediately
+
+every numbered Stage closure
+→ full Browser CI
+~~~
+
+A later checkpoint never permits deferring verification of a changed browser test, and a Stage may not be marked complete without a fresh full Browser CI run on its final state.
 
 Durable layer/checkpoint policy:
 
@@ -465,8 +478,11 @@ Current default:
 ordinary change
 → Fast CI
 
-planned browser checkpoint
-→ Browser CI
+every numbered Stage closure
+→ full Browser CI
+
+additional integration checkpoint
+→ Browser CI as required
 
 provider-dependent verification
 → Live Leumi
