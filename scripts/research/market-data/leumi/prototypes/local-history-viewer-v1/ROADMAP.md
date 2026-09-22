@@ -227,15 +227,15 @@ Complete
 
 Atomic full-cycle persistence עדיין שייך ל-Stage 8.
 
-### Stage 6 — IndexedDB self-test
+### Stage 6 — Test infrastructure + IndexedDB self-tests
 
 Status:
 
 ~~~text
-Implementation complete — browser execution pending
+In progress
 ~~~
 
-Stage 6 מחולק לתת-שלבים קטנים:
+Stage 6 מחולק לתת-שלבים קטנים. המטרה היא גם self-tests ידניים וגם CI אוטומטי ב-Chromium:
 
 #### Stage 6.1 — Schema/open browser self-test
 
@@ -289,6 +289,70 @@ Implemented — browser execution pending
 - test data does not remain.
 
 עדיין ללא Leumi API polling.
+
+
+#### Stage 6.4 — Playwright browser-test harness
+
+Status:
+
+~~~text
+Next
+~~~
+
+נקים test tooling בלבד:
+
+- package/test scripts.
+- Playwright configuration.
+- Chromium runner.
+- local test harness/page שמטעין את browser modules בסדר נכון.
+
+Node/Playwright הם test tooling בלבד ולא production stack.
+
+#### Stage 6.5 — GitHub Actions CI workflow
+
+נוסיף workflow שרץ ב-push/PR:
+
+- install dependencies.
+- install Chromium.
+- run browser tests.
+- fail build on test failure.
+- upload useful test report/artifact on failure.
+
+ללא secrets וללא Leumi session.
+
+#### Stage 6.6 — Automate existing storage self-tests
+
+נחבר ל-CI את Stage 6.1–6.3:
+
+- schema/open.
+- fixture add/put/get/getAll/count.
+- null/zero/empty-string round-trip.
+- cleanup.
+- close/reopen persistence.
+
+IndexedDB יהיה IndexedDB אמיתי של Chromium.
+
+#### Stage 6.7 — Mock API fixture infrastructure
+
+נוסיף deterministic fixtures + request interception עבור:
+
+~~~text
+MapHeat2
+GetSecuritiesData
+~~~
+
+ה-fixtures יהיו קטנים ולא יכילו מידע רגיש.
+
+נכסה לפחות:
+
+- successful universe.
+- successful chunks.
+- null/zero values.
+- duplicate/missing cases.
+- HTTP failure.
+- invalid response structure.
+
+לא מבצעים live API calls ב-CI.
 
 ### Stage 7 — Recorder skeleton
 
@@ -356,9 +420,35 @@ Next
 
 Stage 7 עדיין לא כותב ל-IndexedDB; persistence מתחיל ב-Stage 8.
 
+
+#### Stage 7.6 — Recorder mocked browser tests
+
+לפני Stage 7 Complete נוסיף CI tests עבור:
+
+- dynamic universe size.
+- chunk planning.
+- sequential chunk execution.
+- full-cycle completeness validation.
+- missing/duplicate rejection.
+- HTTP/error propagation.
+- no-overlap scheduling.
+- start/stop behavior.
+
+הבדיקות ישתמשו ב-mock API infrastructure של Stage 6.7.
+
 ### Stage 8 — Persist complete cycles
 
 נחבר recorder ל-IndexedDB ונשמור latest/history/cycles.
+
+לפני Stage 8 Complete נוסיף automated browser integration tests עבור:
+
+- successful atomic cycle commit.
+- latest/history consistency.
+- second cycle replaces latest but preserves history.
+- rollback on injected failure.
+- failed API/validation cycle does not touch latest/history.
+- raw field preservation.
+
 
 ### Stage 9 — Recorder diagnostics
 
@@ -394,6 +484,21 @@ click row → history table from IndexedDB.
 
 recorder status, last cycle, DB row counts, storage usage.
 
+לפני סיום Viewer stages נוסיף Playwright tests עבור:
+
+- main current table.
+- default/dynamic sorting.
+- null/zero rendering.
+- row → detail navigation.
+- per-security history.
+- paging/load older.
+- sort-state preservation.
+- empty/error/stale states.
+- BroadcastChannel refresh.
+- viewer reload/close/reopen.
+- multiple viewers כאשר מעשי ב-browser test.
+
+
 ---
 
 ## Resilience / validation
@@ -407,10 +512,17 @@ recorder status, last cycle, DB row counts, storage usage.
 
 ### Stage 17 — Failure simulation
 
+CI mocked failure tests:
+
 - failed API chunk.
+- invalid response structure.
+- duplicate/missing securities.
 - failed validation.
 - DB write failure path.
 - stale recorder detection.
+- BroadcastChannel unavailable/degraded path.
+
+רק אחרי שה-CI עובר נבצע live failure/recovery checks שניתן לבדוק בבטחה.
 
 ### Stage 18 — Storage growth test
 
@@ -424,7 +536,33 @@ estimated hours before concern
 
 בלי להוסיף retention עדיין.
 
-### Stage 19 — Integrated V1 run
+### Stage 19 — Integrated V1 validation
+
+#### Stage 19.1 — Full mocked E2E in GitHub Actions
+
+Chromium + mocked API:
+
+~~~text
+Recorder
+→ IndexedDB
+→ BroadcastChannel
+→ Viewer
+→ sorting
+→ history
+~~~
+
+ה-CI חייב לעבור לפני בקשת בדיקה ידנית.
+
+#### Stage 19.2 — Live Leumi browser verification
+
+לאחר CI ירוק:
+
+- user runs against real Leumi session.
+- validate real MapHeat2/GetSecuritiesData behavior.
+- validate recorder persistence/viewer behavior.
+- record Verified vs Unknown results.
+
+#### Stage 19.3 — Long-run live report
 
 הרצה ממושכת עם recorder + viewer + sorting + history.
 
