@@ -23,12 +23,6 @@ entry.js
 Build:
 
 ~~~text
-node runtime/build-runtime.js
-~~~
-
-or:
-
-~~~text
 npm run build:runtime
 ~~~
 
@@ -39,24 +33,57 @@ runtime/dist/market-flow-v1.runtime.js
 runtime/dist/market-flow-v1.bookmarklet.txt
 ~~~
 
-The dist directory is generated and ignored by Git. Browser CI regenerates it from repository sources.
+The dist directory is generated and ignored by Git.
+
+## Artifact roles
+
+`market-flow-v1.runtime.js` is the readable assembled runtime used for inspection and debugging.
+
+`market-flow-v1.bookmarklet.txt` is the user-facing delivery artifact. It is generated as compact single-line JavaScript. Terser is intentionally configured with compression and identifier mangling disabled: comments/formatting are removed, but source identifiers and runtime behavior remain recognizable. Only URL-sensitive characters that can corrupt a `javascript:` URL are escaped.
+
+The Bookmarklet remains self-contained. It does not fetch executable code from an external host.
+
+A packaging guard fails the build if the Bookmarklet exceeds 256 KiB.
+
+## Stable verified download
+
+A successful full Browser CI run on `main` publishes the two generated files to a rolling GitHub Release:
+
+~~~text
+tag:
+local-history-viewer-v1-runtime-latest
+~~~
+
+Release page:
+
+~~~text
+https://github.com/LirazShay/market-flow/releases/tag/local-history-viewer-v1-runtime-latest
+~~~
+
+Stable Bookmarklet download:
+
+~~~text
+https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.bookmarklet.txt
+~~~
+
+Stable readable runtime download:
+
+~~~text
+https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.runtime.js
+~~~
+
+The rolling release is updated only after the full Chromium suite succeeds. The ordinary per-run GitHub Actions artifact is retained as additional verification evidence.
 
 ## Browser usage
 
-Generate the artifacts, then create a browser bookmark whose URL is the complete contents of:
-
-~~~text
-runtime/dist/market-flow-v1.bookmarklet.txt
-~~~
+Download `market-flow-v1.bookmarklet.txt`, open it as text, and copy its complete single line into the URL field of a browser bookmark.
 
 Run that bookmark only while already on the intended Leumi page/origin.
-
-The Bookmarklet embeds the complete generated runtime. It does not fetch code from an external host and does not embed cookies, tokens, authorization headers, account data or private session state.
 
 Launching it:
 
 ~~~text
-existing source modules
+embedded assembled runtime
 → MarketFlowRuntime
 → recorder starts if not already running
 → same-origin viewer opens/focuses
@@ -77,6 +104,8 @@ If stop persistence is still pending, a restart fails clearly rather than creati
 
 ## Verification
 
-Fast tests cover deterministic generation, exact Bookmarklet decoding and artifact writing.
+Fast tests cover deterministic assembly, compact Bookmarklet generation, packaging size, and artifact writing.
 
-Chromium smoke coverage executes the generated Bookmarklet on a clean page with deterministic mocked Leumi endpoints and verifies initial launch, repeated idempotent launch and restart after a clean stop.
+Chromium smoke coverage executes the generated Bookmarklet on a clean page with deterministic mocked Leumi endpoints and verifies initial launch, repeated idempotent launch, restart after a clean stop, and the compact artifact contract.
+
+Real Chrome bookmark storage/execution on the authenticated Leumi site remains provider-dependent live verification and must not be claimed from CI alone.
