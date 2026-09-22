@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "8.3",
-    "title": "Atomic successful-cycle transaction",
-    "status": "browser-verification-pending"
+    "stage": "8.4",
+    "title": "Recorder integration + persistence failure/rollback tests",
+    "status": "next"
   },
   "stages": [
     {
@@ -87,7 +87,7 @@
       "substeps": {
         "8.1": "complete-fast-ci-verified",
         "8.2": "complete-browser-ci-verified",
-        "8.3": "implemented-browser-verification-pending",
+        "8.3": "complete-browser-ci-verified",
         "8.4": "planned — recorder integration + persistence failure/rollback tests"
       }
     },
@@ -165,13 +165,13 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35744806678,
-      "commit": "0afadaf761dd9a217ec5c6946a5dd1299cc6c70d",
+      "runId": 35751253126,
+      "commit": "8bcec04a5562213dcfe819aa9c08b358bc628e46",
       "conclusion": "success",
       "tests": [
-        "13 Chromium tests",
-        "Stage 7 complete mocked recorder path",
-        "existing IndexedDB storage regression coverage"
+        "21 Chromium tests",
+        "Stage 8.3 atomic successful-cycle persistence",
+        "existing lifecycle/recorder/storage regressions"
       ]
     },
     "fastCi": "verified-success",
@@ -183,13 +183,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35750392640,
-      "commit": "5b371b40de8ba80f2825cca81536b2802f4ea819",
+      "runId": 35751181181,
+      "commit": "33c1603f0d7bf1cf488ac6366a3d6ef1bb19ddd1",
       "conclusion": "success",
       "tests": 116,
       "passed": 116,
       "failed": 0,
-      "durationMs": 49.136535
+      "durationMs": 54.730226
     },
     "testingRefactor": {
       "status": "complete",
@@ -294,6 +294,35 @@
         "invalid universe leaves prior snapshot unchanged",
         "sessions + meta stop transaction",
         "raw MapHeat null/zero/empty-string round-trip"
+      ]
+    },
+    "stage8_3": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35751181181,
+        "commit": "33c1603f0d7bf1cf488ac6366a3d6ef1bb19ddd1",
+        "conclusion": "success",
+        "tests": 116,
+        "passed": 116,
+        "failed": 0
+      },
+      "browserVerification": {
+        "runId": 35751253126,
+        "commit": "8bcec04a5562213dcfe819aa9c08b358bc628e46",
+        "conclusion": "success",
+        "tests": 21,
+        "passed": 21,
+        "failed": 0,
+        "reason": "early-browser exception: Stage 8.3 defines real multi-store IndexedDB transaction semantics"
+      },
+      "verifiedBehaviors": [
+        "single transaction across cycles/history/latest/meta",
+        "one generated cycleId shared by cycle/history/latest/meta state",
+        "second cycle preserves history while replacing latest",
+        "ConstraintError during history write rolls back new cycle/latest/meta updates",
+        "raw Security null/zero/empty-string round-trip",
+        "recorder instance ownership checked before commit"
       ]
     }
   },

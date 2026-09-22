@@ -172,3 +172,34 @@ cycles + history + latest + meta
 ~~~
 
 A request error aborts the whole transaction. No partial new cycle/latest/meta state is committed.
+
+
+## Stage 8.3 verification
+
+~~~text
+Fast CI
+Run 35751181181
+116 passed / 0 failed
+
+Chromium
+Run 35751253126
+21 passed / 0 failed
+~~~
+
+Verified real IndexedDB behavior:
+
+- one transaction spans `cycles + history + latest + meta`;
+- the auto-generated `cycleId` is used consistently across persisted cycle/history/latest/meta state;
+- a second successful cycle preserves old history while replacing latest rows;
+- a forced history `ConstraintError` rolls back the attempted cycle, latest changes and recorderState update;
+- recorder instance ownership is checked before cycle persistence;
+- raw Security values preserve `null`, `0`, and `""`.
+
+Next:
+
+~~~text
+Stage 8.4 — recorder integration
+validated cycle
+→ DB commit
+→ only then in-memory completed/latest state
+~~~

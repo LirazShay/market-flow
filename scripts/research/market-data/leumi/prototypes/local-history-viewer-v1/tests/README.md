@@ -510,3 +510,28 @@ tests/automation/specs/persistence-lifecycle.spec.js
 ~~~
 
 The normal Browser CI workflow remains manual/reusable after the verification run.
+
+
+---
+
+## Stage 8.3 atomic-cycle verification
+
+Stage 8.3 used the early-browser exception because correctness depends on real multi-store IndexedDB transaction semantics.
+
+~~~text
+Fast CI
+Run 35751181181
+116 passed / 0 failed
+
+Browser CI
+Run 35751253126
+21 passed / 0 failed
+~~~
+
+New browser coverage:
+
+~~~text
+tests/automation/specs/successful-cycle-persistence.spec.js
+~~~
+
+The normal Browser CI workflow is restored to manual/reusable checkpoint triggers after verification.
