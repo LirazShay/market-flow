@@ -1094,7 +1094,7 @@ test(
 
         await expect(
             viewer.locator(
-                "th[data-column='LastKnownRate']"
+                "[data-role='current-market-table'] th[data-column='LastKnownRate']"
             )
         ).toHaveAttribute(
             "aria-sort",
