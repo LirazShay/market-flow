@@ -45,6 +45,12 @@ local-history-viewer-v1/
 │   ├── README.md
 │   └── IndexedDB modules
 │
+├── viewer/
+│   ├── README.md
+│   ├── bootstrap.js
+│   └── pure/
+│       └── viewer-state.js
+│
 └── tests/
     ├── README.md
     ├── TESTING_POLICY.md

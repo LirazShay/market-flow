@@ -215,8 +215,8 @@ Verified:
 - heartbeat
 - storage estimate / diagnostics API
 
-Next:
-Stage 10 — Viewer bootstrap
+Current:
+Stage 10 — Viewer bootstrap implemented; Fast/Browser verification pending
 ~~~
 
 Stage 8 explicitly includes:
@@ -307,3 +307,16 @@ If this fast context conflicts with a durable design/decision document:
 2. inspect the authoritative document;
 3. resolve the conflict;
 4. update this file in the same work batch.
+
+
+## Viewer implementation
+
+~~~text
+viewer/
+  README.md
+  bootstrap.js
+  pure/
+    viewer-state.js
+~~~
+
+Stage 10 establishes a same-origin named about:blank viewer shell. Stage 11 will load the current table from IndexedDB.

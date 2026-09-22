@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "10",
     "title": "Viewer bootstrap",
-    "status": "next"
+    "status": "fast-and-browser-verification-pending"
   },
   "stages": [
     {
@@ -104,7 +104,13 @@
     {
       "stage": "10",
       "title": "Viewer bootstrap",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "10.1": "implemented — viewer state contract",
+        "10.2": "implemented — same-origin about:blank shell",
+        "10.3": "implemented — named-window reuse + RTL/accessible shell",
+        "10.4": "fast-and-browser-verification-pending"
+      }
     },
     {
       "stage": "11",

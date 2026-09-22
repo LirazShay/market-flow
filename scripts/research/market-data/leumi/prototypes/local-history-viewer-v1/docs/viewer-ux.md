@@ -3,7 +3,8 @@
 Status:
 
 ~~~text
-Stage 3 complete — UX planned, no implementation yet
+Durable V1 UX plan.
+Operational implementation progress is tracked in ../STATUS.json.
 ~~~
 
 מטרת ה-viewer היא לתת מסך אחד פשוט ומהיר שמאפשר:

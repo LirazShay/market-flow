@@ -610,3 +610,25 @@ Run 35753430439
 The first browser run correctly exposed two stale Stage 8 expectations: failures are now intentionally persisted as diagnostic `cycles` rows. Those assertions were updated to preserve the real invariant: failures may write `cycles + meta`, but never `history + latest`.
 
 Browser CI is restored to manual/reusable triggers.
+
+
+---
+
+## Stage 10 viewer bootstrap
+
+Coverage:
+
+~~~text
+tests/unit/viewer-state.test.js
+tests/automation/specs/viewer-bootstrap.spec.js
+~~~
+
+The unit layer verifies the planned viewer/recorder-health state contracts.
+
+The browser layer verifies:
+
+- Hebrew + RTL shell;
+- initial BOOTING state;
+- required current/detail regions;
+- same-origin IndexedDB visibility from the about:blank viewer;
+- named viewer-window reuse.
