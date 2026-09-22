@@ -12,7 +12,7 @@
     "stage": "19",
     "substep": "19.2",
     "title": "Integrated V1 validation — runtime assembly and Bookmarklet packaging",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -1553,7 +1553,7 @@
       "closureDecision": "Stage 19.1 complete. Mocked CI gate is green; live verification may begin."
     },
     "runtimeAssembly": {
-      "status": "not-started",
+      "status": "in-progress",
       "requiredBeforeLiveLeumi": true,
       "reason": "Current source modules are individually verified through the test harness, but no verified production-style assembly/Bookmarklet delivery path exists yet.",
       "acceptanceIntent": [
