@@ -126,6 +126,21 @@ Attempts:
 
 All three attempts passed.
 
+### Full-suite closure confirmation
+
+The mandatory Stage 18 full Browser CI reran the same benchmark as part of the complete suite:
+
+~~~text
+Run: 35783658571
+52/52 Chromium tests passed
+
+effective bytes/history-row = 522.47 B
+growth                      = 3.364 MiB/min
+runner hours-to-quota       = 4.671 h
+~~~
+
+This value is inside the three-run targeted benchmark range, so the closure run did not expose a storage-measurement outlier.
+
 ---
 
 ## 4. Aggregate result
