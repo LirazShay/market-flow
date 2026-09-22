@@ -6,9 +6,11 @@
   "scripts": {
     "test": "npm run test:unit",
     "test:unit": "node tests/unit/run-unit-tests.js",
-    "test:browser": "playwright test",
+    "test:browser": "npm run build:runtime && playwright test",
     "test:browser:smoke": "playwright test tests/automation/specs/harness-smoke.spec.js",
-    "test:all": "npm run test:unit && npm run test:browser"
+    "test:all": "npm run test:unit && npm run test:browser",
+    "build:runtime": "node runtime/build-runtime.js",
+    "test:browser:runtime": "npm run build:runtime && playwright test tests/automation/specs/runtime-assembly.spec.js"
   },
   "devDependencies": {
     "@playwright/test": "1.55.0"
