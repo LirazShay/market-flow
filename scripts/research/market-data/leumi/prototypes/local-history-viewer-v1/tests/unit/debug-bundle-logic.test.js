@@ -198,3 +198,113 @@ test(
         );
     }
 );
+
+
+test(
+    "fingerprints are deterministic regardless of row order",
+    () => {
+        const cycle = {
+            cycleId: 20,
+            status: "complete",
+            requested: 2,
+            received: 2,
+            unique: 2,
+            missing: 0,
+            duplicates: 0,
+            startedAtMs: 4000,
+            completedAtMs: 4100,
+            chunks: []
+        };
+
+        const ordered =
+            buildCycleDiagnostics({
+                cycle,
+                rows: [
+                    row("1001"),
+                    row(
+                        "1002",
+                        {
+                            LastKnownRate:
+                                222
+                        }
+                    )
+                ]
+            });
+
+        const reversed =
+            buildCycleDiagnostics({
+                cycle,
+                rows: [
+                    row(
+                        "1002",
+                        {
+                            LastKnownRate:
+                                222
+                        }
+                    ),
+                    row("1001")
+                ]
+            });
+
+        assert.equal(
+            ordered
+                .marketDataFingerprint,
+            reversed
+                .marketDataFingerprint
+        );
+
+        assert.equal(
+            ordered
+                .providerTimeFingerprint,
+            reversed
+                .providerTimeFingerprint
+        );
+    }
+);
+
+test(
+    "missing provider timestamps remain unavailable instead of becoming fake values",
+    () => {
+        const diagnostics =
+            buildCycleDiagnostics({
+                cycle: {
+                    cycleId: 21,
+                    status: "complete",
+                    requested: 1,
+                    received: 1,
+                    unique: 1,
+                    missing: 0,
+                    duplicates: 0,
+                    startedAtMs: 5000,
+                    completedAtMs: 5100,
+                    chunks: []
+                },
+                rows: [
+                    {
+                        securityId:
+                            "1001",
+                        data: {
+                            LastKnownRate:
+                                100
+                        }
+                    }
+                ]
+            });
+
+        assert.deepEqual(
+            diagnostics
+                .providerTimes
+                .serverAsOfDate
+                .values,
+            []
+        );
+
+        assert.deepEqual(
+            diagnostics
+                .providerTimes
+                .LastKnownRateDate
+                .values,
+            []
+        );
+    }
+);
