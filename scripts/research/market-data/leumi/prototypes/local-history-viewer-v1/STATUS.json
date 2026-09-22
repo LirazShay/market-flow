@@ -10,8 +10,9 @@
   },
   "currentFocus": {
     "stage": "17",
-    "title": "Failure simulation",
-    "status": "ready-to-start"
+    "substep": "17.1",
+    "title": "Failure simulation — persistent-recorder failure matrix",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -183,7 +184,12 @@
     {
       "stage": "17",
       "title": "Failure simulation",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "17.1": "in-progress — audit existing failure coverage and add missing persistent-recorder invalid/missing/duplicate matrix",
+        "17.2": "planned — Stage 17 acceptance mapping across all seven ROADMAP failure cases",
+        "17.3": "planned — mandatory Stage-closure Fast + full Browser CI"
+      }
     },
     {
       "stage": "18",
@@ -1303,9 +1309,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 16 is accepted and complete. Reload, close/reopen, recorder independence and persisted-state restoration are verified; mandatory Fast CI and full Browser CI are green.",
-    "nextStage": "17"
+    "reached": false,
+    "reason": "Stage 17 is in progress. Existing failure coverage is being reused; only missing integration cases will be added.",
+    "nextStage": "17",
+    "nextSubstep": "17.1"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
