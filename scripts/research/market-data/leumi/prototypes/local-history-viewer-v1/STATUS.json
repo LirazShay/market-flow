@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "19",
-    "substep": "19.2",
-    "title": "Integrated V1 validation — runtime assembly and Bookmarklet packaging",
-    "status": "in-progress"
+    "substep": "19.3",
+    "title": "Integrated V1 validation — live Leumi browser verification",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -207,7 +207,7 @@
       "status": "in-progress",
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-        "19.2": "planned — runtime assembly/build + single browser payload + Bookmarklet-compatible launcher; hard prerequisite before live Leumi verification",
+        "19.2": "complete-browser-ci-verified — deterministic runtime assembly + generated runtime/Bookmarklet + Chromium smoke",
         "19.3": "planned — live Leumi browser verification through the assembled runtime delivery path",
         "19.4": "planned — long-run live report using the assembled runtime"
       }
@@ -226,15 +226,16 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35784775342,
-      "jobId": 106938784096,
-      "activationCommit": "45d7c9016041158e8c1b07afa6a097f500e39824",
-      "codeTestState": "1b287ace8944046bcd03b5e279759e9972bfe0c8",
+      "runId": 35788387620,
+      "jobId": 106950678086,
+      "activationCommit": "62ad6666f50eae6cd38e6c372be9902c5eb2ba2d",
+      "codeTestState": "545415412d53bd3906ded831cd5e5eb98d580b0c",
+      "workflowRestoreCommit": "813320a82a7eb91f46ec5f1bea2a697031049f54",
       "conclusion": "success",
       "tests": [
-        "53 Chromium tests",
-        "53 passed / 0 failed",
-        "Stage 19.1 full mocked E2E included in full Browser suite"
+        "54 Chromium tests",
+        "54 passed / 0 failed",
+        "Stage 19.2 assembled Bookmarklet smoke included in full Browser suite"
       ]
     },
     "fastCi": "verified-success",
@@ -246,14 +247,14 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35787438175,
-      "jobId": 106947548550,
-      "commit": "9a9fda5b2518ba897a7ad6a7439148755e920052",
+      "runId": 35788333222,
+      "jobId": 106950495352,
+      "commit": "0bac1c5271944a34186e9681be6bbd50be5ee155",
       "conclusion": "success",
-      "tests": 149,
-      "passed": 149,
+      "tests": 153,
+      "passed": 153,
       "failed": 0,
-      "durationMs": 101.009642
+      "durationMs": 109.187929
     },
     "testingRefactor": {
       "status": "complete",
@@ -1553,7 +1554,7 @@
       "closureDecision": "Stage 19.1 complete. Mocked CI gate is green; live verification may begin."
     },
     "runtimeAssembly": {
-      "status": "in-progress",
+      "status": "complete",
       "requiredBeforeLiveLeumi": true,
       "reason": "Current source modules are individually verified through the test harness, but no verified production-style assembly/Bookmarklet delivery path exists yet.",
       "acceptanceIntent": [
@@ -1565,7 +1566,46 @@
         "no secrets or private session material embedded in generated artifacts",
         "browser smoke test of assembled output",
         "clear generation/usage documentation"
-      ]
+      ],
+      "sourceCount": 34,
+      "runtimeBytes": 318628,
+      "bookmarkletBytes": 718259,
+      "buildCommand": "npm run build:runtime",
+      "runtimeArtifact": "runtime/dist/market-flow-v1.runtime.js",
+      "bookmarkletArtifact": "runtime/dist/market-flow-v1.bookmarklet.txt",
+      "browserArtifact": {
+        "workflowRunId": 35788387620,
+        "artifactId": 10721225096,
+        "name": "local-history-viewer-v1-runtime",
+        "compressedSizeBytes": 89690,
+        "retentionDays": 14
+      },
+      "fastCi": {
+        "runId": 35788333222,
+        "jobId": 106950495352,
+        "tests": 153,
+        "passed": 153,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35788387620,
+        "jobId": 106950678086,
+        "tests": 54,
+        "passed": 54,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "deterministic dependency ordering from repository source files",
+        "single generated browser-runnable runtime payload",
+        "Bookmarklet decodes to the exact generated runtime payload",
+        "generated delivery contains existing modules rather than duplicated business logic",
+        "clean Chromium page launches recorder and same-origin viewer through the generated Bookmarklet",
+        "repeated Bookmarklet launch reuses the running recorder instance and named viewer window",
+        "runtime can restart after clean recorder stop persistence completes",
+        "generated artifacts are ignored by Git and published by Browser CI",
+        "no external runtime host is required by the Bookmarklet delivery path"
+      ],
+      "workflowRestoreCommit": "813320a82a7eb91f46ec5f1bea2a697031049f54"
     },
     "documentationStatusSourceGuardRepair": {
       "status": "complete",
@@ -1617,10 +1657,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Stage 19.1 mocked E2E is complete. A delivery-layer gap was identified: verified modules are not yet assembled into a single runnable browser payload/Bookmarklet path. Live verification is intentionally blocked until Stage 19.2 is designed, implemented and verified.",
+    "reason": "Stage 19.2 runtime assembly and Bookmarklet packaging are verified. The generated delivery path is now available for provider-dependent validation.",
     "nextStage": "19",
-    "nextSubstep": "19.2",
-    "nextAction": "Design and implement a deterministic runtime assembly/build mechanism that produces one browser-runnable payload plus a Bookmarklet-compatible launcher from the existing verified source modules. Add build/package tests and a browser smoke test before any live Leumi verification."
+    "nextSubstep": "19.3",
+    "nextAction": "Run live Leumi browser verification using the verified generated runtime/Bookmarklet path and record Verified/Inferred/Unknown outcomes without committing private session data."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
