@@ -104,6 +104,8 @@ MarketFlowRuntime.launch({ recorderConfig })
 MarketFlowRuntime.stop(reason)
 MarketFlowRuntime.closeViewer()
 MarketFlowRuntime.getSnapshot()
+MarketFlowRuntime.createDebugBundle(options)
+MarketFlowRuntime.downloadDebugBundle(options)
 ~~~
 
 If stop persistence is still pending, a restart fails clearly rather than creating overlapping recorder state.
