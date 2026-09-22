@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "8.2",
-    "title": "Session + universe persistence",
-    "status": "browser-verification-pending"
+    "stage": "8.3",
+    "title": "Atomic successful-cycle transaction",
+    "status": "next"
   },
   "stages": [
     {
@@ -86,7 +86,7 @@
       "status": "in-progress",
       "substeps": {
         "8.1": "complete-fast-ci-verified",
-        "8.2": "implemented-browser-verification-pending",
+        "8.2": "complete-browser-ci-verified",
         "8.3": "planned — atomic successful-cycle transaction",
         "8.4": "planned — recorder integration + persistence failure/rollback tests"
       }
@@ -183,13 +183,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35749829319,
-      "commit": "a9fa44c8c2bd142232ce9166bb01c47c72e45997",
+      "runId": 35750392640,
+      "commit": "5b371b40de8ba80f2825cca81536b2802f4ea819",
       "conclusion": "success",
-      "tests": 115,
-      "passed": 115,
+      "tests": 116,
+      "passed": 116,
       "failed": 0,
-      "durationMs": 33.142952
+      "durationMs": 49.136535
     },
     "testingRefactor": {
       "status": "complete",
@@ -267,6 +267,34 @@
         "failed": 0
       },
       "browserCheckpoint": "not-due-until-stage-8-complete"
+    },
+    "stage8_2": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35750392640,
+        "commit": "5b371b40de8ba80f2825cca81536b2802f4ea819",
+        "conclusion": "success",
+        "tests": 116,
+        "passed": 116,
+        "failed": 0
+      },
+      "browserVerification": {
+        "runId": 35750451464,
+        "commit": "d9519ec6127b8b44b1f534d998980a7fb4ab9223",
+        "conclusion": "success",
+        "tests": 17,
+        "passed": 17,
+        "failed": 0,
+        "reason": "early-browser exception: Stage 8.2 changes real IndexedDB transaction semantics"
+      },
+      "verifiedBehaviors": [
+        "sessions + meta start transaction",
+        "universe + meta exact-snapshot transaction",
+        "invalid universe leaves prior snapshot unchanged",
+        "sessions + meta stop transaction",
+        "raw MapHeat null/zero/empty-string round-trip"
+      ]
     }
   },
   "fastContext": {

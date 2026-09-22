@@ -195,7 +195,8 @@ Current work:
 ~~~text
 Stage 8 — Persistence integration
 8.1 persistence record builders/contracts complete + Fast CI verified
-Next: 8.2 session + universe persistence
+8.2 session + universe persistence complete + Chromium verified
+Next: 8.3 atomic successful-cycle transaction
 ~~~
 
 Stage 8 explicitly includes:

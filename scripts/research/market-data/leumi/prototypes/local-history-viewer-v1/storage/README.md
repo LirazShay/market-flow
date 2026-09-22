@@ -122,3 +122,31 @@ stopSession
 ~~~
 
 Full MapHeat records remain in `universe.rawMapHeat`.
+
+
+## Stage 8.2 verification
+
+~~~text
+Fast CI
+Run 35750392640
+116 passed / 0 failed
+
+Chromium
+Run 35750451464
+17 passed / 0 failed
+~~~
+
+Verified real IndexedDB behavior:
+
+- session start commits `sessions + meta`;
+- universe persistence atomically replaces the universe snapshot and updates `meta.universeState`;
+- invalid universe input leaves the previous persisted snapshot unchanged;
+- session stop commits `sessions + meta`;
+- raw MapHeat `null`, `0`, and `""` values survive IndexedDB round-trip.
+
+Next persistence boundary:
+
+~~~text
+Stage 8.3 — one atomic successful-cycle transaction
+cycles + history + latest + meta
+~~~

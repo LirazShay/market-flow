@@ -485,3 +485,28 @@ Current test policy remains:
 ~~~text
 TESTING_POLICY.md
 ~~~
+
+
+---
+
+## Stage 8.2 lifecycle persistence verification
+
+Because Stage 8.2 changes real IndexedDB transaction semantics, the early-browser exception was used.
+
+~~~text
+Fast CI
+Run 35750392640
+116 passed / 0 failed
+
+Browser CI
+Run 35750451464
+17 passed / 0 failed
+~~~
+
+New browser coverage:
+
+~~~text
+tests/automation/specs/persistence-lifecycle.spec.js
+~~~
+
+The normal Browser CI workflow remains manual/reusable after the verification run.
