@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/local-history-viewer-v1-ci.yml"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/runtime-assembly.spec.js"
   workflow_dispatch:
   workflow_call:
 
