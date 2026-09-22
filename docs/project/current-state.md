@@ -232,6 +232,14 @@ Location:
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
+Planning progress:
+
+~~~text
+Stage 1 — Requirements + architecture: Complete
+Stage 2 — IndexedDB data model:       Complete
+Stage 3 — Viewer UX plan:             Next
+~~~
+
 Planned V1:
 
 - browser-only IndexedDB persistence.
@@ -242,6 +250,23 @@ Planned V1:
 - per-security history table.
 - diagnostics/storage visibility.
 - filtering intentionally postponed to V2.
+
+Stage 2 data model:
+
+~~~text
+meta
+sessions
+universe
+cycles
+latest
+history
+~~~
+
+Detailed schema:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/DATA_MODEL.md
+~~~
 
 Important constraint:
 
