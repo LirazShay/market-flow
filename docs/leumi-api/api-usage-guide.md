@@ -8,8 +8,6 @@
 
 ## 1. המודל הנכון: שתי קריאות עם שני תפקידים שונים
 
-המערכת שנצפתה בנויה משני מקורות משלימים.
-
 ### MapHeat2 — Universe / Discovery / Metadata
 
 תפקידו:
@@ -18,60 +16,67 @@
 - לקבל את מספר הניירים הכולל.
 - לקבל `PaperId`.
 - לקבל `PaperName`.
-- לקבל סדר, paging ו-filtering.
-- לקבל snapshot כללי של נתונים מסוימים.
+- לקבל order / paging / filters.
+- לקבל snapshot כללי של חלק מנתוני השוק.
 
 ### GetSecuritiesData — Live / Detailed market state
 
 תפקידו:
 
 - לקבל רשימת IDs שכבר ידועה.
-- להחזיר snapshot מפורט יותר של מצב השוק.
-- להחזיר שער אחרון, BID/ASK, כמויות, נתונים יומיים וזמנים.
+- להחזיר snapshot מפורט ועדכני יותר של מצב השוק.
+- להחזיר מחיר, BID/ASK level 1, כמויות, נתונים יומיים וזמנים.
 
-### מפתח החיבור
+### Join key
 
 ~~~text
 MapHeat2.PaperId == GetSecuritiesData.Key
 ~~~
 
-אין להסתמך על מיקום הרשומה במערך. תמיד יש לבצע join לפי המזהה.
+בבדיקת 561 ניירות:
+
+~~~text
+561 comparable
+561 equal
+0 different
+100%
+~~~
+
+לכן זהו ה-join key המוכח.
+
+אין לבצע join לפי index או order במערך.
 
 ---
 
-## 2. Recommendation: MapHeat2 אינו מנוע polling ראשי
+## 2. MapHeat2 אינו polling source ראשי
 
 ### Verified
 
-בהקלטת הרשת נצפה ש-`GetSecuritiesData` נקרא שוב ושוב, בעוד `MapHeat2` הופיע סביב יצירת/שינוי רשימת התוצאות ומעברי עמודים.
+בהקלטת הרשת נצפה ש-`GetSecuritiesData` נקרא שוב ושוב, בעוד `MapHeat2` הופיע סביב בניית/שינוי רשימת התוצאות ומעברי עמודים.
 
 ### Recommendation
 
-המודל המומלץ כרגע:
-
 ~~~text
-1. MapHeat2
-   ↓
-   קבלת universe + metadata + IDs
+MapHeat2
+→ universe + metadata + IDs
 
-2. GetSecuritiesData
-   ↓
-   polling של מצב השוק עבור אותם IDs
+GetSecuritiesData
+→ repeated live/detailed snapshots
 ~~~
 
-אין סיבה מוכחת לקרוא ל-`MapHeat2` בכל tick של הסורק.
+אין צורך מוכח לקרוא ל-`MapHeat2` בכל tick.
 
-כן צריך לרענן אותו כאשר יש סיבה לחשוד שה-universe השתנה, למשל:
+רענון `MapHeat2` כן הגיוני כאשר:
 
-- reload של האפליקציה.
-- שינוי filters.
-- שינוי סוג שוק/רשימה.
-- שינוי במספר הניירות.
-- מנגנון refresh תקופתי שנחליט עליו בעתיד לאחר מדידה.
+- האפליקציה עולה מחדש.
+- filters משתנים.
+- universe משתנה.
+- recordCount משתנה.
+- נחליט בעתיד על refresh תקופתי לאחר מדידה.
 
 ---
 
-## 3. אל תקבע 561 בקוד
+## 3. לא לקבע 561 בקוד
 
 ### Verified בזמן הבדיקה
 
@@ -79,27 +84,21 @@ MapHeat2.PaperId == GetSecuritiesData.Key
 recordCount = 561
 ~~~
 
-אבל זה snapshot של זמן מסוים.
-
 ### Recommendation
-
-תמיד:
 
 ~~~text
 read recordCount
-→ fetch full MapHeat2 using the current count
-→ build IDs dynamically
+→ fetch full MapHeat2 dynamically
+→ derive PaperIds
 ~~~
 
-אין לכתוב production logic שמניח שתמיד יהיו בדיוק 561 ניירות.
+המספר 561 הוא snapshot, לא contract.
 
 ---
 
-## 4. חלוקת GetSecuritiesData
+## 4. batching של GetSecuritiesData
 
 ### Verified
-
-הבדיקות נתנו:
 
 ~~~text
 100 IDs → 200 OK
@@ -110,32 +109,25 @@ read recordCount
 561 IDs → 403
 ~~~
 
-והמסלול הבא נבדק במלואו:
+מסלול מלא שנבדק:
 
 ~~~text
 187 + 187 + 187
-→ 561 requested
-→ 561 received
-→ 561 unique
-→ 0 duplicates
-→ 0 missing
+
+requested = 561
+received = 561
+unique = 561
+duplicates = 0
+missing = 0
 ~~~
 
 ### Recommendation
 
-כרגע להשתמש בחלוקה שמרנית של כ-187 IDs לקריאה.
+כרגע להשתמש ב-batches שמרניים סביב 187.
 
-לא לנסות "לנצח" את מגבלת ה-403.
+לא לנסות לעקוף את ה-403.
 
-לא הוכח אם המגבלה נובעת מ:
-
-- מספר IDs.
-- אורך URL.
-- WAF/security rule.
-- מגבלת backend.
-- שילוב של כמה גורמים.
-
-הפתרון הנכון הוא batching, לא bypass.
+סיבת ה-403 המדויקת עדיין Unknown.
 
 ---
 
@@ -143,231 +135,367 @@ read recordCount
 
 ### Verified
 
-ה-flow של שלוש קריאות ברצף נבדק ועבד.
+3 קריאות sequential עבדו.
 
 ### Unknown
 
-טרם נבדק בצורה מסודרת אם שלוש קריאות מקביליות הן יציבות ורצויות.
+טרם נבדק אם parallel batching יציב ורצוי.
 
 ### Recommendation
 
-עד שתהיה בדיקה אחרת, לשמור על:
+עד evidence אחר:
 
 ~~~text
-chunk 1
-→ await
-chunk 2
-→ await
-chunk 3
-→ await
+chunk 1 → await
+chunk 2 → await
+chunk 3 → await
 ~~~
-
-זה מעט איטי יותר אך כרגע הוא הנתיב המוכח.
 
 ---
 
-## 6. Source of truth לכל סוג מידע
-
-אין כרגע סיבה לבחור endpoint יחיד לכל השדות.
+## 6. לשמור raw + normalized
 
 ### Recommendation
 
-שמור raw data משני המקורות בנפרד:
+שמור:
 
 ~~~text
 RawMapHeatRecord
 RawSecurityDataRecord
-~~~
-
-ובנה שכבה מנורמלת:
-
-~~~text
 NormalizedSecuritySnapshot
 ~~~
 
-שמאחדת אותם לפי ID.
+למה:
 
-הסיבה:
-
-- יש שדות שקיימים רק ב-`MapHeat2`.
-- יש שדות שקיימים רק ב-`GetSecuritiesData`.
-- יש שדות שנראים מקבילים בשניהם.
-- ייתכנו הפרשי זמן בין snapshots.
-- API פנימי עשוי להשתנות.
-
-לא כדאי לאבד את ה-payload המקורי בזמן normalization.
+- לכל endpoint יש fields ייחודיים.
+- יש fields מקבילים אך לא תמיד זהים בזמן.
+- snapshots אינם אטומיים.
+- API פנימי יכול להשתנות.
+- raw payload מאפשר debug והשוואת schema בעתיד.
 
 ---
 
-## 7. שדות מקבילים שחייבים למדוד
+## 7. Availability נמדדה בפועל על כל 561 הניירות
 
-נמצאו זוגות שנראים מקבילים:
+הדוח המלא:
 
-| MapHeat2 | GetSecuritiesData | משמעות |
-|---|---|---|
-| PaperId | Key | מזהה נייר |
-| PaperRate | LastKnownRate | שער אחרון |
-| ChangeRate | BaseRateChangePercentage | שינוי יומי |
-| BuyRate | BuyLimit1 | BID1 |
-| SellRate | SellLimit1 | ASK1 |
-| DailyVolume | DailyTurnover | כמות יומית |
-| DailyTmura | DailyNISRevenue | מחזור כספי |
-| DailyNumDeals | DailyDealsQuantity | מספר עסקאות |
-| LastDealTime | LastDealTimeOnly | שעת עסקה אחרונה |
+[field-availability.md](field-availability.md)
 
-אין להניח שהם תמיד זהים.
+Raw report:
 
-הסקריפט `analyze-field-coverage.js` מודד:
+[reports/2026-09-22-1451-field-coverage.md](reports/2026-09-22-1451-field-coverage.md)
 
-- כמה פעמים שני הצדדים קיימים.
-- כמה פעמים הם זהים.
-- כמה פעמים הם שונים.
-- דוגמאות להבדלים.
+### Summary
 
-הבדלים יכולים לנבוע גם מהפרש זמן קטן בין שתי הקריאות, ולא בהכרח ממשמעות שדה שונה.
+~~~text
+MapHeat2:
+14 ALWAYS_VALUE
+7 PARTIAL_VALUE
+1 NO_USABLE_VALUE
+
+GetSecuritiesData:
+17 ALWAYS_VALUE
+10 PARTIAL_VALUE
+33 NO_USABLE_VALUE
+~~~
+
+### Recommendation
+
+אל תגדיר field כ-required רק כי הוא קיים ב-schema.
+
+Required צריך להיקבע לפי measured coverage ו-semantics.
 
 ---
 
-## 8. NULL אינו שווה ל-0
+## 8. Source of truth מומלץ לפי סוג מידע
 
-זה כלל חשוב למודל הנתונים.
+### Universe / identity / display metadata
 
-~~~text
-null
-~~~
-
-משמעותו: אין לנו ערך זמין בתגובה הזו.
+העדפה:
 
 ~~~text
-0
+MapHeat2.PaperId
+MapHeat2.PaperName
+MapHeat2.MarketValue
+MapHeat2 ESG metadata when available
 ~~~
 
-יכול להיות ערך פיננסי אמיתי ולגיטימי.
+### Dynamic market snapshot
 
-לכן אסור לעשות:
+העדפה:
+
+~~~text
+GetSecuritiesData.LastKnownRate
+GetSecuritiesData.BaseRate
+GetSecuritiesData.DailyDealsQuantity
+GetSecuritiesData.DailyTurnover
+GetSecuritiesData.DailyNISRevenue
+GetSecuritiesData.DailyHighestRate
+GetSecuritiesData.DailyLowestRate
+GetSecuritiesData.BuyLimit1
+GetSecuritiesData.SellLimit1
+GetSecuritiesData.BuyVolume1
+GetSecuritiesData.SellVolume1
+GetSecuritiesData.LastDealVolume
+GetSecuritiesData.trade_time
+~~~
+
+### למה
+
+- האתר עצמו משתמש ב-`GetSecuritiesData` כרענון החוזר.
+- הוא מחזיר מידע מפורט יותר.
+- ההשוואה הראתה שחלק מהערכים השתנו בין MapHeat2 לבין GetSecuritiesData באותו flow, כלומר אין atomic snapshot משותף.
+
+---
+
+## 9. השדות המקבילים אינם invariant
+
+תוצאות comparison:
+
+| Meaning | MapHeat2 | GetSecuritiesData | Equal |
+|---|---|---|---:|
+| מזהה | PaperId | Key | 100% |
+| שער אחרון | PaperRate | LastKnownRate | 96.97% |
+| שינוי יומי | ChangeRate | BaseRateChangePercentage | 97.68% |
+| BID1 | BuyRate | BuyLimit1 | 96.32% מה-comparable |
+| ASK1 | SellRate | SellLimit1 | 96.00% מה-comparable |
+| כמות יומית | DailyVolume | DailyTurnover | 95.72% |
+| מחזור כספי | DailyTmura | DailyNISRevenue | 95.72% |
+| מספר עסקאות | DailyNumDeals | DailyDealsQuantity | 95.72% |
+| זמן עסקה | LastDealTime | LastDealTimeOnly | 99.11% |
+
+### Verified
+
+רק join key היה זהה ב-100%.
+
+### Inferred
+
+ההבדלים האחרים תואמים לכך שהקריאות בוצעו בזמנים מעט שונים והשוק המשיך להשתנות.
+
+### Recommendation
+
+אל תעשה:
+
+~~~text
+assert MapHeat2.PaperRate == GetSecuritiesData.LastKnownRate
+~~~
+
+כן תעשה:
+
+~~~text
+assert PaperId == Key
+~~~
+
+ותתייחס לכל endpoint כ-snapshot בעל timestamp משלו.
+
+---
+
+## 10. NULL אינו 0
+
+זה כלל קריטי.
+
+### Verified
+
+דוגמה:
+
+~~~text
+BuyLimit1:
+18 null
+2 zero
+
+SellLimit1:
+11 null
+0 zero
+~~~
+
+וכן:
+
+~~~text
+DailyDealsQuantity:
+76 zero
+0 null
+~~~
+
+### Recommendation
+
+אסור:
 
 ~~~js
 value || 0
 ~~~
 
-עבור שדות שוק.
-
-יש לשמור `null` כ-`null` ולתת ללוגיקה העסקית להחליט מה לעשות.
-
----
-
-## 9. שדות חלקיים
-
-שדה יכול להיות:
-
-- קיים לכל הניירות.
-- קיים רק לחלק מהניירות.
-- קיים במבנה אבל תמיד null בסנאפשוט מסוים.
-- חסר לחלוטין בחלק מהרשומות.
-
-לכן המודל העתידי חייב לתמוך ב-nullable fields.
-
-אין לבנות scanner rule על שדה לפני שיודעים את availability שלו בפועל.
-
----
-
-## 10. בדיקת Field Coverage
-
-הסקריפט:
-
-~~~text
-scripts/research/leumi/analyze-field-coverage.js
-~~~
-
-רץ על snapshot מלא שכבר נאסף ומחשב לכל field:
-
-- total records
-- present
-- missing
-- null
-- undefined
-- empty string
-- usable values
-- coverage %
-- zero count
-- distinct count
-- type distribution
-- numeric min/max
-- sample values
-
-בנוסף הוא משווה שדות שנראים מקבילים בין שני ה-endpoints.
-
-התוצאה נשמרת גם ב:
+ואסור:
 
 ~~~js
-window.__marketFlowFieldCoverageReport
+if (!value) {
+    // missing
+}
 ~~~
 
-וניתן להוריד אותה כ-JSON או Markdown.
+במקום זה:
+
+~~~js
+if (value === null || value === undefined) {
+    // unavailable
+}
+~~~
+
+ו-`0` נשמר כ-data תקין.
 
 ---
 
-## 11. Snapshot אינו חוזה
+## 11. BID1 / ASK1 הם nullable
 
-בדיקת coverage אחת בזמן מסחר פעיל אינה מוכיחה ששדה יהיה זמין תמיד.
+### Verified
 
-יש להבחין בין:
+~~~text
+BuyLimit1 / BuyVolume1:
+543/561 usable
+96.79%
 
-### Snapshot coverage
+SellLimit1 / SellVolume1:
+550/561 usable
+98.04%
+~~~
 
-מה קרה ברגע המדידה.
+### Recommendation
 
-### Contract confidence
+כל normalized model צריך:
 
-כמה פעמים מדדנו את אותו field בזמנים/מצבים שונים.
+~~~text
+bid1Price: nullable
+bid1Volume: nullable
+ask1Price: nullable
+ask1Volume: nullable
+~~~
 
-בעתיד כדאי להריץ את אותה בדיקה:
-
-- בזמן מסחר רציף.
-- סמוך לפתיחה.
-- סמוך לנעילה.
-- לאחר המסחר.
-- ביום אחר.
-- על סוגי ניירות שונים.
-
-עד שזה יקרה, תוצאות coverage הן Verified עבור snapshot שנמדד בלבד.
+Execution/scanner logic חייבת להחליט במפורש מה עושים כאשר צד אחד של הספר חסר.
 
 ---
 
-## 12. Timestamps ו-stale data
+## 12. Book levels 2–5 אינם זמינים בקריאה הזו
 
-יש כמה שדות זמן:
+### Verified על 561 Equity records
 
-- `LastDealTime`
-- `LastKnownRateDate`
-- `trade_time`
-- `LastDealTimeOnly`
-- `DateChange`
-- `AsOfDate`
+כל:
 
-Recommendation:
+~~~text
+BuyLimit2..5
+BuyVolume2..5
+SellLimit2..5
+SellVolume2..5
+ChangeBaseRateBuy2..5
+ChangeBaseRateSell2..5
+~~~
 
-אל תניח שכל refresh כולל עסקה חדשה.
+חזרו:
 
-שמור גם:
+~~~text
+null = 561/561
+coverage = 0%
+~~~
+
+### Recommendation
+
+לא לבנות עליהם.
+
+אם צריך עומק ספר 2–5, צריך למצוא endpoint או flow אחר ולהוכיח אותו בנפרד.
+
+---
+
+## 13. Fields של derivatives אינם שימושיים כרגע ל-Equity universe
+
+### Verified
+
+~~~text
+BnS_Bursa
+BnSDelta
+BnSGamma
+BnSOmega
+BnSTheta
+BnSVega
+GalumPrice
+GalumChangePercentage
+OpenPositions
+~~~
+
+כולם:
+
+~~~text
+null = 561/561
+~~~
+
+### Recommendation
+
+לא לכלול אותם ב-domain model הפעיל של scanner מניות, אלא אם בעתיד נפתח support לסוגי נייר אחרים ונוכיח שהם מתמלאים.
+
+---
+
+## 14. 76 records עם activity אפס
+
+### Verified counts
+
+אותו count של 76 הופיע ב:
+
+~~~text
+DailyDealsQuantity = 0
+DailyTurnover = 0
+DailyNISRevenue = 0
+DailyHighestRate = 0
+DailyLowestRate = 0
+DailyAvrageRate = 0
+LastDealTimeOnly = ""
+~~~
+
+### Inferred
+
+הדפוס עקבי עם ניירות ללא פעילות מסחר יומית עד רגע המדידה.
+
+### Recommendation
+
+- לא להתייחס ל-0 כ-data missing.
+- אפשר בעתיד לסנן אותם עסקית.
+- לא להניח למה לא הייתה פעילות בלי evidence נוסף.
+
+---
+
+## 15. Timestamps ו-stale data
+
+יש:
+
+~~~text
+MapHeat2.LastDealTime
+MapHeat2.DateChange
+
+GetSecuritiesData.LastKnownRateDate
+GetSecuritiesData.trade_time
+GetSecuritiesData.LastDealTimeOnly
+Table.AsOfDate
+~~~
+
+### Recommendation
+
+לכל snapshot שלנו להוסיף:
 
 ~~~text
 collectedAt
 ~~~
 
-שהוא זמן האיסוף המקומי שלנו.
+כך נשמור שלוש שכבות זמן:
 
-כך בעתיד נוכל להבדיל בין:
+~~~text
+local collection time
+server snapshot/update time
+last trade time
+~~~
 
-- זמן שבו אנחנו דגמנו.
-- זמן שבו השרת עדכן snapshot.
-- זמן העסקה האחרונה בנייר.
+זה חשוב לחישובי momentum של שניות ודקות.
 
 ---
 
-## 13. Validation חובה בכל מחזור איסוף
+## 16. Validation חובה בכל collection cycle
 
-לכל full snapshot מומלץ לבדוק:
+לכל full snapshot:
 
 ~~~text
 requested IDs
@@ -375,132 +503,135 @@ received records
 unique Keys
 duplicates
 missing IDs
-unknown/new fields
-schema/type changes
+new fields
+missing fields
+type changes
+nullability changes
 ~~~
 
-אם חסר נייר, לא כדאי להמשיך כאילו קיבלנו snapshot מלא.
+אם אחד ה-chunks נכשל או חסרים IDs:
 
-יש לסמן את ה-snapshot כ-partial או להיכשל בהתאם לצורך.
+- לא לסמן snapshot כ-complete.
+- לייצר error ברור.
+- לא להסתיר partial data.
 
 ---
 
-## 14. Schema drift
+## 17. Schema drift
 
-זה API פנימי ולכן schema יכול להשתנות ללא הודעה.
+API פנימי יכול להשתנות ללא הודעה.
 
-Recommendation:
+### Recommendation
 
-בעתיד ה-collector צריך לזהות:
+collector עתידי צריך לזהות:
 
 - field חדש.
 - field שנעלם.
 - type שהשתנה.
-- array/object structure שהשתנה.
-- nullable field שהפך לערך או להפך.
+- field שהיה value והפך null.
+- field שהיה null והתחיל להתמלא.
+- response path שהשתנה.
 
-לא להתעלם משינוי כזה בשקט.
+שינוי כזה צריך log ברור ואפשרות alert/test failure.
 
 ---
 
-## 15. Polling frequency
+## 18. Polling frequency
 
 ### Unknown
 
-עדיין לא תועדה אצלנו תדירות polling מדויקת ומוכחת לכל המצבים.
+עדיין לא תועדה cadence מדויקת של האתר בכל מצב.
 
 ### Recommendation
 
-לא לקבוע קצב אגרסיבי שרירותי.
+לא לקבוע תדירות אגרסיבית שרירותית.
 
-השלב הנכון הוא למדוד את cadence של האתר עצמו, ואז להתחיל בקצב דומה או שמרני יותר.
-
-אין צורך לייצר עומס גבוה יותר מהאתר המקורי רק כדי לקבל "יותר realtime".
+קודם למדוד את האתר עצמו, ואז לבחור cadence דומה או שמרנית יותר.
 
 ---
 
-## 16. Authentication / Browser context
+## 19. Authentication / Browser context
 
-הקריאות הנוכחיות עובדות מתוך session קיים של האתר ובאותו origin.
+הקריאות עובדות מתוך session קיים של האתר ובאותו origin.
 
-Recommendation:
+### Recommendation
 
-- לא לשמור cookies בקוד.
-- לא להעתיק session tokens ל-Git.
-- לא להכניס Authorization/session data ל-samples.
-- research scripts צריכים להשתמש ב-session הקיים בדפדפן בלבד.
+- לא לשמור cookies.
+- לא לשמור tokens.
+- לא לשמור Authorization headers.
+- לא להכניס session data ל-Git.
+- research scripts נשענים כרגע על browser session פעיל.
 
-אם בעתיד נעביר collector לשרת מקומי, authentication יהיה נושא נפרד שדורש מחקר ותכנון.
+מעבר ל-local server authentication הוא נושא נפרד.
 
 ---
 
-## 17. Error policy
+## 20. Error policy
 
-HTTP לא תקין, response structure שונה או count mismatch אינם "warning קטן".
-
-יש לתעד לפחות:
+בכשל יש לתעד לפחות:
 
 ~~~text
+timestamp
 endpoint
 chunk
+requested count
 HTTP status
-expected count
 actual count
-error message
-timestamp
+error
 ~~~
 
-אין להחזיר snapshot מלא כאשר בפועל אחד משלושת ה-chunks נכשל.
+Response structure שונה הוא error, לא warning שקט.
 
 ---
 
-## 18. ההמלצה הנוכחית ל-flow
+## 21. Flow מומלץ כרגע
 
 ~~~text
 START
 
 MapHeat2
-→ read current recordCount
-→ fetch full universe
+→ get current recordCount
+→ fetch current universe
 → validate unique PaperId
-→ retain metadata
+→ retain raw metadata
 
 split PaperIds into conservative chunks
 
 for each chunk sequentially:
     GetSecuritiesData
-    → validate HTTP 200
-    → validate response structure
-    → validate expected count
+    → HTTP validation
+    → schema validation
+    → expected-count validation
 
-combine details
+combine security records
 → validate unique Key
 → detect missing IDs
-→ join by PaperId == Key
 
-produce normalized snapshot
-+ retain raw source records
-+ collectedAt
+join:
+PaperId == Key
+
+build NormalizedSecuritySnapshot
+→ preserve null vs zero
+→ preserve raw records
+→ add collectedAt
 
 END
 ~~~
 
-זהו flow מומלץ על סמך מה שהוכח עד עכשיו, לא על סמך ניחוש של API ציבורי.
-
 ---
 
-## 19. מה עדיין Unknown
+## 22. מה עדיין Unknown
 
-נכון לעכשיו לא הוכחו:
+- הסיבה המדויקת ל-403 בבקשות גדולות.
+- הגבול המדויק של IDs/URL.
+- האם batching מקבילי מומלץ.
+- polling cadence המדויק של האתר.
+- semantics רשמי של `DailyAverageVolume`.
+- semantics המדויק של `ReturnStartMonths`.
+- semantics/scale רשמי של `DailyAvrageRateMaof`.
+- האם MapHeat2 `0` ב-BID/ASK תמיד ממפה ל-null ב-GetSecuritiesData.
+- האם levels 2–5 מתמלאים דרך endpoint אחר.
+- availability בשעות/ימי מסחר אחרים.
+- יציבות חוזית עתידית של ה-API.
 
-- סיבת ה-403 המדויקת בבקשות הגדולות.
-- מגבלת IDs/URL המדויקת.
-- האם parallel batching יציב ורצוי.
-- cadence המדויק שהאתר משתמש בו בכל מצב.
-- semantics רשמי של כל field פנימי.
-- availability של כל field על כל 561 הניירות.
-- availability של fields בזמני מסחר שונים.
-- האם levels 2–5 של ספר הפקודות מתמלאים דרך endpoint זה בתנאים מסוימים.
-- חוזה יציבות כלשהו של ה-API.
-
-לכל אחד מהנושאים האלה צריך להוסיף Verified evidence לפני בניית תלות חזקה עליו.
+כל Unknown כזה צריך evidence לפני תלות production.
