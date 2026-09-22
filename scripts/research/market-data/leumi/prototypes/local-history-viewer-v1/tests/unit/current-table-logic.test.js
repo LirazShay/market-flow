@@ -5,9 +5,13 @@ const assert = require("node:assert/strict");
 
 const {
     COLUMN_DEFINITIONS,
+    DEFAULT_SORT_STATE,
     buildCurrentTableModel,
     getColumnValue,
-    formatCellValue
+    formatCellValue,
+    createInitialSortState,
+    getNextSortState,
+    sortCurrentTableRows
 } = require(
     "../../viewer/pure/current-table-logic"
 );
@@ -282,6 +286,351 @@ test(
                     universe
                 ),
             /Duplicate universe securityId 1001/
+        );
+    }
+);
+
+
+function createSortingRows() {
+    return [
+        {
+            securityId: "2001",
+            paperName: "Beta",
+            collectedAtMs: 1000,
+            data: {
+                DailyDealsQuantity: 12,
+                LastKnownRate: 5,
+                LastDealTimeOnly: "10:00"
+            }
+        },
+        {
+            securityId: "2002",
+            paperName: "Alpha",
+            collectedAtMs: 1100,
+            data: {
+                DailyDealsQuantity: 12,
+                LastKnownRate: 0,
+                LastDealTimeOnly: "09:30"
+            }
+        },
+        {
+            securityId: "2003",
+            paperName: "Gamma",
+            collectedAtMs: 1200,
+            data: {
+                DailyDealsQuantity: 7,
+                LastKnownRate: -1,
+                LastDealTimeOnly: "11:15"
+            }
+        },
+        {
+            securityId: "2004",
+            paperName: "Null",
+            collectedAtMs: 1300,
+            data: {
+                DailyDealsQuantity: 1,
+                LastKnownRate: null,
+                LastDealTimeOnly: null
+            }
+        },
+        {
+            securityId: "2005",
+            paperName: "Undefined",
+            collectedAtMs: 1400,
+            data: {
+                DailyDealsQuantity: 1,
+                LastKnownRate: undefined,
+                LastDealTimeOnly: undefined
+            }
+        },
+        {
+            securityId: "2006",
+            paperName: "Empty",
+            collectedAtMs: 1500,
+            data: {
+                DailyDealsQuantity: 1,
+                LastKnownRate: "",
+                LastDealTimeOnly: ""
+            }
+        }
+    ];
+}
+
+test(
+    "Stage 13.1 default sort is DailyDealsQuantity DESC",
+    () => {
+        assert.deepEqual(
+            createInitialSortState(),
+            {
+                columnKey:
+                    "DailyDealsQuantity",
+                direction:
+                    "desc"
+            }
+        );
+
+        assert.strictEqual(
+            createInitialSortState(),
+            DEFAULT_SORT_STATE
+        );
+
+        const sorted =
+            sortCurrentTableRows(
+                createSortingRows()
+            );
+
+        assert.deepEqual(
+            sorted.map(
+                row =>
+                    row.securityId
+            ),
+            [
+                "2002",
+                "2001",
+                "2006",
+                "2004",
+                "2005",
+                "2003"
+            ]
+        );
+    }
+);
+
+test(
+    "Stage 13.1 chooses first-click direction by column semantics and toggles the selected column",
+    () => {
+        assert.deepEqual(
+            getNextSortState(
+                null,
+                "paperName"
+            ),
+            {
+                columnKey:
+                    "paperName",
+                direction:
+                    "asc"
+            }
+        );
+
+        assert.deepEqual(
+            getNextSortState(
+                null,
+                "DailyDealsQuantity"
+            ),
+            {
+                columnKey:
+                    "DailyDealsQuantity",
+                direction:
+                    "desc"
+            }
+        );
+
+        assert.deepEqual(
+            getNextSortState(
+                null,
+                "LastDealTimeOnly"
+            ),
+            {
+                columnKey:
+                    "LastDealTimeOnly",
+                direction:
+                    "desc"
+            }
+        );
+
+        assert.deepEqual(
+            getNextSortState(
+                {
+                    columnKey:
+                        "paperName",
+                    direction:
+                        "asc"
+                },
+                "paperName"
+            ),
+            {
+                columnKey:
+                    "paperName",
+                direction:
+                    "desc"
+            }
+        );
+    }
+);
+
+test(
+    "Stage 13.1 uses paperName ASC as the equal-value tie-breaker",
+    () => {
+        const sorted =
+            sortCurrentTableRows(
+                createSortingRows(),
+                {
+                    columnKey:
+                        "DailyDealsQuantity",
+                    direction:
+                        "desc"
+                }
+            );
+
+        assert.deepEqual(
+            sorted
+                .slice(0, 2)
+                .map(
+                    row =>
+                        row.paperName
+                ),
+            [
+                "Alpha",
+                "Beta"
+            ]
+        );
+    }
+);
+
+test(
+    "Stage 13.1 numeric sorting preserves zero and keeps null undefined and empty distinct from data values",
+    () => {
+        const sorted =
+            sortCurrentTableRows(
+                createSortingRows(),
+                {
+                    columnKey:
+                        "LastKnownRate",
+                    direction:
+                        "asc"
+                }
+            );
+
+        assert.deepEqual(
+            sorted.map(
+                row =>
+                    row.securityId
+            ),
+            [
+                "2003",
+                "2002",
+                "2001",
+                "2004",
+                "2005",
+                "2006"
+            ]
+        );
+
+        assert.equal(
+            sorted[1]
+                .data
+                .LastKnownRate,
+            0
+        );
+
+        assert.equal(
+            sorted[3]
+                .data
+                .LastKnownRate,
+            null
+        );
+
+        assert.equal(
+            sorted[4]
+                .data
+                .LastKnownRate,
+            undefined
+        );
+
+        assert.equal(
+            sorted[5]
+                .data
+                .LastKnownRate,
+            ""
+        );
+    }
+);
+
+test(
+    "Stage 13.1 time values sort descending while missing values remain last",
+    () => {
+        const sorted =
+            sortCurrentTableRows(
+                createSortingRows(),
+                getNextSortState(
+                    null,
+                    "LastDealTimeOnly"
+                )
+            );
+
+        assert.deepEqual(
+            sorted.map(
+                row =>
+                    row.securityId
+            ),
+            [
+                "2003",
+                "2001",
+                "2002",
+                "2004",
+                "2005",
+                "2006"
+            ]
+        );
+    }
+);
+
+test(
+    "Stage 13.1 sorting does not mutate the source row array",
+    () => {
+        const source =
+            createSortingRows();
+
+        const originalOrder =
+            source.map(
+                row =>
+                    row.securityId
+            );
+
+        const sorted =
+            sortCurrentTableRows(
+                source
+            );
+
+        assert.deepEqual(
+            source.map(
+                row =>
+                    row.securityId
+            ),
+            originalOrder
+        );
+
+        assert.notStrictEqual(
+            sorted,
+            source
+        );
+    }
+);
+
+test(
+    "Stage 13.1 rejects unknown columns and invalid directions",
+    () => {
+        assert.throws(
+            () =>
+                getNextSortState(
+                    null,
+                    "NotAColumn"
+                ),
+            /Unknown current-table column NotAColumn/
+        );
+
+        assert.throws(
+            () =>
+                sortCurrentTableRows(
+                    createSortingRows(),
+                    {
+                        columnKey:
+                            "paperName",
+                        direction:
+                            "sideways"
+                    }
+                ),
+            /sort direction must be asc or desc/
         );
     }
 );
