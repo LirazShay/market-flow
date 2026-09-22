@@ -12,7 +12,7 @@
     "stage": "13",
     "substep": "13.3",
     "title": "Dynamic sorting — preserve sort across rerender/live refresh + browser coverage",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -143,7 +143,7 @@
       "substeps": {
         "13.1": "complete-fast-ci-verified — pure sorting state/comparator contract + unit tests",
         "13.2": "complete-fast-ci-verified — sortable accessible headers + interactive DOM sorting; Playwright coverage added, Chromium execution deferred to 13.3",
-        "13.3": "planned — preserve sort across rerender/live refresh + browser coverage",
+        "13.3": "in-progress — preserve selected sort across DB reread/rerender and verify in Chromium",
         "13.4": "planned — Fast CI verification and Stage 13 closure"
       }
     },
@@ -665,8 +665,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 13.2 implementation is complete and Fast CI is green. Chromium interaction coverage has been added but its execution is intentionally grouped with Stage 13.3 refresh-preservation verification.",
+    "reached": false,
+    "reason": "Stage 13.3 is in progress.",
     "nextStage": "13",
     "nextSubstep": "13.3"
   },
