@@ -141,11 +141,17 @@ test(
 );
 
 test(
-    "Stage 19.2 Bookmarklet decodes to the exact generated runtime payload",
+    "Stage 19.2 Bookmarklet is compact readable JavaScript rather than whole-runtime percent encoding",
     () => {
         const runtimeText =
             runtimeBuilder
                 .buildRuntimeText();
+
+        const compactRuntimeText =
+            runtimeBuilder
+                .buildCompactRuntimeText(
+                    runtimeText
+                );
 
         const bookmarklet =
             runtimeBuilder
@@ -161,20 +167,64 @@ test(
         );
 
         assert.equal(
+            bookmarklet.includes(
+                "\n"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "%0A"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "%2F*%20Market%20Flow"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "window.MarketFlowRuntime"
+            ),
+            true
+        );
+
+        assert.equal(
             decodeURIComponent(
                 bookmarklet.slice(
                     "javascript:"
                         .length
                 )
             ),
-            runtimeText
+            compactRuntimeText
         );
 
         assert.equal(
-            bookmarklet.includes(
-                "\n"
-            ),
-            false
+            Buffer.byteLength(
+                bookmarklet,
+                "utf8"
+            ) <=
+                runtimeBuilder
+                    .MAX_BOOKMARKLET_BYTES,
+            true,
+            "Bookmarklet exceeds the packaging guardrail."
+        );
+
+        assert.equal(
+            runtimeBuilder
+                .MAX_BOOKMARKLET_BYTES,
+            256 * 1024
+        );
+
+        assert.equal(
+            compactRuntimeText.length <
+                runtimeText.length,
+            true
         );
     }
 );
