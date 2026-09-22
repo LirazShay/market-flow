@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "14",
-    "substep": "14.4",
-    "title": "Security history drill-down — stabilize verification before continuing",
-    "status": "blocked-by-browser-regression"
+    "substep": "14.5",
+    "title": "Security history drill-down — Stage 14 acceptance and closure",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -155,8 +155,8 @@
         "14.1": "complete-browser-ci-verified — targeted bySecurityTime newest-first initial page (500 + hasMore)",
         "14.2": "complete-browser-ci-verified — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
         "14.3": "complete-browser-ci-verified — accessible row activation + detail summary + paged history table UI",
-        "14.4": "in-progress — keep DETAIL active on refresh, refresh selected security from IndexedDB, preserve main sort and scroll on return",
-        "14.5": "planned — Stage 14 acceptance/verification"
+        "14.4": "complete-browser-ci-verified — DETAIL stays active on live refresh, selected security rereads IndexedDB, and MAIN sort/viewport are preserved on return",
+        "14.5": "planned — Stage 14 acceptance review + mandatory Stage-closure Browser CI"
       }
     },
     {
@@ -203,14 +203,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35775106899,
-      "commit": "e7c9dd9a7e1a6079626a3559cfeb98014f61971a",
-      "conclusion": "success-targeted-rca",
+      "runId": 35775603207,
+      "commit": "2132ece133fcc2c94be26bc5e750d60753713c27",
+      "conclusion": "success",
       "tests": [
-        "1 targeted Chromium test",
-        "Stage 14.4 only",
-        "1 passed / 0 failed",
-        "direct DOM activation preserved the intended pre-activation viewport contract"
+        "42 Chromium tests",
+        "42 passed / 0 failed",
+        "Stage 14.4 viewport regression",
+        "existing recorder/storage/viewer regressions"
       ]
     },
     "fastCi": "verified-success",
@@ -222,13 +222,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35768976808,
-      "commit": "82771139fd23e533d92e7422a0f0e3112e332e1e",
+      "runId": 35775462689,
+      "commit": "a09b70745e7c2ccbe58fe2912255c16de206193b",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 68.751793
+      "durationMs": 81.607989
     },
     "testingRefactor": {
       "status": "complete",
@@ -812,63 +812,62 @@
       ]
     },
     "stage14_4": {
-      "status": "blocked-red-browser-test",
+      "status": "complete",
       "testsFirst": true,
-      "testContractCommit": "34a51adf7d08ff988f3d0e12a6a1c324b2c138cd",
       "implementationCommit": "f394f8694a1ae7a04570d1fb3ecdd6b66d96f589",
-      "latestFastCi": {
-        "runId": 35769870437,
-        "commit": "a31262b598b70ad28f307886f9e387fe79b28241",
+      "finalRegressionTestCommit": "a09b70745e7c2ccbe58fe2912255c16de206193b",
+      "rootCause": {
+        "category": "test-driver-side-effect",
+        "summary": "Playwright locator.click auto-scrolled the row before dispatching click, mutating the current-table scrollLeft before application captureViewport ran.",
+        "evidence": [
+          {
+            "runId": 35774639107,
+            "beforeClick": -180,
+            "atClickCapture": -1285
+          },
+          {
+            "runId": 35775106899,
+            "activation": "direct DOM MouseEvent",
+            "tests": 1,
+            "passed": 1,
+            "failed": 0
+          }
+        ],
+        "productionBugConfirmed": false
+      },
+      "finalTestContract": "The regression test establishes the viewport, activates the already-selected row with a DOM click event that does not mutate scroll, and asserts the same measured viewport is restored after DETAIL/live-refresh/back.",
+      "fastCi": {
+        "runId": 35775462689,
+        "commit": "a09b70745e7c2ccbe58fe2912255c16de206193b",
         "conclusion": "success",
         "tests": 143,
         "passed": 143,
         "failed": 0
       },
-      "browserRuns": [
-        {
-          "runId": 35769709899,
-          "commit": "13f8daf0e708595b4e1299a3098a5277fe542738",
-          "conclusion": "failure",
-          "tests": 42,
-          "passed": 41,
-          "failed": 1,
-          "cause": "Stage 14.4 test selector was ambiguous because both hidden history and current tables had LastKnownRate headers; selector was corrected to scope the current table."
-        },
-        {
-          "runId": 35769912343,
-          "commit": "b7473ffac5688335c84ca3d5fec02bd0efe06d43",
-          "conclusion": "failure",
-          "tests": 42,
-          "passed": 41,
-          "failed": 1,
-          "cause": "Real unresolved scroll-restoration regression: expected current-table scrollLeft -180 after return from DETAIL, received 0."
-        }
-      ],
-      "nextRequiredAction": "Fix scroll restoration, rerun the changed Stage 14.4 browser test/suite in Chromium, and do not advance currentFocus until green.",
-      "diagnosticRca": {
-        "latestDiagnosticRun": 35775106899,
-        "diagnosticCommit": "e7c9dd9a7e1a6079626a3559cfeb98014f61971a",
-        "experiment": "Activate the selected row with a direct DOM MouseEvent instead of Playwright locator.click, preserving the established -180 viewport before the product handler.",
-        "observations": {
-          "priorPlaywrightLocatorClick": {
-            "beforeClick": -180,
-            "atClickCapture": -1285,
-            "runId": 35774639107
-          },
-          "directDomActivation": {
-            "targetedChromiumTests": 1,
-            "passed": 1,
-            "failed": 0,
-            "runId": 35775106899
-          }
-        },
-        "conclusion": "The product can preserve and restore the pre-activation viewport when the activation event does not mutate scroll first. The original failure is caused by Playwright locator.click auto-scrolling the row before the product captureViewport handler runs.",
-        "confirmedRootCause": "Test-driver side effect: Playwright auto-scroll changes the scroll container before click dispatch, so the product correctly captures the already-mutated viewport.",
-        "productionBugConfirmed": false,
-        "testContractNeedsRevision": true,
-        "unresolvedDesignQuestion": "Choose the stable contract for the regression test: activate without test-driver auto-scroll when testing viewport preservation, or assert a semantic visible anchor/context instead of raw RTL scrollLeft pixels.",
-        "nextAction": "Convert the diagnostic into a stable regression test that does not let Playwright auto-scroll redefine the pre-activation viewport, then run that exact test and the relevant broader Browser suite."
-      }
+      "targetedBrowser": {
+        "runId": 35775509471,
+        "commit": "db65b4c6385f830b3cb271a41f9c3345a13553cf",
+        "conclusion": "success",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "fullBrowser": {
+        "runId": 35775603207,
+        "commit": "2132ece133fcc2c94be26bc5e750d60753713c27",
+        "conclusion": "success",
+        "tests": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "DETAIL remains active across CYCLE_COMMITTED live refresh",
+        "selected security summary refreshes from fresh IndexedDB latest data",
+        "history reload includes the newly committed cycle while preserving previously loaded depth",
+        "return to MAIN preserves selected LastKnownRate ASC sort",
+        "return to MAIN applies fresh current-table data under the preserved sort",
+        "return to MAIN restores the application viewport that existed before activation"
+      ]
     }
   },
   "fastContext": {
@@ -899,10 +898,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Targeted RCA proved the product scroll restoration works when activation does not include Playwright auto-scroll. No production fix was made.",
+    "reason": "Stage 14.4 is complete. The browser regression was traced to Playwright auto-scroll, the regression test contract was corrected, targeted Chromium is green, and the full 42-test Browser suite is green.",
     "nextStage": "14",
-    "nextSubstep": "14.4",
-    "nextAction": "Revise the Stage 14.4 regression test contract to avoid Playwright auto-scroll interference, then verify targeted Chromium and broader Browser regression."
+    "nextSubstep": "14.5",
+    "nextAction": "Run Stage 14 acceptance review and the mandatory Stage-closure verification. Do not start Stage 15 until Stage 14 is explicitly closed."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
@@ -979,7 +978,7 @@
       {
         "id": "S4",
         "title": "Fix the Stage 14.4 scroll-restoration regression exposed by Chromium",
-        "status": "pending",
+        "status": "complete",
         "lastFailure": {
           "workflow": "Local History Viewer V1 Browser CI",
           "runId": 35769912343,
@@ -988,17 +987,39 @@
           "passed": 41,
           "failed": 1,
           "failure": "Stage 14.4 expected current-table scrollLeft -180 after returning from DETAIL, received 0."
-        }
+        },
+        "resolution": "RCA proved Playwright locator.click auto-scroll mutated scrollLeft before product captureViewport. Production restoration was not defective."
       },
       {
         "id": "S5",
         "title": "Run Fast CI and Browser CI on the final Stage 14.4 code/test state until both are green",
-        "status": "pending"
+        "status": "complete",
+        "verification": {
+          "fastCi": {
+            "runId": 35775462689,
+            "tests": 143,
+            "passed": 143,
+            "failed": 0
+          },
+          "targetedBrowser": {
+            "runId": 35775509471,
+            "tests": 1,
+            "passed": 1,
+            "failed": 0
+          },
+          "fullBrowser": {
+            "runId": 35775603207,
+            "tests": 42,
+            "passed": 42,
+            "failed": 0
+          }
+        }
       },
       {
         "id": "S6",
         "title": "Only after S4-S5 are green, resume normal Stage 14.4 completion work",
-        "status": "pending"
+        "status": "complete",
+        "resolution": "Stage 14.4 verification is green; normal Stage 14 progression may resume at 14.5."
       }
     ]
   }
