@@ -16,6 +16,9 @@
     const currentTable =
         window.MarketFlowViewerCurrentTable;
 
+    const liveRefresh =
+        window.MarketFlowViewerLiveRefresh;
+
     if (!stateLogic) {
         throw new Error(
             "MarketFlowViewerStateLogic is not loaded."
@@ -26,6 +29,13 @@
         throw new Error(
             "MarketFlowViewerCurrentTable is not loaded. " +
             "Load viewer/current-table.js before viewer/bootstrap.js."
+        );
+    }
+
+    if (!liveRefresh) {
+        throw new Error(
+            "MarketFlowViewerLiveRefresh is not loaded. " +
+            "Load viewer/live-refresh.js before viewer/bootstrap.js."
         );
     }
 
@@ -134,6 +144,9 @@
             ".viewer-header { padding: 18px 24px 10px; background: #fff; border-bottom: 1px solid #d9dfeb; }",
             ".viewer-header h1 { margin: 0; font-size: 24px; }",
             ".viewer-status { margin-top: 8px; font-size: 14px; }",
+            ".viewer-actions { margin-top: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }",
+            ".viewer-actions button { border: 1px solid #cfd6e4; border-radius: 6px; background: #fff; padding: 7px 12px; cursor: pointer; }",
+            ".live-refresh-status { font-size: 12px; color: #667085; }",
             ".metrics { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 24px; background: #fff; border-bottom: 1px solid #e5e9f1; }",
             ".metric { min-width: 150px; display: grid; gap: 3px; }",
             ".metric-label { font-size: 12px; color: #667085; }",
@@ -218,6 +231,49 @@
                 "aria-live":
                     "polite"
             }
+        );
+
+        const actions =
+            documentRef.createElement(
+                "div"
+            );
+
+        actions.className =
+            "viewer-actions";
+
+        const refreshButton =
+            documentRef.createElement(
+                "button"
+            );
+
+        refreshButton.type =
+            "button";
+
+        refreshButton.dataset.role =
+            "manual-refresh";
+
+        refreshButton.textContent =
+            "רענן תצוגה";
+
+        actions.appendChild(
+            refreshButton
+        );
+
+        appendTextElement(
+            documentRef,
+            actions,
+            "span",
+            "בודק עדכון חי...",
+            {
+                "data-role":
+                    "live-refresh-status",
+                class:
+                    "live-refresh-status"
+            }
+        );
+
+        header.appendChild(
+            actions
         );
 
         shell.appendChild(
@@ -450,6 +506,10 @@
 
         viewerWindow.focus();
 
+        liveRefresh.attach(
+            viewerWindow
+        );
+
         currentTable
             .loadAndRender(
                 viewerWindow
@@ -469,6 +529,10 @@
                 null;
             return;
         }
+
+        liveRefresh.detach(
+            viewerWindow
+        );
 
         viewerWindow.close();
         viewerWindow =

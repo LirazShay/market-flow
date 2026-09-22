@@ -123,3 +123,36 @@ Next:
 ~~~text
 Stage 12 — Cross-tab live refresh
 ~~~
+
+
+## Stage 12 cross-tab live refresh
+
+Channel:
+
+~~~text
+market-flow-leumi-v1
+~~~
+
+The recorder publishes metadata-only notifications after durable persistence boundaries.
+
+For a successful cycle:
+
+~~~text
+IndexedDB commit succeeds
+→ CYCLE_COMMITTED { cycleId, completedAtMs }
+→ viewer receives notification
+→ viewer re-reads IndexedDB.latest + universe
+→ rerender
+~~~
+
+No market row payload is copied through BroadcastChannel.
+
+The viewer also exposes:
+
+~~~text
+רענן תצוגה
+~~~
+
+Manual refresh is DB-only and never calls the market API.
+
+If BroadcastChannel is unavailable, startup still reads IndexedDB and the UI explicitly reports degraded live-update mode while manual refresh remains available.

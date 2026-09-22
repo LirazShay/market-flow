@@ -235,8 +235,8 @@ Verified in fast tests:
 
 Browser spec is implemented but intentionally deferred to Checkpoint C after Stage 12.
 
-Next:
-Stage 12 — Cross-tab live refresh
+Current:
+Stage 12 — Cross-tab live refresh implemented; Fast CI + planned Viewer Checkpoint C pending.
 ~~~
 
 Stage 8 explicitly includes:
@@ -342,3 +342,18 @@ viewer/
 ~~~
 
 Stage 10 establishes a same-origin named about:blank viewer shell. Stage 11 will load the current table from IndexedDB.
+
+
+## Cross-tab messaging
+
+~~~text
+messaging/
+  channel.js
+  pure/
+    channel-message-logic.js
+
+viewer/
+  live-refresh.js
+~~~
+
+BroadcastChannel is notification-only. The viewer always re-reads IndexedDB after CYCLE_COMMITTED. Manual refresh is the fallback when BroadcastChannel is unavailable.

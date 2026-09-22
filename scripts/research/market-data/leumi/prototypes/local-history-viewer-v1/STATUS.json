@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "12",
     "title": "Cross-tab live refresh",
-    "status": "next"
+    "status": "fast-and-browser-checkpoint-pending"
   },
   "stages": [
     {
@@ -126,7 +126,14 @@
     {
       "stage": "12",
       "title": "Cross-tab live refresh",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "12.1": "implemented — minimal BroadcastChannel message contract",
+        "12.2": "implemented — recorder post-commit/lifecycle notifications",
+        "12.3": "implemented — viewer DB reread on CYCLE_COMMITTED",
+        "12.4": "implemented — manual refresh + degraded fallback",
+        "12.5": "Fast CI + Viewer Checkpoint C pending"
+      }
     },
     {
       "stage": "13",

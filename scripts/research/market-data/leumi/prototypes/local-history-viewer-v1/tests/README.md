@@ -685,3 +685,24 @@ Browser test implementation exists but is intentionally not run as a standalone 
 Stages 10–12
 → Browser CI
 ~~~
+
+
+---
+
+## Stage 12 cross-tab live refresh
+
+Coverage added:
+
+~~~text
+tests/unit/channel-message-logic.test.js
+tests/automation/specs/viewer-live-refresh.spec.js
+~~~
+
+Checkpoint C now covers Stages 10–12 together:
+
+- viewer bootstrap;
+- real IndexedDB current-table rendering;
+- real BroadcastChannel notification;
+- recorder commit → viewer DB reread;
+- manual DB-only refresh;
+- BroadcastChannel-unavailable degraded fallback.

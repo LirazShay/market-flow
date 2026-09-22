@@ -168,7 +168,7 @@ latest/history are not partially updated
 
 # 6. Cross-tab messaging
 
-Channel name מוצע:
+Channel name:
 
 ~~~text
 market-flow-leumi-v1

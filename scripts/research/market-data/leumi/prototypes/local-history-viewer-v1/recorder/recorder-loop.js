@@ -41,6 +41,9 @@
     const recorderDiagnostics =
         window.MarketFlowRecorderDiagnostics;
 
+    const marketChannel =
+        window.MarketFlowChannel;
+
     if (!logic) {
         throw new Error(
             "MarketFlowRecorderLoopLogic is not loaded. " +
@@ -58,7 +61,8 @@
         !cyclePersistence ||
         !diagnosticsLogic ||
         !diagnosticsPersistence ||
-        !recorderDiagnostics
+        !recorderDiagnostics ||
+        !marketChannel
     ) {
         throw new Error(
             "Persistent recorder loop dependencies are not loaded."
@@ -169,6 +173,17 @@
         sessionRecord =
             started.sessionRecord;
 
+        marketChannel.publish(
+            marketChannel
+                .MESSAGE_TYPES
+                .RECORDER_STARTED,
+            {
+                sessionId:
+                    sessionRecord
+                        .sessionId
+            }
+        );
+
         scheduleHeartbeat();
 
         return sessionRecord;
@@ -230,6 +245,18 @@
         lastCompletedAtMs =
             cycle.completedAtMs;
 
+        marketChannel.publish(
+            marketChannel
+                .MESSAGE_TYPES
+                .CYCLE_COMMITTED,
+            {
+                cycleId:
+                    committed.cycleId,
+                completedAtMs:
+                    cycle.completedAtMs
+            }
+        );
+
         return committed;
     }
 
@@ -259,6 +286,20 @@
 
             lastHeartbeatError =
                 null;
+
+            marketChannel.publish(
+                marketChannel
+                    .MESSAGE_TYPES
+                    .RECORDER_HEARTBEAT,
+                {
+                    sessionId:
+                        sessionRecord
+                            ?.sessionId ??
+                        null,
+                    heartbeatAtMs:
+                        Date.now()
+                }
+            );
 
             return result;
         } catch (error) {
@@ -395,6 +436,22 @@
         lastHeartbeatError =
             null;
 
+        marketChannel.publish(
+            marketChannel
+                .MESSAGE_TYPES
+                .RECORDER_ERROR,
+            {
+                sessionId:
+                    sessionRecord
+                        ?.sessionId ??
+                    null,
+                errorName:
+                    error.name,
+                errorMessage:
+                    error.message
+            }
+        );
+
         return persisted;
     }
 
@@ -484,6 +541,22 @@
                                 .latestError
                     }
                 );
+        }
+
+        if (sessionRecord) {
+            marketChannel.publish(
+                marketChannel
+                    .MESSAGE_TYPES
+                    .RECORDER_STOPPED,
+                {
+                    sessionId:
+                        sessionRecord
+                            .sessionId,
+                    reason:
+                        finalState
+                            .stopReason
+                }
+            );
         }
 
         if (database) {
