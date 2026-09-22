@@ -15,6 +15,8 @@ edit browser test/infrastructure
 
 A later checkpoint never substitutes for this immediate verification. A red or unexecuted changed browser test blocks the next implementation unit.
 
+Additionally, the **full browser suite is mandatory before every numbered Stage is marked complete**, even if that Stage did not add a browser test in its final substep.
+
 See `../TESTING_POLICY.md` for the full policy.
 
 ## Structure
