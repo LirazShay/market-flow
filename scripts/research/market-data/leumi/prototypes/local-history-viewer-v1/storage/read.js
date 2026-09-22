@@ -208,7 +208,8 @@
         {
             range = null,
             direction = "next",
-            limit
+            limit,
+            after = null
         }
     ) {
         assertDatabase(
@@ -231,6 +232,27 @@
         assertLimit(
             limit
         );
+
+        if (
+            after !== null &&
+            (
+                typeof after !==
+                    "object" ||
+                after === null ||
+                !Object.hasOwn(
+                    after,
+                    "key"
+                ) ||
+                !Object.hasOwn(
+                    after,
+                    "primaryKey"
+                )
+            )
+        ) {
+            throw new TypeError(
+                "after must be null or an index continuation token."
+            );
+        }
 
         return new Promise(
             (resolve, reject) => {
@@ -256,6 +278,12 @@
                     false;
                 let settled =
                     false;
+                let continuationMatched =
+                    after === null;
+                let lastKey =
+                    null;
+                let lastPrimaryKey =
+                    null;
 
                 function rejectOnce(
                     error
@@ -300,6 +328,51 @@
                             request.result;
 
                         if (!cursor) {
+                            if (
+                                !continuationMatched
+                            ) {
+                                rejectOnce(
+                                    new Error(
+                                        "IndexedDB continuation token was not found for " +
+                                        storeName +
+                                        "." +
+                                        indexName +
+                                        "."
+                                    )
+                                );
+                            }
+
+                            return;
+                        }
+
+                        if (
+                            !continuationMatched
+                        ) {
+                            const keyMatches =
+                                window
+                                    .indexedDB
+                                    .cmp(
+                                        cursor.key,
+                                        after.key
+                                    ) === 0;
+
+                            const primaryKeyMatches =
+                                window
+                                    .indexedDB
+                                    .cmp(
+                                        cursor.primaryKey,
+                                        after.primaryKey
+                                    ) === 0;
+
+                            if (
+                                keyMatches &&
+                                primaryKeyMatches
+                            ) {
+                                continuationMatched =
+                                    true;
+                            }
+
+                            cursor.continue();
                             return;
                         }
 
@@ -316,6 +389,12 @@
                         rows.push(
                             cursor.value
                         );
+
+                        lastKey =
+                            cursor.key;
+
+                        lastPrimaryKey =
+                            cursor.primaryKey;
 
                         cursor.continue();
                     };
@@ -349,7 +428,16 @@
                                     Object.freeze([
                                         ...rows
                                     ]),
-                                hasMore
+                                hasMore,
+                                continuation:
+                                    hasMore
+                                        ? Object.freeze({
+                                            key:
+                                                lastKey,
+                                            primaryKey:
+                                                lastPrimaryKey
+                                        })
+                                        : null
                             })
                         );
                     };

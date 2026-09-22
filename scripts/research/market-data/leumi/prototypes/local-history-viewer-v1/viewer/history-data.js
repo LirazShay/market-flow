@@ -117,7 +117,124 @@
                 rows:
                     page.rows,
                 hasMore:
-                    page.hasMore
+                    page.hasMore,
+                continuation:
+                    page.continuation
+            });
+        } finally {
+            connection
+                .closeDatabase(
+                    database
+                );
+        }
+    }
+
+    function assertContinuation(
+        securityId,
+        continuation
+    ) {
+        if (
+            !continuation ||
+            typeof continuation !==
+                "object" ||
+            !Array.isArray(
+                continuation.key
+            ) ||
+            continuation.key.length !==
+                2 ||
+            continuation.key[0] !==
+                securityId ||
+            !Array.isArray(
+                continuation.primaryKey
+            ) ||
+            continuation.primaryKey.length !==
+                2 ||
+            continuation.primaryKey[1] !==
+                securityId
+        ) {
+            throw new TypeError(
+                "continuation must belong to the requested securityId."
+            );
+        }
+    }
+
+    function createOlderSecurityTimeRange(
+        securityId,
+        continuation
+    ) {
+        return window
+            .IDBKeyRange
+            .bound(
+                [
+                    securityId,
+                    0
+                ],
+                continuation.key
+            );
+    }
+
+    async function loadOlderPage(
+        securityId,
+        continuation
+    ) {
+        assertSecurityId(
+            securityId
+        );
+
+        assertContinuation(
+            securityId,
+            continuation
+        );
+
+        const database =
+            await connection
+                .openDatabase({
+                    onUpgradeNeeded:
+                        upgrade
+                            .upgradeDatabase
+                });
+
+        try {
+            const historyStore =
+                schema
+                    .stores
+                    .history;
+
+            const page =
+                await read
+                    .getIndexPage(
+                        database,
+                        historyStore
+                            .name,
+                        historyStore
+                            .indexes
+                            .bySecurityTime
+                            .name,
+                        {
+                            range:
+                                createOlderSecurityTimeRange(
+                                    securityId,
+                                    continuation
+                                ),
+                            direction:
+                                "prev",
+                            limit:
+                                INITIAL_PAGE_SIZE,
+                            after:
+                                continuation
+                        }
+                    );
+
+            return Object.freeze({
+                securityId,
+                pageSize:
+                    INITIAL_PAGE_SIZE,
+                rows:
+                    page.rows,
+                hasMore:
+                    page.hasMore,
+                continuation:
+                    page.continuation
             });
         } finally {
             connection
@@ -130,7 +247,8 @@
     window.MarketFlowViewerHistoryData =
         Object.freeze({
             INITIAL_PAGE_SIZE,
-            loadInitialPage
+            loadInitialPage,
+            loadOlderPage
         });
 
     console.log(
