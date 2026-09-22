@@ -12,7 +12,7 @@
     "stage": "14",
     "substep": "14.2",
     "title": "Security history drill-down — load older continuation",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -153,7 +153,7 @@
       "status": "in-progress",
       "substeps": {
         "14.1": "complete-browser-ci-verified — targeted bySecurityTime newest-first initial page (500 + hasMore)",
-        "14.2": "planned — load-older continuation without duplicates/skips",
+        "14.2": "in-progress — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
         "14.3": "planned — row activation + detail summary/history table UI",
         "14.4": "planned — detail live refresh + return-to-main state preservation",
         "14.5": "planned — Stage 14 acceptance/verification"
@@ -761,8 +761,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 14.1 is complete and verified. Stage 14 remains open; the next natural work is Stage 14.2 load-older continuation.",
+    "reached": false,
+    "reason": "Stage 14.2 is in progress.",
     "nextStage": "14",
     "nextSubstep": "14.2"
   },
