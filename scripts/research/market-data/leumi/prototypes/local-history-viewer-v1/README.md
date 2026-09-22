@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Planning
+Planning — Stage 2 complete
 ~~~
 
 מטרת V1 היא לאפשר ניסוי מקומי מלא ב-browser בלבד:
@@ -73,3 +73,4 @@ shared/
 - REQUIREMENTS.md
 - ARCHITECTURE.md
 - ROADMAP.md
+- DATA_MODEL.md
