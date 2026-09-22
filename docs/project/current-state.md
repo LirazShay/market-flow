@@ -43,8 +43,9 @@ scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 Verified implementation milestone:
 
 ~~~text
-Stages 1–12 complete
-Next: Stage 13 — Dynamic sorting
+Stages 1–11 complete
+Stage 12 — Cross-tab live refresh: in progress / not complete
+Stage 13 has not started
 ~~~
 
 Implemented through this milestone:
@@ -69,9 +70,12 @@ Fast CI
 Run 35756792160
 136 passed / 0 failed
 
+Historical technical evidence:
 Viewer Checkpoint C
 Run 35756990977
 34 Chromium tests passed / 0 failed
+
+This evidence does not close Stage 12.
 ~~~
 
 Exact next pointer:
@@ -118,3 +122,18 @@ Technical continuation context?
 Durable decisions?
 → docs/project/decisions.md
 ~~~
+
+
+## Stage 12 status correction
+
+Stage 12 was previously marked complete too early.
+
+Authoritative state:
+
+~~~text
+Stages 1–11 complete
+Stage 12 in progress / not complete
+Stage 13 not started
+~~~
+
+Existing Stage 12 code and CI runs remain useful technical evidence, but completion must not be inferred from them. Resume by reviewing/completing Stage 12 and then update `STATUS.json` explicitly before moving to Stage 13.

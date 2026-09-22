@@ -82,8 +82,9 @@ Failed API/validation/DB work never partially updates history/latest.
 ## Current milestone
 
 ~~~text
-Stages 1–12 complete
-Next: Stage 13 — Dynamic sorting
+Stages 1–11 complete
+Stage 12 — Cross-tab live refresh: IN PROGRESS / NOT COMPLETE
+Do not start Stage 13 yet
 ~~~
 
 Latest verification:
@@ -93,9 +94,12 @@ Fast CI
 Run 35756792160
 136 passed / 0 failed
 
+Historical technical evidence:
 Viewer Checkpoint C
 Run 35756990977
 34 Chromium tests passed / 0 failed
+
+Important: this run does NOT close Stage 12. Stage 12 remains open in STATUS.json.
 ~~~
 
 ## Current implementation map
@@ -131,20 +135,24 @@ tests/
   TESTING_POLICY.md
 ~~~
 
-## Next working set — Stage 13
+## Current working set — Stage 12
 
 Read:
 
 ~~~text
-ROADMAP.md                  # Stage 13
-docs/viewer-ux.md           # sections 8–9
-viewer/pure/current-table-logic.js
+ROADMAP.md                  # Stage 12
+STATUS.json
+docs/architecture.md        # BroadcastChannel / IndexedDB notification boundary
+docs/viewer-ux.md           # live refresh / fallback behavior
+messaging/
+viewer/live-refresh.js
 viewer/current-table.js
-tests/unit/current-table-logic.test.js
+recorder/recorder-loop.js
+tests/automation/specs/viewer-live-refresh.spec.js
 tests/TESTING_POLICY.md
 ~~~
 
-Implement deterministic sorting behavior in pure logic first, then UI header interaction.
+Review and complete Stage 12 before any Stage 13 sorting work. Treat existing code and CI runs as implementation/evidence to inspect, not as proof that the stage is closed.
 
 Default:
 

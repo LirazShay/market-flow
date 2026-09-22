@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "13",
-    "title": "Dynamic sorting",
-    "status": "next"
+    "stage": "12",
+    "title": "Cross-tab live refresh",
+    "status": "in-progress-not-complete"
   },
   "stages": [
     {
@@ -126,13 +126,13 @@
     {
       "stage": "12",
       "title": "Cross-tab live refresh",
-      "status": "complete",
+      "status": "in-progress",
       "substeps": {
-        "12.1": "complete-fast-ci-verified — minimal BroadcastChannel message contract",
-        "12.2": "complete-browser-ci-verified — recorder post-commit/lifecycle notifications",
-        "12.3": "complete-browser-ci-verified — viewer DB reread on CYCLE_COMMITTED",
-        "12.4": "complete-browser-ci-verified — manual refresh + degraded fallback",
-        "12.5": "complete — Viewer Checkpoint C passed"
+        "12.1": "implementation-present — requires review/completion before Stage 12 can close",
+        "12.2": "implementation-present — requires review/completion before Stage 12 can close",
+        "12.3": "implementation-present — requires review/completion before Stage 12 can close",
+        "12.4": "implementation-present — requires review/completion before Stage 12 can close",
+        "12.5": "not-complete — prior CI evidence exists but Stage 12 is not accepted/closed"
       }
     },
     {
@@ -493,44 +493,46 @@
       ]
     },
     "stage12": {
-      "status": "complete",
-      "testsFirst": true,
-      "fastCi": {
-        "runId": 35756792160,
-        "commit": "3e1cda4f3e01788ca52c555d74fa4ee1d41cc6ea",
-        "conclusion": "success",
-        "tests": 136,
-        "passed": 136,
-        "failed": 0
-      },
-      "browserCheckpoint": {
-        "firstRun": {
-          "runId": 35756858976,
-          "commit": "828e3851d052a44003417a6806dbebef2e9524df",
-          "conclusion": "failure",
-          "cause": "one new Stage 12 assertion incorrectly counted the initial Stage 11 load as a live-refresh operation; implementation correctly reported one notification-driven refresh"
-        },
-        "finalRun": {
-          "runId": 35756990977,
-          "commit": "88bdca83190b949fb426e3dd0d4ea463f54fcfdc",
+      "status": "not-complete",
+      "note": "Prior implementation and CI evidence are retained as historical technical evidence only. Per project-status correction, Stage 12 is not accepted/closed and must be reviewed/completed before Stage 13.",
+      "historicalTechnicalEvidence": {
+        "fastCi": {
+          "runId": 35756792160,
+          "commit": "3e1cda4f3e01788ca52c555d74fa4ee1d41cc6ea",
           "conclusion": "success",
-          "tests": 34,
-          "passed": 34,
+          "tests": 136,
+          "passed": 136,
           "failed": 0
-        }
-      },
-      "verifiedBehaviors": [
-        "BroadcastChannel name is market-flow-leumi-v1",
-        "notifications contain metadata only, not market row arrays",
-        "CYCLE_COMMITTED is emitted only after successful IndexedDB commit",
-        "viewer responds to CYCLE_COMMITTED by rereading IndexedDB",
-        "manual refresh rereads IndexedDB without invoking market APIs",
-        "BroadcastChannel-unavailable viewer remains usable and surfaces degraded live-update mode",
-        "named same-origin viewer and Stage 11 current table work under real Chromium"
-      ]
+        },
+        "browserCheckpoint": {
+          "firstRun": {
+            "runId": 35756858976,
+            "commit": "828e3851d052a44003417a6806dbebef2e9524df",
+            "conclusion": "failure",
+            "cause": "one new Stage 12 assertion incorrectly counted the initial Stage 11 load as a live-refresh operation; implementation correctly reported one notification-driven refresh"
+          },
+          "finalRun": {
+            "runId": 35756990977,
+            "commit": "88bdca83190b949fb426e3dd0d4ea463f54fcfdc",
+            "conclusion": "success",
+            "tests": 34,
+            "passed": 34,
+            "failed": 0
+          }
+        },
+        "verifiedBehaviors": [
+          "BroadcastChannel name is market-flow-leumi-v1",
+          "notifications contain metadata only, not market row arrays",
+          "CYCLE_COMMITTED is emitted only after successful IndexedDB commit",
+          "viewer responds to CYCLE_COMMITTED by rereading IndexedDB",
+          "manual refresh rereads IndexedDB without invoking market APIs",
+          "BroadcastChannel-unavailable viewer remains usable and surfaces degraded live-update mode",
+          "named same-origin viewer and Stage 11 current table work under real Chromium"
+        ]
+      }
     },
     "viewerCheckpointC": {
-      "status": "complete",
+      "status": "technical-evidence-only-not-stage-closure",
       "stages": [
         "10",
         "11",
@@ -538,7 +540,8 @@
       ],
       "browserRunId": 35756990977,
       "passed": 34,
-      "failed": 0
+      "failed": 0,
+      "note": "The run result is retained, but it does not mark Stage 12 complete."
     }
   },
   "fastContext": {
@@ -567,8 +570,8 @@
   },
   "recommendedChatBoundary": {
     "reached": false,
-    "reason": "Stages 10–12 viewer live-refresh foundation is complete and Chromium-verified. Stage 13 sorting is next.",
-    "nextStage": "13"
+    "reason": "Stage 12 is still open. Do not advance to Stage 13 until Stage 12 is explicitly completed and status is updated.",
+    "nextStage": "12"
   },
   "navigation": {
     "allStages": "ROADMAP.md",

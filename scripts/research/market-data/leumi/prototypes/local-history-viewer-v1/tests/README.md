@@ -698,7 +698,7 @@ tests/unit/channel-message-logic.test.js
 tests/automation/specs/viewer-live-refresh.spec.js
 ~~~
 
-Checkpoint C now covers Stages 10–12 together:
+Checkpoint C has technical coverage for Stages 10–12:
 
 - viewer bootstrap;
 - real IndexedDB current-table rendering;
@@ -710,7 +710,7 @@ Checkpoint C now covers Stages 10–12 together:
 
 ---
 
-## Viewer Checkpoint C — complete
+## Viewer Checkpoint C — technical evidence only; Stage 12 remains open
 
 Stages:
 
@@ -733,3 +733,6 @@ Run 35756990977
 ~~~
 
 The Browser CI workflow was restored to manual/reusable triggers after the checkpoint.
+
+
+> Project-status correction: Stage 12 is not closed by the existing Checkpoint C run. Keep the run as historical technical evidence, but follow `STATUS.json`: Stage 12 remains in progress and Stage 13 must not start yet.

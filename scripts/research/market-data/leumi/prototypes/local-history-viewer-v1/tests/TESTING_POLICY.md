@@ -196,9 +196,9 @@ Verified:
 
 Stage 9 recorder diagnostics does not require another browser run by itself unless it changes browser-only behavior.
 
-### Checkpoint C — Viewer live-refresh foundation complete ✅
+### Checkpoint C — technical run exists; Stage 12 remains open
 
-Completed after Stages 10–12:
+A prior run exists for Stages 10–12:
 
 ~~~text
 Fast CI
@@ -219,7 +219,9 @@ Verified:
 - manual DB-only refresh;
 - BroadcastChannel-unavailable degraded fallback.
 
-Stage 13 sorting should primarily use fast unit tests unless browser/UI behavior changes materially.
+Do not begin Stage 13 while `STATUS.json` still marks Stage 12 open. The prior Checkpoint C result is technical evidence only and does not itself close the stage.
+
+After Stage 12 is explicitly completed, Stage 13 sorting should primarily use fast unit tests unless browser/UI behavior changes materially.
 
 ### Checkpoint D — Viewer history/diagnostics complete
 

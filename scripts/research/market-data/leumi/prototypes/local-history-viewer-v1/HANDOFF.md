@@ -7,8 +7,9 @@ It is not the operational status source; STATUS.json is authoritative.
 ## Current boundary
 
 ~~~text
-Stages 1–12 complete
-Next: Stage 13 — Dynamic sorting
+Stages 1–11 complete
+Stage 12 — Cross-tab live refresh: IN PROGRESS / NOT COMPLETE
+Do not start Stage 13
 ~~~
 
 Latest verified checkpoint:
@@ -18,9 +19,12 @@ Fast CI
 Run 35756792160
 136 passed / 0 failed
 
+Historical technical evidence:
 Viewer Checkpoint C
 Run 35756990977
 34 Chromium tests passed / 0 failed
+
+This run does not mark Stage 12 complete.
 ~~~
 
 Verified viewer foundation:
@@ -39,25 +43,28 @@ same-origin viewer
 /AGENTS.md
 AI_CONTEXT.md
 STATUS.json
-ROADMAP.md          # Stage 13 section
-docs/viewer-ux.md   # sorting behavior
-viewer/pure/current-table-logic.js
+ROADMAP.md          # Stage 12 section
+STATUS.json
+docs/architecture.md
+docs/viewer-ux.md
+messaging/
+viewer/live-refresh.js
 viewer/current-table.js
+recorder/recorder-loop.js
+tests/automation/specs/viewer-live-refresh.spec.js
 relevant unit/browser tests
 ~~~
 
 Do not reconstruct current state from old chat history.
 
-## Next implementation: Stage 13
+## Current implementation boundary: Stage 12
 
 ~~~text
-Dynamic sorting
-- clickable headers
-- single-column sort
-- numeric/time first click DESC
-- string first click ASC
-- toggle ASC/DESC
-- deterministic null-safe sorting
+Cross-tab live refresh is not yet accepted as complete.
+
+Review the existing Stage 12 implementation and tests, identify any missing acceptance criteria or integration gaps, complete them, then explicitly close Stage 12 in STATUS.json.
+
+Do not begin Stage 13 until that is done.
 - equal values → paperName ASC tie-breaker
 - visual indicator ▲ / ▼
 ~~~
@@ -83,6 +90,4 @@ This is a UX default, not a trading recommendation.
 
 ## Verification rule
 
-Stage 13 should use fast deterministic tests for sorting logic.
-
-The next planned Chromium checkpoint is after Stages 14–15 unless a real browser-only regression justifies the early-browser exception.
+Stage 12 is still active. Reuse the existing Stage 12 Fast/Chromium evidence where valid, but do not treat it as stage closure. Run any additional verification required by the actual remaining gap before marking Stage 12 complete.
