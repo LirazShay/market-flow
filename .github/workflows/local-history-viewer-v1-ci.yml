@@ -8,6 +8,7 @@ on:
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/source-order.js"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/harness.html"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/debug-bundle.spec.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/runtime-assembly.spec.js"
   workflow_dispatch:
   workflow_call:
 
