@@ -9,10 +9,10 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "18",
-    "substep": "18.1",
-    "title": "Storage growth test — reproducible Chromium IndexedDB benchmark",
-    "status": "in-progress"
+    "stage": "19",
+    "substep": "19.1",
+    "title": "Integrated V1 validation — full mocked E2E in GitHub Actions",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -194,11 +194,11 @@
     {
       "stage": "18",
       "title": "Storage growth test",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "18.1": "in-progress — benchmark steady-state IndexedDB growth with representative full Security payload",
-        "18.2": "planned — calculate rows/minute, MB/minute, bytes/history-row and hours-to-quota; document Verified/Inferred/Unknown",
-        "18.3": "planned — Stage 18 acceptance + mandatory Stage-closure Fast/Browser CI"
+        "18.1": "complete-browser-ci-verified — reproducible Chromium IndexedDB storage-growth benchmark with representative full Security payload",
+        "18.2": "complete-documented — rows/minute, MiB/minute, effective bytes/history-row and hours-to-quota recorded with Verified/Inferred/Unknown boundaries",
+        "18.3": "complete-reviewed-and-ci-verified — mandatory Stage-closure Fast + full Browser CI green"
       }
     },
     {
@@ -225,15 +225,16 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35782030038,
-      "jobId": 106929622317,
-      "activationCommit": "8c7503acbf7601ecf8091cc06758878be10206c8",
-      "codeTestState": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
+      "runId": 35783658571,
+      "jobId": 106935065704,
+      "activationCommit": "5db57618f356462890b47fb5c586780baef50827",
+      "codeTestState": "b56506d1e37254274d06ad40b02a80860c7cf3ca",
       "conclusion": "success",
       "tests": [
-        "51 Chromium tests",
-        "51 passed / 0 failed",
-        "mandatory Stage 17 closure full-suite run"
+        "52 Chromium tests",
+        "52 passed / 0 failed",
+        "mandatory Stage 18 closure full-suite run",
+        "storage-growth benchmark reran inside the full suite and remained within the targeted measurement range"
       ]
     },
     "fastCi": "verified-success",
@@ -245,16 +246,16 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35781827757,
+      "runId": 35783054912,
       "runAttempt": 2,
-      "jobId": 106929790448,
-      "commit": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
+      "jobId": 106935198723,
+      "commit": "b56506d1e37254274d06ad40b02a80860c7cf3ca",
       "conclusion": "success",
       "tests": 148,
       "passed": 148,
       "failed": 0,
-      "durationMs": 453.551973,
-      "note": "Fresh Stage 17 closure rerun on final code/test state."
+      "durationMs": 93.832085,
+      "note": "Fresh Stage 18 closure rerun on the final code/test state containing the storage-growth benchmark."
     },
     "testingRefactor": {
       "status": "complete",
@@ -1372,6 +1373,130 @@
       },
       "workflowRestoreCommit": "027790dd5ccae01c0175e0d69263f77acf25676c",
       "closureDecision": "Stage 17 accepted and complete. All ROADMAP failure simulations have deterministic CI coverage and the full suite is green."
+    },
+    "stage18": {
+      "status": "complete",
+      "closedAt": "2026-09-22",
+      "benchmark": {
+        "testCommit": "b56506d1e37254274d06ad40b02a80860c7cf3ca",
+        "test": "tests/automation/specs/storage-growth.spec.js",
+        "payloadSource": "docs/leumi-api/samples/get-securities-data-record.json",
+        "methodology": [
+          "real Chromium IndexedDB",
+          "real V1 startSession + commitSuccessfulCycle persistence path",
+          "1 warm-up cycle before baseline",
+          "20 measured cycles",
+          "561 benchmark securities per cycle",
+          "187 benchmark chunk size",
+          "4.986-second previously verified average cycle input",
+          "navigator.storage.estimate() before/after",
+          "exact history row counts before/after"
+        ],
+        "targetedRun": {
+          "runId": 35783084785,
+          "attempts": [
+            {
+              "attempt": 1,
+              "jobId": 106933135814,
+              "rowsAdded": 11220,
+              "storageDeltaBytes": 5703617,
+              "effectiveBytesPerHistoryRow": 508.34376114082,
+              "mibPerMinute": 3.2727996651733253,
+              "quotaBytes": 876066297,
+              "hoursUntilQuota": 4.222892339317314
+            },
+            {
+              "attempt": 2,
+              "jobId": 106933548462,
+              "rowsAdded": 11220,
+              "storageDeltaBytes": 5545506,
+              "effectiveBytesPerHistoryRow": 494.251871657754,
+              "mibPerMinute": 3.1820737928259675,
+              "quotaBytes": 851155073,
+              "hoursUntilQuota": 4.220021917134343
+            },
+            {
+              "attempt": 3,
+              "jobId": 106933956641,
+              "rowsAdded": 11220,
+              "storageDeltaBytes": 5980116,
+              "effectiveBytesPerHistoryRow": 532.9871657754011,
+              "mibPerMinute": 3.4314579051324174,
+              "quotaBytes": 1103272507,
+              "hoursUntilQuota": 5.080200610623607
+            }
+          ],
+          "allPassed": true
+        },
+        "aggregate": {
+          "cyclesPerMinute": 12.033694344163658,
+          "rowsPerMinute": 6750.902527075812,
+          "rowsPerHour": 405054.1516245487,
+          "effectiveBytesPerHistoryRow": {
+            "min": 494.251871657754,
+            "median": 508.34376114082,
+            "max": 532.9871657754011,
+            "mean": 511.8609328579917
+          },
+          "mibPerMinute": {
+            "min": 3.1820737928259675,
+            "median": 3.2727996651733253,
+            "max": 3.4314579051324174,
+            "mean": 3.2954437877105702
+          },
+          "medianMibPerHour": 196.36797991039953,
+          "ciRunnerHoursUntilQuota": {
+            "min": 4.220021917134343,
+            "median": 4.222892339317314,
+            "max": 5.080200610623607
+          }
+        },
+        "fullSuiteConfirmation": {
+          "runId": 35783658571,
+          "jobId": 106935065704,
+          "effectiveBytesPerHistoryRow": 522.4677361853833,
+          "mibPerMinute": 3.3637321095747783,
+          "hoursUntilQuota": 4.671370365337402,
+          "withinTargetedRange": true
+        }
+      },
+      "report": {
+        "path": "docs/storage-growth-report.md",
+        "initialReportCommit": "2d88b2e6192a093efd6de131f32413f567393ed1",
+        "closureConfirmationCommit": "0388318b1ed425b9ef896e230390046161efea89"
+      },
+      "acceptance": {
+        "rowsPerMinuteMeasuredOrDerived": true,
+        "mibPerMinuteMeasuredOrDerived": true,
+        "bytesPerHistoryRowMeasured": true,
+        "estimatedHoursAtCurrentBrowserQuotaCalculated": true,
+        "automaticRetentionAdded": false,
+        "verifiedInferredUnknownSeparated": true,
+        "remainingGaps": [
+          "user-browser quota is environment-specific and remains live-verification work",
+          "whole-universe live record-size distribution remains Stage 19 live/long-run work",
+          "multi-hour IndexedDB compaction/fragmentation behavior remains Stage 19 long-run work"
+        ]
+      },
+      "finalFastCi": {
+        "runId": 35783054912,
+        "runAttempt": 2,
+        "jobId": 106935198723,
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "finalBrowserCi": {
+        "runId": 35783658571,
+        "jobId": 106935065704,
+        "conclusion": "success",
+        "tests": 52,
+        "passed": 52,
+        "failed": 0
+      },
+      "workflowRestoreCommit": "96b86aadbdbb425189bd0d1ac8abeeaefca55b21",
+      "closureDecision": "Stage 18 accepted and complete. Storage growth is measured reproducibly, documented with limitations, and V1 still performs no automatic retention."
     }
   },
   "fastContext": {
@@ -1401,10 +1526,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 18 is in progress. Storage growth will be measured in real Chromium IndexedDB before documenting extrapolated capacity.",
-    "nextStage": "18",
-    "nextSubstep": "18.1"
+    "reached": true,
+    "reason": "Stage 18 is accepted and complete. Chromium storage growth was measured repeatedly, documented, and the mandatory Fast CI plus full Browser CI are green.",
+    "nextStage": "19",
+    "nextSubstep": "19.1"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
