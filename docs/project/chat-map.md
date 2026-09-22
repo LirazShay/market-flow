@@ -41,7 +41,7 @@ docs/leumi-api/
 Primary scripts:
 
 ~~~text
-scripts/research/leumi/
+scripts/research/market-data/leumi/
 ~~~
 
 Verified outcomes:
@@ -62,7 +62,7 @@ long-running polling stability test
 Script:
 
 ~~~text
-scripts/research/leumi/long-running-poll-test.js
+scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js
 ~~~
 
 ---
