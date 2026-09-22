@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 5.4 — basic generic read helpers
+Stage 5 complete — basic storage module foundation
 ~~~
 
 התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
@@ -14,27 +14,39 @@ Stage 5.4 — basic generic read helpers
 - `connection.js` — Promise-based open/close helpers.
 - `upgrade.js` — version 1 object-store/index creation.
 - `read.js` — generic readonly helpers: get/getAll/count.
+- `write.js` — generic readwrite helpers: put/add/deleteRecord/clear.
 
 ## Current boundary
 
-Stage 5.4 מוסיף רק helpers כלליים לקריאה:
+Stage 5 כולל כעת foundation בסיסי של IndexedDB:
 
 ~~~text
-get(database, storeName, key)
-getAll(database, storeName)
-count(database, storeName)
+schema.js
+connection.js
+upgrade.js
+read.js
+write.js
 ~~~
 
-כל helper:
-- משתמש ב-readonly transaction.
+Write helpers:
+
+~~~text
+put(database, storeName, value)
+add(database, storeName, value)
+deleteRecord(database, storeName, key)
+clear(database, storeName)
+~~~
+
+כל write helper:
+- משתמש ב-readwrite transaction.
 - בודק שה-store מוכר ל-schema.
 - מחזיר Promise.
-- פותר את ה-Promise רק לאחר השלמת ה-transaction.
-- מעביר error/abort בצורה מפורשת.
+- מחזיר request result רק לאחר transaction complete.
+- מעביר request/transaction error או abort בצורה מפורשת.
 
-`getAll` מיועד כרגע לקריאות קטנות כמו `latest` או `universe`; history גדול ייקרא בעתיד דרך index/paging ולא באמצעות full scan.
+`clear` הוא helper נמוך-רמה בלבד. אין שום auto-clear ב-V1.
 
-עדיין אין generic write helpers; הם שייכים ל-Stage 5.5.
+Atomic multi-store writes של full cycle עדיין **לא** ממומשים כאן; הם שייכים ל-Stage 8.
 
 Source of truth:
 
