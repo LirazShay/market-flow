@@ -166,12 +166,18 @@
         "existing browser suite after pure-logic extraction"
       ]
     },
-    "fastCi": "retry-after-unit-discovery-fix",
+    "fastCi": "verified-success",
     "browserCiTrigger": "manual-or-reusable-checkpoint",
     "fastCiFirstRun": {
       "runId": 35741307752,
       "conclusion": "failure",
       "cause": "node --test default discovery also executed browser-only *-test.js files outside tests/unit"
+    },
+    "fastCiLastRun": {
+      "workflow": "Local History Viewer V1 Fast CI",
+      "runId": 35741459430,
+      "commit": "c8668b6ac953602d6c387e9db27a76e8df8fa94a",
+      "conclusion": "success"
     }
   },
   "fastContext": {
