@@ -166,8 +166,13 @@
         "existing browser suite after pure-logic extraction"
       ]
     },
-    "fastCi": "implementation-committed-verification-pending",
-    "browserCiTrigger": "manual-or-reusable-checkpoint"
+    "fastCi": "retry-after-unit-discovery-fix",
+    "browserCiTrigger": "manual-or-reusable-checkpoint",
+    "fastCiFirstRun": {
+      "runId": 35741307752,
+      "conclusion": "failure",
+      "cause": "node --test default discovery also executed browser-only *-test.js files outside tests/unit"
+    }
   },
   "fastContext": {
     "file": "AI_CONTEXT.md",
