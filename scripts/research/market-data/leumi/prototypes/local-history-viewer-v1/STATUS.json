@@ -10,8 +10,9 @@
   },
   "currentFocus": {
     "stage": "16",
-    "title": "Reload and recovery",
-    "status": "ready-to-start"
+    "substep": "16.1",
+    "title": "Reload and recovery — browser recovery contract",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -172,7 +173,13 @@
     {
       "stage": "16",
       "title": "Reload and recovery",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "16.1": "in-progress — viewer reload must rebuild shell and reread IndexedDB",
+        "16.2": "planned — close/reopen must restore persisted current data and diagnostics",
+        "16.3": "planned — recovery must not depend on a running recorder or market API",
+        "16.4": "planned — Stage 16 acceptance + mandatory Stage-closure Fast/Browser CI"
+      }
     },
     {
       "stage": "17",
@@ -1200,9 +1207,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 15 is accepted and complete. The acceptance review closed the missing viewer-level health-state coverage, and mandatory Fast CI plus full Browser CI are green.",
-    "nextStage": "16"
+    "reached": false,
+    "reason": "Stage 16 is in progress. Recovery behavior will be characterized in Chromium before bootstrap changes.",
+    "nextStage": "16",
+    "nextSubstep": "16.1"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
