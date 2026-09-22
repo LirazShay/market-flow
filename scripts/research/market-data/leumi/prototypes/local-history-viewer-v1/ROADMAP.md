@@ -229,6 +229,12 @@ Atomic full-cycle persistence עדיין שייך ל-Stage 8.
 
 ### Stage 6 — IndexedDB self-test
 
+Status:
+
+~~~text
+Implementation complete — browser execution pending
+~~~
+
 Stage 6 מחולק לתת-שלבים קטנים:
 
 #### Stage 6.1 — Schema/open browser self-test
@@ -273,7 +279,7 @@ Implemented — browser execution pending
 Status:
 
 ~~~text
-Next
+Implemented — browser execution pending
 ~~~
 
 ננקה רק את fixture של הבדיקה ונאמת:
