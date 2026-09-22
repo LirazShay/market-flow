@@ -1,6 +1,12 @@
 # Storage Module — Local History Viewer V1
 
-Durable IndexedDB component documentation only. Operational progress lives in:
+Durable IndexedDB component orientation only. The normative persistence contract lives in:
+
+~~~text
+../specs/persistence.spec.md
+~~~
+
+Operational progress lives in:
 
 ~~~text
 ../STATUS.json
