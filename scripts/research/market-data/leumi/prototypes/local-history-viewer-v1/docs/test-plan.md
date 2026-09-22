@@ -4,7 +4,9 @@
 
 This document defines planned cases. Execution rules are authoritative in `../tests/TESTING_POLICY.md`.
 
-Adding or changing a test creates an immediate verification obligation: the changed test must run in its real layer after its final edit and before the next implementation unit. Browser checkpoint scheduling controls broad-suite cadence; it does **not** allow changed Playwright tests to remain unexecuted.
+Adding or changing a test creates an immediate verification obligation: the changed test must run in its real layer after its final edit and before the next implementation unit.
+
+In addition, **every numbered Stage requires a full Browser CI run before it can be marked complete**. Additional browser checkpoints are integration milestones beyond this minimum cadence; they do not replace per-Stage verification.
 
 Status:
 
