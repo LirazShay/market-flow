@@ -12,7 +12,7 @@
     "stage": "13",
     "substep": "13.2",
     "title": "Dynamic sorting — current-table sorting UI integration",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -142,7 +142,7 @@
       "status": "in-progress",
       "substeps": {
         "13.1": "complete-fast-ci-verified — pure sorting state/comparator contract + unit tests",
-        "13.2": "planned — current-table sorting UI integration",
+        "13.2": "in-progress — sortable headers, indicators, keyboard-accessible controls and DOM wiring",
         "13.3": "planned — preserve sort across rerender/live refresh + browser coverage",
         "13.4": "planned — Fast CI verification and Stage 13 closure"
       }
@@ -642,8 +642,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 13.1 is complete and Fast CI verified. Stage 13 remains open; the next natural work is Stage 13.2 current-table sorting UI integration.",
+    "reached": false,
+    "reason": "Stage 13.2 is in progress.",
     "nextStage": "13",
     "nextSubstep": "13.2"
   },
