@@ -267,3 +267,29 @@ Details:
 ~~~text
 docs/project/repository-structure.md
 ~~~
+
+---
+
+## D-018 — Documentation follows code ownership
+
+Status: Accepted
+
+Decision:
+
+~~~text
+Documentation that explains one concrete script/component
+→ lives next to that code.
+
+Run instructions, configuration, test procedure and raw reports
+→ live next to the script/test suite.
+
+Cross-cutting or durable domain knowledge
+→ lives under docs/.
+~~~
+
+Why:
+
+- code and its operational documentation change together.
+- moving/renaming code should not leave a detached manual elsewhere.
+- raw evidence belongs to the test that generated it.
+- docs should remain a knowledge base rather than a second copy of code documentation.
