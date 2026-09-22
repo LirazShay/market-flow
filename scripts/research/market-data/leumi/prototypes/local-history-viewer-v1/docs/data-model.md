@@ -699,22 +699,19 @@ average full cycle ≈ 4.986 sec
 
 זה מספר rows משמעותי.
 
-## Important
+## Stage 18 storage-growth evidence
 
-גודל bytes לרשומה עדיין **Unknown**.
+Storage growth is now measured reproducibly in Chromium rather than inferred from row count alone.
 
-אין להסיק MB/hour ממספר rows בלבד.
-
-Stage 18 ימדוד בפועל:
+See:
 
 ~~~text
-storage before
-storage after N cycles
-rows added
-bytes / row
-MB / minute
-estimated hours at current browser quota
+storage-growth-report.md
 ~~~
+
+The report contains raw benchmark runs, effective bytes/history-row, growth-rate extrapolation and the Verified/Inferred/Unknown boundary.
+
+The measurement is not a production universe-size invariant and does not introduce retention.
 
 ---
 
