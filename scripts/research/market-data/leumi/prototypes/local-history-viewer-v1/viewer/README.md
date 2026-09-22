@@ -1,6 +1,12 @@
 # Viewer Module — Local History Viewer V1
 
-Durable viewer documentation only. Operational progress lives in:
+Durable viewer orientation only. The normative viewer contract lives in:
+
+~~~text
+../specs/viewer.spec.md
+~~~
+
+Operational progress lives in:
 
 ~~~text
 ../STATUS.json
