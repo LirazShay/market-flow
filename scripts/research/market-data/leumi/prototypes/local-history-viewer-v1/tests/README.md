@@ -551,3 +551,27 @@ tests/automation/specs/recorder-persistence-integration.spec.js
 The unit layer proves that in-memory success is not exposed before `commitCycle` resolves.
 
 The browser layer proves success persistence, DB-commit failure handling, API-failure no-write behavior, and durable session stop state.
+
+
+---
+
+## Stage 8 final checkpoint
+
+~~~text
+Fast CI
+Run 35752055065
+119 passed / 0 failed
+
+Browser CI
+Run 35752125784
+24 passed / 0 failed
+~~~
+
+The Stage 8 browser checkpoint verified the complete recorder→IndexedDB persistence boundary, including rollback/failure behavior.
+
+Browser CI was restored after the checkpoint to:
+
+~~~text
+workflow_dispatch
+workflow_call
+~~~

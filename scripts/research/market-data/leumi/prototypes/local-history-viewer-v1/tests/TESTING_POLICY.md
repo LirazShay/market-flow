@@ -171,15 +171,28 @@ Purpose:
 - verify mocked endpoint wiring;
 - verify recorder browser globals still compose correctly.
 
-### Checkpoint B — Persistence integration complete
+### Checkpoint B — Persistence integration complete ✅
 
-Run after Stage 8.
+Completed:
 
-Purpose:
+~~~text
+Fast CI
+Run 35752055065
+119 passed / 0 failed
 
-- verify real IndexedDB transaction behavior;
-- verify complete-cycle persistence;
-- verify no partial visible state on failure.
+Browser CI
+Run 35752125784
+24 passed / 0 failed
+~~~
+
+Verified:
+
+- session/universe lifecycle persistence;
+- atomic cycles/history/latest/meta commit;
+- recorder commit-before-in-memory-success boundary;
+- DB rollback behavior;
+- API failure no-write behavior;
+- no partial visible latest/history state on failure.
 
 Stage 9 recorder diagnostics does not require another browser run by itself unless it changes browser-only behavior.
 

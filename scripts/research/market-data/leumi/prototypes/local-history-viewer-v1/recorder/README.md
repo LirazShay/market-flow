@@ -181,3 +181,34 @@ A persistence failure follows the same recorder failure path as an API/validatio
 ~~~text
 MarketFlowRecorderLoop.waitForStopPersistence()
 ~~~
+
+
+## Stage 8 complete
+
+Recorder success is now persistence-gated:
+
+~~~text
+validated cycle
+→ atomic IndexedDB commit
+→ only then completedCycles/latestCycle in memory
+~~~
+
+Final Stage 8 verification:
+
+~~~text
+Fast CI
+Run 35752055065
+119 passed / 0 failed
+
+Browser CI
+Run 35752125784
+24 passed / 0 failed
+~~~
+
+Verified failure boundaries include DB commit rollback and API failure with no partial cycle/history/latest visibility.
+
+Next planned stage:
+
+~~~text
+Stage 9 — Recorder diagnostics
+~~~

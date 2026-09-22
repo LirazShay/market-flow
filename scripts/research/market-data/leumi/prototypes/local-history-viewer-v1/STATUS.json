@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "8.4",
-    "title": "Recorder integration + persistence failure/rollback tests",
-    "status": "fast-and-browser-checkpoint-pending"
+    "stage": "9",
+    "title": "Recorder diagnostics",
+    "status": "next"
   },
   "stages": [
     {
@@ -83,12 +83,12 @@
     {
       "stage": "8",
       "title": "Persistence integration",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
         "8.1": "complete-fast-ci-verified",
         "8.2": "complete-browser-ci-verified",
         "8.3": "complete-browser-ci-verified",
-        "8.4": "implemented-checkpoint-verification-pending"
+        "8.4": "complete-browser-ci-verified"
       }
     },
     {
@@ -165,13 +165,15 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35751253126,
-      "commit": "8bcec04a5562213dcfe819aa9c08b358bc628e46",
+      "runId": 35752125784,
+      "commit": "0d6855c00c20448ae54caf96259521cc0f123e2f",
       "conclusion": "success",
       "tests": [
-        "21 Chromium tests",
-        "Stage 8.3 atomic successful-cycle persistence",
-        "existing lifecycle/recorder/storage regressions"
+        "24 Chromium tests",
+        "Stage 8 recorder→IndexedDB success boundary",
+        "DB commit failure rollback/in-memory failure path",
+        "API failure no-write behavior",
+        "existing recorder/storage regressions"
       ]
     },
     "fastCi": "verified-success",
@@ -183,13 +185,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35751181181,
-      "commit": "33c1603f0d7bf1cf488ac6366a3d6ef1bb19ddd1",
+      "runId": 35752055065,
+      "commit": "00b5e7edfc4731ac985bfb93f3e51ac358c7d6cd",
       "conclusion": "success",
-      "tests": 116,
-      "passed": 116,
+      "tests": 119,
+      "passed": 119,
       "failed": 0,
-      "durationMs": 54.730226
+      "durationMs": 34.882042
     },
     "testingRefactor": {
       "status": "complete",
@@ -323,6 +325,53 @@
         "ConstraintError during history write rolls back new cycle/latest/meta updates",
         "raw Security null/zero/empty-string round-trip",
         "recorder instance ownership checked before commit"
+      ]
+    },
+    "stage8_4": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35752055065,
+        "commit": "00b5e7edfc4731ac985bfb93f3e51ac358c7d6cd",
+        "conclusion": "success",
+        "tests": 119,
+        "passed": 119,
+        "failed": 0
+      },
+      "browserCheckpoint": {
+        "runId": 35752125784,
+        "commit": "0d6855c00c20448ae54caf96259521cc0f123e2f",
+        "conclusion": "success",
+        "tests": 24,
+        "passed": 24,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "recorder waits for commitCycle before exposing completed/latest in memory",
+        "persistent recorder creates session and persists universe before cycle commit",
+        "successful recorder cycle is visible in memory only after IndexedDB commit",
+        "stop persistence writes final session/recorderState",
+        "DB commit failure increments recorder failure without exposing uncommitted latestCycle",
+        "DB commit rollback preserves prior persisted latest snapshot",
+        "API failure writes no cycles/history/latest"
+      ]
+    },
+    "stage8": {
+      "status": "complete",
+      "testsFirst": true,
+      "browserCheckpoint": {
+        "runId": 35752125784,
+        "commit": "0d6855c00c20448ae54caf96259521cc0f123e2f",
+        "conclusion": "success",
+        "tests": 24,
+        "passed": 24,
+        "failed": 0
+      },
+      "invariants": [
+        "session + universe lifecycle persisted",
+        "successful cycle atomic across cycles/history/latest/meta",
+        "DB commit precedes recorder in-memory success",
+        "failed API/validation/DB persistence cannot partially update latest/history"
       ]
     }
   },

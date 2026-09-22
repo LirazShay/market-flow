@@ -196,11 +196,16 @@ Stage 7 recorder skeleton is complete and browser-verified.
 Current work:
 
 ~~~text
-Stage 8 — Persistence integration
-8.1 persistence record builders/contracts complete + Fast CI verified
-8.2 session + universe persistence complete + Chromium verified
-8.3 atomic successful-cycle transaction complete + Chromium verified
-Next: 8.4 recorder integration + persistence failure/rollback tests
+Stage 8 — Persistence integration COMPLETE + Chromium checkpoint verified
+
+Verified:
+- 8.1 persistence record builders/contracts
+- 8.2 session + universe persistence
+- 8.3 atomic successful-cycle transaction
+- 8.4 recorder integration + failure/rollback behavior
+
+Next:
+Stage 9 — Recorder diagnostics
 ~~~
 
 Stage 8 explicitly includes:

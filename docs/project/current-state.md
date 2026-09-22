@@ -224,8 +224,8 @@ Status:
 
 ~~~text
 Implementation in progress
-Stage 7 recorder: complete + Fast CI verified + Chromium checkpoint verified
-Current focus: Stage 8 — persistence integration
+Stages 7–8 recorder + persistence: complete + Chromium verified
+Current focus: Stage 9 — recorder diagnostics
 ~~~
 
 Location:
@@ -310,29 +310,33 @@ latest
 history
 ~~~
 
-### Important Stage 8 boundary
+### Stage 8 persistence boundary — completed
 
-The schema and generic storage helpers exist, but the recorder is **not yet persisted**.
-
-Stage 8 must connect the verified Stage 7 recorder to IndexedDB while preserving these invariants:
+Verified implementation now enforces:
 
 ~~~text
+session + universe lifecycle persistence
+
 successful cycle:
 cycles + history + latest + meta
-must commit atomically
+one atomic transaction
+
+recorder success:
+DB commit first
+→ then in-memory completed/latest state
 
 failed API/validation/DB commit:
-must not partially update latest/history
+no partial latest/history visibility
 ~~~
 
-The audit also identified lifecycle persistence that must not be lost between docs:
+Final Stage 8 checkpoint:
 
 ~~~text
-sessions
-universe
+Fast CI: 119 passed / 0 failed
+Browser CI: 24 passed / 0 failed
 ~~~
 
-Stage 8 therefore owns the minimal session/universe persistence required by the V1 data model in addition to atomic successful-cycle persistence. Stage 9 still owns richer diagnostics/heartbeat behavior.
+Stage 9 now owns richer recorder diagnostics/heartbeat/storage-estimate behavior.
 
 Source of truth for exact current progress:
 
