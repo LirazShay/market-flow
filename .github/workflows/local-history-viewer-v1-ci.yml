@@ -1,11 +1,6 @@
 name: Local History Viewer V1 Browser CI
-# Stage 15.3 contract migration verification
-# Stage 15.3 implementation verification
 
 on:
-  push:
-    paths:
-      - ".github/workflows/local-history-viewer-v1-ci.yml"
   workflow_dispatch:
   workflow_call:
 
@@ -37,8 +32,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run Stage 15.3 related viewer cluster
-        run: npx playwright test tests/automation/specs/viewer-diagnostics.spec.js tests/automation/specs/viewer-bootstrap.spec.js tests/automation/specs/viewer-live-refresh.spec.js tests/automation/specs/viewer-security-detail.spec.js
+      - name: Run browser tests
+        run: npm run test:browser
 
       - name: Upload Playwright diagnostics
         if: failure()
