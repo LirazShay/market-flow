@@ -36,7 +36,13 @@ downloads a JSON file such as:
 market-flow-debug-20260923-013500.json
 ~~~
 
-The viewer also exposes a user-facing export action when the debug UI integration is enabled by the current runtime.
+The Viewer header exposes the normal user-facing action:
+
+~~~text
+הורד קובץ Debug
+~~~
+
+Use that button for ordinary live debugging; the runtime API remains available for automated/testing use.
 
 ## What the file contains
 
