@@ -2,6 +2,21 @@
 
 Playwright/Chromium integration layer for Local History Viewer V1.
 
+## Mandatory rule before continuing development
+
+Any change under this browser-test layer — spec, fixture, harness, helper, or browser-test infrastructure — must be executed in Chromium after its final edit.
+
+~~~text
+edit browser test/infrastructure
+→ run affected Playwright test (or full Browser suite)
+→ green
+→ continue
+~~~
+
+A later checkpoint never substitutes for this immediate verification. A red or unexecuted changed browser test blocks the next implementation unit.
+
+See `../TESTING_POLICY.md` for the full policy.
+
 ## Structure
 
 ~~~text

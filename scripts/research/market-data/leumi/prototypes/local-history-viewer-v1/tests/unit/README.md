@@ -1,5 +1,9 @@
 # Fast Unit Tests
 
+## Mandatory rule
+
+Any added/modified unit test must be executed after its final edit before development continues. Fast CI or `npm run test:unit` must be green; do not defer a changed unit test to a later stage.
+
 This directory is for deterministic tests that do not require Chromium, DOM, IndexedDB, BroadcastChannel, or a live provider.
 
 Run from the prototype root:

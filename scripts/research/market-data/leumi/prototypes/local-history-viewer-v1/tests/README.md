@@ -1,5 +1,36 @@
 # Local History Viewer V1 — Testing
 
+## Mandatory safety rule
+
+### Non-negotiable test-change gate
+
+Checkpoint scheduling controls **when broad suites are run for unchanged tests**. It never permits an edited test to remain unexecuted.
+
+If a test, test fixture, harness, or test helper is added or modified:
+
+~~~text
+change test
+→ execute that test in its real layer immediately
+→ fix every failure
+→ rerun until green
+→ only then continue to the next implementation unit
+~~~
+
+Rules:
+
+- changed unit tests must be executed before continuing;
+- changed Playwright/browser tests must be executed in Chromium before continuing;
+- if targeted browser execution is unavailable in CI, run the Browser suite rather than defer the changed test;
+- a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
+- a failing test blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
+- if the required environment cannot be run, mark the work `verification-pending` in `STATUS.json` and stop before the next feature/substep;
+- do not mark behavior verified from source inspection alone when its test layer has not run;
+- verification evidence must identify the run and code/test state being claimed as verified.
+
+This gate applies even when Fast CI is green.
+
+The authoritative execution/checkpoint policy is `TESTING_POLICY.md`.
+
 ## Current CI split
 
 The test system has two execution layers:
@@ -28,7 +59,7 @@ npm run test:all
 
 `npm test` intentionally means the fast unit suite.
 
-Browser verification is no longer the default test command and no longer runs on every prototype code push.
+Browser verification is no longer the default test command and no longer runs on every prototype code push. **However, any added/modified browser test must be executed in Chromium immediately; checkpoint scheduling never permits deferring verification of a changed test.**
 
 Durable layer/checkpoint policy:
 

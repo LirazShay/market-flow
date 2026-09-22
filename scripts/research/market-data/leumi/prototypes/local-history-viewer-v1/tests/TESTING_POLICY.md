@@ -12,6 +12,35 @@ browser confidence at meaningful integration boundaries
 rare live-provider verification
 ~~~
 
+## 0. Hard verification gate for test changes
+
+### Non-negotiable test-change gate
+
+Checkpoint scheduling controls **when broad suites are run for unchanged tests**. It never permits an edited test to remain unexecuted.
+
+If a test, test fixture, harness, or test helper is added or modified:
+
+~~~text
+change test
+→ execute that test in its real layer immediately
+→ fix every failure
+→ rerun until green
+→ only then continue to the next implementation unit
+~~~
+
+Rules:
+
+- changed unit tests must be executed before continuing;
+- changed Playwright/browser tests must be executed in Chromium before continuing;
+- if targeted browser execution is unavailable in CI, run the Browser suite rather than defer the changed test;
+- a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
+- a failing test blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
+- if the required environment cannot be run, mark the work `verification-pending` in `STATUS.json` and stop before the next feature/substep;
+- do not mark behavior verified from source inspection alone when its test layer has not run;
+- verification evidence must identify the run and code/test state being claimed as verified.
+
+This gate applies even when Fast CI is green.
+
 ## 1. Default execution rule
 
 For ordinary implementation work:
@@ -23,9 +52,9 @@ change code
 → continue development
 ~~~
 
-Do **not** run Chromium merely because a numbered substage completed.
+Do **not** run Chromium merely because a numbered substage completed **when no browser test was changed and no browser-only behavior requires proof**.
 
-Browser CI is a checkpoint tool, not the default feedback loop.
+Browser CI remains a checkpoint tool for broad regression confidence. This does not weaken the hard gate above: a changed browser test must run immediately before development advances.
 
 ## 1.1 Tests-first change rule
 
@@ -300,7 +329,11 @@ A normal implementation change can be considered locally verified when:
 
 - relevant fast unit tests pass;
 - Fast CI passes;
+- every added/modified test has been executed after its final edit in the layer where it actually runs;
+- every changed browser test has passed Chromium before the next implementation unit starts;
 - no required browser checkpoint is due;
-- any browser/live verification that is genuinely required is explicitly marked pending.
+- any live-provider verification that cannot be automated is explicitly marked pending.
+
+If a changed test has not run, the work is not locally verified. If a changed test is red, progression is blocked.
 
 A stage group that reaches one of the checkpoints above is not complete until its Browser CI checkpoint passes.
