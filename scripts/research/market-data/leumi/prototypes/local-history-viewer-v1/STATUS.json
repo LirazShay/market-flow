@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "15",
-    "substep": "15.2",
-    "title": "Viewer diagnostics — recorder health derivation and presentation model",
-    "status": "in-progress"
+    "substep": "15.3",
+    "title": "Viewer diagnostics — always-visible diagnostics UI and refresh integration",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -165,7 +165,7 @@
       "status": "in-progress",
       "substeps": {
         "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
-        "15.2": "in-progress — pure recorder-health semantics + diagnostics presentation model",
+        "15.2": "complete-fast-ci-verified — pure recorder-health semantics + diagnostics presentation model",
         "15.3": "planned — always-visible diagnostics UI + refresh integration",
         "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
       }
@@ -228,14 +228,14 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35776954535,
-      "jobId": 106912484175,
-      "commit": "d9fef945e945639795cd84d5fd85eb20f0b965d1",
+      "runId": 35777567499,
+      "jobId": 106914538606,
+      "commit": "5ce647fd9c52f19ec1f40c01b8ad4ef4e5364c23",
       "conclusion": "success",
-      "tests": 143,
-      "passed": 143,
+      "tests": 148,
+      "passed": 148,
       "failed": 0,
-      "durationMs": 69.033519
+      "durationMs": 72.841112
     },
     "testingRefactor": {
       "status": "complete",
@@ -979,6 +979,55 @@
         "storage usage is reused from the existing normalized navigator.storage.estimate diagnostics API",
         "fresh database returns null recorderState/lastCycle and zero row counts"
       ]
+    },
+    "stage15_2": {
+      "status": "complete",
+      "testsFirst": true,
+      "testContractCommit": "2d0ef627953c2f5b3893d314986dff5d0cc441da",
+      "expectedRedRun": {
+        "runId": 35777456961,
+        "conclusion": "failure",
+        "cause": "New unit contract correctly failed because viewer/pure/diagnostics-logic.js did not exist yet."
+      },
+      "implementationCommit": "5ce647fd9c52f19ec1f40c01b8ad4ef4e5364c23",
+      "fastCi": {
+        "runId": 35777567499,
+        "jobId": 106914538606,
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "browserCi": "not-required-for-this-substep — pure deterministic logic only; full Browser CI remains mandatory at Stage 15 closure",
+      "healthContract": {
+        "staleAfterMs": 15000,
+        "precedence": [
+          "STOPPED",
+          "STALE",
+          "ERROR",
+          "RUNNING"
+        ],
+        "unknownWhenRecorderStateMissing": true,
+        "labels": {
+          "UNKNOWN": "לא ידוע",
+          "RUNNING": "רץ",
+          "STALE": "לא מעודכן",
+          "STOPPED": "נעצר",
+          "ERROR": "שגיאה"
+        }
+      },
+      "verifiedBehaviors": [
+        "missing recorderState maps to UNKNOWN without inventing cycle counters",
+        "running heartbeat age below 15 seconds maps to RUNNING",
+        "running heartbeat age at or above 15 seconds maps to STALE",
+        "stopped status takes precedence over stale/error state",
+        "stale liveness takes precedence over lastError for a running recorder",
+        "fresh running recorder with lastError maps to ERROR",
+        "successful/fresh running recorder without lastError maps to RUNNING",
+        "presentation model preserves zero counts instead of treating them as missing",
+        "unknown recorder-derived metrics stay null while DB row counts can legitimately be zero",
+        "unsupported persisted recorder status is rejected instead of silently guessed"
+      ]
     }
   },
   "fastContext": {
@@ -1008,10 +1057,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 15.2 is in progress. Pure health/presentation contract will be tested before implementation.",
+    "reached": true,
+    "reason": "Stage 15.2 is complete and Fast-CI verified. Stage 15 remains open; the next natural work is Stage 15.3 diagnostics UI and refresh integration.",
     "nextStage": "15",
-    "nextSubstep": "15.2"
+    "nextSubstep": "15.3"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
