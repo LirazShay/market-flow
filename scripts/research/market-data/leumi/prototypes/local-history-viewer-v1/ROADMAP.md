@@ -260,7 +260,7 @@ tests/storage-schema-self-test.js
 Status:
 
 ~~~text
-Next
+Implemented — browser execution pending
 ~~~
 
 נוסיף fixture קטן בלבד ונאמת:
@@ -269,6 +269,12 @@ Next
 - null/zero/empty-string round-trip.
 
 #### Stage 6.3 — Cleanup + reopen persistence self-test
+
+Status:
+
+~~~text
+Next
+~~~
 
 ננקה רק את fixture של הבדיקה ונאמת:
 - cleanup.
