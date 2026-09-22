@@ -399,13 +399,26 @@ test(
                 8
         });
 
-        expect(
+        const mapHeatCalls =
             mock.calls.filter(
                 call =>
                     call.endpoint ===
                     "MapHeat2"
+            );
+
+        expect(
+            mapHeatCalls
+        ).toHaveLength(2);
+
+        expect(
+            mapHeatCalls.map(
+                call =>
+                    call.pageCount
             )
-        ).toHaveLength(1);
+        ).toEqual([
+            "1",
+            "4"
+        ]);
 
         expect(
             mock.calls.filter(
