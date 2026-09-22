@@ -15,14 +15,9 @@ branch: main
 
 ## לפני כל שינוי
 
-קודם fetch את `main` הנוכחי. ה-snapshot שמופיע כאן הוא handoff בלבד; אם ה-repository התקדם מאז, ה-repository גובר.
+קודם fetch את `main` הנוכחי.
 
-Snapshot בזמן הכנת handoff:
-
-~~~text
-main HEAD:
-7662cec0cc77198a70eb8cff6ea344ce32a59ee6
-~~~
+הקובץ הזה מתאר את boundary של Stage 7 → Stage 8, אבל **אין להסתמך על SHA שמור בתוך prompt**. אם ה-repository התקדם מאז, ה-repository תמיד גובר.
 
 ## קריאה ראשונית — בסדר הזה
 
