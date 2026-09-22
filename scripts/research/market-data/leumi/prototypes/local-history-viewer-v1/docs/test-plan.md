@@ -1,5 +1,11 @@
 # Test Plan — Local History Viewer V1
 
+## Execution safety rule
+
+This document defines planned cases. Execution rules are authoritative in `../tests/TESTING_POLICY.md`.
+
+Adding or changing a test creates an immediate verification obligation: the changed test must run in its real layer after its final edit and before the next implementation unit. Browser checkpoint scheduling controls broad-suite cadence; it does **not** allow changed Playwright tests to remain unexecuted.
+
 Status:
 
 ~~~text

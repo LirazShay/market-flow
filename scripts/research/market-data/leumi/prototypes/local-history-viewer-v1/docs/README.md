@@ -11,6 +11,7 @@
 | schema, stores, records, transaction boundaries | [data-model.md](data-model.md) |
 | viewer behavior / RTL / tables / states | [viewer-ux.md](viewer-ux.md) |
 | test cases שתוכננו ל-V1 | [test-plan.md](test-plan.md) |
+| Clean Code / design / safe-change rules | [project engineering practices](../../../../../../../docs/project/engineering-practices.md) |
 
 ## What does not live here
 

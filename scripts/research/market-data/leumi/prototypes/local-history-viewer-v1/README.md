@@ -15,6 +15,7 @@ It is the currently active workstream, not the entire Market Flow project.
 | copy-ready next development chat | NEXT_CHAT_PROMPT.md |
 | durable V1 design | docs/ |
 | testing / CI policy | tests/TESTING_POLICY.md |
+| Clean Code / design / safe-change policy | [project engineering practices](../../../../../../docs/project/engineering-practices.md) |
 
 ## Current status
 
