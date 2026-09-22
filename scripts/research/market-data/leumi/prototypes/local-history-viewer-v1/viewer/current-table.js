@@ -25,6 +25,9 @@
     const logic =
         window.MarketFlowCurrentTableLogic;
 
+    const sortStateByWindow =
+        new WeakMap();
+
     if (
         !schema ||
         !connection ||
@@ -107,6 +110,9 @@
             ".current-table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 13px; }",
             ".current-table th, .current-table td { padding: 8px 10px; border-bottom: 1px solid #e5e9f1; white-space: nowrap; text-align: right; }",
             ".current-table th { position: sticky; top: 0; z-index: 1; background: #eef2f7; font-weight: 700; }",
+            ".current-table-sort-button { width: 100%; border: 0; background: transparent; padding: 0; font: inherit; font-weight: inherit; color: inherit; cursor: pointer; text-align: inherit; white-space: nowrap; }",
+            ".current-table-sort-button:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }",
+            ".current-table-sort-indicator { display: inline-block; min-width: 1em; margin-inline-start: 4px; }",
             ".current-table tbody tr:hover { background: #f8fafc; }",
             ".current-table td.numeric { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }",
             ".current-table td.positive { font-weight: 700; }",
@@ -252,6 +258,74 @@
         return model;
     }
 
+    function getSortState(
+        targetWindow
+    ) {
+        let sortState =
+            sortStateByWindow.get(
+                targetWindow
+            );
+
+        if (!sortState) {
+            sortState =
+                logic
+                    .createInitialSortState();
+
+            sortStateByWindow.set(
+                targetWindow,
+                sortState
+            );
+        }
+
+        return sortState;
+    }
+
+    function setSortState(
+        targetWindow,
+        sortState
+    ) {
+        sortStateByWindow.set(
+            targetWindow,
+            sortState
+        );
+
+        return sortState;
+    }
+
+    function getAriaSort(
+        sortState,
+        columnKey
+    ) {
+        if (
+            sortState.columnKey !==
+            columnKey
+        ) {
+            return "none";
+        }
+
+        return sortState.direction ===
+            "asc"
+            ? "ascending"
+            : "descending";
+    }
+
+    function getSortIndicator(
+        sortState,
+        columnKey
+    ) {
+        if (
+            sortState.columnKey !==
+            columnKey
+        ) {
+            return "";
+        }
+
+        return sortState.direction ===
+            "asc"
+            ? "▲"
+            : "▼";
+    }
+
     function renderModel(
         targetWindow,
         model
@@ -287,6 +361,18 @@
                 model
             );
         }
+
+        const sortState =
+            getSortState(
+                targetWindow
+            );
+
+        const sortedRows =
+            logic
+                .sortCurrentTableRows(
+                    model.rows,
+                    sortState
+                );
 
         const wrapper =
             documentRef.createElement(
@@ -335,8 +421,96 @@
             th.dataset.column =
                 column.key;
 
-            th.textContent =
+            th.setAttribute(
+                "aria-sort",
+                getAriaSort(
+                    sortState,
+                    column.key
+                )
+            );
+
+            const button =
+                documentRef.createElement(
+                    "button"
+                );
+
+            button.type =
+                "button";
+
+            button.className =
+                "current-table-sort-button";
+
+            button.dataset.sortColumn =
+                column.key;
+
+            button.setAttribute(
+                "aria-label",
+                "מיין לפי " +
+                column.label
+            );
+
+            const label =
+                documentRef.createElement(
+                    "span"
+                );
+
+            label.textContent =
                 column.label;
+
+            button.appendChild(
+                label
+            );
+
+            const indicator =
+                documentRef.createElement(
+                    "span"
+                );
+
+            indicator.className =
+                "current-table-sort-indicator";
+
+            indicator.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            indicator.textContent =
+                getSortIndicator(
+                    sortState,
+                    column.key
+                );
+
+            button.appendChild(
+                indicator
+            );
+
+            button.addEventListener(
+                "click",
+                () => {
+                    const nextSortState =
+                        logic
+                            .getNextSortState(
+                                getSortState(
+                                    targetWindow
+                                ),
+                                column.key
+                            );
+
+                    setSortState(
+                        targetWindow,
+                        nextSortState
+                    );
+
+                    renderModel(
+                        targetWindow,
+                        model
+                    );
+                }
+            );
+
+            th.appendChild(
+                button
+            );
 
             headerRow.appendChild(
                 th
@@ -358,7 +532,7 @@
 
         for (
             const row of
-            model.rows
+            sortedRows
         ) {
             const tr =
                 documentRef.createElement(

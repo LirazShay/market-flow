@@ -452,3 +452,175 @@ test(
         ).toBe("EMPTY");
     }
 );
+
+
+test(
+    "Stage 13.2 renders sortable accessible headers and applies interactive sort order",
+    async ({ page }) => {
+        await seedCurrentRows(
+            page
+        );
+
+        const popupPromise =
+            page.waitForEvent(
+                "popup"
+            );
+
+        await page.evaluate(
+            () => {
+                window
+                    .MarketFlowViewerBootstrap
+                    .openViewer();
+            }
+        );
+
+        const viewer =
+            await popupPromise;
+
+        await viewer.waitForFunction(
+            () =>
+                document
+                    .querySelector(
+                        "[data-role='viewer-status']"
+                    )
+                    ?.dataset
+                    .viewState ===
+                "MAIN"
+        );
+
+        const rowOrder =
+            () =>
+                viewer.evaluate(
+                    () =>
+                        Array.from(
+                            document
+                                .querySelectorAll(
+                                    "[data-role='current-market-table'] tbody tr"
+                                )
+                        ).map(
+                            row =>
+                                row.dataset
+                                    .securityId
+                        )
+                );
+
+        await expect(
+            viewer.locator(
+                "th[data-column='DailyDealsQuantity']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "descending"
+        );
+
+        await expect(
+            viewer.locator(
+                "button[data-sort-column='DailyDealsQuantity']"
+            )
+        ).toContainText(
+            "▼"
+        );
+
+        expect(
+            await rowOrder()
+        ).toEqual([
+            "1002",
+            "1001"
+        ]);
+
+        const paperNameButton =
+            viewer.locator(
+                "button[data-sort-column='paperName']"
+            );
+
+        await paperNameButton.focus();
+        await paperNameButton.press(
+            "Enter"
+        );
+
+        await expect(
+            viewer.locator(
+                "th[data-column='paperName']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "ascending"
+        );
+
+        await expect(
+            viewer.locator(
+                "th[data-column='DailyDealsQuantity']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "none"
+        );
+
+        await expect(
+            viewer.locator(
+                "button[data-sort-column='paperName']"
+            )
+        ).toContainText(
+            "▲"
+        );
+
+        expect(
+            await rowOrder()
+        ).toEqual([
+            "1001",
+            "1002"
+        ]);
+
+        await viewer
+            .locator(
+                "button[data-sort-column='paperName']"
+            )
+            .click();
+
+        await expect(
+            viewer.locator(
+                "th[data-column='paperName']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "descending"
+        );
+
+        await expect(
+            viewer.locator(
+                "button[data-sort-column='paperName']"
+            )
+        ).toContainText(
+            "▼"
+        );
+
+        expect(
+            await rowOrder()
+        ).toEqual([
+            "1002",
+            "1001"
+        ]);
+
+        await viewer
+            .locator(
+                "button[data-sort-column='LastKnownRate']"
+            )
+            .click();
+
+        await expect(
+            viewer.locator(
+                "th[data-column='LastKnownRate']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "descending"
+        );
+
+        expect(
+            await rowOrder()
+        ).toEqual([
+            "1002",
+            "1001"
+        ]);
+    }
+);
