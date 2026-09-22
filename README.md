@@ -8,15 +8,15 @@
 
 ## Start here — AI / Developers
 
-לפני כל שינוי בפרויקט יש לקרוא:
+נקודת הכניסה הקבועה:
 
-1. [AGENTS.md](AGENTS.md) — כללי העבודה המחייבים.
-2. [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) — ההקשר הכולל של הפרויקט.
-3. [docs/project/current-state.md](docs/project/current-state.md) — מה קיים עכשיו ומה עדיין לא.
-4. [docs/project/decisions.md](docs/project/decisions.md) — החלטות שכבר התקבלו.
-5. את התיעוד הספציפי ל-domain שעליו עובדים.
+1. [AGENTS.md](AGENTS.md) — כללי העבודה הקצרים והמחייבים.
+2. ב-workstream פעיל, אם קיימים `AI_CONTEXT.md` ו-`STATUS.json`, משתמשים בהם כ-fast continuation context.
+3. קוראים מסמכי project/domain רחבים רק כאשר המשימה דורשת אותם.
 
 ה-repository הוא ה-source of truth המשותף בין chats ו-agents.
+
+המטרה היא להימנע מקריאה מחדש של כל ה-repository בכל שינוי קטן, בלי לוותר על durable documentation.
 
 ## Project map
 
@@ -55,11 +55,27 @@ scripts/research/market-data/leumi/
 - PaperId == Key נבדק ב-561/561.
 - בוצע field coverage מלא.
 - browser table PoC עבד.
-- long-running polling test נכתב, אך ריצת stability ממושכת עדיין Pending verification.
+- long-running polling stability נבדק בפועל במשך 40.03 דקות: 481 cycles הושלמו ללא cycle failure.
 
 לפרטים:
 
 [Leumi API Research](docs/leumi-api/README.md)
+
+
+### Active prototype — Local History Viewer V1
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
+~~~
+
+Current fast context:
+
+~~~text
+AI_CONTEXT.md
+STATUS.json
+~~~
+
+ה-prototype כבר נמצא ב-implementation: IndexedDB foundation קיים, browser self-tests קיימים, ו-recorder foundation נמצא בתהליך.
 
 ## Important
 
