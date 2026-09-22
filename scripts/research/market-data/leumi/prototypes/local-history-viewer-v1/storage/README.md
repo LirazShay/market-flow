@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 5.1 — schema constants only
+Stage 5.2 — connection lifecycle
 ~~~
 
 התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
@@ -11,12 +11,24 @@ Stage 5.1 — schema constants only
 ## Files
 
 - `schema.js` — database/store/index names and schema metadata.
+- `connection.js` — Promise-based open/close helpers.
 
 ## Current boundary
 
-ב-Stage 5.1 עדיין **לא** פותחים IndexedDB ולא יוצרים stores בפועל.
+Stage 5.2 מוסיף רק lifecycle של connection:
 
-השלב הזה רק מרכז את ה-schema constants במקום אחד כדי שה-open/upgrade code וה-tests העתידיים לא ישכפלו strings.
+~~~text
+indexedDB.open
+Promise success/error
+blocked warning
+close helper
+~~~
+
+עדיין אין schema creation.
+
+אם פתיחה דורשת `onupgradeneeded` ואין upgrade handler, ה-transaction מבוטל בכוונה כדי לא ליצור DB ריק בטעות.
+
+Stage 5.3 יספק את יצירת stores/indexes.
 
 Source of truth:
 
