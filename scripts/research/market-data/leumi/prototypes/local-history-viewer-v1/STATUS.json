@@ -9,20 +9,20 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "6.6",
-    "title": "Automate existing storage self-tests",
-    "status": "ci-verification-pending"
+    "stage": "6.7",
+    "title": "Mock API fixture infrastructure",
+    "status": "next"
   },
   "recommendedNaturalBatch": [
     {
-      "stage": "6.6",
-      "title": "Automate existing storage self-tests"
+      "stage": "6.7",
+      "title": "Mock API fixture infrastructure"
     }
   ],
-  "stopBoundaryAfterRecommendedBatch": "6.6",
+  "stopBoundaryAfterRecommendedBatch": "6.7",
   "nextAfterRecommendedBatch": {
-    "stage": "6.7",
-    "title": "Mock API fixture infrastructure"
+    "stage": "7.3",
+    "title": "Single chunk fetch"
   },
   "stages": [
     {
@@ -69,12 +69,12 @@
       "title": "Test infrastructure + IndexedDB self-tests",
       "status": "in-progress",
       "substeps": {
-        "6.1": "implemented-browser-execution-pending",
-        "6.2": "implemented-browser-execution-pending",
-        "6.3": "implemented-browser-execution-pending",
+        "6.1": "complete-ci-verified",
+        "6.2": "complete-ci-verified",
+        "6.3": "complete-ci-verified",
         "6.4": "complete",
         "6.5": "complete",
-        "6.6": "implemented-ci-verification-pending",
+        "6.6": "complete",
         "6.7": "planned"
       }
     },
@@ -163,16 +163,22 @@
     }
   ],
   "verification": {
-    "storageSelfTests": "automated-ci-verification-pending",
+    "storageSelfTests": "verified-in-github-actions",
     "playwrightHarness": "verified-in-github-actions",
     "githubActions": "verified-success",
     "mockedApiInfrastructure": "not-started",
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 CI",
-      "runId": 35737872015,
-      "commit": "69689e58e29febf7415123b8e51272fb6fb487c3",
-      "conclusion": "success"
+      "runId": 35738329705,
+      "commit": "e12d472e68760b782b268dd0b0d401b989f916b3",
+      "conclusion": "success",
+      "tests": [
+        "harness smoke",
+        "storage schema/open",
+        "fixture round-trip",
+        "cleanup/reopen"
+      ]
     }
   },
   "fastContext": {
