@@ -107,7 +107,7 @@ docs/project/
 docs/leumi-api/
     כל המחקר וה-evidence על Leumi market APIs
 
-scripts/research/leumi/
+scripts/research/market-data/leumi/
     browser probes / PoCs / test scripts
 ~~~
 
@@ -142,7 +142,7 @@ docs/leumi-api/verified-tests.md
 docs/leumi-api/reports/
 
 Browser research scripts:
-scripts/research/leumi/
+scripts/research/market-data/leumi/
 
 ---
 
