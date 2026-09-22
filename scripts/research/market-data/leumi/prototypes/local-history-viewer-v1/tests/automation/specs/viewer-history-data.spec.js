@@ -101,8 +101,11 @@ async function seedHistory(
                                     1000 +
                                     cycleId,
                                 collectedAtMs:
-                                    1000 +
-                                    cycleId,
+                                    cycleId ===
+                                        2
+                                        ? 1003
+                                        : 1000 +
+                                            cycleId,
                                 serverAsOfDate:
                                     null,
                                 data: {
@@ -291,5 +294,116 @@ test(
         expect(
             result.pageSize
         ).toBe(500);
+    }
+);
+
+
+test(
+    "Stage 14.2 loads older history without duplicates or skips across an equal-timestamp page boundary",
+    async ({ page }) => {
+        await seedHistory(
+            page
+        );
+
+        const result =
+            await page.evaluate(
+                async () => {
+                    const history =
+                        window
+                            .MarketFlowViewerHistoryData;
+
+                    const firstPage =
+                        await history
+                            .loadInitialPage(
+                                "A"
+                            );
+
+                    const olderPage =
+                        await history
+                            .loadOlderPage(
+                                "A",
+                                firstPage
+                                    .continuation
+                            );
+
+                    return {
+                        firstPage,
+                        olderPage
+                    };
+                }
+            );
+
+        expect(
+            result.firstPage.rows
+        ).toHaveLength(500);
+
+        expect(
+            result.firstPage
+                .continuation
+        ).not.toBeNull();
+
+        expect(
+            result.olderPage.rows.map(
+                row =>
+                    row.cycleId
+            )
+        ).toEqual([
+            2,
+            1
+        ]);
+
+        expect(
+            result.olderPage.hasMore
+        ).toBe(false);
+
+        expect(
+            result.olderPage
+                .continuation
+        ).toBeNull();
+
+        const allCycleIds = [
+            ...result.firstPage
+                .rows
+                .map(
+                    row =>
+                        row.cycleId
+                ),
+            ...result.olderPage
+                .rows
+                .map(
+                    row =>
+                        row.cycleId
+                )
+        ];
+
+        expect(
+            allCycleIds
+        ).toHaveLength(502);
+
+        expect(
+            new Set(
+                allCycleIds
+            ).size
+        ).toBe(502);
+
+        expect(
+            allCycleIds[499]
+        ).toBe(3);
+
+        expect(
+            allCycleIds[500]
+        ).toBe(2);
+
+        expect(
+            result.firstPage
+                .rows[499]
+                .collectedAtMs
+        ).toBe(1003);
+
+        expect(
+            result.olderPage
+                .rows[0]
+                .collectedAtMs
+        ).toBe(1003);
     }
 );
