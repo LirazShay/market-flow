@@ -703,3 +703,298 @@ test(
         );
     }
 );
+
+
+test(
+    "Stage 15.4 renders stale error stopped and unknown recorder health from IndexedDB",
+    async ({ page }) => {
+        await seedDiagnosticsState(
+            page,
+            {
+                cycleId: 9,
+                completedCycles: 4,
+                failedCycles: 1,
+                historyCount: 1,
+                rate: 900
+            }
+        );
+
+        const viewer =
+            await openViewer(
+                page
+            );
+
+        async function setRecorderState(
+            patch
+        ) {
+            await page.evaluate(
+                async patch => {
+                    const {
+                        MarketFlowStorageConnection:
+                            connection,
+                        MarketFlowStorageUpgrade:
+                            upgrade,
+                        MarketFlowStorageRead:
+                            read,
+                        MarketFlowStorageWrite:
+                            write,
+                        MarketFlowStorageSchema:
+                            schema
+                    } = window;
+
+                    const database =
+                        await connection
+                            .openDatabase({
+                                onUpgradeNeeded:
+                                    upgrade
+                                        .upgradeDatabase
+                            });
+
+                    try {
+                        const current =
+                            await read.get(
+                                database,
+                                schema
+                                    .stores
+                                    .meta
+                                    .name,
+                                "recorderState"
+                            );
+
+                        await write.put(
+                            database,
+                            schema
+                                .stores
+                                .meta
+                                .name,
+                            {
+                                key:
+                                    "recorderState",
+                                value: {
+                                    ...current.value,
+                                    ...patch
+                                }
+                            }
+                        );
+                    } finally {
+                        connection
+                            .closeDatabase(
+                                database
+                            );
+                    }
+                },
+                patch
+            );
+
+            await viewer
+                .locator(
+                    "[data-role='manual-refresh']"
+                )
+                .click();
+        }
+
+        await setRecorderState({
+            status:
+                "running",
+            lastHeartbeatAtMs:
+                Date.now() -
+                15000,
+            lastError:
+                null
+        });
+
+        await expect(
+            viewer.locator(
+                "[data-role='recorder-health']"
+            )
+        ).toHaveText(
+            "לא מעודכן"
+        );
+
+        await expect
+            .poll(
+                () =>
+                    viewer.evaluate(
+                        () =>
+                            window
+                                .MarketFlowViewerShell
+                                .getState()
+                                .recorderHealth
+                    )
+            )
+            .toBe(
+                "STALE"
+            );
+
+        await setRecorderState({
+            status:
+                "running",
+            lastHeartbeatAtMs:
+                Date.now(),
+            lastError: {
+                name:
+                    "Stage15Error",
+                message:
+                    "synthetic diagnostic failure"
+            }
+        });
+
+        await expect(
+            viewer.locator(
+                "[data-role='recorder-health']"
+            )
+        ).toHaveText(
+            "שגיאה"
+        );
+
+        await expect
+            .poll(
+                () =>
+                    viewer.evaluate(
+                        () =>
+                            window
+                                .MarketFlowViewerShell
+                                .getState()
+                                .recorderHealth
+                    )
+            )
+            .toBe(
+                "ERROR"
+            );
+
+        await setRecorderState({
+            status:
+                "stopped",
+            lastHeartbeatAtMs:
+                Date.now() -
+                60000,
+            lastError: {
+                name:
+                    "OldFailure",
+                message:
+                    "must not override stopped"
+            }
+        });
+
+        await expect(
+            viewer.locator(
+                "[data-role='recorder-health']"
+            )
+        ).toHaveText(
+            "נעצר"
+        );
+
+        await expect
+            .poll(
+                () =>
+                    viewer.evaluate(
+                        () =>
+                            window
+                                .MarketFlowViewerShell
+                                .getState()
+                                .recorderHealth
+                    )
+            )
+            .toBe(
+                "STOPPED"
+            );
+
+        await page.evaluate(
+            async () => {
+                const {
+                    MarketFlowStorageConnection:
+                        connection,
+                    MarketFlowStorageUpgrade:
+                        upgrade,
+                    MarketFlowStorageSchema:
+                        schema
+                } = window;
+
+                const database =
+                    await connection
+                        .openDatabase({
+                            onUpgradeNeeded:
+                                upgrade
+                                    .upgradeDatabase
+                        });
+
+                try {
+                    await new Promise(
+                        (resolve, reject) => {
+                            const transaction =
+                                database
+                                    .transaction(
+                                        schema
+                                            .stores
+                                            .meta
+                                            .name,
+                                        "readwrite"
+                                    );
+
+                            transaction
+                                .objectStore(
+                                    schema
+                                        .stores
+                                        .meta
+                                        .name
+                                )
+                                .delete(
+                                    "recorderState"
+                                );
+
+                            transaction.oncomplete =
+                                () =>
+                                    resolve();
+
+                            transaction.onerror =
+                                () =>
+                                    reject(
+                                        transaction.error
+                                    );
+
+                            transaction.onabort =
+                                () =>
+                                    reject(
+                                        transaction.error
+                                    );
+                        }
+                    );
+                } finally {
+                    connection
+                        .closeDatabase(
+                            database
+                        );
+                }
+            }
+        );
+
+        await viewer
+            .locator(
+                "[data-role='manual-refresh']"
+            )
+            .click();
+
+        await expect(
+            viewer.locator(
+                "[data-role='recorder-health']"
+            )
+        ).toHaveText(
+            "לא ידוע"
+        );
+
+        await expect
+            .poll(
+                () =>
+                    viewer.evaluate(
+                        () =>
+                            window
+                                .MarketFlowViewerShell
+                                .getState()
+                                .recorderHealth
+                    )
+            )
+            .toBe(
+                "UNKNOWN"
+            );
+    }
+);
