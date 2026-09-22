@@ -10,8 +10,9 @@
   },
   "currentFocus": {
     "stage": "15",
-    "title": "Viewer diagnostics",
-    "status": "ready-to-start"
+    "substep": "15.1",
+    "title": "Viewer diagnostics — raw diagnostic snapshot from IndexedDB and storage estimate",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -161,7 +162,13 @@
     {
       "stage": "15",
       "title": "Viewer diagnostics",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "15.1": "in-progress — raw diagnostics snapshot: recorderState, last cycle, all DB row counts, storage estimate",
+        "15.2": "planned — recorder health derivation + diagnostics presentation model",
+        "15.3": "planned — always-visible diagnostics UI + refresh integration",
+        "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
+      }
     },
     {
       "stage": "16",
@@ -967,9 +974,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 14 is accepted and complete. Fast CI and the mandatory full Browser CI both passed on the final Stage 14 code/test state.",
-    "nextStage": "15"
+    "reached": false,
+    "reason": "Stage 15.1 is in progress. Health semantics are intentionally deferred until the raw persisted diagnostics contract is verified.",
+    "nextStage": "15",
+    "nextSubstep": "15.1"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
