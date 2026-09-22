@@ -22,6 +22,9 @@
     const securityDetail =
         window.MarketFlowViewerSecurityDetail;
 
+    const diagnostics =
+        window.MarketFlowViewerDiagnostics;
+
     if (!stateLogic) {
         throw new Error(
             "MarketFlowViewerStateLogic is not loaded."
@@ -46,6 +49,13 @@
         throw new Error(
             "MarketFlowViewerSecurityDetail is not loaded. " +
             "Load viewer/security-detail.js before viewer/bootstrap.js."
+        );
+    }
+
+    if (!diagnostics) {
+        throw new Error(
+            "MarketFlowViewerDiagnostics is not loaded. " +
+            "Load viewer/diagnostics.js before viewer/bootstrap.js."
         );
     }
 
@@ -327,8 +337,43 @@
         createMetric(
             documentRef,
             metrics,
+            "משך cycle",
+            "cycle-duration"
+        );
+
+        createMetric(
+            documentRef,
+            metrics,
             "מספר ניירות",
             "security-count"
+        );
+
+        createMetric(
+            documentRef,
+            metrics,
+            "Cycles מוצלחים",
+            "completed-cycles"
+        );
+
+        createMetric(
+            documentRef,
+            metrics,
+            "Cycles שנכשלו",
+            "failed-cycles"
+        );
+
+        createMetric(
+            documentRef,
+            metrics,
+            "גודל history",
+            "history-count"
+        );
+
+        createMetric(
+            documentRef,
+            metrics,
+            "אחסון",
+            "storage-usage"
         );
 
         shell.appendChild(
@@ -520,9 +565,26 @@
             viewerWindow
         );
 
+        diagnostics.attach(
+            viewerWindow
+        );
+
         liveRefresh.attach(
             viewerWindow
         );
+
+        diagnostics
+            .refresh(
+                viewerWindow
+            )
+            .catch(
+                error => {
+                    console.error(
+                        "Initial viewer diagnostics load failed.",
+                        error
+                    );
+                }
+            );
 
         currentTable
             .loadAndRender(
@@ -545,6 +607,10 @@
         }
 
         securityDetail.detach(
+            viewerWindow
+        );
+
+        diagnostics.detach(
             viewerWindow
         );
 

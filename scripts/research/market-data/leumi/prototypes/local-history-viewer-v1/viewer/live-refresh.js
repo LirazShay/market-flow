@@ -22,11 +22,15 @@
     const securityDetail =
         window.MarketFlowViewerSecurityDetail;
 
+    const diagnostics =
+        window.MarketFlowViewerDiagnostics;
+
     if (
         !channel ||
         !messageLogic ||
         !currentTable ||
-        !securityDetail
+        !securityDetail ||
+        !diagnostics
     ) {
         throw new Error(
             "Viewer live-refresh dependencies are not loaded."
@@ -148,6 +152,11 @@
                     .refreshFromModel(
                         targetWindow,
                         model
+                    );
+
+                await diagnostics
+                    .refresh(
+                        targetWindow
                     );
 
                 refreshCount++;
