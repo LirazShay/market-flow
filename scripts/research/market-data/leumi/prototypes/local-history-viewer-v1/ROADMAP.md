@@ -198,7 +198,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נממש רק helpers קטנים לקריאה:
@@ -207,6 +207,12 @@ Next
 - count.
 
 #### Stage 5.5 — Basic generic write helpers
+
+Status:
+
+~~~text
+Next
+~~~
 
 נממש רק helpers קטנים ל:
 - put.
