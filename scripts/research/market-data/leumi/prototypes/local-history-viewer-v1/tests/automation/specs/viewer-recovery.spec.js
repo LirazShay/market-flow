@@ -284,7 +284,10 @@ async function expectSnapshot(
             "tr[data-security-id='1001'] td[data-column='LastKnownRate']"
         )
     ).toHaveText(
-        String(rate)
+        Number(rate)
+            .toLocaleString(
+                "en-US"
+            )
     );
 
     await expect(
