@@ -68,7 +68,7 @@ Stage 4 מחולק לתת-שלבים קטנים:
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נגדיר רק בדיקות ל:
@@ -78,6 +78,12 @@ Next
 - reopen/persistence.
 
 #### Stage 4.2 — Write/atomicity test cases
+
+Status:
+
+~~~text
+Next
+~~~
 
 נגדיר רק:
 - successful writes.
