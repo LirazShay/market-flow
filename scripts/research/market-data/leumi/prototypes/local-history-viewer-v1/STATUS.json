@@ -9,18 +9,18 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "6.4",
-    "title": "Playwright browser-test harness",
-    "status": "next"
+    "stage": "6.4-6.5",
+    "title": "Playwright harness + GitHub Actions CI verification",
+    "status": "verification-pending"
   },
   "recommendedNaturalBatch": [
     {
       "stage": "6.4",
-      "title": "Playwright browser-test harness"
+      "title": "Verify Playwright browser-test harness"
     },
     {
       "stage": "6.5",
-      "title": "GitHub Actions CI workflow"
+      "title": "Verify GitHub Actions workflow"
     }
   ],
   "stopBoundaryAfterRecommendedBatch": "6.5",
@@ -76,8 +76,8 @@
         "6.1": "implemented-browser-execution-pending",
         "6.2": "implemented-browser-execution-pending",
         "6.3": "implemented-browser-execution-pending",
-        "6.4": "next",
-        "6.5": "planned",
+        "6.4": "implemented-ci-verification-pending",
+        "6.5": "implemented-ci-verification-pending",
         "6.6": "planned",
         "6.7": "planned"
       }
@@ -168,8 +168,8 @@
   ],
   "verification": {
     "storageSelfTests": "implemented-browser-execution-pending",
-    "playwrightHarness": "not-started",
-    "githubActions": "not-started",
+    "playwrightHarness": "implemented-ci-verification-pending",
+    "githubActions": "implemented-ci-verification-pending",
     "mockedApiInfrastructure": "not-started",
     "liveLeumiV1Integration": "not-started"
   },

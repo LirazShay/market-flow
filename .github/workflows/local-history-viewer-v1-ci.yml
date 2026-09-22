@@ -1,0 +1,53 @@
+name: Local History Viewer V1 CI
+
+on:
+  push:
+    paths:
+      - ".github/workflows/local-history-viewer-v1-ci.yml"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**"
+  pull_request:
+    paths:
+      - ".github/workflows/local-history-viewer-v1-ci.yml"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**"
+
+permissions:
+  contents: read
+
+jobs:
+  browser-tests:
+    name: Chromium browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: scripts/research/market-data/leumi/prototypes/local-history-viewer-v1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install test dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser tests
+        run: npm test
+
+      - name: Upload Playwright diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-history-viewer-v1-playwright
+          path: |
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/playwright-report
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/test-results
+          if-no-files-found: ignore
+          retention-days: 7

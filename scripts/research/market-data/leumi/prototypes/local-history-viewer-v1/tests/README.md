@@ -177,3 +177,47 @@ Automated Chromium execution in GitHub Actions
 - no credentials/session data.
 
 לאחר שה-CI עובר, הבדיקה הידנית באתר לאומי משמשת רק לאימות integration אמיתי מול provider.
+
+
+---
+
+## Stage 6.4 — Playwright harness
+
+Automation files:
+
+~~~text
+../package.json
+../playwright.config.js
+automation/server.js
+automation/harness.html
+automation/specs/harness-smoke.spec.js
+~~~
+
+The harness serves the prototype over HTTP and launches real Chromium.
+
+The smoke test verifies only the automation foundation:
+
+- Chromium starts.
+- IndexedDB exists.
+- storage modules load in dependency order.
+- the existing browser self-test globals load without page errors.
+
+It does **not** execute the Stage 6.1–6.3 self-tests yet; that belongs to Stage 6.6.
+
+Local commands from the prototype directory:
+
+~~~text
+npm install
+npx playwright install chromium
+npm test
+~~~
+
+## Stage 6.5 — GitHub Actions
+
+Workflow:
+
+~~~text
+.github/workflows/local-history-viewer-v1-ci.yml
+~~~
+
+It runs the Playwright browser suite on relevant push/PR changes, uses no Leumi credentials/session, and uploads Playwright diagnostics on failure.

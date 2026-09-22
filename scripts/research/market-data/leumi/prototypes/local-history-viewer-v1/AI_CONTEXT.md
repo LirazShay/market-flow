@@ -131,6 +131,17 @@ tests/
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
   storage-cleanup-reopen-self-test.js
+  automation/
+    server.js
+    harness.html
+    specs/harness-smoke.spec.js
+
+test tooling:
+  package.json
+  playwright.config.js
+
+CI:
+  .github/workflows/local-history-viewer-v1-ci.yml
 
 recorder/
   config.js
