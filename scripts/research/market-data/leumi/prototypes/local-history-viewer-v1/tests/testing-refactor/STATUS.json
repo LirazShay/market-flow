@@ -5,13 +5,13 @@
   "updatedAt": "2026-09-22",
   "overallStatus": "in-progress",
   "currentStage": {
-    "id": "T4",
-    "title": "Build the fast unit-test base",
+    "id": "T5",
+    "title": "Split CI by speed and purpose",
     "status": "complete"
   },
   "nextStage": {
-    "id": "T5",
-    "title": "Split CI by speed and purpose",
+    "id": "T6",
+    "title": "Migration + checkpoint policy",
     "status": "next"
   },
   "resumeParentAt": {
@@ -42,7 +42,7 @@
     {
       "id": "T5",
       "title": "Split CI by speed and purpose",
-      "status": "planned"
+      "status": "complete"
     },
     {
       "id": "T6",
@@ -58,7 +58,7 @@
   "baseline": {
     "unitTests": "node-built-in-runner-ready",
     "browserTests": "playwright-chromium-working",
-    "currentBrowserTrigger": "most prototype code changes",
+    "currentBrowserTrigger": "manual-or-reusable-checkpoint",
     "identifiedProblem": "browser setup dominates feedback time for small changes"
   },
   "fastTestCommand": "npm run test:unit",
@@ -95,5 +95,20 @@
       "record-count/completeness validation",
       "fixture null-vs-zero behavior"
     ]
+  },
+  "ciSplit": {
+    "fast": {
+      "workflow": ".github/workflows/local-history-viewer-v1-fast-ci.yml",
+      "trigger": "automatic relevant push/pull_request",
+      "command": "npm run test:unit",
+      "installsDependencies": false,
+      "launchesBrowser": false
+    },
+    "browser": {
+      "workflow": ".github/workflows/local-history-viewer-v1-ci.yml",
+      "trigger": "workflow_dispatch or workflow_call",
+      "command": "npm run test:browser",
+      "launchesBrowser": true
+    }
   }
 }

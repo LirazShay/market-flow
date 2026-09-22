@@ -1,22 +1,8 @@
-name: Local History Viewer V1 CI
+name: Local History Viewer V1 Browser CI
 
 on:
-  push:
-    paths:
-      - ".github/workflows/local-history-viewer-v1-ci.yml"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.js"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.html"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.css"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/package.json"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/fixtures/**"
-  pull_request:
-    paths:
-      - ".github/workflows/local-history-viewer-v1-ci.yml"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.js"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.html"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.css"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/package.json"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/fixtures/**"
+  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -38,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install test dependencies
         run: npm install --no-audit --no-fund
@@ -47,7 +33,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run browser tests
-        run: npm test
+        run: npm run test:browser
 
       - name: Upload Playwright diagnostics
         if: failure()

@@ -1,4 +1,36 @@
-# Local History Viewer V1 — Browser Self-Tests
+# Local History Viewer V1 — Testing
+
+## Current CI split
+
+The test system has two execution layers:
+
+~~~text
+Fast CI
+→ Node built-in unit tests
+→ runs automatically on ordinary relevant push/PR changes
+→ no npm install
+→ no Chromium download/startup
+
+Browser CI
+→ Playwright + Chromium
+→ manual/reusable checkpoint workflow
+→ real IndexedDB/browser APIs + mocked Leumi endpoints
+~~~
+
+Commands from the prototype root:
+
+~~~text
+npm test
+npm run test:unit
+npm run test:browser
+npm run test:all
+~~~
+
+`npm test` intentionally means the fast unit suite.
+
+Browser verification is no longer the default test command and no longer runs on every prototype code push.
+
+---
 
 הבדיקות בתיקייה הזו מיועדות להרצה בדפדפן, באותו origin שבו ה-prototype משתמש ב-IndexedDB.
 

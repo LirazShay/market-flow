@@ -151,7 +151,10 @@ test tooling:
   playwright.config.js
 
 CI:
+  .github/workflows/local-history-viewer-v1-fast-ci.yml
+    automatic fast unit tests
   .github/workflows/local-history-viewer-v1-ci.yml
+    manual/reusable Chromium checkpoint
 
 recorder/
   pure/
@@ -172,8 +175,8 @@ tests/testing-refactor/
 Temporary objective:
 
 ~~~text
-many fast unit tests on every change
-→ Playwright only at meaningful checkpoints
+many fast unit tests on ordinary relevant changes
+→ Playwright via manual/reusable checkpoint workflow
 → live Leumi only for provider-dependent verification
 ~~~
 

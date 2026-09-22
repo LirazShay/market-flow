@@ -47,19 +47,22 @@ Stage 7.3 — Single chunk fetch
 Fast/unit layer:
 
 ~~~text
-Not yet implemented
+Node built-in test runner
+automatic Fast CI on ordinary relevant push/PR changes
+no dependency install
+no browser startup
 ~~~
 
 Browser layer:
 
 ~~~text
 Playwright + Chromium
-GitHub Actions
+manual/reusable Browser CI checkpoint
 real IndexedDB
 mocked Leumi endpoints
 ~~~
 
-Current browser workflow runs for essentially every prototype JS/HTML/CSS change, which is too expensive for iterative development.
+The expensive Chromium workflow is no longer triggered by every small prototype code push.
 
 ## Ownership
 
