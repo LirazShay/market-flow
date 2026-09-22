@@ -189,7 +189,8 @@ pure deterministic behavior
 → Fast unit tests
 
 IndexedDB / DOM / BroadcastChannel / same-origin behavior
-→ Playwright / Chromium at policy checkpoints
+→ Chromium immediately when browser behavior/tests change
+→ full Browser CI before every numbered Stage closure
 
 provider/session behavior
 → live verification only when mocks cannot prove it
@@ -203,7 +204,15 @@ any added/modified test
 → green before continuing
 ~~~
 
-Browser checkpoints control broad-suite cadence only. They never permit a changed Playwright/browser test, fixture, harness, or helper to remain unexecuted. A red or unexecuted changed test blocks progression and must be reflected in `STATUS.json`.
+Browser checkpoints are additional integration milestones only. They never permit a changed Playwright/browser test, fixture, harness, or helper to remain unexecuted. A red or unexecuted changed test blocks progression and must be reflected in `STATUS.json`.
+
+Every numbered Stage also has a mandatory closure gate:
+
+~~~text
+Fast CI green
++ full Browser CI green on final Stage state
+→ Stage may become complete
+~~~
 
 For code quality, refactoring, and safe changes in existing/legacy code, follow:
 
