@@ -844,7 +844,20 @@
           "cause": "Real unresolved scroll-restoration regression: expected current-table scrollLeft -180 after return from DETAIL, received 0."
         }
       ],
-      "nextRequiredAction": "Fix scroll restoration, rerun the changed Stage 14.4 browser test/suite in Chromium, and do not advance currentFocus until green."
+      "nextRequiredAction": "Fix scroll restoration, rerun the changed Stage 14.4 browser test/suite in Chromium, and do not advance currentFocus until green.",
+      "diagnosticRca": {
+        "latestDiagnosticRun": 35773233442,
+        "diagnosticCommit": "cefd75d6eeada70082e3ee5c7d6af63b2e1ca027",
+        "observation": "After one animation frame following return to MAIN, panelHidden=false and scrollLeft=-1285; prior expectation was savedScrollLeft=-180.",
+        "rejectedOrInsufficientHypothesis": "The failure is not explained simply by restore occurring too early and leaving scrollLeft at zero.",
+        "nextHypotheses": [
+          "Playwright auto-scrolls the activated row before production captureViewport runs",
+          "production capture point stores -1285 rather than the earlier test-set -180",
+          "RTL/layout clamping changes the raw scrollLeft representation",
+          "exact raw pixel preservation may not be the correct semantic contract"
+        ],
+        "nextExperiment": "Instrument the exact value immediately before row activation and at production capture point, preferably with a targeted Stage 14.4 run only."
+      }
     }
   },
   "fastContext": {
@@ -875,10 +888,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Feature progression is intentionally paused. Engineering/test-process hardening is complete, but Stage 14.4 remains blocked by a reproducible Browser CI scroll-restoration failure.",
+    "reason": "E2E debugging methodology is now documented and linked. Stage 14.4 remains blocked; next work is one targeted RCA experiment, not a speculative production fix.",
     "nextStage": "14",
     "nextSubstep": "14.4",
-    "nextAction": "Fix stabilization task S4, then complete S5 before any new feature work."
+    "nextAction": "Targeted experiment: compare scrollLeft immediately before row activation with the value captured by production captureViewport, accounting for Playwright auto-scroll and RTL."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
@@ -944,6 +957,13 @@
         "id": "S3.1",
         "title": "Increase Browser CI cadence: full suite mandatory at every numbered Stage closure",
         "status": "complete"
+      },
+      {
+        "id": "S3.2",
+        "title": "Add dedicated E2E/Playwright debugging methodology with RCA, hypothesis-driven experiments and targeted reruns",
+        "status": "complete",
+        "commit": "7d941f5cc93a5e96e235ac7392228faefc8ea1de",
+        "guide": "tests/E2E_DEBUGGING.md"
       },
       {
         "id": "S4",
