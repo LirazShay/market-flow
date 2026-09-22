@@ -4,6 +4,10 @@ const fs =
     require("node:fs");
 const path =
     require("node:path");
+const {
+    minify_sync
+} =
+    require("terser");
 
 const sourceOrder =
     require("./source-order");
@@ -28,6 +32,9 @@ const runtimeFileName =
 
 const bookmarkletFileName =
     "market-flow-v1.bookmarklet.txt";
+
+const MAX_BOOKMARKLET_BYTES =
+    256 * 1024;
 
 function resolveSourcePath(
     relativePath
@@ -113,7 +120,7 @@ function buildRuntimeText() {
     );
 }
 
-function buildBookmarkletText(
+function buildCompactRuntimeText(
     runtimeText
 ) {
     if (
@@ -127,12 +134,101 @@ function buildBookmarkletText(
         );
     }
 
-    return (
-        "javascript:" +
-        encodeURIComponent(
-            runtimeText
+    const result =
+        minify_sync(
+            runtimeText,
+            {
+                compress:
+                    false,
+                mangle:
+                    false,
+                format: {
+                    ascii_only:
+                        true,
+                    comments:
+                        false,
+                    semicolons:
+                        true
+                }
+            }
+        );
+
+    if (
+        typeof result.code !==
+            "string" ||
+        result.code.length ===
+            0
+    ) {
+        throw new Error(
+            "Terser did not produce compact runtime code."
+        );
+    }
+
+    if (
+        /[\r\n\t]/.test(
+            result.code
         )
-    );
+    ) {
+        throw new Error(
+            "Compact runtime must be single-line JavaScript."
+        );
+    }
+
+    return result.code;
+}
+
+function encodeBookmarkletCode(
+    compactRuntimeText
+) {
+    return compactRuntimeText
+        .replace(
+            /%/g,
+            "%25"
+        )
+        .replace(
+            /#/g,
+            "%23"
+        )
+        .replace(
+            / /g,
+            "%20"
+        );
+}
+
+function buildBookmarkletText(
+    runtimeText
+) {
+    const compactRuntimeText =
+        buildCompactRuntimeText(
+            runtimeText
+        );
+
+    const bookmarklet =
+        "javascript:" +
+        encodeBookmarkletCode(
+            compactRuntimeText
+        );
+
+    const bookmarkletBytes =
+        Buffer.byteLength(
+            bookmarklet,
+            "utf8"
+        );
+
+    if (
+        bookmarkletBytes >
+        MAX_BOOKMARKLET_BYTES
+    ) {
+        throw new Error(
+            "Generated Bookmarklet exceeds the " +
+            MAX_BOOKMARKLET_BYTES +
+            "-byte packaging guardrail. Actual=" +
+            bookmarkletBytes +
+            "."
+        );
+    }
+
+    return bookmarklet;
 }
 
 function buildArtifacts(
@@ -149,10 +245,35 @@ function buildArtifacts(
     const runtimeText =
         buildRuntimeText();
 
-    const bookmarkletText =
-        buildBookmarkletText(
+    const compactRuntimeText =
+        buildCompactRuntimeText(
             runtimeText
         );
+
+    const bookmarkletText =
+        "javascript:" +
+        encodeBookmarkletCode(
+            compactRuntimeText
+        );
+
+    const bookmarkletBytes =
+        Buffer.byteLength(
+            bookmarkletText,
+            "utf8"
+        );
+
+    if (
+        bookmarkletBytes >
+        MAX_BOOKMARKLET_BYTES
+    ) {
+        throw new Error(
+            "Generated Bookmarklet exceeds the " +
+            MAX_BOOKMARKLET_BYTES +
+            "-byte packaging guardrail. Actual=" +
+            bookmarkletBytes +
+            "."
+        );
+    }
 
     const runtimePath =
         path.join(
@@ -195,6 +316,7 @@ function buildArtifacts(
                 entryRelativePath
             ]),
         runtimeText,
+        compactRuntimeText,
         bookmarkletText,
         runtimePath,
         bookmarkletPath,
@@ -203,11 +325,12 @@ function buildArtifacts(
                 runtimeText,
                 "utf8"
             ),
-        bookmarkletBytes:
+        compactRuntimeBytes:
             Buffer.byteLength(
-                bookmarkletText,
+                compactRuntimeText,
                 "utf8"
-            )
+            ),
+        bookmarkletBytes
     });
 }
 
@@ -233,9 +356,14 @@ if (
                 runtimeBytes:
                     artifacts
                         .runtimeBytes,
+                compactRuntimeBytes:
+                    artifacts
+                        .compactRuntimeBytes,
                 bookmarkletBytes:
                     artifacts
-                        .bookmarkletBytes
+                        .bookmarkletBytes,
+                maxBookmarkletBytes:
+                    MAX_BOOKMARKLET_BYTES
             },
             null,
             2
@@ -249,7 +377,9 @@ module.exports =
         entryRelativePath,
         runtimeFileName,
         bookmarkletFileName,
+        MAX_BOOKMARKLET_BYTES,
         buildRuntimeText,
+        buildCompactRuntimeText,
         buildBookmarkletText,
         buildArtifacts
     });
