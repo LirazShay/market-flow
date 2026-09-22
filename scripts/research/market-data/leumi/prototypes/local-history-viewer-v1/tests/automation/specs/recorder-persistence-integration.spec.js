@@ -697,3 +697,176 @@ test(
         ).toBe(1);
     }
 );
+
+
+test(
+    "Stage 17 persistent recorder rejects invalid missing and duplicate securities without touching latest/history",
+    async ({ browser }) => {
+        const cases = [
+            {
+                scenario:
+                    "invalidSecuritiesStructure",
+                expected:
+                    "response structure is invalid"
+            },
+            {
+                scenario:
+                    "securitiesMissingRecord",
+                expected:
+                    "chunk mismatch"
+            },
+            {
+                scenario:
+                    "securitiesDuplicateKey",
+                expected:
+                    "duplicate Keys"
+            }
+        ];
+
+        for (
+            const {
+                scenario,
+                expected
+            } of cases
+        ) {
+            const page =
+                await browser.newPage();
+
+            try {
+                await installLeumiApiMocks(
+                    page,
+                    scenario
+                );
+
+                await page.goto(
+                    "/tests/automation/harness.html"
+                );
+
+                await deleteDatabase(
+                    page
+                );
+
+                await page.evaluate(
+                    () => {
+                        window
+                            .MarketFlowRecorderLoop
+                            .start({
+                                snapshotIntervalMs:
+                                    100000,
+                                chunkDelayMs:
+                                    0,
+                                chunkSize:
+                                    2,
+                                refreshUniverseEveryCycle:
+                                    false
+                            });
+                    }
+                );
+
+                await page.waitForFunction(
+                    () =>
+                        window
+                            .MarketFlowRecorderLoop
+                            .getState()
+                            .failedCycles ===
+                        1
+                );
+
+                const state =
+                    await page.evaluate(
+                        () =>
+                            window
+                                .MarketFlowRecorderLoop
+                                .getState()
+                    );
+
+                expect(
+                    state.completedCycles
+                ).toBe(0);
+
+                expect(
+                    state.latestCycle
+                ).toBeNull();
+
+                expect(
+                    state.latestError
+                        .message
+                ).toContain(
+                    expected
+                );
+
+                await page.evaluate(
+                    async () => {
+                        const recorder =
+                            window
+                                .MarketFlowRecorderLoop;
+
+                        recorder.stop(
+                            "stage17-failure-matrix"
+                        );
+
+                        await recorder
+                            .waitForStopPersistence();
+                    }
+                );
+
+                const persisted =
+                    await readPersistenceSnapshot(
+                        page
+                    );
+
+                expect(
+                    persisted.cycles
+                ).toHaveLength(1);
+
+                expect(
+                    persisted.cycles[0]
+                        .status
+                ).toBe(
+                    "failed"
+                );
+
+                expect(
+                    persisted.cycles[0]
+                        .error
+                        .message
+                ).toContain(
+                    expected
+                );
+
+                expect(
+                    persisted.history
+                ).toHaveLength(0);
+
+                expect(
+                    persisted.latest
+                ).toHaveLength(0);
+
+                expect(
+                    persisted.sessions
+                ).toHaveLength(1);
+
+                expect(
+                    persisted.sessions[0]
+                        .failedCycles
+                ).toBe(1);
+
+                expect(
+                    persisted
+                        .recorderState
+                        .value
+                        .completedCycles
+                ).toBe(0);
+
+                expect(
+                    persisted
+                        .recorderState
+                        .value
+                        .failedCycles
+                ).toBe(1);
+            } finally {
+                await page.close();
+            }
+        }
+    }
+);
