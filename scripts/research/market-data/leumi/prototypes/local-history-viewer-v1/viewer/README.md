@@ -96,6 +96,21 @@ If BroadcastChannel is unavailable, startup/manual DB refresh remain available.
 
 The persistent header renders recorder health and storage/persistence metrics from IndexedDB/browser storage diagnostics.
 
+The header also exposes:
+
+~~~text
+הורד קובץ Debug
+~~~
+
+This downloads the bounded sanitized Debug Bundle from the normal running runtime. It does not start another recorder and does not call the provider.
+
+Debug Bundle contract/contents:
+
+~~~text
+../specs/debug-bundle.spec.md
+../debug/README.md
+~~~
+
 Health semantics are defined in:
 
 ~~~text
