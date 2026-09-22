@@ -29,6 +29,7 @@ Deeper rationale/evidence lives in `../docs/` and repository-level `docs/leumi-a
 | [messaging.spec.md](messaging.spec.md) | cross-tab notification contract |
 | [viewer.spec.md](viewer.spec.md) | same-origin viewer, current table, history, diagnostics, refresh |
 | [runtime-delivery.spec.md](runtime-delivery.spec.md) | deterministic assembly, Bookmarklet, launch/relaunch, verified distribution |
+| [debug-bundle.spec.md](debug-bundle.spec.md) | bounded sanitized diagnostics/export for live-only problems |
 | [research-evolution.spec.md](research-evolution.spec.md) | how this initial research tool becomes a foundation for later tools |
 
 ## Ownership model
@@ -65,6 +66,7 @@ Typical mapping:
 | BroadcastChannel/messages | `messaging.spec.md`, `viewer.spec.md` / `recorder.spec.md` where affected |
 | viewer behavior | `viewer.spec.md` |
 | runtime/Bookmarklet/release | `runtime-delivery.spec.md` |
+| live diagnostics/debug export | `debug-bundle.spec.md`, plus owning component specs when behavior is affected |
 | new research tool/reuse direction | `research-evolution.spec.md`, `system.spec.md` |
 | cross-cutting invariant | every affected responsibility spec |
 
