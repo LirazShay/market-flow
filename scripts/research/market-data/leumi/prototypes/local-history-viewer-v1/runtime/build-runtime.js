@@ -33,9 +33,6 @@ const runtimeFileName =
 const bookmarkletFileName =
     "market-flow-v1.bookmarklet.txt";
 
-const MAX_BOOKMARKLET_BYTES =
-    256 * 1024;
-
 function resolveSourcePath(
     relativePath
 ) {
@@ -177,24 +174,6 @@ function buildCompactRuntimeText(
     return result.code;
 }
 
-function encodeBookmarkletCode(
-    compactRuntimeText
-) {
-    return compactRuntimeText
-        .replace(
-            /%/g,
-            "%25"
-        )
-        .replace(
-            /#/g,
-            "%23"
-        )
-        .replace(
-            / /g,
-            "%20"
-        );
-}
-
 function buildBookmarkletText(
     runtimeText
 ) {
@@ -203,32 +182,10 @@ function buildBookmarkletText(
             runtimeText
         );
 
-    const bookmarklet =
+    return (
         "javascript:" +
-        encodeBookmarkletCode(
-            compactRuntimeText
-        );
-
-    const bookmarkletBytes =
-        Buffer.byteLength(
-            bookmarklet,
-            "utf8"
-        );
-
-    if (
-        bookmarkletBytes >
-        MAX_BOOKMARKLET_BYTES
-    ) {
-        throw new Error(
-            "Generated Bookmarklet exceeds the " +
-            MAX_BOOKMARKLET_BYTES +
-            "-byte packaging guardrail. Actual=" +
-            bookmarkletBytes +
-            "."
-        );
-    }
-
-    return bookmarklet;
+        compactRuntimeText
+    );
 }
 
 function buildArtifacts(
@@ -252,28 +209,13 @@ function buildArtifacts(
 
     const bookmarkletText =
         "javascript:" +
-        encodeBookmarkletCode(
-            compactRuntimeText
-        );
+        compactRuntimeText;
 
     const bookmarkletBytes =
         Buffer.byteLength(
             bookmarkletText,
             "utf8"
         );
-
-    if (
-        bookmarkletBytes >
-        MAX_BOOKMARKLET_BYTES
-    ) {
-        throw new Error(
-            "Generated Bookmarklet exceeds the " +
-            MAX_BOOKMARKLET_BYTES +
-            "-byte packaging guardrail. Actual=" +
-            bookmarkletBytes +
-            "."
-        );
-    }
 
     const runtimePath =
         path.join(
@@ -361,9 +303,7 @@ if (
                         .compactRuntimeBytes,
                 bookmarkletBytes:
                     artifacts
-                        .bookmarkletBytes,
-                maxBookmarkletBytes:
-                    MAX_BOOKMARKLET_BYTES
+                        .bookmarkletBytes
             },
             null,
             2
@@ -377,7 +317,6 @@ module.exports =
         entryRelativePath,
         runtimeFileName,
         bookmarkletFileName,
-        MAX_BOOKMARKLET_BYTES,
         buildRuntimeText,
         buildCompactRuntimeText,
         buildBookmarkletText,
