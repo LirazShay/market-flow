@@ -13,7 +13,7 @@
 Status:
 
 ~~~text
-Current
+Complete
 ~~~
 
 Outputs:
@@ -27,11 +27,29 @@ Outputs:
 
 ### Stage 2 — Data model / IndexedDB schema review
 
-נחדד field selection, keys, indexes, transaction boundaries ו-size implications.
+Status:
 
-אין UI.
+~~~text
+Complete
+~~~
+
+Output:
+
+~~~text
+DATA_MODEL.md
+~~~
+
+נסגרו field preservation, stores, keys, indexes, transaction boundaries, time model ו-storage policy.
+
+אין implementation.
 
 ### Stage 3 — Viewer UX plan
+
+Status:
+
+~~~text
+Next
+~~~
 
 נגדיר:
 
