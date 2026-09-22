@@ -253,6 +253,26 @@ test(
             "#runtime-bookmarklet"
         ).click();
 
+        await page.waitForFunction(
+            previousInstanceId => {
+                const snapshot =
+                    window
+                        .MarketFlowRuntime
+                        .getSnapshot();
+
+                return (
+                    snapshot
+                        .recorder
+                        .isRunning &&
+                    snapshot
+                        .persistence
+                        .instanceId !==
+                        previousInstanceId
+                );
+            },
+            firstInstanceId
+        );
+
         const restartedSnapshot =
             await page.evaluate(
                 () =>
