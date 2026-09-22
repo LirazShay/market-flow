@@ -170,8 +170,8 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 CI",
-      "runId": 35737659820,
-      "commit": "ff65a6b0c971a0ba8683effb95dae87f87dccafe",
+      "runId": 35737872015,
+      "commit": "69689e58e29febf7415123b8e51272fb6fb487c3",
       "conclusion": "success"
     }
   },
