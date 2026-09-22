@@ -138,6 +138,12 @@ Complete
 
 ### Stage 5 — IndexedDB module
 
+Status:
+
+~~~text
+Complete
+~~~
+
 Stage 5 מחולק לתת-שלבים קטנים:
 
 #### Stage 5.1 — Storage module skeleton + schema constants
@@ -211,7 +217,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נממש רק helpers קטנים ל:
