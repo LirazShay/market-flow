@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.3 — single GetSecuritiesData chunk fetch
+Stage 7.3 complete — next: Stage 7.4 complete-cycle builder
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
