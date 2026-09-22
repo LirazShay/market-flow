@@ -788,6 +788,154 @@
         });
     }
 
+    function buildFileName(
+        generatedAtMs
+    ) {
+        const date =
+            new Date(
+                generatedAtMs
+            );
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            throw new TypeError(
+                "generatedAtMs must be a valid timestamp."
+            );
+        }
+
+        const iso =
+            date.toISOString();
+
+        const datePart =
+            iso
+                .slice(
+                    0,
+                    10
+                )
+                .replace(
+                    /-/g,
+                    ""
+                );
+
+        const timePart =
+            iso
+                .slice(
+                    11,
+                    19
+                )
+                .replace(
+                    /:/g,
+                    ""
+                );
+
+        return (
+            "market-flow-debug-" +
+            datePart +
+            "-" +
+            timePart +
+            ".json"
+        );
+    }
+
+    async function download(
+        options
+    ) {
+        const bundle =
+            await create(
+                options
+            );
+
+        const json =
+            JSON.stringify(
+                bundle,
+                null,
+                2
+            ) +
+            "\n";
+
+        const blob =
+            new Blob(
+                [
+                    json
+                ],
+                {
+                    type:
+                        "application/json;charset=utf-8"
+                }
+            );
+
+        const objectUrl =
+            window
+                .URL
+                .createObjectURL(
+                    blob
+                );
+
+        const anchor =
+            window
+                .document
+                .createElement(
+                    "a"
+                );
+
+        const fileName =
+            buildFileName(
+                bundle
+                    .generatedAtMs
+            );
+
+        anchor.href =
+            objectUrl;
+
+        anchor.download =
+            fileName;
+
+        anchor.hidden =
+            true;
+
+        (
+            window
+                .document
+                .body ??
+            window
+                .document
+                .documentElement
+        ).appendChild(
+            anchor
+        );
+
+        try {
+            anchor.click();
+        } finally {
+            anchor.remove();
+
+            window.setTimeout(
+                () =>
+                    window
+                        .URL
+                        .revokeObjectURL(
+                            objectUrl
+                        ),
+                0
+            );
+        }
+
+        return Object.freeze({
+            fileName,
+            byteLength:
+                blob.size,
+            formatVersion:
+                bundle
+                    .formatVersion,
+            generatedAtMs:
+                bundle
+                    .generatedAtMs
+        });
+    }
+
     window
         .MarketFlowDebugBundle =
         Object.freeze({
@@ -795,7 +943,8 @@
             DEFAULT_RECENT_CYCLE_LIMIT,
             MAX_RECENT_CYCLE_LIMIT,
             MAX_ROWS_PER_CYCLE,
-            create
+            create,
+            download
         });
 
     console.log(
