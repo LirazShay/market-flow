@@ -9,10 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "14",
-    "substep": "14.5",
-    "title": "Security history drill-down — Stage 14 acceptance and closure",
-    "status": "in-progress"
+    "stage": "15",
+    "title": "Viewer diagnostics",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -150,13 +149,13 @@
     {
       "stage": "14",
       "title": "Security history drill-down",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
         "14.1": "complete-browser-ci-verified — targeted bySecurityTime newest-first initial page (500 + hasMore)",
         "14.2": "complete-browser-ci-verified — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
         "14.3": "complete-browser-ci-verified — accessible row activation + detail summary + paged history table UI",
         "14.4": "complete-browser-ci-verified — DETAIL stays active on live refresh, selected security rereads IndexedDB, and MAIN sort/viewport are preserved on return",
-        "14.5": "in-progress — acceptance review passed; running mandatory Stage-closure Fast + full Browser CI"
+        "14.5": "complete-reviewed-and-ci-verified — acceptance review passed; mandatory Stage-closure Fast + full Browser CI green"
       }
     },
     {
@@ -204,13 +203,15 @@
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
       "runId": 35775603207,
+      "runAttempt": 2,
+      "jobId": 106909519960,
       "commit": "2132ece133fcc2c94be26bc5e750d60753713c27",
       "conclusion": "success",
       "tests": [
         "42 Chromium tests",
         "42 passed / 0 failed",
-        "Stage 14.4 viewport regression",
-        "existing recorder/storage/viewer regressions"
+        "fresh mandatory Stage 14 closure rerun",
+        "final Stage 14 code/test state unchanged since the verified commits"
       ]
     },
     "fastCi": "verified-success",
@@ -223,12 +224,15 @@
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
       "runId": 35775462689,
+      "runAttempt": 2,
+      "jobId": 106909493044,
       "commit": "a09b70745e7c2ccbe58fe2912255c16de206193b",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 81.607989
+      "durationMs": 342.249941,
+      "note": "Fresh rerun against the unchanged final Stage 14 code/test state."
     },
     "testingRefactor": {
       "status": "complete",
@@ -870,7 +874,7 @@
       ]
     },
     "stage14Acceptance": {
-      "status": "verification-in-progress",
+      "status": "complete",
       "reviewedAgainst": [
         "ROADMAP.md Stage 14",
         "docs/viewer-ux.md sections 14–18",
@@ -889,7 +893,51 @@
         "empty-history state is explicit",
         "DETAIL stays active on CYCLE_COMMITTED and rereads IndexedDB",
         "return to MAIN preserves selected sort and application viewport"
-      ]
+      ],
+      "fastCi": {
+        "runId": 35775462689,
+        "runAttempt": 2,
+        "jobId": 106909493044,
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35775603207,
+        "runAttempt": 2,
+        "jobId": 106909519960,
+        "conclusion": "success",
+        "tests": 42,
+        "passed": 42,
+        "failed": 0
+      },
+      "closureDecision": "Stage 14 accepted and complete."
+    },
+    "stage14": {
+      "status": "complete",
+      "closedAt": "2026-09-22",
+      "substeps": [
+        "14.1 targeted initial history page",
+        "14.2 lossless load-older continuation",
+        "14.3 accessible detail UI + paged history",
+        "14.4 live refresh + sort/viewport round-trip preservation",
+        "14.5 acceptance + mandatory Stage-closure verification"
+      ],
+      "finalFastCi": {
+        "runId": 35775462689,
+        "runAttempt": 2,
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "finalBrowserCi": {
+        "runId": 35775603207,
+        "runAttempt": 2,
+        "tests": 42,
+        "passed": 42,
+        "failed": 0
+      }
     }
   },
   "fastContext": {
@@ -919,10 +967,9 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 14.5 acceptance review found no scope gaps. Mandatory Stage-closure verification is in progress.",
-    "nextStage": "14",
-    "nextSubstep": "14.5"
+    "reached": true,
+    "reason": "Stage 14 is accepted and complete. Fast CI and the mandatory full Browser CI both passed on the final Stage 14 code/test state.",
+    "nextStage": "15"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
