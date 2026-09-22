@@ -43,7 +43,7 @@ The dist directory is generated and ignored by Git.
 
 The Bookmarklet remains self-contained. It does not fetch executable code from an external host.
 
-A packaging guard fails the build if the Bookmarklet exceeds 256 KiB.
+There is no arbitrary absolute Bookmarklet size ceiling in the build. The packaging contract instead requires that the Bookmarklet body be the compact runtime itself, prefixed only by `javascript:`. This prevents URL encoding from inflating a legitimately large runtime.
 
 ## Stable verified download
 
@@ -104,7 +104,7 @@ If stop persistence is still pending, a restart fails clearly rather than creati
 
 ## Verification
 
-Fast tests cover deterministic assembly, compact Bookmarklet generation, packaging size, and artifact writing.
+Fast tests cover deterministic assembly, compact Bookmarklet generation, exact no-inflation packaging, absence of `%20` encoding, large-runtime packaging, and artifact writing.
 
 Chromium smoke coverage executes the generated Bookmarklet on a clean page with deterministic mocked Leumi endpoints and verifies initial launch, repeated idempotent launch, restart after a clean stop, and the compact artifact contract.
 
