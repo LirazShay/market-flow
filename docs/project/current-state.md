@@ -149,8 +149,8 @@ Merged rows: 561
 תיעוד:
 
 ~~~text
-docs/leumi-api/field-availability.md
-docs/leumi-api/field-reference-he.md
+docs/leumi-api/fields/field-availability.md
+docs/leumi-api/fields/field-reference-he.md
 docs/leumi-api/reports/2026-09-22-1451-field-coverage.md
 ~~~
 
@@ -169,7 +169,7 @@ docs/leumi-api/reports/2026-09-22-1451-field-coverage.md
 
 ~~~text
 scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js
-docs/leumi-api/polling-stability-test.md
+docs/leumi-api/testing/polling-stability-test.md
 ~~~
 
 Default concept:
