@@ -12,7 +12,7 @@
     "stage": "15",
     "substep": "15.3",
     "title": "Viewer diagnostics — always-visible diagnostics UI and refresh integration",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -166,7 +166,7 @@
       "substeps": {
         "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
         "15.2": "complete-fast-ci-verified — pure recorder-health semantics + diagnostics presentation model",
-        "15.3": "planned — always-visible diagnostics UI + refresh integration",
+        "15.3": "in-progress — always-visible diagnostics metrics + initial/manual/broadcast DB refresh",
         "15.4": "planned — Stage 15 acceptance + mandatory Stage-closure Fast/Browser CI"
       }
     },
@@ -1057,8 +1057,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 15.2 is complete and Fast-CI verified. Stage 15 remains open; the next natural work is Stage 15.3 diagnostics UI and refresh integration.",
+    "reached": false,
+    "reason": "Stage 15.3 is in progress. Browser contract will run before implementation.",
     "nextStage": "15",
     "nextSubstep": "15.3"
   },
