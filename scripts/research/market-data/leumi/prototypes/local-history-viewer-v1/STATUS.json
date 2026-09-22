@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "14",
-    "substep": "14.3",
-    "title": "Security history drill-down — row activation and detail UI",
-    "status": "in-progress"
+    "substep": "14.4",
+    "title": "Security history drill-down — detail live refresh and return-state preservation",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -154,7 +154,7 @@
       "substeps": {
         "14.1": "complete-browser-ci-verified — targeted bySecurityTime newest-first initial page (500 + hasMore)",
         "14.2": "complete-browser-ci-verified — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
-        "14.3": "in-progress — accessible row activation + detail summary + paged history table UI",
+        "14.3": "complete-browser-ci-verified — accessible row activation + detail summary + paged history table UI",
         "14.4": "planned — detail live refresh + return-to-main state preservation",
         "14.5": "planned — Stage 14 acceptance/verification"
       }
@@ -203,13 +203,15 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35768158909,
-      "commit": "7d6885667f74d253cb27f05978b3e98797e7622f",
+      "runId": 35769024909,
+      "commit": "3acb5d1e4296518ff3edd5e1867459629b6ed3f3",
       "conclusion": "success",
       "tests": [
-        "39 Chromium tests",
-        "Stage 14.2 load-older continuation",
-        "equal-collectedAtMs page-boundary coverage",
+        "41 Chromium tests",
+        "Stage 14.3 keyboard and mouse row activation",
+        "DETAIL summary for the selected security",
+        "500-row history table + load-older to 502 rows",
+        "explicit empty-history state and return to MAIN",
         "existing recorder/storage/viewer regressions"
       ]
     },
@@ -222,13 +224,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35768118980,
-      "commit": "ca668933b0b1bf62b63869af955e80576d96bc88",
+      "runId": 35768976808,
+      "commit": "82771139fd23e533d92e7422a0f0e3112e332e1e",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 59.740473
+      "durationMs": 68.751793
     },
     "testingRefactor": {
       "status": "complete",
@@ -777,6 +779,39 @@
         "hasMore becomes false and continuation becomes null on the final page",
         "continuation is scoped to the requested securityId"
       ]
+    },
+    "stage14_3": {
+      "status": "complete",
+      "testsFirst": true,
+      "testContractCommit": "bb8cae9bf26d6ba046b26e7f04d3500a29b81e12",
+      "implementationCommit": "82771139fd23e533d92e7422a0f0e3112e332e1e",
+      "fastCi": {
+        "runId": 35768976808,
+        "commit": "82771139fd23e533d92e7422a0f0e3112e332e1e",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35769024909,
+        "commit": "3acb5d1e4296518ff3edd5e1867459629b6ed3f3",
+        "conclusion": "success",
+        "tests": 41,
+        "passed": 41,
+        "failed": 0,
+        "reason": "early-browser verification: Stage 14.3 adds material DOM navigation and history interaction behavior"
+      },
+      "verifiedBehaviors": [
+        "current-table rows are mouse- and keyboard-activatable",
+        "activating a row opens DETAIL for the exact selected securityId",
+        "detail summary renders paper name, securityId, last rate, daily change, BID1/ASK1 and last-deal time",
+        "initial history UI renders the newest 500 rows",
+        "load-older appends the remaining page without replacing existing rows",
+        "load-older action disappears when hasMore becomes false",
+        "security with no history renders an explicit empty-history message",
+        "basic back action returns to MAIN and hides the detail panel"
+      ]
     }
   },
   "fastContext": {
@@ -804,10 +839,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 14.3 is in progress.",
+    "reached": true,
+    "reason": "Stage 14.3 is complete and verified. Stage 14 remains open; the next natural work is Stage 14.4 detail live refresh and return-state preservation.",
     "nextStage": "14",
-    "nextSubstep": "14.3"
+    "nextSubstep": "14.4"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
