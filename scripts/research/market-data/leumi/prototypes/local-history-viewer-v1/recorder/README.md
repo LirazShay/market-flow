@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.4 — complete-cycle builder
+Stage 7.4 complete — next: Stage 7.5 recorder loop shell
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
