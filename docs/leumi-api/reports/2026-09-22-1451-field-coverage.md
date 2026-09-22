@@ -54,7 +54,7 @@ GetSecuritiesData records: 561
 | BuyVolume2 | NO_USABLE_VALUE | 0 | 561 | 0 | 561 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
 | BuyVolume3 | NO_USABLE_VALUE | 0 | 561 | 0 | 561 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
 | BuyVolume4 | NO_USABLE_VALUE | 0 | 561 | 0 | 561 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
-| BuyVolume5 | NO_USABLE_VALUE | 0 | 561 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
+| BuyVolume5 | NO_USABLE_VALUE | 0 | 561 | 0 | 561 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
 | ChangeBaseRateBuy1 | PARTIAL_VALUE | 96.79 | 561 | 543 | 18 | 0 | 0 | 0 | 20 | 524 | {"number":543,"null":18} | -49.547940618372586 | 9.636277751535193 | [-0.4096786583023926,-1.013386713374198,-1.1353711790393017,-2.453874538745382,-0.2949852507374673] |
 | ChangeBaseRateBuy2 | NO_USABLE_VALUE | 0 | 561 | 0 | 561 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
 | ChangeBaseRateBuy3 | NO_USABLE_VALUE | 0 | 561 | 0 | 561 | 0 | 0 | 0 | 0 | 0 | {"null":561} |  |  | [] |
