@@ -119,6 +119,7 @@ scripts/research/market-data/leumi/
 - docs/project/system-scope.md — גבולות המערכת וה-flow העתידי ברמה גבוהה.
 - docs/project/decisions.md — החלטות שכבר התקבלו והסיבות להן.
 - docs/project/chat-map.md — חלוקת העבודה בין chats/streams.
+- docs/project/repository-structure.md — איפה כל סוג קוד/בדיקה/תיעוד צריך לחיות.
 
 ---
 
@@ -134,11 +135,11 @@ Leumi market data:
 docs/leumi-api/
 
 API field semantics / availability:
-docs/leumi-api/field-reference-he.md
-docs/leumi-api/field-availability.md
+docs/leumi-api/fields/field-reference-he.md
+docs/leumi-api/fields/field-availability.md
 
 Verified tests:
-docs/leumi-api/verified-tests.md
+docs/leumi-api/testing/verified-tests.md
 docs/leumi-api/reports/
 
 Browser research scripts:
