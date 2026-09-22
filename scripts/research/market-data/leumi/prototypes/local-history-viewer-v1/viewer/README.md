@@ -1,42 +1,44 @@
 # Viewer Module — Local History Viewer V1
 
-Stage 10 establishes the viewer bootstrap boundary.
-
-## Files
+Durable viewer documentation only. Operational progress lives in:
 
 ~~~text
-pure/viewer-state.js
+../STATUS.json
+~~~
+
+## Responsibility
+
+~~~text
+same-origin child window
+→ read authoritative IndexedDB state
+→ render current table / detail history / diagnostics
+→ respond to metadata-only refresh notifications
+~~~
+
+IndexedDB is the viewer's source of truth. BroadcastChannel never carries market-row payloads.
+
+## Main modules
+
+~~~text
 bootstrap.js
+current-table.js
+history-data.js
+security-detail.js
+diagnostics-data.js
+diagnostics.js
+live-refresh.js
+pure/
 ~~~
 
-## Stage 10 contract
+## Bootstrap contract
 
-~~~text
-Leumi-origin recorder page
-→ MarketFlowViewerBootstrap.openViewer()
-→ named about:blank child window
-→ same-origin DOM + IndexedDB access
-→ Hebrew / RTL viewer shell
-→ initial viewer state = BOOTING
-~~~
-
-The shell intentionally does not load current market rows yet.
-
-That belongs to:
-
-~~~text
-Stage 11 — Current table from IndexedDB
-~~~
-
-The viewer window is named:
+The named viewer window is:
 
 ~~~text
 market-flow-leumi-v1-viewer
 ~~~
 
-Calling `openViewer()` again reuses/focuses the existing viewer rather than creating duplicate viewer tabs.
-
-Public bootstrap API:
+Public API:
 
 ~~~text
 MarketFlowViewerBootstrap.openViewer()
@@ -45,140 +47,64 @@ MarketFlowViewerBootstrap.isViewerOpen()
 MarketFlowViewerBootstrap.getViewerSnapshot()
 ~~~
 
-V1 continues to use IndexedDB as the source of truth. The child window itself does not receive copied market-data arrays from the opener.
+Repeated launch reuses/focuses the named window.
 
+Reload recovery rebuilds the same-origin shell and rereads IndexedDB rather than depending on an in-memory market snapshot.
 
-## Stage 10 verification
-
-~~~text
-Fast CI
-Run 35754581099
-127 passed / 0 failed
-
-Browser CI
-Run 35754648747
-29 passed / 0 failed
-~~~
-
-Browser verification proves that the child viewer can read an IndexedDB record created by its opener, so the V1 same-origin storage requirement is actually satisfied rather than inferred.
-
-Next:
-
-~~~text
-Stage 11 — Current table from IndexedDB
-~~~
-
-
-## Stage 11 current table
-
-Stage 11 loads:
+## Current table
 
 ~~~text
 IndexedDB.latest
 +
 IndexedDB.universe
-(join by securityId)
-~~~
-
-and renders the 16 planned V1 current-market columns.
-
-Files:
-
-~~~text
-current-table.js
-pure/current-table-logic.js
+(join by canonical securityId)
 ~~~
 
 Behavior:
 
-- latest rows are never silently dropped when universe metadata is missing;
-- missing paper name displays as `—`;
-- `null` / `undefined` / empty string display as `—`;
-- numeric zero displays as `0`;
-- empty DB transitions the viewer to `EMPTY`;
-- populated DB transitions the viewer to `MAIN`;
-- current row count, last cycle and latest collection time are populated from the current snapshot.
+- latest rows are not silently dropped when universe metadata is missing;
+- missing display values render as `—`;
+- zero renders as `0`;
+- sorting is deterministic/null-safe;
+- selected sort survives refresh.
 
-Interactive sorting remains Stage 13. Cross-tab live refresh remains Stage 12.
+## Detail/history
 
+Row activation opens per-security history read from IndexedDB.
 
-## Stage 11 verification
+History is queried newest-first and supports continuation/load-older without duplicate/skip across equal-timestamp boundaries.
 
-~~~text
-Fast CI
-Run 35755728772
-132 passed / 0 failed
-~~~
-
-Playwright coverage for real IndexedDB → viewer DOM rendering is already present in:
+## Live refresh
 
 ~~~text
-tests/automation/specs/viewer-current-table.spec.js
+CYCLE_COMMITTED metadata notification
+→ viewer rereads IndexedDB
+→ rerender current/detail/diagnostics
 ~~~
 
-Per the V1 testing policy, Chromium execution is intentionally deferred until the planned Checkpoint C after Stage 12.
+Manual refresh is DB-only and never calls the market provider.
 
-Next:
+If BroadcastChannel is unavailable, startup/manual DB refresh remain available.
+
+## Diagnostics
+
+The persistent header renders recorder health and storage/persistence metrics from IndexedDB/browser storage diagnostics.
+
+Health semantics are defined in:
 
 ~~~text
-Stage 12 — Cross-tab live refresh
+pure/diagnostics-logic.js
 ~~~
 
-
-## Stage 12 cross-tab live refresh
-
-Channel:
+## Tests
 
 ~~~text
-market-flow-leumi-v1
+../tests/unit/viewer-*.test.js
+../tests/automation/specs/viewer-*.spec.js
 ~~~
 
-The recorder publishes metadata-only notifications after durable persistence boundaries.
-
-For a successful cycle:
+Verification policy:
 
 ~~~text
-IndexedDB commit succeeds
-→ CYCLE_COMMITTED { cycleId, completedAtMs }
-→ viewer receives notification
-→ viewer re-reads IndexedDB.latest + universe
-→ rerender
+../tests/TESTING_POLICY.md
 ~~~
-
-No market row payload is copied through BroadcastChannel.
-
-The viewer also exposes:
-
-~~~text
-רענן תצוגה
-~~~
-
-Manual refresh is DB-only and never calls the market API.
-
-If BroadcastChannel is unavailable, startup still reads IndexedDB and the UI explicitly reports degraded live-update mode while manual refresh remains available.
-
-
-## Stage 12 status — not complete
-
-~~~text
-Fast CI
-Run 35756792160
-136 passed / 0 failed
-
-Viewer Checkpoint C / Browser CI
-Run 35756990977
-34 passed / 0 failed
-~~~
-
-A prior Checkpoint C run produced technical evidence for these behaviors:
-
-- same-origin viewer bootstrap;
-- real IndexedDB → current-table rendering;
-- recorder commit → BroadcastChannel notification;
-- viewer notification → IndexedDB reread;
-- manual refresh;
-- degraded fallback when BroadcastChannel is unavailable.
-
-The first Checkpoint C run exposed one test-expectation mistake: the initial Stage 11 load is not a live-refresh operation. The assertion was corrected to count only the notification-driven refresh.
-
-**Project status correction:** despite the existing implementation and successful CI evidence above, Stage 12 is **not considered complete**. `STATUS.json` is authoritative. Review/complete Stage 12 before starting Stage 13.

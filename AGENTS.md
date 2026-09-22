@@ -325,13 +325,28 @@ docs/project/decisions/D-NNN.md
 docs/project/decisions.md
 ~~~
 
-### Meaningful project/workstream milestone
+### Documentation source-of-truth rule
 
-Update:
+Operational progress belongs **only** in the workstream `STATUS.json`.
+
+Never copy current stage/substep, completion state, next pointer, or "latest verification" snapshots into:
 
 ~~~text
+README.md
+AI_CONTEXT.md
+HANDOFF.md
+NEXT_CHAT_PROMPT.md
 docs/project/current-state.md
+docs/project/workstreams.md
+component README files
+design/architecture docs
 ~~~
+
+Those files may link to `STATUS.json` and may contain durable architecture/evidence, but not a live progress snapshot.
+
+Historical stage/run narratives belong under an explicit history location such as `docs/history/`, not in a README that users may read as current.
+
+The Fast unit suite contains a documentation source-of-truth guard; do not bypass it.
 
 Code-specific documentation stays next to the code.
 Cross-cutting/domain knowledge stays under `docs/`.

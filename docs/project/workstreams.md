@@ -2,9 +2,9 @@
 
 זהו project-wide routing table.
 
-המטרה: צ'אט חדש צריך לדעת מהר באיזה workstream לעבוד ואיפה נמצא ה-source of truth המקומי.
+המטרה: צ'אט חדש צריך לדעת **לאן להיכנס**, בלי לשכפל לכאן את ה-progress של workstream.
 
-## Active
+## Default continuation target
 
 ### 01A — Local History Viewer V1
 
@@ -18,13 +18,13 @@ Location:
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
-Exact status:
+Operational source of truth:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
 ~~~
 
-Fast context:
+Fast technical context:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/AI_CONTEXT.md
@@ -36,37 +36,13 @@ Fresh-chat handoff:
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/HANDOFF.md
 ~~~
 
-Current pointer at this milestone:
-
-~~~text
-Stages 1–12 complete
-Next: Stage 13 — Dynamic sorting
-~~~
-
-Latest verified checkpoint:
-
-~~~text
-Fast CI: 136 passed / 0 failed
-Run 35756792160
-
-Viewer Checkpoint C:
-34 Chromium tests passed / 0 failed
-Run 35756990977
-~~~
-
-Important: the local STATUS.json overrides this milestone summary if development has advanced.
+אין לשכפל כאן stage number, completion state, next pointer או latest CI checkpoint. יש לקרוא אותם ישירות מ-`STATUS.json`.
 
 ---
 
-## Foundation workstream
+## Research foundation
 
 ### 01 — Market Data / Leumi API Research
-
-Status:
-
-~~~text
-Major research foundation complete; supporting research remains available as needed.
-~~~
 
 Knowledge:
 
@@ -80,58 +56,41 @@ Research code:
 scripts/research/market-data/leumi/
 ~~~
 
-Verified evidence includes universe retrieval, detailed snapshot retrieval, join validation, field coverage and polling stability.
+המסמכים תחת `docs/leumi-api/` מחזיקים evidence ו-semantics עמידים; הם אינם operational progress של 01A.
 
 ---
 
-## Planned / not started as production work
+## Future scope placeholders
 
-### 02 — Collector
-Status: not started as production work.
+~~~text
+02 Collector
+03 Storage / History
+04 Scanner
+05 Analysis / Momentum
+06 Execution
+07 UI / Monitoring
+~~~
 
-### 03 — Storage / History
-Status: not started as production work.
-
-Current exception: Local History Viewer V1 uses IndexedDB as a browser prototype.
-
-### 04 — Scanner
-Status: not started.
-
-### 05 — Analysis / Momentum
-Status: not started.
-
-### 06 — Execution
-Status: not started.
-
-### 07 — UI / Monitoring
-Status: not started as production work.
-
-Current exception: prototype viewer work exists inside 01A.
-
----
+אלה routing/scope labels בלבד. אין להסיק מהם implementation state.
 
 ## Rule for new workstreams
 
-When a meaningful workstream starts:
+כאשר workstream משמעותי נוצר:
 
-1. create a clear location in the repository;
-2. add a local README;
-3. if it will span multiple chats/stages, add:
-   - AI_CONTEXT.md
-   - STATUS.json
-   - ROADMAP.md when staged planning is useful;
-   - HANDOFF.md only when a fresh-chat boundary benefits from it;
-4. add the workstream here;
-5. keep exact operational progress local rather than duplicating it project-wide.
+1. צור location ברור;
+2. הוסף local README;
+3. אם העבודה רב-שלבית, הוסף `AI_CONTEXT.md`, `STATUS.json`, ו-`ROADMAP.md` לפי הצורך;
+4. הוסף כאן routing בלבד;
+5. שמור operational progress רק ב-`STATUS.json` המקומי.
 
 ## Rule for "continue"
 
-If the user says only "continue the project":
-
 ~~~text
 AGENTS.md
-→ this file
-→ active workstream AI_CONTEXT.md
-→ active workstream STATUS.json
+→ this routing table
+→ target workstream AI_CONTEXT.md
+→ target workstream STATUS.json
 → relevant files/tests
 ~~~
+
+ה-`STATUS.json` המקומי הוא היחיד שקובע מה עושים עכשיו.

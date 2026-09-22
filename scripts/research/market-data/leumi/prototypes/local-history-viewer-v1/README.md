@@ -2,28 +2,28 @@
 
 Browser-only research prototype inside Market Flow.
 
-It is the currently active workstream, not the entire Market Flow project.
+ה-README הזה מתאר boundaries ו-navigation יציבים בלבד.
 
 ## 30-second orientation
 
 | Question | File |
 |---|---|
-| exact current/next stage | STATUS.json |
+| exact operational progress | STATUS.json |
 | compact technical context | AI_CONTEXT.md |
 | full V1 plan/order | ROADMAP.md |
-| fresh-chat boundary | HANDOFF.md |
-| copy-ready next development chat | NEXT_CHAT_PROMPT.md |
+| fresh-chat instructions | HANDOFF.md |
+| reusable continuation prompt | NEXT_CHAT_PROMPT.md |
 | durable V1 design | docs/ |
 | testing / CI policy | tests/TESTING_POLICY.md |
-| Clean Code / design / safe-change policy | [project engineering practices](../../../../../../docs/project/engineering-practices.md) |
+| engineering / safe-change policy | [project engineering practices](../../../../../../docs/project/engineering-practices.md) |
 
-## Current status
-
-Live progress and verification results are intentionally kept only in:
+## Operational state source
 
 ~~~text
 STATUS.json
 ~~~
+
+אין להעתיק ל-README הזה current stage, completion state, next pointer או latest CI snapshot.
 
 ## Folder map
 
@@ -34,13 +34,14 @@ local-history-viewer-v1/
 ├── STATUS.json
 ├── AI_CONTEXT.md
 ├── HANDOFF.md
+├── NEXT_CHAT_PROMPT.md
 │
-├── docs/          stable V1 design
-├── recorder/      market-data recorder
-├── storage/       IndexedDB persistence
-├── messaging/     BroadcastChannel notification
-├── viewer/        same-origin viewer
-└── tests/         unit + Playwright + policy
+├── docs/
+├── recorder/
+├── storage/
+├── messaging/
+├── viewer/
+└── tests/
 ~~~
 
 ## V1 flow
@@ -60,14 +61,14 @@ MapHeat2
 
 V1 includes:
 
-- dynamic universe; never hardcode 561.
+- dynamic universe; never hardcode a universe size.
 - sequential collection baseline.
 - complete-cycle validation.
 - IndexedDB local history.
 - same-origin viewer.
 - current table, sorting and per-security history.
 - recorder/viewer diagnostics.
-- tests-first development with Fast CI + sparse Chromium checkpoints.
+- tests-first development under `tests/TESTING_POLICY.md`.
 
 V1 intentionally excludes:
 
@@ -83,19 +84,19 @@ V1 intentionally excludes:
 
 ~~~text
 STATUS.json
-    exact progress
+    operational progress + verification state
 
 ROADMAP.md
-    stage definitions/order
+    stage definitions/order/scope
 
 AI_CONTEXT.md
-    compact technical continuation
+    compact technical continuation only
 
 HANDOFF.md
-    current fresh-chat boundary
+    fresh-chat read/continuation instructions
 
 docs/
-    durable design
+    durable design/evidence
 
 tests/TESTING_POLICY.md
     verification policy

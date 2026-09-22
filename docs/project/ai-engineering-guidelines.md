@@ -347,6 +347,31 @@ Keep under `docs/`:
 
 Avoid maintaining duplicate manuals in two locations.
 
+### Operational status ownership
+
+For staged workstreams, only `STATUS.json` may contain live operational progress.
+
+Do not duplicate current stage/substep, completion state, exact next pointer, or latest-verification snapshots into README/context/handoff/routing/design documents.
+
+Allowed:
+
+~~~text
+"Operational progress: STATUS.json"
+~~~
+
+Forbidden outside `STATUS.json`:
+
+~~~text
+"Stages X–Y complete"
+"Next: Stage Z"
+"Current pointer: ..."
+"Stage N is in progress"
+~~~
+
+Historical stage/run narratives belong under an explicitly historical location such as `docs/history/`.
+
+A Fast unit guard enforces this rule for the Market Flow routing/context and Local History Viewer README/handoff/context surfaces.
+
 ---
 
 # 12. Project navigation

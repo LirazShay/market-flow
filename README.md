@@ -1,12 +1,10 @@
 # Market Flow
 
-Market Flow הוא repository רחב למחקר ופיתוח של מערכת market-data / analysis / trading infrastructure.
+Market Flow הוא repository רחב למחקר ופיתוח של market-data / analysis / trading infrastructure.
 
-ה-repository אינו שייך ל-workstream אחד. כרגע יש workstream פעיל אחד משמעותי, ובהמשך יתווספו אחרים.
+ה-README הראשי הוא **דלת כניסה יציבה**, לא מקור ל-progress תפעולי.
 
 ## כניסה מהירה
-
-אם נכנסת בפעם הראשונה:
 
 ~~~text
 README.md
@@ -15,45 +13,34 @@ README.md
 → workstream מקומי
    ├── AI_CONTEXT.md
    ├── STATUS.json
-   ├── HANDOFF.md   # אם קיים ורלוונטי
+   ├── HANDOFF.md
    └── files/tests הרלוונטיים
 ~~~
 
-### איפה נמצא מה?
+## איפה נמצא מה?
 
 | צורך | קובץ |
 |---|---|
 | כללי עבודה קבועים ל-AI/agent | AGENTS.md |
 | מטרת Market Flow וה-scope הכללי | PROJECT_CONTEXT.md |
-| איזה workstreams קיימים ומה פעיל | docs/project/workstreams.md |
-| מצב רוחבי של הפרויקט | docs/project/current-state.md |
+| routing בין workstreams | docs/project/workstreams.md |
+| evidence/context רוחבי שאינו micro-status | docs/project/current-state.md |
 | החלטות durable | docs/project/decisions.md |
 | מבנה repository | docs/project/repository-structure.md |
 | Leumi market-data evidence | docs/leumi-api/README.md |
 
-## Workstream פעיל כרגע
+## Operational state ownership
 
-כרגע הפיתוח הפעיל נמצא ב:
+לכל workstream משמעותי יש `STATUS.json` מקומי.
 
-~~~text
-01A — Local History Viewer V1
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
-~~~
+רק הוא רשאי להחזיק:
 
-ה-pointer המדויק תמיד נמצא ב:
+- current stage/substep;
+- completion / in-progress / verification-pending;
+- exact next pointer;
+- latest verification evidence שמגדיר את מצב העבודה.
 
-~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
-~~~
-
-נכון לעדכון האחרון:
-
-~~~text
-Stages 1–12 complete
-Next: Stage 13 — Dynamic sorting
-~~~
-
-אל תשתמש ב-README הראשי כמקור אמת ל-micro-status; הוא רק דלת כניסה.
+README, handoff, context ו-routing docs רשאים **להפנות** ל-`STATUS.json`, אך אינם מעתיקים ממנו snapshot.
 
 ## Repository map
 
@@ -64,22 +51,21 @@ market-flow/
 ├── PROJECT_CONTEXT.md
 │
 ├── docs/
-│   ├── project/          project-wide context / workstreams / decisions
-│   └── leumi-api/        durable Leumi market-data knowledge
+│   ├── project/
+│   └── leumi-api/
 │
 ├── scripts/
-│   └── research/         research / prototypes / evidence
+│   └── research/
 │
-├── src/                  future production code
-└── tests/                future production tests
+├── src/
+└── tests/
 ~~~
 
 ## כללי יסוד
 
 - GitHub repository הוא ה-source of truth, לא היסטוריית chat.
-- כל workstream משמעותי מחזיק context/status מקומי משלו.
-- STATUS.json = operational pointer.
-- ROADMAP.md = plan/order, לא live status.
+- `STATUS.json` = operational state.
+- `ROADMAP.md` = plan/order/scope, לא live status.
 - research code אינו production code.
 - אין לבחור production stack בלי decision מפורש.
 - אין להכניס secrets/session/account data ל-repository הציבורי.

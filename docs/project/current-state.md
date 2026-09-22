@@ -1,16 +1,10 @@
 # Current State — Market Flow
 
-Last updated: 2026-09-22
+השם ההיסטורי של הקובץ נשמר לצורכי navigation, אבל התוכן כאן הוא **project-level durable evidence/context בלבד**.
 
-זהו project-level milestone snapshot. Exact micro-progress שייך ל-STATUS.json של כל workstream.
+הקובץ אינו מחזיק stage number, completion state, next pointer או latest workstream CI snapshot.
 
-## Current phase
-
-~~~text
-Phase 01 — Market Data / Leumi API Research
-~~~
-
-## Verified foundation
+## Durable verified foundation
 
 Leumi market-data research has verified:
 
@@ -20,7 +14,7 @@ Leumi market-data research has verified:
 - full tested snapshot retrieval with 3 × 187 chunks.
 - field coverage/nullability observations.
 - browser table PoC.
-- 40.03-minute polling run:
+- 40.03-minute polling evidence:
   - 481 completed cycles;
   - 0 failed cycles;
   - 1447 HTTP 200 responses;
@@ -33,107 +27,48 @@ docs/leumi-api/
 scripts/research/market-data/leumi/
 ~~~
 
-## Active implementation
-
-~~~text
-01A — Local History Viewer V1
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
-~~~
-
-Verified implementation milestone:
-
-~~~text
-Stages 1–11 complete
-Stage 12 — Cross-tab live refresh: in progress / not complete
-Stage 13 has not started
-~~~
-
-Implemented through this milestone:
+## Prototype architecture currently represented in the repository
 
 ~~~text
 Recorder
-→ dynamic universe + sequential collection
-→ validation
-→ IndexedDB session/universe/cycle persistence
-→ atomic cycles + history + latest + meta
-→ failure diagnostics + heartbeat
-→ same-origin RTL viewer
-→ current table from IndexedDB
-→ BroadcastChannel live refresh
-→ manual refresh fallback
+→ validated market-data cycle
+→ atomic IndexedDB persistence
+→ metadata-only BroadcastChannel notification
+→ same-origin Viewer
+→ viewer re-reads IndexedDB
 ~~~
 
-Latest verification:
+זהו תיאור architecture, לא completion claim.
+
+## Operational state
+
+Routing:
 
 ~~~text
-Fast CI
-Run 35756792160
-136 passed / 0 failed
-
-Historical technical evidence:
-Viewer Checkpoint C
-Run 35756990977
-34 Chromium tests passed / 0 failed
-
-This evidence does not close Stage 12.
+docs/project/workstreams.md
 ~~~
 
-Exact next pointer:
+Exact operational progress:
 
 ~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
+workstream-local STATUS.json
 ~~~
 
-## Production scope not yet started
+Technical continuation context:
 
 ~~~text
-production collector
-production database/history stack
-scanner/ranking
-analysis/signals
-execution
-order/position management
-production UI/monitoring
+workstream-local AI_CONTEXT.md
 ~~~
 
-The browser prototype does not imply a production technology decision.
+אין לשחזר operational state מהקובץ הזה.
 
-## Current unknowns
+## Durable unknowns
 
 - exact provider-side reason/limit behind large GetSecuritiesData 403 responses;
-- behavior beyond the verified polling window and across all market states;
+- behavior beyond verified provider polling windows and across all market states;
 - deeper order-book source/semantics;
 - final production stack;
 - final production persistence;
 - scanner/analysis architecture.
 
-## Navigation
-
-~~~text
-What is active?
-→ docs/project/workstreams.md
-
-Exact active workstream status?
-→ local STATUS.json
-
-Technical continuation context?
-→ local AI_CONTEXT.md
-
-Durable decisions?
-→ docs/project/decisions.md
-~~~
-
-
-## Stage 12 status correction
-
-Stage 12 was previously marked complete too early.
-
-Authoritative state:
-
-~~~text
-Stages 1–11 complete
-Stage 12 in progress / not complete
-Stage 13 not started
-~~~
-
-Existing Stage 12 code and CI runs remain useful technical evidence, but completion must not be inferred from them. Resume by reviewing/completing Stage 12 and then update `STATUS.json` explicitly before moving to Stage 13.
+The browser prototype does not imply a production technology decision.

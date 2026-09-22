@@ -28,23 +28,11 @@ AGENTS.md
 → target files/tests
 ~~~
 
-אין להסתמך על זיכרון מצ'אט קודם כאשר ה-repository יכול לענות.
+Operational progress אינו נשמר במסמך הזה.
 
-## Workstreams
+## Durable research foundation
 
-הרשימה והסטטוס הרוחבי של workstreams נמצאים ב:
-
-~~~text
-docs/project/workstreams.md
-~~~
-
-מצב micro-stage של workstream אינו נשמר במסמך הזה; הוא נשמר ב-STATUS.json המקומי שלו.
-
-## המצב הנוכחי ברמה גבוהה
-
-Phase 01 עוסק ב-Market Data / Leumi API Research.
-
-מחקר ה-foundation כבר הוכיח, בין היתר:
+מחקר Leumi market-data הוכיח, בין היתר:
 
 - MapHeat2 כ-universe/metadata source.
 - GetSecuritiesData כ-detailed market snapshot source.
@@ -52,15 +40,23 @@ Phase 01 עוסק ב-Market Data / Leumi API Research.
 - snapshot שנבדק עם 561 securities.
 - full collection שנבדק באמצעות 3 × 187 באותו snapshot.
 - field coverage.
-- long-running polling test של 40.03 דקות: 481 completed cycles, 0 failed cycles.
+- long-running polling evidence של 40.03 דקות עם 481 completed cycles, 0 failed cycles ו-average cycle של כ-4986 ms.
 
 אלו point-in-time observations, לא provider contracts קבועים.
 
-ה-workstream הפעיל כרגע הוא Local History Viewer V1, אך הוא רק חלק מ-Market Flow ולא הגדרת הפרויקט כולו.
+## Workstreams
 
-## מה עדיין future scope
+רשימת workstreams ונתיבי ה-routing נמצאים ב:
 
-Production workstreams עתידיים כוללים בין היתר:
+~~~text
+docs/project/workstreams.md
+~~~
+
+ה-progress המדויק של workstream נמצא רק ב-`STATUS.json` המקומי שלו.
+
+## Future scope
+
+ה-scope הרחב עשוי לכלול:
 
 ~~~text
 collector
@@ -72,13 +68,13 @@ order/position management
 production UI/monitoring
 ~~~
 
-אין להניח שהם קיימים רק משום שהם ב-scope.
+אין להניח שרכיב קיים רק משום שהוא מופיע ב-scope.
 
 ## Technology discipline
 
 לא נבחר stack סופי לכל המערכת.
 
-קוד JavaScript/IndexedDB/Playwright הנוכחי הוא research/prototype implementation של workstream מסוים, לא הכרעה על stack production עתידי.
+קוד JavaScript/IndexedDB/Playwright תחת research/prototypes הוא implementation מחקרי של workstream מסוים, לא הכרעה על production stack עתידי.
 
 Durable technology/architecture decisions נכנסים ל:
 
@@ -94,20 +90,20 @@ AGENTS.md
     universal working rules
 
 docs/project/workstreams.md
-    project-wide routing / active workstreams
+    workstream routing only
 
 docs/project/current-state.md
-    project-level milestone snapshot
+    durable project evidence/context; no stage pointer
 
 workstream/AI_CONTEXT.md
-    compact technical continuation context
+    compact technical continuation only
 
 workstream/STATUS.json
-    exact current pointer
+    exact operational progress
 
 workstream/ROADMAP.md
     plan/order/scope
 
 workstream/HANDOFF.md
-    fresh-chat boundary summary when useful
+    fresh-chat instructions without live snapshot
 ~~~

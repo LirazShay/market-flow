@@ -1,259 +1,99 @@
 # Recorder Module — Local History Viewer V1
 
-Status:
+Durable component documentation only. Operational progress lives in:
 
 ~~~text
-Stages 7–9 complete and verified — next: Stage 10 viewer bootstrap
+../STATUS.json
 ~~~
 
-התיקייה הזו תכיל את recorder של ה-prototype.
-
-המטרה של Stage 7 היא לקחת את ה-flow שכבר הוכח במחקר:
-
-~~~text
-MapHeat2
-→ dynamic universe
-→ GetSecuritiesData in sequential chunks
-→ full-cycle validation
-→ cycle object
-~~~
-
-ב-Stage 7 עדיין **לא** כותבים ל-IndexedDB. ה-persistence שייך ל-Stage 8.
-
-## Stage 7.1
-
-קבצים:
-
-~~~text
-config.js
-universe-loader.js
-~~~
-
-מוגדרים:
-
-- target cycle interval.
-- delay בין chunks.
-- chunk size שמבוסס על baseline שכבר נבדק.
-- policy לגבי refresh של universe.
-- validation של overrides.
-
-Stage 7.2 מוסיף:
-
-- MapHeat2 count request.
-- full universe request לפי recordCount.
-- validation ל-recordCount ול-records length.
-- validation ל-PaperId חסר/כפול.
-- canonical securityId כמחרוזת.
-- chunk planning לפי config.chunkSize.
-
-אם recordCount משתנה בין קריאת count לקריאה המלאה, הטעינה נכשלת במפורש במקום לקבל universe לא עקבי.
-
-Stage 7.3 מוסיף:
-
-- relative same-origin `GetSecuritiesData` URL.
-- validation ל-securityIds לפני request.
-- HTTP validation.
-- documented response-path validation.
-- validation ל-Key חסר/כפול.
-- exact requested/received membership validation בלי להניח response order.
-- preservation של raw Security records.
-- preservation של `Table.AsOfDate`.
-- chunk timing metadata:
-  - startedAtMs
-  - responseReceivedAtMs
-  - completedAtMs
-  - requestDurationMs
-  - parseDurationMs
-  - durationMs
-
-Stage 7.4 מוסיף:
-
-- sequential fetch של כל chunks.
-- delay רק בין chunks, לא אחרי האחרון.
-- no-overlap בתוך cycle יחיד.
-- validation שה-chunks מכסים בדיוק את universe.
-- validation של requested chunk מול result.
-- validation גלובלי ל-missing/unexpected/duplicate Keys.
-- in-memory complete cycle object בלבד.
-- per-chunk timing summary.
-- per-security metadata שמוכן ל-Stage 8:
-  - securityId
-  - chunkIndex
-  - chunkReceivedAtMs
-  - collectedAtMs
-  - serverAsOfDate
-  - raw data
-
-אם chunk נכשל, ה-cycle נכשל מיד ולא ממשיך ל-chunk הבא.
-
-Stage 7.5 מוסיף:
-
-- start/stop recorder loop.
-- target start-to-start cadence.
-- no-overlap scheduling.
-- immediate retry cadence when a cycle takes longer than the target interval, without overlap.
-- optional universe refresh every cycle.
-- in-memory latest cycle/error state.
-- completed/failed counters.
-- clean stop while waiting or while a cycle is already in flight.
-
-Stage 7.6 מוסיף mocked browser coverage עבור:
-
-- dynamic universe.
-- sequential chunk requests.
-- complete-cycle validation.
-- HTTP failure propagation.
-- missing/duplicate securities.
-- recorder start/stop.
-- no overlapping requests/cycles.
-- latest in-memory state.
-
-עדיין אין:
-
-- DB writes.
-- viewer integration.
-
-## Proven baseline carried forward
-
-~~~text
-CHUNK_SIZE = 187
-CHUNK_DELAY_MS = 1000
-SNAPSHOT_INTERVAL_MS = 3000
-sequential chunk requests
-~~~
-
-חשוב:
-
-`SNAPSHOT_INTERVAL_MS` הוא target cadence בלבד. הוא אינו מבטיח cycle כל 3 שניות.
-
-אין hardcode למספר הניירות; universe size מגיע מ-MapHeat2.
-
-
-## Stage 7 verification
-
-Fast CI:
-
-~~~text
-Run: 35744733541
-104 passed
-0 failed
-~~~
-
-Browser checkpoint:
-
-~~~text
-Run: 35744806678
-13 passed
-0 failed
-Chromium
-~~~
-
-Verified end-to-end with synthetic mocked API data:
+## Responsibility
 
 ~~~text
 MapHeat2
 → dynamic universe
 → sequential GetSecuritiesData chunks
-→ validated complete in-memory cycle
-→ recorder loop
-→ start/stop + no-overlap
+→ exact completeness validation
+→ validated cycle
+→ persistence boundary
+→ diagnostics / notification hooks
 ~~~
 
-Stage 7 intentionally performs no IndexedDB cycle persistence. That begins in Stage 8.
+## Core invariants
 
+- universe size is dynamic; never hardcode 561.
+- canonical security ID is `String(PaperId or Key)`.
+- chunk requests are sequential under the V1 baseline.
+- requested/received/unique/missing/duplicate integrity is validated.
+- a failed chunk fails the cycle; later chunks are not treated as success.
+- successful persistence completes before in-memory success is exposed.
+- failed API/validation/DB work never partially updates `history/latest`.
+- `null`, `0` and `""` remain distinct.
+- full raw Security payloads are preserved for persistence.
 
-## Stage 8.4 persistence integration
-
-The browser recorder now uses persistence as part of its success boundary.
+## Main modules
 
 ~~~text
-load universe
-→ persist universe/session lifecycle
-→ build validated cycle
-→ commit cycle atomically to IndexedDB
-→ only then increment completedCycles / expose latestCycle
+config.js
+universe-loader.js
+securities-chunk-loader.js
+cycle-builder.js
+loop.js
+diagnostics.js
+pure/
 ~~~
 
-A persistence failure follows the same recorder failure path as an API/validation failure.
+Pure deterministic behavior belongs under `pure/` and is covered by fast unit tests.
 
-`MarketFlowRecorderLoop.stop()` keeps the immediate in-memory stop behavior and starts session-stop persistence. Tests or callers that require the durable stop boundary can await:
+Browser/provider adapters remain thin and are covered with deterministic Playwright mocks.
+
+## Timing model
+
+Configuration includes:
 
 ~~~text
-MarketFlowRecorderLoop.waitForStopPersistence()
+chunkSize
+chunkDelayMs
+snapshotIntervalMs
+refreshUniverseEveryCycle
 ~~~
 
+`snapshotIntervalMs` is a target start-to-start cadence, not a guarantee that a cycle finishes within that duration.
 
-## Stage 8 complete
+No-overlap is required: a new cycle must not overlap an in-flight cycle.
 
-Recorder success is now persistence-gated:
+## Persistence boundary
 
 ~~~text
 validated cycle
-→ atomic IndexedDB commit
-→ only then completedCycles/latestCycle in memory
+→ one atomic IndexedDB commit
+→ recorder exposes completed/latest state
+→ metadata notification may be published
 ~~~
 
-Final Stage 8 verification:
+The recorder uses the storage lifecycle/success/failure persistence modules rather than composing separate single-store writes for a successful cycle.
+
+## Diagnostics
+
+Recorder diagnostics include:
+
+- heartbeat;
+- completed/failed counters;
+- persisted `lastError`;
+- failed-cycle diagnostics;
+- normalized browser storage estimate.
+
+Failure diagnostics may update diagnostic stores/meta, but must not make partial market state visible in `history/latest`.
+
+## Tests
 
 ~~~text
-Fast CI
-Run 35752055065
-119 passed / 0 failed
-
-Browser CI
-Run 35752125784
-24 passed / 0 failed
+../tests/unit/
+../tests/automation/specs/recorder-*.spec.js
+../tests/automation/specs/recorder-persistence-integration.spec.js
 ~~~
 
-Verified failure boundaries include DB commit rollback and API failure with no partial cycle/history/latest visibility.
-
-Next planned stage:
+Execution/verification policy:
 
 ~~~text
-Stage 9 — Recorder diagnostics
-~~~
-
-
-## Stage 9 recorder diagnostics
-
-Added diagnostics contracts:
-
-- periodic 5-second heartbeat while a persisted recorder session is running;
-- failed cycle persistence in `cycles + meta` only;
-- persisted failed-cycle counters and lastError;
-- on-demand browser storage estimate;
-- `MarketFlowRecorderLoop.getDiagnostics()`;
-- `MarketFlowRecorderLoop.heartbeatNow()` for an immediate heartbeat.
-
-Failed API/validation/DB cycles never write `history` or `latest`.
-
-When exact failed-cycle counts are unavailable, they remain `null` rather than being guessed.
-
-
-## Stage 9 verification
-
-~~~text
-Fast CI
-Run 35753214911
-124 passed / 0 failed
-
-Browser CI
-Run 35753430439
-26 passed / 0 failed
-~~~
-
-Verified:
-
-- T5 failed-cycle persistence uses `cycles + meta` only;
-- `history` and `latest` remain untouched on failure;
-- unknown failed-cycle counters remain `null` instead of fabricated values;
-- persisted `failedCycles` and `lastError` update immediately;
-- heartbeat can update `recorderState.lastHeartbeatAtMs`;
-- recorder heartbeat interval is 5 seconds while the persisted session is active;
-- on-demand `navigator.storage.estimate()` is normalized into usage/quota/free/ratio diagnostics.
-
-Next planned stage:
-
-~~~text
-Stage 10 — Viewer bootstrap
+../tests/TESTING_POLICY.md
 ~~~

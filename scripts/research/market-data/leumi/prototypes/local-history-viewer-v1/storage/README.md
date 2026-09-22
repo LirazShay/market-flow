@@ -1,39 +1,43 @@
-# Storage Module
+# Storage Module — Local History Viewer V1
 
-Status:
+Durable IndexedDB component documentation only. Operational progress lives in:
 
 ~~~text
-Stages 5, 8 and recorder-diagnostics persistence complete
-Next consumer: Stage 10+ viewer
+../STATUS.json
 ~~~
-
-התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
 
 ## Files
 
 - `schema.js` — database/store/index names and schema metadata.
 - `connection.js` — Promise-based open/close helpers.
-- `upgrade.js` — version 1 object-store/index creation.
-- `read.js` — generic readonly helpers: get/getAll/count.
-- `write.js` — generic readwrite helpers: put/add/deleteRecord/clear.
-- `pure/persistence-records.js` — deterministic Stage 8 record builders; no IndexedDB I/O.
-- `lifecycle-persistence.js` — Stage 8.2 atomic session/universe lifecycle transactions.
-- `successful-cycle-persistence.js` — Stage 8.3 atomic full-cycle transaction across cycles/history/latest/meta.
-- `recorder-diagnostics-persistence.js` — Stage 9 heartbeat + failed-cycle diagnostics transactions.
+- `upgrade.js` — object-store/index creation.
+- `read.js` — generic readonly helpers.
+- `write.js` — generic single-store write helpers.
+- `pure/persistence-records.js` — deterministic record mapping.
+- `lifecycle-persistence.js` — session/universe lifecycle transactions.
+- `successful-cycle-persistence.js` — atomic successful-cycle transaction.
+- `recorder-diagnostics-persistence.js` — heartbeat/failed-cycle diagnostics persistence.
 
-## Current boundary
+## Database contract
 
-Stage 5 כולל כעת foundation בסיסי של IndexedDB:
+Durable schema/source of truth:
 
 ~~~text
-schema.js
-connection.js
-upgrade.js
-read.js
-write.js
+../docs/data-model.md
 ~~~
 
-Write helpers:
+Stores:
+
+~~~text
+meta
+sessions
+universe
+cycles
+latest
+history
+~~~
+
+## Single-store helpers
 
 ~~~text
 put(database, storeName, value)
@@ -42,61 +46,23 @@ deleteRecord(database, storeName, key)
 clear(database, storeName)
 ~~~
 
-כל write helper:
-- משתמש ב-readwrite transaction.
-- בודק שה-store מוכר ל-schema.
-- מחזיר Promise.
-- מחזיר request result רק לאחר transaction complete.
-- מעביר request/transaction error או abort בצורה מפורשת.
+These helpers are low-level single-store transactions.
 
-`clear` הוא helper נמוך-רמה בלבד. אין שום auto-clear ב-V1.
+They must **not** be composed to simulate the successful-cycle atomic boundary.
 
-Atomic multi-store writes של full cycle עדיין **לא** ממומשים כאן; הם שייכים ל-Stage 8.
-
-Important:
-
-~~~text
-put/add/deleteRecord/clear
-= single-store transaction helpers
-~~~
-
-אסור לחבר כמה calls נפרדים של helpers אלה כדי לדמות atomic commit של cycle.
-
-Stage 8 צריך transaction ייעודי אחד עבור:
+## Successful-cycle atomicity
 
 ~~~text
 cycles + history + latest + meta
+→ one readwrite transaction
+→ all succeed or all roll back
 ~~~
 
-וכן persistence מינימלי ל-`sessions` ול-`universe` לפי `docs/data-model.md`.
+The generated cycleId is reused consistently across the cycle/history/latest/meta records.
 
-Source of truth:
+A request/constraint/transaction failure aborts the whole successful-cycle transaction.
 
-~~~text
-../docs/data-model.md
-~~~
-
-
-## Stage 8 progress
-
-~~~text
-Stage 8.1 complete
-Fast CI: 115 passed / 0 failed
-Next: 8.2 session + universe persistence
-~~~
-
-Stage 8.1 now defines deterministic record contracts before IndexedDB I/O:
-
-- universe records;
-- session start/stop records;
-- complete-cycle metadata;
-- history/latest rows;
-- recorderState meta record.
-
-Browser transaction semantics remain deferred to the later Stage 8 persistence substeps and final Stage 8 Chromium checkpoint.
-
-
-## Stage 8.2 transaction contracts
+## Lifecycle persistence
 
 ~~~text
 startSession
@@ -109,111 +75,9 @@ stopSession
     sessions + meta
 ~~~
 
-`persistUniverse` atomically replaces the persisted universe snapshot: it clears stale universe rows and writes the complete validated snapshot plus `meta.universeState` inside one transaction.
+Universe replacement is atomic and preserves full raw MapHeat records.
 
-`universeState` is intentionally minimal:
-
-~~~text
-{
-  key: "universeState",
-  value: {
-    loadedAtMs,
-    recordCount
-  }
-}
-~~~
-
-Full MapHeat records remain in `universe.rawMapHeat`.
-
-
-## Stage 8.2 verification
-
-~~~text
-Fast CI
-Run 35750392640
-116 passed / 0 failed
-
-Chromium
-Run 35750451464
-17 passed / 0 failed
-~~~
-
-Verified real IndexedDB behavior:
-
-- session start commits `sessions + meta`;
-- universe persistence atomically replaces the universe snapshot and updates `meta.universeState`;
-- invalid universe input leaves the previous persisted snapshot unchanged;
-- session stop commits `sessions + meta`;
-- raw MapHeat `null`, `0`, and `""` values survive IndexedDB round-trip.
-
-Next persistence boundary:
-
-~~~text
-Stage 8.3 — one atomic successful-cycle transaction
-cycles + history + latest + meta
-~~~
-
-
-## Stage 8.3 successful-cycle transaction
-
-~~~text
-commitSuccessfulCycle
-→ read and verify persisted recorderState ownership
-→ add cycles row and obtain autoIncrement cycleId
-→ add all history rows
-→ upsert all latest rows
-→ update recorderState
-→ one transaction commit
-~~~
-
-The transaction spans exactly:
-
-~~~text
-cycles + history + latest + meta
-~~~
-
-A request error aborts the whole transaction. No partial new cycle/latest/meta state is committed.
-
-
-## Stage 8.3 verification
-
-~~~text
-Fast CI
-Run 35751181181
-116 passed / 0 failed
-
-Chromium
-Run 35751253126
-21 passed / 0 failed
-~~~
-
-Verified real IndexedDB behavior:
-
-- one transaction spans `cycles + history + latest + meta`;
-- the auto-generated `cycleId` is used consistently across persisted cycle/history/latest/meta state;
-- a second successful cycle preserves old history while replacing latest rows;
-- a forced history `ConstraintError` rolls back the attempted cycle, latest changes and recorderState update;
-- recorder instance ownership is checked before cycle persistence;
-- raw Security values preserve `null`, `0`, and `""`.
-
-Next:
-
-~~~text
-Stage 8.4 — recorder integration
-validated cycle
-→ DB commit
-→ only then in-memory completed/latest state
-~~~
-
-
-## Stage 9 diagnostics persistence verification
-
-~~~text
-Fast CI: 124 passed / 0 failed
-Browser CI: 26 passed / 0 failed
-~~~
-
-`recorder-diagnostics-persistence.js` now implements:
+## Failure diagnostics
 
 ~~~text
 recordHeartbeat
@@ -223,4 +87,22 @@ recordFailedCycle
     cycles + meta
 ~~~
 
-Failed-cycle writes never touch `history` or `latest`.
+Failed-cycle persistence never writes `history` or `latest`.
+
+## Data integrity
+
+- preserve `null != 0 != ""`.
+- preserve full raw Security / MapHeat payloads where defined by the data model.
+- canonical security IDs remain strings.
+- do not silently accept missing/duplicate/unexpected IDs.
+- no automatic retention in V1.
+
+## Tests
+
+~~~text
+../tests/unit/persistence-records.test.js
+../tests/automation/specs/storage-self-tests.spec.js
+../tests/automation/specs/persistence-lifecycle.spec.js
+../tests/automation/specs/successful-cycle-persistence.spec.js
+../tests/automation/specs/recorder-persistence-integration.spec.js
+~~~
