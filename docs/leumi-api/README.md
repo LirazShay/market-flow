@@ -31,10 +31,10 @@
 
 ## קוד מחקר
 
-- `scripts/research/leumi/api-recorder.js` — מקליט Fetch/XHR.
-- `scripts/research/leumi/fetch-all-securities.js` — קורא את כל הניירות ומאמת שלמות.
-- `scripts/research/leumi/show-all-securities-table.js` — proof-of-concept מלא: שתי הקריאות, join והצגה בטבלה.
-- `scripts/research/leumi/analyze-field-coverage.js` — מודד availability/NULL/type/sample עבור כל field ומשווה fields מקבילים בין שתי הקריאות.\n- `scripts/research/leumi/long-running-poll-test.js` — בדיקת polling ממושכת וקונפיגורבילית למדידת יציבות הקריאות לאורך זמן.
+- `scripts/research/market-data/leumi/capture/api-recorder.js` — מקליט Fetch/XHR.
+- `scripts/research/market-data/leumi/collection/fetch-all-securities.js` — קורא את כל הניירות ומאמת שלמות.
+- `scripts/research/market-data/leumi/demos/show-all-securities-table.js` — proof-of-concept מלא: שתי הקריאות, join והצגה בטבלה.
+- `scripts/research/market-data/leumi/tests/field-coverage/analyze-field-coverage.js` — מודד availability/NULL/type/sample עבור כל field ומשווה fields מקבילים בין שתי הקריאות.\n- `scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js` — בדיקת polling ממושכת וקונפיגורבילית למדידת יציבות הקריאות לאורך זמן.
 
 ## עקרון evidence
 
