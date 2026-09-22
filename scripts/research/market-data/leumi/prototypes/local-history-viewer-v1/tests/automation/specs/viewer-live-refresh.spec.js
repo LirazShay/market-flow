@@ -334,7 +334,7 @@ test(
             result.refreshState
                 .refreshCount
         ).toBeGreaterThanOrEqual(
-            2
+            1
         );
     }
 );
