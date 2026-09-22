@@ -112,6 +112,33 @@ test(
                 "utf8"
             );
 
+        expect(
+            bookmarklet.startsWith(
+                "javascript:"
+            )
+        ).toBe(true);
+
+        expect(
+            bookmarklet.includes(
+                "%0A"
+            )
+        ).toBe(false);
+
+        expect(
+            bookmarklet.includes(
+                "window.MarketFlowRuntime"
+            )
+        ).toBe(true);
+
+        expect(
+            Buffer.byteLength(
+                bookmarklet,
+                "utf8"
+            )
+        ).toBeLessThanOrEqual(
+            256 * 1024
+        );
+
         await installLeumiApiMocks(
             page,
             "success"
