@@ -12,6 +12,9 @@
     const viewer =
         window.MarketFlowViewerBootstrap;
 
+    const debugBundle =
+        window.MarketFlowDebugBundle;
+
     if (!recorder) {
         throw new Error(
             "MarketFlowRecorderLoop is not loaded."
@@ -21,6 +24,12 @@
     if (!viewer) {
         throw new Error(
             "MarketFlowViewerBootstrap is not loaded."
+        );
+    }
+
+    if (!debugBundle) {
+        throw new Error(
+            "MarketFlowDebugBundle is not loaded."
         );
     }
 
@@ -151,12 +160,32 @@
         return getSnapshot();
     }
 
+    async function createDebugBundle(
+        options
+    ) {
+        return await debugBundle
+            .create(
+                options
+            );
+    }
+
+    async function downloadDebugBundle(
+        options
+    ) {
+        return await debugBundle
+            .download(
+                options
+            );
+    }
+
     window.MarketFlowRuntime =
         Object.freeze({
             launch,
             stop,
             closeViewer,
-            getSnapshot
+            getSnapshot,
+            createDebugBundle,
+            downloadDebugBundle
         });
 
     window.MarketFlowRuntime
