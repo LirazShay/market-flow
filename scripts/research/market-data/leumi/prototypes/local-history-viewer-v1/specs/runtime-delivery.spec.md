@@ -100,6 +100,8 @@ MarketFlowRuntime.launch({ recorderConfig })
 MarketFlowRuntime.stop(reason)
 MarketFlowRuntime.closeViewer()
 MarketFlowRuntime.getSnapshot()
+MarketFlowRuntime.createDebugBundle(options)
+MarketFlowRuntime.downloadDebugBundle(options)
 ~~~
 
 Initial generated runtime execution auto-launches once.
