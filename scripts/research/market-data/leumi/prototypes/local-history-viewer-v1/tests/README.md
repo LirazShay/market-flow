@@ -49,3 +49,54 @@ databaseName
 databaseVersion
 checks[]
 ~~~
+
+
+---
+
+## Stage 6.2
+
+קובץ:
+
+~~~text
+storage-fixture-roundtrip-self-test.js
+~~~
+
+מטרה:
+
+- להכניס fixture קטן ל-`meta`.
+- לבדוק `add`.
+- לבדוק `put`.
+- לבדוק `get`.
+- לבדוק `getAll`.
+- לבדוק `count`.
+- לוודא round-trip מדויק של:
+  - `null`
+  - `0`
+  - `""`
+
+Dependencies, לפי הסדר:
+
+~~~text
+../storage/schema.js
+../storage/connection.js
+../storage/upgrade.js
+../storage/read.js
+../storage/write.js
+./storage-fixture-roundtrip-self-test.js
+~~~
+
+הרצה עתידית:
+
+~~~text
+await MarketFlowStorageFixtureSelfTest.run()
+~~~
+
+כל fixture מקבל key ייחודי עם prefix:
+
+~~~text
+__market_flow_self_test_stage_6_2__:
+~~~
+
+Stage 6.2 בכוונה **לא מוחק** את ה-fixture בסיום.
+
+Stage 6.3 ינקה רק records עם prefix זה ויאמת reopen/persistence.
