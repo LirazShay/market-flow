@@ -1,428 +1,274 @@
-# AGENTS.md — הוראות קבועות ל-AI שעובד על Market Flow
+# AGENTS.md — Fast AI Operating Rules for Market Flow
 
-מסמך זה הוא **חובה** לכל AI, agent או מפתח שעובד על המאגר.
+This file is the **mandatory compact entry point** for any AI/agent working in this repository.
 
-המטרה היא שהפרויקט יוכל להמשיך לאורך זמן ובצ'אטים שונים בלי להסתמך על זיכרון של שיחה קודמת.
+Goal: preserve correctness **without forcing a full-repository reread on every small continuation**.
 
----
-
-## 1. לפני כל שינוי
-
-לפני כתיבת קוד:
-
-1. קרא את `AGENTS.md` במלואו.
-2. קרא את `PROJECT_CONTEXT.md`.
-3. קרא את `docs/project/current-state.md`.
-4. קרא את `README.md`.
-5. קרא את התיעוד הרלוונטי תחת `docs/`.
-6. בדוק את הקוד הקיים הקשור למשימה.
-7. בדוק את `docs/project/decisions.md` כדי לא לפתוח מחדש החלטה קיימת בלי סיבה.
-8. בדוק מה כבר הוכח בפועל ומה עדיין בגדר השערה.
-9. אל תשכתב פתרון קיים שעובד בלי סיבה ברורה.
-
-המאגר עצמו הוא ה-source of truth. אין להסתמך על זיכרון משיחה קודמת כאשר המידע נמצא בפרויקט.
+The repository is the source of truth.
 
 ---
 
-## 2. עובדים בצעדים קטנים מאוד
+## 1. Choose the correct context depth
 
-הפרויקט נבנה **micro-step by micro-step**.
+### Normal continuation inside an existing workstream
 
-כלל עבודה:
-
-> לבצע רק את השלב שהתבקש כרגע, להוכיח שהוא עובד, לתעד אותו, ורק אחר כך להתקדם.
-
-אין:
-
-- לקפוץ כמה שלבים קדימה.
-- להוסיף שרת, DB, framework או abstraction לפני שיש בהם צורך.
-- לבנות architecture גדולה מראש.
-- להוסיף "שיפורים" שלא התבקשו רק כי הם עשויים להיות שימושיים בעתיד.
-
-אם יש רעיון לשלב עתידי, אפשר לתעד אותו כ-`TODO` או `Future`, אבל לא לממש אותו בלי בקשה.
-
-### פירוק שלבים לתת-שלבים
-
-גם כאשר ה-Roadmap מכיל Stage גדול, אין לבצע את כולו בהודעה אחת כברירת מחדל.
-
-יש לפרק כל Stage ל-micro-substeps קטנים, למשל:
+If the workstream contains:
 
 ~~~text
-Stage 4
-├── 4.1
-├── 4.2
-├── 4.3
-└── 4.4
+AI_CONTEXT.md
+STATUS.json
 ~~~
 
-כאשר המשתמש כותב **"תמשיך לשלב הבא"**, ברירת המחדל היא:
+read only:
 
-> להתקדם במנה קטנה אחת של עבודה, ולא להשלים Stage גדול שלם בלי צורך.
+1. `AI_CONTEXT.md`
+2. `STATUS.json`
+3. files being changed
+4. directly relevant tests
 
-### איזון בין פיצול ליעילות
+Do **not** reread the full project documentation by default.
 
-אין להפוך micro-steps לקטנים מדי באופן שיוצר יותר overhead מעבודה ממשית.
+### Escalate to broader context only when needed
 
-מותר ואף רצוי **לחבר כמה תתי-שלבים סמוכים באותה הודעה** כאשר כל התנאים הבאים מתקיימים:
+Read wider project/design/docs when one of these is true:
 
-- הם עוסקים באותו נושא ובאותו component.
-- אין צורך במשוב מהמשתמש בין תת-שלב אחד לבא אחריו.
-- אין נקודת בדיקה/החלטה אמיתית שמצדיקה עצירה באמצע.
-- החיבור לא יוצר שינוי גדול, מסוכן או קשה לסקירה.
-- ניתן לבדוק את כל הקבוצה יחד בצורה ברורה.
-- החיבור חוסך זמן משמעותי של tool/Git overhead.
+- entering a new/different workstream;
+- `AI_CONTEXT.md` / `STATUS.json` is missing or stale;
+- changing architecture, schema, public behavior, or a durable decision;
+- resolving a contradiction;
+- re-verifying external API evidence;
+- touching a cross-cutting project concern.
 
-דוגמה טובה לחיבור:
-
-~~~text
-7.2 + 7.3
-Universe loader + single chunk fetch
-~~~
-
-אם שניהם קטנים, תלויים ישירות זה בזה, ואין ערך אמיתי לעצור ביניהם.
-
-דוגמה שלא לחבר:
-
-~~~text
-Schema migration
-+
-live polling loop
-+
-viewer UI
-~~~
-
-אלה boundaries שונים ודורשים בדיקה נפרדת.
-
-כלל אצבע:
-
-~~~text
-Prefer a natural verification boundary,
-not an arbitrary numbering boundary.
-~~~
-
-כלומר:
-- אם תת-שלב אחד הוא מספיק משמעותי בפני עצמו → עצור אחריו.
-- אם כמה תתי-שלבים הם זעירים ורק יחד יוצרים יחידה שניתן באמת לבדוק → בצע אותם יחד.
-- בדרך כלל לא לחבר יותר מ-2–3 תתי-שלבים בלי סיבה טובה.
-
-כל יחידת עבודה, גם אם כוללת כמה תתי-שלבים, צריכה להיות קצרה מספיק כדי:
-- להסתיים בזמן סביר.
-- להיות קלה לבדיקה.
-- ליצור שינוי ברור ב-Git.
-- לא לערבב נושאים לא קשורים.
-
-אם Stage עדיין לא מחולק לתת-שלבים, יש לפרק אותו ב-Roadmap, ואז לבחור את **קבוצת המיקרו-שלבים הטבעית הקטנה ביותר** שכדאי לבצע יחד.
-
-אין להמשיך אוטומטית מעבר ל-boundary הטבעי הזה באותה הודעה.
-
----
-
-## 3. כל דבר חדש חייב להיות מתועד
-
-כל שינוי משמעותי חייב להשאיר אחריו תיעוד בתוך ה-repository.
-
-כאשר מתגלה מידע חדש על API, flow, field, limitation או behavior:
-
-- עדכן את המסמך הרלוונטי תחת `docs/`.
-- אם אין מסמך מתאים, צור מסמך חדש.
-- ציין מה **Verified**, מה **Inferred**, ומה **Unknown**.
-- שמור דוגמת response מצומצמת כאשר היא מועילה להבנת ה-schema.
-- תעד תוצאות בדיקה בפועל, כולל ערכים ומספרים חשובים.
-
-אין להשאיר ידע חשוב רק בתוך chat, console output או בראש של ה-AI.
-
----
-
-## 4. הבחנה מחייבת: Verified / Inferred / Unknown
-
-אסור להציג הנחה כאילו היא עובדה.
-
-השתמש בשלוש רמות:
-
-### Verified
-
-משהו שנבדק בפועל ונצפה עובד.
-
-דוגמה:
-
-~~~text
-GetSecuritiesData with 187 IDs → HTTP 200 → 187 records
-~~~
-
-### Inferred
-
-מסקנה הגיונית מהתנהגות שנצפתה, אבל לא אומתה ישירות.
-
-דוגמה:
-
-~~~text
-MapHeat2 appears to define the current result set and ordering.
-~~~
-
-### Unknown
-
-משהו שעדיין לא הוכח.
-
-דוגמה:
-
-~~~text
-The exact reason for HTTP 403 above a certain request size is unknown.
-~~~
-
-כאשר ניתן, יש לכתוב במפורש מה נדרש כדי להפוך Inferred ל-Verified.
-
----
-
-## 5. קוד מחקר מול קוד מוצר
-
-יש להפריד בין:
-
-~~~text
-scripts/research/
-~~~
-
-לבין קוד מוצר עתידי.
-
-קוד תחת `scripts/research/` יכול להיות probe, recorder או proof-of-concept.
-
-קוד מוצר צריך להגיע רק לאחר שה-flow הוכח והוגדר.
-
-אין להפוך script ניסויי ל-production code בלי refactor, tests ותיעוד מתאים.
-
----
-
-## 6. מדיניות בדיקות
-
-הבדיקות צריכות להגן על **behavior חשוב מבחוץ**, ולא על implementation details.
-
-העדפה:
-
-- Public behavior
-- Inputs / outputs
-- HTTP contracts
-- Integration boundaries
-- Observable results
-
-להימנע ככל האפשר מ:
-
-- בדיקת private methods
-- coupling למימוש פנימי
-- tests שנשברים בגלל refactor שאינו משנה behavior
-
-כאשר מתגלה bug:
-
-1. קודם ליצור test שמדגים את הבעיה, כאשר הדבר מעשי.
-2. לוודא שה-test נכשל.
-3. לתקן את הקוד.
-4. לוודא שה-test עובר.
-5. לתעד את ה-bug ואת הפתרון אם הוא מהותי.
-
-
-### בדיקות בשתי שכבות: CI אוטומטי + אימות חי
-
-ברירת המחדל בפרויקט היא:
-
-~~~text
-Automated CI first
-→ controlled mocks for external APIs
-→ real browser APIs where possible
-→ live provider verification only after CI passes
-~~~
-
-כללים:
-
-- לפני שמבקשים מהמשתמש לבצע בדיקה ידנית, יש למצות בדיקות אוטומטיות שניתן להריץ בלי session אמיתי.
-- עבור קוד browser יש להעדיף browser אמיתי ב-CI, למשל Chromium דרך Playwright, כאשר זה מעשי.
-- APIs חיצוניים/פרטיים כמו Leumi צריכים להיות mocked ב-CI באמצעות fixtures מצומצמים ולא באמצעות credentials.
-- IndexedDB, DOM ו-BroadcastChannel ייבדקו ב-browser אמיתי ב-CI כאשר אפשר, ולא ב-mock אם אין צורך.
-- בדיקות live מול provider הן שכבת אימות נוספת ולא תחליף ל-CI.
-- אין להכניס cookies, session tokens או account data ל-GitHub Actions.
-- כל feature חדש צריך להוסיף/לעדכן את שכבת ה-CI הרלוונטית לפני שהוא נחשב Complete, כאשר הבדיקה ניתנת לאוטומציה.
-- אם behavior ניתן לבדיקה רק מול provider אמיתי, יש לסמן זאת במפורש כ-`Live verification pending`.
-- Node/Playwright מותר כ-test tooling עבור browser prototype ואינו מהווה בחירה ב-production stack.
-
----
-
-## 7. שגיאות חייבות להיות ברורות
-
-אין להסתיר תקלות.
-
-אסור:
-
-~~~js
-try {
-    // ...
-} catch {
-}
-~~~
-
-ללא סיבה מתועדת היטב.
-
-כאשר פעולה נכשלת, יש לספק מידע שימושי:
-
-- איזה שלב נכשל.
-- איזה endpoint / component נכשל.
-- HTTP status כאשר רלוונטי.
-- expected vs actual.
-- exception/message המקורי כאשר הוא בטוח להצגה.
-
-עדיף לעצור עם שגיאה ברורה מאשר להמשיך עם data חלקי כאילו הכול תקין.
-
----
-
-## 8. Assertions ובדיקות שלמות ל-data
-
-בכל collection או ingestion משמעותי יש לבדוק, כאשר אפשר:
-
-- מספר requested.
-- מספר received.
-- unique count.
-- duplicates.
-- missing IDs.
-- response structure.
-
-אין להסתפק ב-"נראה שעבד".
-
----
-
-## 9. ניווט בפרויקט
-
-מסמכי ה-context המשותפים לכל ה-workstreams:
+Then read only the relevant subset, such as:
 
 ~~~text
 PROJECT_CONTEXT.md
 docs/project/current-state.md
-docs/project/system-scope.md
 docs/project/decisions.md
-docs/project/chat-map.md
-docs/project/repository-structure.md
+relevant design/API docs
 ~~~
 
-כאשר מצב הפרויקט משתנה באופן מהותי, יש לעדכן את `current-state.md`.
-
-כאשר מתקבלת החלטה ארכיטקטונית/טכנית/התנהגותית שחשוב לא לפתוח מחדש, יש להוסיף אותה ל-`decisions.md`.
-
-כאשר נפתח workstream/chat משמעותי חדש, יש לעדכן את `chat-map.md`.
+Do not mechanically read every project file.
 
 ---
 
-## 10. תיעוד API של לאומי
+## 2. Work in natural verification batches
 
-ה-source of truth הנוכחי נמצא תחת:
+The user often writes:
 
 ~~~text
-docs/leumi-api/
+תמשיך לשלב הבא
 ~~~
 
-כאשר משנים או לומדים משהו חדש על לאומי:
+Interpret this as:
 
-- `overview/api-flow.md` — flow בין endpoints.
-- `overview/api-usage-guide.md` — המלצות עבודה.
-- `endpoints/mapheat2.md` — MapHeat2.
-- `endpoints/get-securities-data.md` — GetSecuritiesData.
-- `fields/field-reference-he.md` — פירוש שדות.
-- `fields/field-availability.md` — coverage/nullability.
-- `samples/` — דוגמאות response מצומצמות.
+> advance one **natural, reviewable work batch**.
 
-תיעוד שמסביר script מסוים, איך מריצים אותו, configuration שלו ותוצאות raw של הרצה נשמר ליד הקוד עצמו תחת `scripts/research/...`. אין לשכפל אותו תחת `docs/`.
+A batch may include 1–3 adjacent substeps when:
 
-קוד מחקר:
+- they belong to the same component;
+- there is no meaningful user decision between them;
+- they can be tested together;
+- combining them reduces tool/Git overhead;
+- the resulting change remains easy to review.
+
+Prefer:
 
 ~~~text
-scripts/research/market-data/leumi/
+natural verification boundary
+over
+arbitrary numbering boundary
 ~~~
 
----
+Do not automatically continue past that boundary.
 
-## 11. אין לשמור secrets
-
-אין להכניס ל-Git:
-
-- Cookies
-- Session tokens
-- Authorization headers
-- מספרי חשבון
-- credentials
-- מידע אישי שלא נדרש
-- dumps מלאים שעלולים להכיל מידע רגיש
-
-דוגמאות API צריכות להיות מצומצמות וללא authentication/session data.
+Do not jump into unrelated future stages.
 
 ---
 
-## 12. אל תנחש schema
+## 3. Fast status files are operational state
 
-כאשר API משתנה או מופיע שדה חדש:
+For workstreams using fast context:
 
-- אל תמציא type או משמעות.
-- תעד raw example.
-- בדוק כמה דוגמאות אם צריך.
-- סמן משמעות לא ודאית כ-`Unknown` או `Inferred`.
+~~~text
+AI_CONTEXT.md
+STATUS.json
+~~~
 
-אם שם השדה נראה ברור אבל אין אימות מלא, ציין זאת.
+Rules:
 
----
+- `AI_CONTEXT.md` = compact human/AI working context.
+- `STATUS.json` = machine-readable current pointer.
+- update `STATUS.json` on normal implementation progress;
+- update `AI_CONTEXT.md` only when current focus, invariants, or relevant working set changes;
+- update `ROADMAP.md` at meaningful stage/substage boundaries, not after every tiny edit.
 
-## 13. אל תשבור flow שעובד
-
-לפני שינוי script שכבר הוכח:
-
-1. להבין מה הוא עושה.
-2. לשמור את ה-behavior הקיים.
-3. להוסיף validation לפני refactor כאשר אפשר.
-4. לא לשנות naming/structure ללא צורך אם הדבר מקשה להשוות לגרסה שעבדה.
-
-במיוחד בקוד browser/research, עדיף שינוי קטן וברור על rewrite מלא.
+If fast context conflicts with a durable design/decision document:
+1. inspect the authoritative document;
+2. resolve the conflict;
+3. update the fast context in the same work batch.
 
 ---
 
-## 14. Logging
+## 4. Testing policy
 
-כאשר נבנים רכיבים מתמשכים, ה-logging צריך לאפשר להבין מה קרה בלי debugging אקראי.
+Tests should protect observable/public behavior, not private implementation details.
 
-מינימום שימושי:
+Default strategy:
 
-- timestamp
-- component/step
-- operation
-- result
-- duration כאשר רלוונטי
-- error details כאשר יש כשל
+~~~text
+Automated CI first
+→ controlled mocks for external APIs
+→ real browser APIs where practical
+→ live provider verification after CI passes
+~~~
 
-אין להציף את הלוג ללא צורך; המטרה היא traceability.
+For browser work:
+- prefer Chromium/Playwright;
+- use real IndexedDB/DOM/BroadcastChannel when practical;
+- mock Leumi endpoints with deterministic sanitized fixtures;
+- never store Leumi session data/credentials in CI.
 
----
+If a behavior can only be verified live, mark it:
 
-## 15. Definition of Done לכל micro-step
+~~~text
+Live verification pending
+~~~
 
-שלב נחשב גמור רק כאשר כל מה שרלוונטי ממנו מתקיים:
-
-- [ ] הקוד רץ.
-- [ ] התוצאה נבדקה בפועל או באמצעות test.
-- [ ] אין שגיאה ידועה שמוסתרת.
-- [ ] נוספו validations מתאימים.
-- [ ] עודכן התיעוד.
-- [ ] עובדות חדשות מסומנות כ-Verified/Inferred/Unknown.
-- [ ] אין secrets בקוד או בתיעוד.
-- [ ] ה-repository נשאר בנקודת מצב מובנת ויציבה.
+Detailed testing guidance:
+`docs/project/ai-engineering-guidelines.md`
 
 ---
 
-## 16. מה לכתוב בסיום כל משימה
+## 5. Data correctness rules
 
-בסיום שינוי, ה-AI צריך לדווח בקצרה:
+Never silently accept partial/corrupt data.
 
-1. מה השתנה.
-2. אילו קבצים נוספו/שונו.
-3. מה נבדק בפועל.
-4. האם יש משהו שעדיין Unknown.
-5. לא להציע או לבצע את השלב הבא אלא אם המשתמש ביקש.
+Validate where relevant:
+
+- requested count;
+- received count;
+- unique count;
+- duplicates;
+- missing IDs;
+- response structure.
+
+Preserve:
+
+~~~text
+null != 0 != ""
+~~~
+
+Do not guess unknown schema semantics.
+
+Use:
+
+~~~text
+Verified
+Inferred
+Unknown
+~~~
+
+for material factual claims/evidence.
 
 ---
 
-## 17. עקרון עליון
+## 6. Preserve proven behavior
 
-העדיפות בפרויקט היא:
+Before modifying something already verified:
+
+- understand its observable behavior;
+- keep that behavior unless intentionally changing it;
+- prefer small changes over rewrites;
+- add/extend tests when practical.
+
+Do not introduce architecture/frameworks/abstractions without a demonstrated need.
+
+---
+
+## 7. Documentation cadence
+
+Do **not** update every document on every tiny implementation edit.
+
+### Normal implementation batch
+
+Usually update:
+
+~~~text
+code
+tests
+STATUS.json
+~~~
+
+### Meaningful stage boundary
+
+Also update:
+
+~~~text
+ROADMAP.md
+component README when useful
+AI_CONTEXT.md if focus/working set changed
+~~~
+
+### Durable project decision
+
+Update:
+
+~~~text
+docs/project/decisions.md
+~~~
+
+### Meaningful project/workstream milestone
+
+Update:
+
+~~~text
+docs/project/current-state.md
+~~~
+
+Code-specific documentation stays next to the code.
+Cross-cutting/domain knowledge stays under `docs/`.
+
+---
+
+## 8. Security
+
+Never commit:
+
+- cookies;
+- session tokens;
+- authorization headers;
+- credentials;
+- account numbers;
+- unnecessary private/personal data;
+- sensitive raw dumps.
+
+Use sanitized fixtures/examples.
+
+---
+
+## 9. Completion standard
+
+A work batch is done when the relevant items are true:
+
+- code/change is valid;
+- available automated tests pass;
+- live-only verification is explicitly marked pending when applicable;
+- no known failure is hidden;
+- integrity validations are present where needed;
+- status/documentation is updated at the correct cadence;
+- repository remains in a clear state.
+
+At the end, report briefly:
+
+1. what changed;
+2. files added/changed;
+3. what was tested;
+4. what remains pending/unknown.
+
+---
+
+## 10. Priority order
 
 ~~~text
 Correctness
@@ -430,7 +276,32 @@ Correctness
 → Testability
 → Documentation
 → Simplicity
-→ Speed of adding features
+→ Speed
 ~~~
 
-עדיף שלב קטן, ברור, מתועד ומוכח מאשר הרבה קוד שקשה לדעת אם הוא באמת עובד.
+Efficiency matters, but not at the cost of data integrity.
+
+---
+
+## Detailed rules
+
+For deeper guidance on:
+
+- evidence classification;
+- research vs production;
+- testing philosophy;
+- error handling;
+- data-integrity assertions;
+- documentation ownership;
+- Leumi documentation map;
+- schema discipline;
+- logging;
+- Definition of Done;
+
+read:
+
+~~~text
+docs/project/ai-engineering-guidelines.md
+~~~
+
+Only read that file when the current task needs those details.
