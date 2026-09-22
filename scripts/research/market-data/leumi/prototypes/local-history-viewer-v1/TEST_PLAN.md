@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 4.1 + Stage 4.2 + Stage 4.3 + Stage 4.4 complete
+Stage 4.1 + Stage 4.2 + Stage 4.3 + Stage 4.4 + Stage 4.5 complete
 ~~~
 
 המסמך נבנה בהדרגה. כרגע מוגדר רק תת-השלב הראשון.
@@ -1029,3 +1029,245 @@ BroadcastChannel failure does not destroy usability
 ~~~
 
 Storage-growth/integrated long-run planning אינו חלק מ-Stage 4.4.
+
+
+---
+
+# Stage 4.5 — Storage Growth + Integrated Test Plan
+
+מטרה: להגדיר איך נמדוד בפועל את קצב גדילת ה-IndexedDB ואיך נאמת שה-recorder, persistence וה-viewer עובדים יחד לאורך זמן.
+
+## T4.5.1 — Baseline storage measurement
+
+לפני תחילת recorder:
+
+נמדוד:
+
+~~~text
+navigator.storage.estimate().usage
+navigator.storage.estimate().quota
+history count
+latest count
+cycles count
+~~~
+
+Pass criteria:
+
+- baseline נשמר בדוח.
+- אין הסתמכות על quota תיאורטי בלבד.
+
+---
+
+## T4.5.2 — Fixed-duration storage run
+
+הרצה ראשונית מתוכננת:
+
+~~~text
+10 minutes
+~~~
+
+בסוף נמדוד שוב:
+
+~~~text
+usage
+history count
+latest count
+cycles count
+completed cycles
+failed cycles
+~~~
+
+נחשב:
+
+~~~text
+bytes added
+rows added
+bytes / history row
+MB / minute
+rows / minute
+~~~
+
+---
+
+## T4.5.3 — Growth consistency
+
+אם הקצב נשאר קרוב ל-baseline של collector:
+
+~~~text
+~1 full cycle every ~5 seconds
+~561 history rows per complete cycle
+~~~
+
+נבדוק שה-history row count תואם בקירוב:
+
+~~~text
+completedCycles × universeSize
+~~~
+
+Pass criteria:
+
+- אין growth מסתורי מעבר לנתונים המצופים.
+- latest נשאר סביב universe size ולא גדל בכל cycle.
+- history בלבד גדל באופן מצטבר.
+
+---
+
+## T4.5.4 — Latest bounded-size invariant
+
+לאחר ריצה ממושכת:
+
+~~~text
+latest count == current universe count
+~~~
+
+Pass criteria:
+
+- latest אינו צובר versions.
+- כל securityId מופיע פעם אחת בלבד.
+
+---
+
+## T4.5.5 — Integrated recorder + viewer run
+
+במהלך recorder פעיל:
+
+1. viewer פתוח.
+2. current table מתעדכנת.
+3. sorting מופעל על עמודה.
+4. נכנסים ל-security detail.
+5. history נטענת.
+6. חוזרים לטבלה.
+7. recorder ממשיך ברקע.
+
+Pass criteria:
+
+- אין recorder failure בגלל viewer activity.
+- viewer נשאר usable.
+- current state ממשיך להתקדם.
+- history ממשיך להצטבר.
+- sort state אינו נשבר.
+
+---
+
+## T4.5.6 — Integrated reload during recording
+
+באמצע הריצה:
+
+1. reload viewer.
+2. close viewer.
+3. reopen viewer.
+
+Pass criteria:
+
+- recorder לא נעצר.
+- DB ממשיך לגדול.
+- viewer החדש נטען מה-state הקיים.
+- latest וה-history נשארים עקביים.
+
+---
+
+## T4.5.7 — Long-run validation counters
+
+בכל report נרשום:
+
+~~~text
+runtimeMinutes
+cyclesCompleted
+cyclesFailed
+historyRows
+latestRows
+universeRows
+storageUsageBytes
+storageQuotaBytes
+averageCycleDurationMs
+lastError
+~~~
+
+Pass criteria:
+
+- failed cycles מפורטים.
+- lastError נשמר אם קיים.
+- אין report "success" אם יש data-integrity failure.
+
+---
+
+## T4.5.8 — Capacity estimate
+
+רק אחרי מדידה אמיתית נחשב:
+
+~~~text
+MB / minute
+MB / hour
+estimated hours until selected safety threshold
+~~~
+
+אין להסיק capacity ממספר rows בלבד.
+
+ה-estimate יהיה מסומן כ:
+
+~~~text
+Measured from this run
+~~~
+
+ולא כ-browser guarantee.
+
+---
+
+## T4.5.9 — No automatic retention during V1 test
+
+במהלך בדיקות V1:
+
+~~~text
+no auto-delete
+no auto-truncate
+no hidden cleanup
+~~~
+
+Pass criteria:
+
+- growth measurement מייצג את המודל האמיתי.
+- כל deletion נעשה רק בפעולה מפורשת.
+
+---
+
+## T4.5.10 — Integrated report artifact
+
+כל integrated run משמעותי יישמר ליד prototype:
+
+~~~text
+reports/YYYY-MM-DD-HHMM-integrated-v1.md
+~~~
+
+ה-report יכיל:
+
+- config.
+- runtime.
+- browser storage usage.
+- row counts.
+- cycle counts.
+- failures.
+- viewer actions tested.
+- pass/fail per integrated scenario.
+- known limitations.
+
+---
+
+# Stage 4.5 completion rule
+
+Stage 4.5 נחשב מתוכנן כאשר implementation עתידי יכול למדוד ולהוכיח:
+
+~~~text
+actual IndexedDB growth
+bytes per row
+MB per minute
+latest remains bounded
+history growth matches completed cycles
+recorder + viewer coexist
+reload/close/reopen do not stop recorder
+integrated diagnostics remain visible
+capacity estimate is evidence-based
+no hidden retention
+integrated report is reproducible
+~~~
+
+לא מבצעים עדיין את המדידות עצמן. המדידה בפועל תבוצע בשלבי implementation/testing המאוחרים יותר.
