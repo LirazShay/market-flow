@@ -152,3 +152,28 @@ __market_flow_self_test_stage_6_2__:
 הבדיקה לא משתמשת ב-`clear()` ולכן אינה מוחקת records אחרים מה-`meta`.
 
 אם לא קיים fixture של Stage 6.2, הבדיקה נכשלת במפורש ומבקשת להריץ קודם את Stage 6.2.
+
+
+---
+
+## CI automation direction
+
+ה-self-tests שבתיקייה נועדו לשמש בשני מצבים:
+
+~~~text
+Manual browser execution
++
+Automated Chromium execution in GitHub Actions
+~~~
+
+היעד הוא שלא נבקש בדיקה ידנית עבור behavior שניתן להוכיח ב-CI.
+
+ב-CI:
+
+- IndexedDB אמיתי של Chromium.
+- browser APIs אמיתיים כאשר אפשר.
+- Leumi endpoints mocked.
+- fixtures deterministic.
+- no credentials/session data.
+
+לאחר שה-CI עובר, הבדיקה הידנית באתר לאומי משמשת רק לאימות integration אמיתי מול provider.
