@@ -217,6 +217,30 @@ scripts/research/
 4. לוודא שה-test עובר.
 5. לתעד את ה-bug ואת הפתרון אם הוא מהותי.
 
+
+### בדיקות בשתי שכבות: CI אוטומטי + אימות חי
+
+ברירת המחדל בפרויקט היא:
+
+~~~text
+Automated CI first
+→ controlled mocks for external APIs
+→ real browser APIs where possible
+→ live provider verification only after CI passes
+~~~
+
+כללים:
+
+- לפני שמבקשים מהמשתמש לבצע בדיקה ידנית, יש למצות בדיקות אוטומטיות שניתן להריץ בלי session אמיתי.
+- עבור קוד browser יש להעדיף browser אמיתי ב-CI, למשל Chromium דרך Playwright, כאשר זה מעשי.
+- APIs חיצוניים/פרטיים כמו Leumi צריכים להיות mocked ב-CI באמצעות fixtures מצומצמים ולא באמצעות credentials.
+- IndexedDB, DOM ו-BroadcastChannel ייבדקו ב-browser אמיתי ב-CI כאשר אפשר, ולא ב-mock אם אין צורך.
+- בדיקות live מול provider הן שכבת אימות נוספת ולא תחליף ל-CI.
+- אין להכניס cookies, session tokens או account data ל-GitHub Actions.
+- כל feature חדש צריך להוסיף/לעדכן את שכבת ה-CI הרלוונטית לפני שהוא נחשב Complete, כאשר הבדיקה ניתנת לאוטומציה.
+- אם behavior ניתן לבדיקה רק מול provider אמיתי, יש לסמן זאת במפורש כ-`Live verification pending`.
+- Node/Playwright מותר כ-test tooling עבור browser prototype ואינו מהווה בחירה ב-production stack.
+
 ---
 
 ## 7. שגיאות חייבות להיות ברורות
