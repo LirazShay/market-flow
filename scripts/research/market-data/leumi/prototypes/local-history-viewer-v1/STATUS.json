@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "8.2",
     "title": "Session + universe persistence",
-    "status": "next"
+    "status": "browser-verification-pending"
   },
   "stages": [
     {
@@ -86,7 +86,7 @@
       "status": "in-progress",
       "substeps": {
         "8.1": "complete-fast-ci-verified",
-        "8.2": "planned — session + universe persistence",
+        "8.2": "implemented-browser-verification-pending",
         "8.3": "planned — atomic successful-cycle transaction",
         "8.4": "planned — recorder integration + persistence failure/rollback tests"
       }

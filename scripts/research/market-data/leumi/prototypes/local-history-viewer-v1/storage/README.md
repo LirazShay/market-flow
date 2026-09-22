@@ -17,6 +17,7 @@ Stage 8 next — persistence integration
 - `read.js` — generic readonly helpers: get/getAll/count.
 - `write.js` — generic readwrite helpers: put/add/deleteRecord/clear.
 - `pure/persistence-records.js` — deterministic Stage 8 record builders; no IndexedDB I/O.
+- `lifecycle-persistence.js` — Stage 8.2 atomic session/universe lifecycle transactions.
 
 ## Current boundary
 
@@ -91,3 +92,33 @@ Stage 8.1 now defines deterministic record contracts before IndexedDB I/O:
 - recorderState meta record.
 
 Browser transaction semantics remain deferred to the later Stage 8 persistence substeps and final Stage 8 Chromium checkpoint.
+
+
+## Stage 8.2 transaction contracts
+
+~~~text
+startSession
+    sessions + meta
+
+persistUniverse
+    universe + meta
+
+stopSession
+    sessions + meta
+~~~
+
+`persistUniverse` atomically replaces the persisted universe snapshot: it clears stale universe rows and writes the complete validated snapshot plus `meta.universeState` inside one transaction.
+
+`universeState` is intentionally minimal:
+
+~~~text
+{
+  key: "universeState",
+  value: {
+    loadedAtMs,
+    recordCount
+  }
+}
+~~~
+
+Full MapHeat records remain in `universe.rawMapHeat`.

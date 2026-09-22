@@ -132,6 +132,7 @@ storage/
   upgrade.js
   read.js
   write.js
+  lifecycle-persistence.js
   pure/
     persistence-records.js
 
@@ -159,6 +160,7 @@ tests/
     specs/harness-smoke.spec.js
     specs/mock-leumi-api.spec.js
     specs/recorder-stage-7.spec.js
+    specs/persistence-lifecycle.spec.js
 
 test tooling:
   package.json

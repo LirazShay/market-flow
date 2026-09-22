@@ -23,6 +23,9 @@
         const RECORDER_STATE_KEY =
             "recorderState";
 
+        const UNIVERSE_STATE_KEY =
+            "universeState";
+
         function assertObject(
             value,
             name
@@ -225,6 +228,43 @@
             return Object.freeze(
                 records
             );
+        }
+
+        function buildUniverseStateMetaRecord(
+            universe
+        ) {
+            assertObject(
+                universe,
+                "universe"
+            );
+
+            assertFiniteTime(
+                universe.loadedAtMs,
+                "universe.loadedAtMs"
+            );
+
+            if (
+                !Number.isInteger(
+                    universe.recordCount
+                ) ||
+                universe.recordCount <= 0
+            ) {
+                throw new TypeError(
+                    "universe.recordCount must be a positive integer."
+                );
+            }
+
+            return Object.freeze({
+                key:
+                    UNIVERSE_STATE_KEY,
+                value:
+                    Object.freeze({
+                        loadedAtMs:
+                            universe.loadedAtMs,
+                        recordCount:
+                            universe.recordCount
+                    })
+            });
         }
 
         function buildSessionStartRecord({
@@ -754,7 +794,9 @@
 
         return Object.freeze({
             RECORDER_STATE_KEY,
+            UNIVERSE_STATE_KEY,
             buildUniverseRecords,
+            buildUniverseStateMetaRecord,
             buildSessionStartRecord,
             buildSessionStopRecord,
             buildCompleteCycleRecord,

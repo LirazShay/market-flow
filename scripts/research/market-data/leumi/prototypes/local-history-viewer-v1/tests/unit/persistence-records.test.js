@@ -5,7 +5,9 @@ const assert = require("node:assert/strict");
 
 const {
     RECORDER_STATE_KEY,
+    UNIVERSE_STATE_KEY,
     buildUniverseRecords,
+    buildUniverseStateMetaRecord,
     buildSessionStartRecord,
     buildSessionStopRecord,
     buildCompleteCycleRecord,
@@ -227,6 +229,33 @@ test(
                     universe
                 ),
             /PaperId is required/
+        );
+    }
+);
+
+test(
+    "buildUniverseStateMetaRecord creates the minimal universe meta contract",
+    () => {
+        const universe =
+            createUniverse();
+
+        const record =
+            buildUniverseStateMetaRecord(
+                universe
+            );
+
+        assert.deepEqual(
+            record,
+            {
+                key:
+                    UNIVERSE_STATE_KEY,
+                value: {
+                    loadedAtMs:
+                        5000,
+                    recordCount:
+                        2
+                }
+            }
         );
     }
 );

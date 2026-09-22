@@ -93,6 +93,14 @@ key
 { key: "schemaVersion", value: 1 }
 
 {
+  key: "universeState",
+  value: {
+    loadedAtMs,
+    recordCount
+  }
+}
+
+{
   key: "recorderState",
   value: {
     instanceId,
@@ -537,9 +545,10 @@ meta
 פעולות:
 
 1. validate MapHeat2.
-2. upsert all universe records.
-3. update universe metadata/state.
-4. commit.
+2. clear stale universe rows inside the same transaction.
+3. write the complete validated universe snapshot.
+4. update `meta.universeState` with `loadedAtMs` + `recordCount`.
+5. commit.
 
 אין history write.
 
