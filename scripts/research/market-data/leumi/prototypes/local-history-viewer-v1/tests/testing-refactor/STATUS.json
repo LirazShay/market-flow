@@ -65,5 +65,21 @@
   "extractedModules": [
     "recorder/pure/config-logic.js",
     "recorder/pure/universe-logic.js"
-  ]
+  ],
+  "verification": {
+    "t3": {
+      "unitSmoke": {
+        "command": "node --test tests/unit/pure-module-smoke.test.js",
+        "result": "success",
+        "tests": 1,
+        "failed": 0
+      },
+      "browserCompatibility": {
+        "workflow": "Local History Viewer V1 CI",
+        "runId": 35740254929,
+        "commit": "085101f786968ce65c4edcef502dd258178fd846",
+        "conclusion": "success"
+      }
+    }
+  }
 }
