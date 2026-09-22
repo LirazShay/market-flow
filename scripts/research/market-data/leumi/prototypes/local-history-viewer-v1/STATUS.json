@@ -1843,7 +1843,31 @@
       "downloadable JSON through MarketFlowRuntime",
       "tests and debug spec",
       "no cookies/tokens/auth headers/account/session-storage/raw private data"
-    ]
+    ],
+    "steps": {
+      "D1": {
+        "title": "Debug contract + pure fingerprints/change detection",
+        "status": "complete-fast-ci-verified",
+        "fastCiRunId": 35793299328,
+        "tests": "163/163"
+      },
+      "D2": {
+        "title": "Bounded IndexedDB/runtime debug bundle collector",
+        "status": "in-progress"
+      },
+      "D3": {
+        "title": "Runtime JSON export/download API",
+        "status": "planned"
+      },
+      "D4": {
+        "title": "Viewer Export Debug action + Chromium verification",
+        "status": "planned"
+      },
+      "D5": {
+        "title": "Live after-market evidence collection and recorder-policy decision",
+        "status": "planned"
+      }
+    }
   },
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
