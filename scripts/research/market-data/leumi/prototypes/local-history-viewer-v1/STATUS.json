@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "6.6",
     "title": "Automate existing storage self-tests",
-    "status": "next"
+    "status": "ci-verification-pending"
   },
   "recommendedNaturalBatch": [
     {
@@ -74,7 +74,7 @@
         "6.3": "implemented-browser-execution-pending",
         "6.4": "complete",
         "6.5": "complete",
-        "6.6": "planned",
+        "6.6": "implemented-ci-verification-pending",
         "6.7": "planned"
       }
     },
@@ -163,7 +163,7 @@
     }
   ],
   "verification": {
-    "storageSelfTests": "implemented-browser-execution-pending",
+    "storageSelfTests": "automated-ci-verification-pending",
     "playwrightHarness": "verified-in-github-actions",
     "githubActions": "verified-success",
     "mockedApiInfrastructure": "not-started",

@@ -244,3 +244,35 @@ Verified steps:
 - storage/self-test modules loaded without browser page errors.
 
 The workflow path filter intentionally ignores documentation/status-only changes so normal project-status updates do not spend CI time unnecessarily.
+
+
+---
+
+## Stage 6.6 — Automated storage self-tests
+
+Playwright spec:
+
+~~~text
+automation/specs/storage-self-tests.spec.js
+~~~
+
+The spec runs the existing browser self-tests, unchanged, inside real Chromium IndexedDB:
+
+~~~text
+MarketFlowStorageSchemaSelfTest.run()
+→ MarketFlowStorageFixtureSelfTest.run()
+→ MarketFlowStorageCleanupSelfTest.run()
+~~~
+
+It verifies observable results for:
+
+- schema/version/stores/indexes.
+- add/put/get/getAll/count.
+- exact null/zero/empty-string round-trip.
+- targeted fixture cleanup.
+- close/reopen persistence behavior.
+- schema validity after reopen.
+
+The automation deletes the dedicated test database before and after the suite to keep CI runs isolated.
+
+No Leumi API calls are made in Stage 6.6.
