@@ -224,8 +224,8 @@ Verified:
 - shared IndexedDB origin access
 - duplicate viewer tabs avoided
 
-Next:
-Stage 11 — Current table from IndexedDB
+Current:
+Stage 11 — Current table from IndexedDB implemented; Fast CI verification pending. Browser verification is intentionally deferred to Checkpoint C after Stage 12.
 ~~~
 
 Stage 8 explicitly includes:
@@ -324,8 +324,10 @@ If this fast context conflicts with a durable design/decision document:
 viewer/
   README.md
   bootstrap.js
+  current-table.js
   pure/
     viewer-state.js
+    current-table-logic.js
 ~~~
 
 Stage 10 establishes a same-origin named about:blank viewer shell. Stage 11 will load the current table from IndexedDB.

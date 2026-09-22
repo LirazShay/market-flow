@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "11",
     "title": "Current table from IndexedDB",
-    "status": "next"
+    "status": "fast-ci-verification-pending"
   },
   "stages": [
     {
@@ -115,7 +115,13 @@
     {
       "stage": "11",
       "title": "Current table from IndexedDB",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "11.1": "implemented — pure latest+universe join/model",
+        "11.2": "implemented — IndexedDB load + MAIN/EMPTY states",
+        "11.3": "implemented — 16-column current table + V1 formatting",
+        "11.4": "fast-ci-verification-pending; browser checkpoint deferred through Stage 12"
+      }
     },
     {
       "stage": "12",

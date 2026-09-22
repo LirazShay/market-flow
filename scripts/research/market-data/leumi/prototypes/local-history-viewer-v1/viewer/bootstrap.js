@@ -13,9 +13,19 @@
     const stateLogic =
         window.MarketFlowViewerStateLogic;
 
+    const currentTable =
+        window.MarketFlowViewerCurrentTable;
+
     if (!stateLogic) {
         throw new Error(
             "MarketFlowViewerStateLogic is not loaded."
+        );
+    }
+
+    if (!currentTable) {
+        throw new Error(
+            "MarketFlowViewerCurrentTable is not loaded. " +
+            "Load viewer/current-table.js before viewer/bootstrap.js."
         );
     }
 
@@ -364,6 +374,9 @@
             shell
         );
 
+        let currentState =
+            initialState;
+
         targetWindow
             .MarketFlowViewerShell =
             Object.freeze({
@@ -371,7 +384,20 @@
                     VIEWER_MARKER,
                 initialState,
                 openedFromOrigin:
-                    window.location.origin
+                    window.location.origin,
+                getState:
+                    () =>
+                        currentState,
+                setState:
+                    patch => {
+                        currentState =
+                            Object.freeze({
+                                ...currentState,
+                                ...patch
+                            });
+
+                        return currentState;
+                    }
             });
 
         return targetWindow;
@@ -424,6 +450,16 @@
 
         viewerWindow.focus();
 
+        currentTable
+            .loadAndRender(
+                viewerWindow
+            )
+            .catch(
+                () => {
+                    // Error state is rendered by the current-table module.
+                }
+            );
+
         return viewerWindow;
     }
 
@@ -464,6 +500,9 @@
                     ?.marker ??
                 null,
             state:
+                viewerWindow
+                    .MarketFlowViewerShell
+                    ?.getState?.() ??
                 viewerWindow
                     .MarketFlowViewerShell
                     ?.initialState ??

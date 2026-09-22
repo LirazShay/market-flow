@@ -9,6 +9,9 @@ const configLogic = require(
 const universeLogic = require(
     "../../recorder/pure/universe-logic"
 );
+const currentTableLogic = require(
+    "../../viewer/pure/current-table-logic"
+);
 
 test(
     "pure recorder logic loads in Node without browser globals",
@@ -43,6 +46,19 @@ test(
         assert.equal(
             typeof universeLogic
                 .validateFullMap,
+            "function"
+        );
+
+        assert.equal(
+            currentTableLogic
+                .COLUMN_DEFINITIONS
+                .length,
+            16
+        );
+
+        assert.equal(
+            typeof currentTableLogic
+                .buildCurrentTableModel,
             "function"
         );
     }

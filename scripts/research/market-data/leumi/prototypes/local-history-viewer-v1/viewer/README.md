@@ -67,3 +67,36 @@ Next:
 ~~~text
 Stage 11 — Current table from IndexedDB
 ~~~
+
+
+## Stage 11 current table
+
+Stage 11 loads:
+
+~~~text
+IndexedDB.latest
++
+IndexedDB.universe
+(join by securityId)
+~~~
+
+and renders the 16 planned V1 current-market columns.
+
+Files:
+
+~~~text
+current-table.js
+pure/current-table-logic.js
+~~~
+
+Behavior:
+
+- latest rows are never silently dropped when universe metadata is missing;
+- missing paper name displays as `—`;
+- `null` / `undefined` / empty string display as `—`;
+- numeric zero displays as `0`;
+- empty DB transitions the viewer to `EMPTY`;
+- populated DB transitions the viewer to `MAIN`;
+- current row count, last cycle and latest collection time are populated from the current snapshot.
+
+Interactive sorting remains Stage 13. Cross-tab live refresh remains Stage 12.

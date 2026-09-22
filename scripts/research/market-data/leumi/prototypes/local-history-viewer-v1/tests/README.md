@@ -651,3 +651,19 @@ Run 35754648747
 The early-browser exception was used because Stage 10 establishes a real DOM/window/origin contract.
 
 Browser CI was restored to manual/reusable triggers after verification.
+
+
+---
+
+## Stage 11 current table
+
+Coverage added:
+
+~~~text
+tests/unit/current-table-logic.test.js
+tests/automation/specs/viewer-current-table.spec.js
+~~~
+
+Fast unit tests cover join/model/formatting contracts.
+
+The Playwright spec covers real IndexedDB → DOM rendering and EMPTY state, but its scheduled Chromium verification is deferred to Checkpoint C after Stage 12, per `TESTING_POLICY.md`.

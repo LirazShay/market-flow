@@ -48,19 +48,10 @@ test(
                             .marketFlowViewer,
                     title:
                         document.title,
-                    status:
-                        document
-                            .querySelector(
-                                "[data-role='viewer-status']"
-                            )
-                            ?.textContent,
-                    state:
-                        document
-                            .querySelector(
-                                "[data-role='viewer-status']"
-                            )
-                            ?.dataset
-                            .viewState,
+                    initialState:
+                        window
+                            .MarketFlowViewerShell
+                            .initialState,
                     hasCurrentPanel:
                         Boolean(
                             document
@@ -101,13 +92,8 @@ test(
         );
 
         expect(
-            contract.status
-        ).toBe(
-            "טוען נתונים..."
-        );
-
-        expect(
-            contract.state
+            contract.initialState
+                .viewState
         ).toBe("BOOTING");
 
         expect(
