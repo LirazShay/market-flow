@@ -30,7 +30,7 @@ scripts/research/market-data/leumi/demos/show-all-securities-table.js
 
 ה-report הגולמי שנשמר מההרצה המאומתת:
 
-[reports/2026-09-22-1451-field-coverage.md](../reports/2026-09-22-1451-field-coverage.md)
+[reports/2026-09-22-1451-field-coverage.md](../../../scripts/research/market-data/leumi/tests/field-coverage/reports/2026-09-22-1451-field-coverage.md)
 
 ---
 
