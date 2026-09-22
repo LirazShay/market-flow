@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "11",
-    "title": "Current table from IndexedDB",
-    "status": "fast-ci-verification-pending"
+    "stage": "12",
+    "title": "Cross-tab live refresh",
+    "status": "next"
   },
   "stages": [
     {
@@ -115,12 +115,12 @@
     {
       "stage": "11",
       "title": "Current table from IndexedDB",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "11.1": "implemented — pure latest+universe join/model",
-        "11.2": "implemented — IndexedDB load + MAIN/EMPTY states",
-        "11.3": "implemented — 16-column current table + V1 formatting",
-        "11.4": "fast-ci-verification-pending; browser checkpoint deferred through Stage 12"
+        "11.1": "complete-fast-ci-verified — pure latest+universe join/model",
+        "11.2": "complete-fast-ci-verified — IndexedDB load + MAIN/EMPTY states",
+        "11.3": "complete-fast-ci-verified — 16-column current table + V1 formatting",
+        "11.4": "browser tests added; checkpoint intentionally deferred until Stage 12"
       }
     },
     {
@@ -202,13 +202,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35754581099,
-      "commit": "bdf10c54dc01bd93efb8af65370f10b4f9eccabf",
+      "runId": 35755728772,
+      "commit": "7ecf414a860c3de91cf2feeeecbe783ac13fe6ea",
       "conclusion": "success",
-      "tests": 127,
-      "passed": 127,
+      "tests": 132,
+      "passed": 132,
       "failed": 0,
-      "durationMs": 53.605974
+      "durationMs": 91.176645
     },
     "testingRefactor": {
       "status": "complete",
@@ -458,6 +458,30 @@
         "repeated openViewer calls reuse the existing viewer window",
         "current-market and detail shell regions exist without prematurely implementing Stage 11/14 data loading"
       ]
+    },
+    "stage11": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35755728772,
+        "commit": "7ecf414a860c3de91cf2feeeecbe783ac13fe6ea",
+        "conclusion": "success",
+        "tests": 132,
+        "passed": 132,
+        "failed": 0
+      },
+      "browserCheckpoint": "deferred-to-checkpoint-C-after-stage-12",
+      "browserTestsAdded": [
+        "tests/automation/specs/viewer-current-table.spec.js"
+      ],
+      "verifiedByFastTests": [
+        "16-column current-table contract",
+        "latest + universe join by canonical securityId",
+        "missing universe metadata does not drop latest rows",
+        "zero/null/empty-string display contract",
+        "summary rowCount/lastCycleId/lastCollectedAtMs",
+        "duplicate latest/universe IDs rejected"
+      ]
     }
   },
   "fastContext": {
@@ -486,8 +510,8 @@
   },
   "recommendedChatBoundary": {
     "reached": false,
-    "reason": "Development continues in the current chat; Stage 10 viewer bootstrap is complete.",
-    "nextStage": "11"
+    "reason": "Stage 11 current table implementation is complete; Stage 12 will add BroadcastChannel live refresh and then run the planned Viewer Checkpoint C.",
+    "nextStage": "12"
   },
   "navigation": {
     "allStages": "ROADMAP.md",

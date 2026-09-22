@@ -225,7 +225,7 @@ Status:
 ~~~text
 Implementation in progress
 Stages 7–10 recorder/persistence/diagnostics/viewer bootstrap: complete + Chromium verified
-Current focus: Stage 11 — current table from IndexedDB
+Current focus: Stage 12 — cross-tab live refresh
 ~~~
 
 Location:
@@ -455,4 +455,28 @@ Next:
 
 ~~~text
 Stage 11 — Current table from IndexedDB
+~~~
+
+
+## Stage 11 current table — completed
+
+Implemented:
+
+- `IndexedDB.latest + IndexedDB.universe` join;
+- 16-column V1 current-market table;
+- MAIN / EMPTY viewer states;
+- null/empty/zero display contract;
+- last cycle / last update / security-count metrics.
+
+Evidence:
+
+~~~text
+Fast CI: 132 passed / 0 failed
+Browser spec added; scheduled Chromium verification deferred to Checkpoint C after Stage 12.
+~~~
+
+Next:
+
+~~~text
+Stage 12 — Cross-tab live refresh
 ~~~

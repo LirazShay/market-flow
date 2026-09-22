@@ -100,3 +100,26 @@ Behavior:
 - current row count, last cycle and latest collection time are populated from the current snapshot.
 
 Interactive sorting remains Stage 13. Cross-tab live refresh remains Stage 12.
+
+
+## Stage 11 verification
+
+~~~text
+Fast CI
+Run 35755728772
+132 passed / 0 failed
+~~~
+
+Playwright coverage for real IndexedDB → viewer DOM rendering is already present in:
+
+~~~text
+tests/automation/specs/viewer-current-table.spec.js
+~~~
+
+Per the V1 testing policy, Chromium execution is intentionally deferred until the planned Checkpoint C after Stage 12.
+
+Next:
+
+~~~text
+Stage 12 — Cross-tab live refresh
+~~~

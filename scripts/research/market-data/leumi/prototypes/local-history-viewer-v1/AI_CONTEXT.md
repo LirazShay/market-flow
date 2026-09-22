@@ -224,8 +224,19 @@ Verified:
 - shared IndexedDB origin access
 - duplicate viewer tabs avoided
 
-Current:
-Stage 11 — Current table from IndexedDB implemented; Fast CI verification pending. Browser verification is intentionally deferred to Checkpoint C after Stage 12.
+Stage 11 — Current table from IndexedDB COMPLETE + Fast CI verified
+
+Verified in fast tests:
+- latest + universe join
+- 16-column V1 current-table model
+- zero/null/empty display contract
+- MAIN/EMPTY model inputs
+- duplicate/corrupt ID rejection
+
+Browser spec is implemented but intentionally deferred to Checkpoint C after Stage 12.
+
+Next:
+Stage 12 — Cross-tab live refresh
 ~~~
 
 Stage 8 explicitly includes:

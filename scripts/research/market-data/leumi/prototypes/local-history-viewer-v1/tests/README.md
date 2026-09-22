@@ -667,3 +667,21 @@ tests/automation/specs/viewer-current-table.spec.js
 Fast unit tests cover join/model/formatting contracts.
 
 The Playwright spec covers real IndexedDB → DOM rendering and EMPTY state, but its scheduled Chromium verification is deferred to Checkpoint C after Stage 12, per `TESTING_POLICY.md`.
+
+
+---
+
+## Stage 11 verification
+
+~~~text
+Fast CI
+Run 35755728772
+132 passed / 0 failed
+~~~
+
+Browser test implementation exists but is intentionally not run as a standalone checkpoint. It will execute with Stage 12 at Checkpoint C:
+
+~~~text
+Stages 10–12
+→ Browser CI
+~~~
