@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "workstream": "local-history-viewer-v1",
-  "updatedAt": "2026-09-22",
+  "updatedAt": "2026-09-23",
   "overallStatus": "in-progress",
   "authority": {
     "operationalProgress": "STATUS.json",
@@ -246,14 +246,14 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35784632170,
-      "jobId": 106938313542,
-      "commit": "1b287ace8944046bcd03b5e279759e9972bfe0c8",
+      "runId": 35787438175,
+      "jobId": 106947548550,
+      "commit": "9a9fda5b2518ba897a7ad6a7439148755e920052",
       "conclusion": "success",
-      "tests": 148,
-      "passed": 148,
+      "tests": 149,
+      "passed": 149,
       "failed": 0,
-      "durationMs": 351.29291
+      "durationMs": 101.009642
     },
     "testingRefactor": {
       "status": "complete",
@@ -1566,6 +1566,27 @@
         "browser smoke test of assembled output",
         "clear generation/usage documentation"
       ]
+    },
+    "documentationStatusSourceGuardRepair": {
+      "status": "complete",
+      "failure": {
+        "runId": 35786851043,
+        "jobId": 106945636694,
+        "commit": "b4b31d18f233176056b2849f45d91b2917b4a7e1",
+        "tests": 149,
+        "passed": 148,
+        "failed": 1,
+        "cause": "documentation source-of-truth guard treated explanatory README ownership prose containing 'latest verification' as a live verification snapshot"
+      },
+      "resolution": "Narrowed the prohibited-pattern match to snapshot-style heading/label forms instead of matching explanatory prose.",
+      "fixCommit": "9a9fda5b2518ba897a7ad6a7439148755e920052",
+      "verification": {
+        "runId": 35787438175,
+        "jobId": 106947548550,
+        "tests": 149,
+        "passed": 149,
+        "failed": 0
+      }
     }
   },
   "fastContext": {
