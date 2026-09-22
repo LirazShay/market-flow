@@ -70,8 +70,6 @@ docs/leumi-api/
 ├── overview/
 ├── endpoints/
 ├── fields/
-├── testing/
-├── reports/
 └── samples/
 ~~~
 
@@ -86,14 +84,6 @@ docs/leumi-api/
 ### fields/
 
 semantics, nullability ו-coverage של fields.
-
-### testing/
-
-מתודולוגיית בדיקות ותוצאות מסוכמות.
-
-### reports/
-
-evidence היסטורי של runs. Report ישן לא משכתבים כדי להתאים לתוצאה חדשה.
 
 ### samples/
 
@@ -180,7 +170,12 @@ PoCs שקל לבדוק ידנית.
 ~~~text
 tests/
 ├── field-coverage/
+│   ├── README.md
+│   ├── analyze-field-coverage.js
+│   └── reports/
 └── polling-stability/
+    ├── README.md
+    └── long-running-poll-test.js
 ~~~
 
 חשוב: אלה אינם production automated tests.
@@ -271,3 +266,20 @@ docs/market-data/<provider>/
 ~~~
 
 לא מבצעים migration כזה לפני שיש צורך ממשי.
+
+---
+
+# Documentation ownership
+
+כלל ברירת המחדל:
+
+~~~text
+Code-specific documentation → next to code
+Cross-cutting/domain knowledge → docs/
+~~~
+
+README שמסביר script, configuration, run procedure או test output שייך לתיקיית הקוד.
+
+Raw reports של test suite נשמרים ליד אותו test suite.
+
+`docs/` נשאר בסיס הידע של הפרויקט: API semantics, architecture/context, decisions ומסקנות שאינן שייכות לקובץ קוד יחיד.
