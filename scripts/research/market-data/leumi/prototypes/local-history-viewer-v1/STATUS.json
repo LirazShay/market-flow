@@ -1799,7 +1799,19 @@
       "directly relevant tests"
     ]
   },
-  "activeMiniProject": null,
+  "activeMiniProject": {
+    "id": "specification-hardening",
+    "title": "Durable specification system and Local History Viewer V1 specification set",
+    "status": "in-progress",
+    "reason": "Create a multi-spec documentation layer for system intent, contracts, rationale, reuse/evolution, and mandatory spec-impact maintenance without duplicating live operational status.",
+    "scope": [
+      "repository-wide specification policy",
+      "mandatory spec-impact review in agent/engineering rules",
+      "workstream spec index and component/system specs",
+      "spec architecture guard test",
+      "navigation from durable documentation"
+    ]
+  },
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
