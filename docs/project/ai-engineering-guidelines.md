@@ -132,7 +132,8 @@ pure deterministic behavior
 → fast Node unit tests
 
 browser semantics / cross-component browser integration
-→ Playwright + Chromium at planned checkpoints
+→ Chromium immediately when browser behavior/tests change
+→ full Browser CI at every numbered Stage closure
 
 real provider behavior
 → live verification only when required
@@ -168,6 +169,19 @@ Rules:
 - verification evidence must identify the run and code/test state being claimed as verified.
 
 This gate applies even when Fast CI is green.
+
+### Mandatory Browser CI at every Stage closure
+
+Before **any numbered Stage** is marked `complete`, the full Browser CI suite must pass against the final code/test state of that Stage.
+
+~~~text
+Stage implementation complete
+→ Fast CI green
+→ full Browser CI green
+→ only then Stage = complete
+~~~
+
+Broad checkpoints remain useful as additional integration milestones, but they never replace this per-Stage Browser CI gate.
 
 For browser prototypes:
 
@@ -470,6 +484,7 @@ Apply only the checklist items relevant to the current natural work unit.
 - [ ] automated tests pass where available;
 - [ ] every added/modified test was executed in its native layer after its final edit;
 - [ ] no known red test is deferred to a later stage;
+- [ ] if closing a numbered Stage, full Browser CI passed on that Stage's final state;
 - [ ] live-only verification is marked pending where required;
 - [ ] no known failure is hidden;
 - [ ] integrity validations exist where needed;
