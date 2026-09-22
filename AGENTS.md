@@ -227,7 +227,7 @@ docs/leumi-api/
 קוד מחקר:
 
 ~~~text
-scripts/research/leumi/
+scripts/research/market-data/leumi/
 ~~~
 
 ---
