@@ -293,6 +293,32 @@ docs/project/engineering-practices.md
 
 ## 7. Documentation cadence
 
+### Mandatory SPEC impact review
+
+Every meaningful system change must review the relevant durable specifications before the work batch is considered complete.
+
+Repository-wide policy:
+
+~~~text
+docs/project/specification-policy.md
+~~~
+
+Review specs when changing observable behavior, architecture, public APIs, data model/schema, transaction boundaries, integrity rules, lifecycle/state transitions, provider assumptions, messaging, UI/UX behavior, failure/recovery semantics, security/privacy boundaries, runtime delivery, or extension/reuse boundaries.
+
+The outcome must be explicit in the work:
+
+~~~text
+No spec impact
+or
+affected specs updated/added/removed in the same coherent batch
+~~~
+
+If a new durable responsibility has no owning spec, create one when the responsibility is substantial enough to have its own contract/invariants/failure semantics.
+
+If code/tests and a spec disagree, treat that as a coherence defect. Do not silently assume either side is authoritative; resolve intended behavior from evidence/design/decisions and update the affected artifacts together.
+
+Specs must not duplicate live operational status. Current stage/substep, next pointer and current verification state still belong only in the workstream `STATUS.json`.
+
 Do **not** update every document on every tiny implementation edit.
 
 ### Normal implementation batch
@@ -382,6 +408,7 @@ A work batch is done when the relevant items are true:
 - no known failure is hidden;
 - integrity validations are present where needed;
 - status/documentation is updated at the correct cadence;
+- SPEC impact review is complete and affected specs are synchronized;
 - repository remains in a clear state.
 
 At the end, report briefly:
