@@ -297,6 +297,17 @@ test(
         const viewer =
             await popupPromise;
 
+        await viewer.waitForFunction(
+            () =>
+                document
+                    .querySelector(
+                        "[data-role='viewer-status']"
+                    )
+                    ?.dataset
+                    .viewState ===
+                "EMPTY"
+        );
+
         const second =
             await page.evaluate(
                 () => {
@@ -333,7 +344,7 @@ test(
         expect(
             second.state
                 .viewState
-        ).toBe("BOOTING");
+        ).toBe("EMPTY");
 
         expect(
             page
