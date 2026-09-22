@@ -5,13 +5,13 @@
   "updatedAt": "2026-09-22",
   "overallStatus": "in-progress",
   "currentStage": {
-    "id": "T5",
-    "title": "Split CI by speed and purpose",
+    "id": "T6",
+    "title": "Migration + checkpoint policy",
     "status": "complete"
   },
   "nextStage": {
-    "id": "T6",
-    "title": "Migration + checkpoint policy",
+    "id": "T7",
+    "title": "End-to-end verification of the testing system",
     "status": "next"
   },
   "resumeParentAt": {
@@ -47,7 +47,7 @@
     {
       "id": "T6",
       "title": "Migration + checkpoint policy",
-      "status": "planned"
+      "status": "complete"
     },
     {
       "id": "T7",
@@ -129,5 +129,24 @@
       "command": "npm run test:browser",
       "launchesBrowser": true
     }
+  },
+  "migrationPolicy": {
+    "durablePolicyFile": "tests/TESTING_POLICY.md",
+    "defaultChangeGate": "fast-unit-ci",
+    "browserPolicy": "planned-checkpoints-plus-browser-risk-exception",
+    "livePolicy": "provider-dependent-only",
+    "plannedBrowserCheckpoints": [
+      "after-stage-7",
+      "after-stage-8",
+      "after-stages-10-12",
+      "after-stages-14-15",
+      "after-stages-16-17",
+      "stage-18",
+      "stage-19.1",
+      "pre-stage-20-freeze"
+    ],
+    "liveCheckpoints": [
+      "stage-19.2"
+    ]
   }
 }

@@ -27,14 +27,18 @@ Do not replace browser integration tests with unit mocks for behavior that depen
 ## Frequency target
 
 ~~~text
-every implementation change
+ordinary relevant change
 → fast unit tests
 
-natural checkpoint / grouped substeps
+planned browser integration checkpoint
 → full Playwright suite
 
-major provider-integration milestone
-→ live Leumi verification
+provider-dependent milestone
+→ live verification
 ~~~
 
-The exact CI trigger policy is implemented later in T5/T6.
+Durable checkpoint details now live in:
+
+~~~text
+../TESTING_POLICY.md
+~~~

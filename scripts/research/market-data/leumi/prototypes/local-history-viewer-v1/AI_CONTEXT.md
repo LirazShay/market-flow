@@ -186,6 +186,12 @@ Current detailed mini-project status:
 tests/testing-refactor/STATUS.json
 ~~~
 
+Durable testing/checkpoint policy:
+
+~~~text
+tests/TESTING_POLICY.md
+~~~
+
 CI must not contain Leumi cookies, tokens, credentials, or account data.
 
 ## Documentation/update cadence

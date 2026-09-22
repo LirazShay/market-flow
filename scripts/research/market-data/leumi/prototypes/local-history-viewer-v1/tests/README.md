@@ -30,6 +30,12 @@ npm run test:all
 
 Browser verification is no longer the default test command and no longer runs on every prototype code push.
 
+Durable layer/checkpoint policy:
+
+~~~text
+TESTING_POLICY.md
+~~~
+
 ---
 
 הבדיקות בתיקייה הזו מיועדות להרצה בדפדפן, באותו origin שבו ה-prototype משתמש ב-IndexedDB.
@@ -246,13 +252,17 @@ npm test
 
 ## Stage 6.5 — GitHub Actions
 
-Workflow:
+Historical Stage 6.5 created the initial browser CI workflow.
+
+Current workflow:
 
 ~~~text
 .github/workflows/local-history-viewer-v1-ci.yml
 ~~~
 
-It runs the Playwright browser suite on relevant push/PR changes, uses no Leumi credentials/session, and uploads Playwright diagnostics on failure.
+After the testing refactor, it is a manual/reusable browser checkpoint workflow rather than an automatic push/PR workflow.
+
+It uses no Leumi credentials/session and uploads Playwright diagnostics on failure.
 
 
 ### Verified CI run

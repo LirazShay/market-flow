@@ -9,8 +9,8 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "testing-refactor/T6",
-    "title": "Migration + checkpoint policy",
+    "stage": "testing-refactor/T7",
+    "title": "End-to-end verification of the testing system",
     "status": "next"
   },
   "stages": [
@@ -192,10 +192,16 @@
   "activeMiniProject": {
     "id": "testing-refactor",
     "path": "tests/testing-refactor/",
-    "currentStage": "T5",
+    "currentStage": "T6",
     "currentStatus": "complete",
-    "nextStage": "T6",
+    "nextStage": "T7",
     "resumeMainStage": "7.3"
   },
-  "executionScopePolicy": "adaptive-no-fixed-stage-per-message"
+  "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
+  "testingPolicy": {
+    "file": "tests/TESTING_POLICY.md",
+    "default": "fast-unit-ci",
+    "browser": "checkpoint-only",
+    "live": "provider-dependent-only"
+  }
 }
