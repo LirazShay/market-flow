@@ -11,13 +11,13 @@
 ## כלי הבדיקה
 
 ~~~text
-scripts/research/leumi/analyze-field-coverage.js
+scripts/research/market-data/leumi/tests/field-coverage/analyze-field-coverage.js
 ~~~
 
 הסקריפט משתמש ב-snapshot שנוצר על ידי:
 
 ~~~text
-scripts/research/leumi/show-all-securities-table.js
+scripts/research/market-data/leumi/demos/show-all-securities-table.js
 ~~~
 
 סדר ההרצה:
