@@ -167,6 +167,169 @@ async function seedSingleCurrentRow(
     );
 }
 
+async function seedSortableCurrentRows(
+    page,
+    {
+        cycleId,
+        alphaRate,
+        betaRate
+    }
+) {
+    await page.evaluate(
+        async ({
+            cycleId,
+            alphaRate,
+            betaRate
+        }) => {
+            const {
+                MarketFlowStorageConnection:
+                    connection,
+                MarketFlowStorageUpgrade:
+                    upgrade,
+                MarketFlowStorageWrite:
+                    write,
+                MarketFlowStorageSchema:
+                    schema
+            } = window;
+
+            const database =
+                await connection
+                    .openDatabase({
+                        onUpgradeNeeded:
+                            upgrade
+                                .upgradeDatabase
+                    });
+
+            try {
+                const securities = [
+                    {
+                        securityId:
+                            "2001",
+                        paperName:
+                            "Alpha",
+                        rate:
+                            alphaRate
+                    },
+                    {
+                        securityId:
+                            "2002",
+                        paperName:
+                            "Beta",
+                        rate:
+                            betaRate
+                    }
+                ];
+
+                for (
+                    const security of
+                    securities
+                ) {
+                    await write.put(
+                        database,
+                        schema
+                            .stores
+                            .universe
+                            .name,
+                        {
+                            securityId:
+                                security
+                                    .securityId,
+                            paperName:
+                                security
+                                    .paperName,
+                            updatedAtMs:
+                                100 +
+                                cycleId,
+                            mapHeatDateChange:
+                                null,
+                            rawMapHeat: {
+                                PaperId:
+                                    Number(
+                                        security
+                                            .securityId
+                                    )
+                            }
+                        }
+                    );
+
+                    await write.put(
+                        database,
+                        schema
+                            .stores
+                            .latest
+                            .name,
+                        {
+                            securityId:
+                                security
+                                    .securityId,
+                            cycleId,
+                            sessionId:
+                                1,
+                            chunkIndex:
+                                0,
+                            cycleStartedAtMs:
+                                1000,
+                            chunkReceivedAtMs:
+                                1010,
+                            collectedAtMs:
+                                2000 +
+                                cycleId,
+                            serverAsOfDate:
+                                null,
+                            data: {
+                                Key:
+                                    Number(
+                                        security
+                                            .securityId
+                                    ),
+                                LastKnownRate:
+                                    security
+                                        .rate,
+                                BaseRateChangePercentage:
+                                    0,
+                                BuyLimit1:
+                                    null,
+                                BuyVolume1:
+                                    null,
+                                SellLimit1:
+                                    null,
+                                SellVolume1:
+                                    null,
+                                DailyDealsQuantity:
+                                    1,
+                                LastDealVolume:
+                                    null,
+                                DailyTurnover:
+                                    1,
+                                DailyNISRevenue:
+                                    1,
+                                DailyLowestRate:
+                                    security
+                                        .rate,
+                                DailyHighestRate:
+                                    security
+                                        .rate,
+                                LastDealTimeOnly:
+                                    ""
+                            }
+                        }
+                    );
+                }
+            } finally {
+                connection
+                    .closeDatabase(
+                        database
+                    );
+            }
+        },
+        {
+            cycleId,
+            alphaRate,
+            betaRate
+        }
+    );
+}
+
 test.beforeEach(
     async ({ page }) => {
         await page.goto(
@@ -549,5 +712,202 @@ test(
         } finally {
             await context.close();
         }
+    }
+);
+
+
+test(
+    "Stage 13.3 preserves selected sort across BroadcastChannel live refresh",
+    async ({ page }) => {
+        await seedSortableCurrentRows(
+            page,
+            {
+                cycleId: 1,
+                alphaRate: 100,
+                betaRate: 200
+            }
+        );
+
+        const popupPromise =
+            page.waitForEvent(
+                "popup"
+            );
+
+        await page.evaluate(
+            () => {
+                window
+                    .MarketFlowViewerBootstrap
+                    .openViewer();
+            }
+        );
+
+        const viewer =
+            await popupPromise;
+
+        await viewer.waitForFunction(
+            () =>
+                document
+                    .querySelector(
+                        "[data-role='last-cycle']"
+                    )
+                    ?.textContent ===
+                "1"
+        );
+
+        const lastRateButton =
+            viewer.locator(
+                "button[data-sort-column='LastKnownRate']"
+            );
+
+        await lastRateButton.click();
+        await viewer
+            .locator(
+                "button[data-sort-column='LastKnownRate']"
+            )
+            .click();
+
+        await expect(
+            viewer.locator(
+                "th[data-column='LastKnownRate']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "ascending"
+        );
+
+        const initialOrder =
+            await viewer.evaluate(
+                () =>
+                    Array.from(
+                        document
+                            .querySelectorAll(
+                                "[data-role='current-market-table'] tbody tr"
+                            )
+                    ).map(
+                        row =>
+                            row.dataset
+                                .securityId
+                    )
+            );
+
+        expect(
+            initialOrder
+        ).toEqual([
+            "2001",
+            "2002"
+        ]);
+
+        const refreshCountBefore =
+            await viewer.evaluate(
+                () =>
+                    window.opener
+                        .MarketFlowViewerLiveRefresh
+                        .getState(
+                            window
+                        )
+                        .refreshCount
+            );
+
+        await seedSortableCurrentRows(
+            page,
+            {
+                cycleId: 2,
+                alphaRate: 300,
+                betaRate: 50
+            }
+        );
+
+        await page.evaluate(
+            () => {
+                const now =
+                    Date.now();
+
+                window
+                    .MarketFlowChannel
+                    .publish(
+                        window
+                            .MarketFlowChannel
+                            .MESSAGE_TYPES
+                            .CYCLE_COMMITTED,
+                        {
+                            cycleId:
+                                2,
+                            completedAtMs:
+                                now
+                        },
+                        now
+                    );
+            }
+        );
+
+        await viewer.waitForFunction(
+            () =>
+                document
+                    .querySelector(
+                        "[data-role='last-cycle']"
+                    )
+                    ?.textContent ===
+                "2"
+        );
+
+        await viewer.waitForFunction(
+            refreshCountBefore =>
+                window.opener
+                    .MarketFlowViewerLiveRefresh
+                    .getState(
+                        window
+                    )
+                    .refreshCount >
+                refreshCountBefore,
+            refreshCountBefore
+        );
+
+        await expect(
+            viewer.locator(
+                "th[data-column='LastKnownRate']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "ascending"
+        );
+
+        await expect(
+            viewer.locator(
+                "button[data-sort-column='LastKnownRate']"
+            )
+        ).toContainText(
+            "▲"
+        );
+
+        await expect(
+            viewer.locator(
+                "th[data-column='DailyDealsQuantity']"
+            )
+        ).toHaveAttribute(
+            "aria-sort",
+            "none"
+        );
+
+        const refreshedOrder =
+            await viewer.evaluate(
+                () =>
+                    Array.from(
+                        document
+                            .querySelectorAll(
+                                "[data-role='current-market-table'] tbody tr"
+                            )
+                    ).map(
+                        row =>
+                            row.dataset
+                                .securityId
+                    )
+            );
+
+        expect(
+            refreshedOrder
+        ).toEqual([
+            "2002",
+            "2001"
+        ]);
     }
 );
