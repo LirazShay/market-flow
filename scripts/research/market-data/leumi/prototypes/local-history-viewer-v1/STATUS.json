@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "19",
-    "substep": "19.3",
-    "title": "Integrated V1 validation — live Leumi browser verification",
-    "status": "verification-pending"
+    "substep": "19.2",
+    "title": "Runtime assembly + Bookmarklet packaging — remove residual percent-encoding",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -207,8 +207,8 @@
       "status": "in-progress",
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-        "19.2": "complete-browser-ci-verified — compact self-contained Bookmarklet packaging repaired; stable rolling GitHub Release delivery verified",
-        "19.3": "verification-pending — requires execution in a real authenticated Leumi browser session using the repaired verified Bookmarklet",
+        "19.2": "in-progress — remove residual %20 URL encoding from generated Bookmarklet and reverify",
+        "19.3": "blocked-by-19.2-packaging-repair — live verification resumes after reverified clean Bookmarklet",
         "19.4": "planned — long-run live report using the assembled runtime"
       }
     },
@@ -1762,11 +1762,11 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 19.2 packaging regression is repaired and reverified. Compact self-contained Bookmarklet and stable rolling release are available. Live provider-dependent verification remains pending.",
+    "reached": false,
+    "reason": "A residual Bookmarklet packaging defect was found: the generated text still percent-encodes spaces as %20.",
     "nextStage": "19",
-    "nextSubstep": "19.3",
-    "nextAction": "Download the latest verified Bookmarklet from the stable release and execute docs/live-verification.md in the authenticated Leumi browser, then record sanitized Verified/Inferred/Unknown outcomes."
+    "nextSubstep": "19.2",
+    "nextAction": "Change the generated Bookmarklet contract to raw compact single-line JavaScript after javascript:, verify no %20 encoding, rerun Fast and full Browser CI, and republish the rolling release."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
