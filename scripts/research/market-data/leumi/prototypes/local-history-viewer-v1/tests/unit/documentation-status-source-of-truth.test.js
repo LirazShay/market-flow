@@ -170,7 +170,7 @@ const prohibitedPatterns = [
         name:
             "latest verification snapshot",
         regex:
-            /\bLatest verified checkpoint\b|\bLatest verification\b/i
+            /^(?:#{1,6}\\s+)?Latest (?:verified checkpoint|verification)(?:\\s*:|\\s*$)/im
     },
     {
         name:
