@@ -68,126 +68,49 @@ V1 לא משתמש ב-localhost viewer.
 
 # 3. IndexedDB
 
-Proposed database:
+ה-schema המפורט נסגר בשלב 2 ומתועד ב:
 
 ~~~text
-market-flow-leumi-v1
+DATA_MODEL.md
 ~~~
 
-Version:
+Database:
 
 ~~~text
-1
+market-flow-leumi-history-v1
+version 1
 ~~~
 
-## Store: meta
-
-Key:
+Stores:
 
 ~~~text
-key
+meta
+sessions
+universe
+cycles
+latest
+history
 ~~~
 
-דוגמאות:
+Key decisions:
 
 ~~~text
-schemaVersion
-recorderInstanceId
-recordingStartedAt
-lastHeartbeatAt
-lastCompletedCycleId
-lastError
-config
-~~~
+canonical securityId = string
 
-## Store: universe
+history primary key:
+[cycleId, securityId]
 
-Key:
+history time index:
+[securityId, collectedAtMs]
 
-~~~text
-securityId
-~~~
+latest:
+one row per securityId
 
-מכיל metadata יחסית איטי:
+GetSecuritiesData:
+all returned fields preserved inside data
 
-~~~text
-securityId
-paperName
-marketValue
-ESG metadata
-rawMapHeat
-updatedAt
-~~~
-
-## Store: latest
-
-Key:
-
-~~~text
-securityId
-~~~
-
-מכיל latest normalized + raw detailed record.
-
-מטרה:
-
-~~~text
-current table without scanning history
-~~~
-
-## Store: history
-
-Primary key מוצע:
-
-~~~text
-[securityId, collectedAt]
-~~~
-
-Indexes:
-
-~~~text
-bySecurityTime: [securityId, collectedAt]
-byCollectedAt: collectedAt
-byCycleId: cycleId
-~~~
-
-Record כולל:
-
-~~~text
-securityId
-cycleId
-chunkIndex
-cycleStartedAt
-chunkReceivedAt
-collectedAt
-serverAsOfDate
-normalized fields
-rawSecurity
-~~~
-
-## Store: cycles
-
-Key:
-
-~~~text
-cycleId
-~~~
-
-Record:
-
-~~~text
-cycleId
-startedAt
-completedAt
-durationMs
-requested
-received
-unique
-missing
-duplicates
-chunk summaries
-status
-error
+MapHeat2:
+stored once in universe, not duplicated in every history row
 ~~~
 
 ---
