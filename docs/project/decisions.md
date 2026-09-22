@@ -18,7 +18,7 @@ decisions.md
 |---|---|---|---|
 | [D-001](decisions/D-001.md) | Evidence before architecture | Accepted | architecture, evidence |
 | [D-002](decisions/D-002.md) | Repository is the project memory | Accepted | repository, project-memory |
-| [D-003](decisions/D-003.md) | Micro-step development | Accepted | workflow, delivery |
+| [D-003](decisions/D-003.md) | Adaptive work batches + explicit next-stage semantics | Accepted / evolved | workflow, delivery, chat-handoff |
 | [D-004](decisions/D-004.md) | MapHeat2 role | Accepted based on observed behavior | leumi-api, mapheat2 |
 | [D-005](decisions/D-005.md) | GetSecuritiesData role | Accepted based on observed behavior | leumi-api, securities-data |
 | [D-006](decisions/D-006.md) | Join key | Verified | data, join |
@@ -35,7 +35,7 @@ decisions.md
 | [D-017](decisions/D-017.md) | Separate research, production code and production tests | Accepted | repository-structure, testing |
 | [D-018](decisions/D-018.md) | Documentation follows code ownership | Accepted | documentation, repository-structure |
 | [D-019](decisions/D-019.md) | Local History Viewer V1 is a browser-only prototype | Accepted for V1 planning | local-history-viewer-v1, architecture |
-| [D-020](decisions/D-020.md) | CI-first layered browser testing | Accepted | testing, ci, playwright |
+| [D-020](decisions/D-020.md) | Tests-first pyramid: fast unit default, sparse browser checkpoints | Accepted / evolved | testing, ci, playwright |
 
 ## Fast lookup
 

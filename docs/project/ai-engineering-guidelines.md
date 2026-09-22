@@ -119,21 +119,32 @@ For a reproducible bug, when practical:
 
 ---
 
-# 4. CI-first layered testing
+# 4. Tests-first layered testing
 
-Default:
+For new behavior, define externally meaningful tests before implementation whenever practical.
+
+For bugs, keep the regression test that reproduces the defect.
+
+Default pyramid:
 
 ~~~text
-Automated CI first
-→ controlled mocks for external APIs
-→ real browser APIs where possible
-→ live provider verification only after CI passes
+pure deterministic behavior
+→ fast Node unit tests
+
+browser semantics / cross-component browser integration
+→ Playwright + Chromium at planned checkpoints
+
+real provider behavior
+→ live verification only when required
 ~~~
+
+Fast CI is the normal feedback loop.
+
+Browser CI is deliberately sparse. Do not pay Chromium setup/startup cost for every small deterministic change.
 
 For browser prototypes:
 
-- prefer Chromium through Playwright;
-- exercise real IndexedDB where practical;
+- exercise real IndexedDB where its transaction semantics matter;
 - exercise real DOM/BroadcastChannel where practical;
 - mock private/external APIs such as Leumi;
 - keep fixtures deterministic;
@@ -141,7 +152,7 @@ For browser prototypes:
 
 Node/Playwright as test tooling does **not** choose the production stack.
 
-A feature that is automatable should not be considered complete without the relevant CI coverage once the harness exists.
+A feature that is automatable should have the appropriate layer of CI coverage before it is considered complete.
 
 If the remaining proof requires the live provider, mark:
 
@@ -354,9 +365,11 @@ Examples/fixtures should be minimized and sanitized.
 
 The project uses incremental development, but chat-message boundaries must not dictate engineering boundaries.
 
-There is no preset rule such as "one substep per message", "one stage per message", or a fixed number of adjacent substeps.
+There is no default preset rule such as "one substep per message" or a fixed number of adjacent substeps.
 
 Choose scope based on the work itself.
+
+Exception: when the user explicitly writes `תמשיך לשלב הבא`, advance one planned stage only and finish its implementation/tests/required verification before advancing further.
 
 A good implementation unit:
 
@@ -386,17 +399,19 @@ STATUS.json
 
 ## At a meaningful substage/stage boundary
 
-Also:
+Also when useful:
 
 ~~~text
-ROADMAP.md
 component README
 AI_CONTEXT.md if focus changed
 ~~~
 
+Update `ROADMAP.md` only when scope/order/stage definitions changed.
+
 ## Only for durable decisions
 
 ~~~text
+docs/project/decisions/D-NNN.md
 docs/project/decisions.md
 ~~~
 

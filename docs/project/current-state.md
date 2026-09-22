@@ -224,7 +224,8 @@ Status:
 
 ~~~text
 Implementation in progress
-Current focus: Stage 6.4 — Playwright browser-test harness
+Stage 7 recorder: complete + Fast CI verified + Chromium checkpoint verified
+Current focus: Stage 8 — persistence integration
 ~~~
 
 Location:
@@ -238,29 +239,10 @@ Fast AI continuation entry point:
 ~~~text
 AI_CONTEXT.md
 STATUS.json
+HANDOFF.md   # read at the current chat boundary
 ~~~
 
-Progress:
-
-~~~text
-Stages 1–5: Complete
-
-Stage 6:
-6.1–6.3 implemented — browser execution pending
-6.4 next
-6.5–6.7 planned
-
-Stage 7:
-7.1 complete
-7.2 complete
-7.3 next
-7.4–7.6 planned
-
-Stages 8–20:
-planned
-~~~
-
-Implemented foundation now includes:
+Verified implementation now includes:
 
 ~~~text
 storage/
@@ -270,15 +252,43 @@ storage/
   read.js
   write.js
 
-tests/
-  storage-schema-self-test.js
-  storage-fixture-roundtrip-self-test.js
-  storage-cleanup-reopen-self-test.js
-
 recorder/
   config.js
   universe-loader.js
+  securities-chunk-fetcher.js
+  cycle-builder.js
+  recorder-loop.js
+  pure/* logic modules
+
+tests/
+  fast Node unit suite
+  browser storage self-tests
+  mocked Leumi API browser integration
+  Stage 7 recorder browser tests
 ~~~
+
+Latest verified checkpoints:
+
+~~~text
+Fast CI:
+104 passed / 0 failed
+Run 35744733541
+
+Browser CI:
+13 passed / 0 failed
+Run 35744806678
+~~~
+
+Stage 7 verified:
+
+- dynamic universe loading.
+- sequential chunk execution.
+- complete-cycle validation.
+- HTTP failure propagation.
+- missing/duplicate rejection.
+- start/stop.
+- no-overlap scheduling.
+- in-memory latest cycle/error state.
 
 V1 remains:
 
@@ -300,17 +310,35 @@ latest
 history
 ~~~
 
-Important:
+### Important Stage 8 boundary
 
-The storage foundation exists as prototype implementation, but full-cycle persistence, viewer UI and integrated V1 validation are not complete yet.
+The schema and generic storage helpers exist, but the recorder is **not yet persisted**.
 
-Source of truth for current workstream progress:
+Stage 8 must connect the verified Stage 7 recorder to IndexedDB while preserving these invariants:
+
+~~~text
+successful cycle:
+cycles + history + latest + meta
+must commit atomically
+
+failed API/validation/DB commit:
+must not partially update latest/history
+~~~
+
+The audit also identified lifecycle persistence that must not be lost between docs:
+
+~~~text
+sessions
+universe
+~~~
+
+Stage 8 therefore owns the minimal session/universe persistence required by the V1 data model in addition to atomic successful-cycle persistence. Stage 9 still owns richer diagnostics/heartbeat behavior.
+
+Source of truth for exact current progress:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
 ~~~
-
----
 
 # Not started / not productionized
 
@@ -369,13 +397,11 @@ Data
 - semantics of several internal fields.
 - API behavior at open/close/after-hours.
 - final application stack.
-- persistence technology.
+- final production persistence technology (V1 prototype persistence is already fixed to IndexedDB).
 - scanner architecture.
 
 ---
 
 # Next work rule
 
-המשתמש קובע את ה-micro-step הבא.
-
-AI חדש צריך להבין את המצב הנוכחי ולהמתין למשימה הספציפית במקום לרוץ למימוש עתידי.
+AI חדש צריך לקרוא את ה-source of truth של ה-workstream לפני שהוא שואל שאלות שכבר נענו. כאשר המשתמש כותב `תמשיך לשלב הבא`, יש להתקדם שלב מתוכנן אחד בלבד; אחרת היקף העבודה נקבע לפי boundary הנדסי/בדיקתי טבעי.

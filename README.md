@@ -4,7 +4,7 @@
 
 המטרה ארוכת הטווח של הפרויקט היא לבנות בהדרגה מערכת מלאה ל-market data, collection, scanning, analysis ובהמשך execution וניהול מסחר.
 
-הפרויקט נבנה בכוונה micro-step by micro-step, כאשר כל שלב נבדק ומתועד לפני שמתקדמים.
+הפרויקט נבנה בהתקדמות הדרגתית וביחידות עבודה קוהרנטיות שניתנות לבדיקה. גבולות הנדסיים ובדיקתיים קודמים לחלוקה שרירותית לפי הודעות.
 
 ## Start here — AI / Developers
 
@@ -25,6 +25,7 @@
 - [Decision Index](docs/project/decisions.md)
 - [Chat / Workstream Map](docs/project/chat-map.md)
 - [Repository Structure](docs/project/repository-structure.md)
+- [ChatGPT Project Instructions](docs/project/chatgpt-project-instructions.md)
 
 ## Phase 01 — Market Data / Leumi API Research
 
@@ -74,7 +75,7 @@ AI_CONTEXT.md
 STATUS.json
 ~~~
 
-ה-prototype כבר נמצא ב-implementation: IndexedDB foundation קיים, browser self-tests קיימים, ו-recorder foundation נמצא בתהליך.
+ה-prototype כבר נמצא ב-implementation: IndexedDB foundation קיים, Stage 7 recorder הושלם ואומת ב-Fast CI וב-Chromium, והשלב הבא הוא Stage 8 — persistence integration.
 
 ## Important
 

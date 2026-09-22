@@ -11,6 +11,7 @@
 - `chat-map.md` — workstreams/chats.
 - `repository-structure.md` — מבנה התיקיות והאחריות של כל אזור.
 - `ai-engineering-guidelines.md` — כללים מפורטים שנקראים רק לפי צורך.
+- `chatgpt-project-instructions.md` — Project Instructions יציבים, מוכנים להדבקה ב-ChatGPT Project.
 
 ## AI navigation
 

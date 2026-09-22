@@ -1,36 +1,21 @@
 # Chat / Workstream Map — Market Flow
 
-מטרת המסמך: לאפשר עבודה בכמה chats בלי לאבד הקשר ובלי שכל chat יצטרך לדעת את כל היסטוריית השיחות.
-
----
+מטרת המסמך: לאפשר עבודה בכמה chats בלי לאבד הקשר, כאשר ה-repository ולא היסטוריית הצ'אט הוא ה-source of truth.
 
 ## Naming convention
-
-מומלץ:
 
 ~~~text
 NN – Domain / Purpose
 ~~~
-
----
 
 # 01 – Market Data / Leumi API Research
 
 Status:
 
 ~~~text
-Active foundation / major research completed
+Major research foundation complete
+Active implementation continues inside Local History Viewer V1
 ~~~
-
-Purpose:
-
-- להבין market APIs באתר לאומי.
-- לגלות endpoints.
-- להבין data flow.
-- לקבל את כל universe.
-- למדוד field availability.
-- לבדוק batching.
-- לבדוק polling stability.
 
 Primary docs:
 
@@ -38,44 +23,60 @@ Primary docs:
 docs/leumi-api/
 ~~~
 
-Primary scripts:
+Primary research code:
 
 ~~~text
 scripts/research/market-data/leumi/
 ~~~
 
-Verified outcomes:
+Verified research outcomes:
 
-- 561 securities were retrieved in the tested snapshot.
-- MapHeat2 full-universe call worked.
-- GetSecuritiesData full coverage worked using 3 × 187.
-- PaperId == Key in 561/561.
-- field coverage measured.
+- tested snapshot contained 561 securities.
+- MapHeat2 full-universe retrieval worked.
+- GetSecuritiesData full coverage worked with 3 × 187.
+- PaperId == Key matched 561/561.
+- field coverage was measured.
 - browser table PoC worked.
+- 40.03-minute polling stability run completed 481 cycles with 0 failed cycles.
 
-Current open item:
+## 01A – Local History Viewer V1
 
-~~~text
-long-running polling stability test
-~~~
-
-Script:
+Location:
 
 ~~~text
-scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
----
+Current boundary:
+
+~~~text
+Stage 7 recorder complete + browser verified
+Stage 8 persistence integration next
+~~~
+
+For a new chat at this boundary, read:
+
+~~~text
+AGENTS.md
+→ local AI_CONTEXT.md
+→ local STATUS.json
+→ local HANDOFF.md
+→ target Stage 8 files/tests
+~~~
+
+Do not reconstruct current progress from old chat text.
 
 # Future workstreams
 
-אלה placeholders בלבד. אין לראות בהם התחייבות שה-phase הבא כבר נבחר.
+These are placeholders only.
 
 ## 02 – Collector
-Status: Not started
+Status: Not started as production work
 
 ## 03 – Storage / History
-Status: Not started
+Status: Not started as production work
+
+Current exception: Local History Viewer V1 is a browser research prototype using IndexedDB.
 
 ## 04 – Scanner
 Status: Not started
@@ -89,28 +90,38 @@ Status: Not started
 ## 07 – UI / Monitoring
 Status: Not started as production work
 
-Current exception: a browser table exists only as a research PoC.
-
----
+Current exception: browser research/prototype UI work may exist under scripts/research.
 
 # Rule for every chat
 
-1. לזהות את ה-workstream שלו.
-2. לקרוא PROJECT_CONTEXT.md.
-3. לקרוא docs/project/current-state.md.
-4. לקרוא את docs של ה-workstream.
-5. לא לשנות scope של workstream אחר בלי צורך.
-6. כל ידע חדש שחייב להיות משותף — נכנס ל-repo.
+1. identify the workstream.
+2. read `AGENTS.md`.
+3. for an active workstream with fast context, read its `AI_CONTEXT.md` and `STATUS.json`.
+4. at a declared chat boundary, also read local `HANDOFF.md` if present.
+5. read broader project/domain docs only when the task actually requires them.
+6. do not change another workstream's scope accidentally.
+7. durable shared knowledge must be committed to the repository.
 
----
+# Meaningful milestone updates
 
-# When a chat finishes a meaningful milestone
-
-Update:
+Update only the sources whose ownership changed:
 
 ~~~text
+STATUS.json
+  operational progress
+
+AI_CONTEXT.md
+  compact working context when focus/invariants/working set changed
+
+component README
+  component contract/usage
+
 docs/project/current-state.md
-docs/project/decisions.md   if a decision was made
-docs/project/chat-map.md    if status/responsibility changed
-domain docs                 whenever new domain knowledge was learned
+  meaningful project/workstream milestone
+
+docs/project/decisions/D-NNN.md + decisions.md
+  durable decision
+
+ROADMAP.md
+  only when scope/order/stage definitions changed
 ~~~

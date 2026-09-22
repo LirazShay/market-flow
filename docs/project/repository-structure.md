@@ -57,6 +57,7 @@ docs/
 - compact decision index + individual durable decisions.
 - chat/workstream map.
 - repository structure.
+- copy-ready ChatGPT Project Instructions.
 
 Decision navigation:
 
@@ -305,9 +306,12 @@ A long-running workstream may include:
 ~~~text
 AI_CONTEXT.md
 STATUS.json
+HANDOFF.md
 ~~~
 
 These files are operational navigation aids.
+
+`HANDOFF.md` is optional and is created/updated only at a meaningful chat boundary. It captures the exact next boundary, critical implementation traps, and the minimal file set a fresh chat should read.
 
 ## AI_CONTEXT.md
 
@@ -348,11 +352,14 @@ normal implementation:
   code + tests + STATUS.json
 
 meaningful stage boundary:
-  ROADMAP + local README
+  local README when useful
   AI_CONTEXT only when focus/invariants change
 
+plan/scope/order changed:
+  ROADMAP.md
+
 durable decision:
-  docs/project/decisions.md
+  docs/project/decisions/D-NNN.md + docs/project/decisions.md
 
 project/workstream milestone:
   docs/project/current-state.md

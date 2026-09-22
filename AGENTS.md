@@ -54,17 +54,11 @@ Do not mechanically read every project file.
 
 ## 2. Choose implementation scope naturally
 
-When the user asks to continue existing work, continue from the current repository state and choose the implementation scope according to technical coherence and verification needs.
+When the user asks to continue existing work without naming a stage boundary, choose scope according to technical coherence and verification needs.
 
-There is **no fixed relationship between one chat message and one stage/substage**.
+There is no default rule that one chat message must equal one substep or one stage.
 
-A response may implement:
-
-- part of a substage;
-- one complete stage;
-- several adjacent stages;
-
-when that is the most coherent and efficient way to work.
+A response may implement part of a substage, one full stage, or adjacent work when that is the most coherent verified unit.
 
 Prefer:
 
@@ -74,14 +68,27 @@ over
 arbitrary numbering/message boundary
 ~~~
 
-Do not stop merely because a numbered stage ended if the next adjacent work belongs to the same coherent change.
+### Explicit next-stage command
 
-Stop when there is a real reason, such as:
+When the user writes:
 
-- a meaningful verification boundary;
-- a user/product decision is needed;
-- the next work is unrelated;
-- continuing would make the change hard to review or validate.
+~~~text
+תמשיך לשלב הבא
+~~~
+
+advance **one planned stage** from the authoritative workstream `STATUS.json` / `ROADMAP.md`.
+
+Complete that stage's implementation, tests, required CI/checkpoint verification and status/documentation before advancing further.
+
+Do not silently start the following stage in the same response.
+
+The word:
+
+~~~text
+סיימתי
+~~~
+
+is reserved for the end of the full planned process/version the user asked to complete. Do not use it merely because a stage, checkpoint or mini-project finished.
 
 ---
 
@@ -100,7 +107,7 @@ Rules:
 - `STATUS.json` = machine-readable current pointer.
 - update `STATUS.json` on normal implementation progress;
 - update `AI_CONTEXT.md` only when current focus, invariants, or relevant working set changes;
-- update `ROADMAP.md` at meaningful stage/substage boundaries, not after every tiny edit.
+- update `ROADMAP.md` only when scope/order/stage definitions change; operational completion belongs only in `STATUS.json`.
 
 If fast context conflicts with a durable design/decision document:
 1. inspect the authoritative document;
@@ -113,18 +120,33 @@ If fast context conflicts with a durable design/decision document:
 
 Tests should protect observable/public behavior, not private implementation details.
 
-Default strategy:
+For new behavior, define the meaningful tests first whenever practical.
+
+For a reproducible bug:
 
 ~~~text
-Automated CI first
-→ controlled mocks for external APIs
-→ real browser APIs where practical
-→ live provider verification after CI passes
+regression test
+→ fix
+→ keep the regression test
 ~~~
 
+Default testing pyramid:
+
+~~~text
+pure deterministic behavior
+→ fast Node unit tests
+
+browser semantics / integration
+→ Playwright + Chromium at meaningful checkpoints
+
+real provider behavior
+→ live verification only when required
+~~~
+
+Fast CI is the normal feedback loop. Browser CI is intentionally sparse and should not run for every small code change.
+
 For browser work:
-- prefer Chromium/Playwright;
-- use real IndexedDB/DOM/BroadcastChannel when practical;
+- use real IndexedDB/DOM/BroadcastChannel where their semantics matter;
 - mock Leumi endpoints with deterministic sanitized fixtures;
 - never store Leumi session data/credentials in CI.
 
@@ -134,8 +156,7 @@ If a behavior can only be verified live, mark it:
 Live verification pending
 ~~~
 
-Detailed testing guidance:
-`docs/project/ai-engineering-guidelines.md`
+Workstream-specific testing policy may further refine browser checkpoints.
 
 ---
 
@@ -201,19 +222,21 @@ STATUS.json
 
 ### Meaningful stage boundary
 
-Also update:
+Also update when useful:
 
 ~~~text
-ROADMAP.md
-component README when useful
+component README
 AI_CONTEXT.md if focus/working set changed
 ~~~
 
+Update `ROADMAP.md` only if the plan/scope/order itself changed.
+
 ### Durable project decision
 
-Update:
+Update both:
 
 ~~~text
+docs/project/decisions/D-NNN.md
 docs/project/decisions.md
 ~~~
 

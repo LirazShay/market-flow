@@ -36,9 +36,9 @@ Market Data
 
 ## עקרון הפיתוח
 
-הפרויקט נבנה micro-step by micro-step.
+הפרויקט נבנה בהדרגה ביחידות עבודה קוהרנטיות וניתנות לאימות.
 
-כל שלב צריך להיות קטן, מובן, ניתן לבדיקה, להיבדק בפועל, להיות מתועד ולהשאיר את ה-repo במצב יציב.
+היקף יחידת העבודה נקבע לפי boundary הנדסי/בדיקתי אמיתי. כאשר המשתמש כותב במפורש `תמשיך לשלב הבא`, מתקדמים שלב מתוכנן אחד בלבד ומשלימים עבורו implementation, tests, verification ו-status לפני מעבר לשלב הבא.
 
 ---
 
@@ -76,7 +76,7 @@ Workstream פעיל נוסף בתוך Phase 01:
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
-ה-Local History Viewer V1 כבר נמצא ב-implementation, עם IndexedDB foundation, browser self-tests ו-recorder foundation חלקי.
+ה-Local History Viewer V1 כבר נמצא ב-implementation. Stage 7 recorder הושלם ואומת; Stage 8 — persistence integration — הוא השלב הבא. IndexedDB schema/foundation קיים, אך atomic full-cycle persistence עדיין לא מחובר ל-recorder.
 
 להמשך מהיר של workstream זה:
 
@@ -92,8 +92,8 @@ STATUS.json
 נכון לעכשיו אין production implementation של:
 
 - collector מתמשך.
-- database/persistence.
-- historical time-series store.
+- production database/persistence.
+- production historical time-series store.
 - production scanner.
 - momentum ranking engine.
 - signal engine.
@@ -160,6 +160,9 @@ scripts/research/market-data/leumi/tests/field-coverage/reports/
 Browser research scripts:
 scripts/research/market-data/leumi/
 
+Project-level ChatGPT instructions:
+docs/project/chatgpt-project-instructions.md
+
 ---
 
 ## כלל חשוב ל-AI חדש
@@ -171,6 +174,7 @@ scripts/research/market-data/leumi/
 3. אל תבצע refactor רחב של script שעובד בלי צורך.
 4. כאשר נלמד משהו חדש — תעד אותו ב-repo באותו שלב.
 5. כאשר משהו לא הוכח — סמן אותו Unknown או Inferred.
+6. בצ'אט חדש שנפתח בגבול workstream/stage, אם קיים `HANDOFF.md` מקומי — קרא אותו אחרי `AI_CONTEXT.md` ו-`STATUS.json`.
 
 ---
 
