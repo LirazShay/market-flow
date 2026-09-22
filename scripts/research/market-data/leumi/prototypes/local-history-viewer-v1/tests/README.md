@@ -100,3 +100,55 @@ __market_flow_self_test_stage_6_2__:
 Stage 6.2 בכוונה **לא מוחק** את ה-fixture בסיום.
 
 Stage 6.3 ינקה רק records עם prefix זה ויאמת reopen/persistence.
+
+
+---
+
+## Stage 6.3
+
+קובץ:
+
+~~~text
+storage-cleanup-reopen-self-test.js
+~~~
+
+מטרה:
+
+- למצוא רק fixtures של Stage 6.2 לפי ה-prefix הייעודי.
+- למחוק רק אותם.
+- לוודא שכל fixture שנמחק אינו קיים עוד.
+- לסגור את ה-DB.
+- לפתוח אותו מחדש.
+- לוודא שה-fixtures לא חזרו.
+- להריץ שוב את Stage 6.1 schema self-test אחרי ה-reopen.
+
+Dependencies, לפי הסדר:
+
+~~~text
+../storage/schema.js
+../storage/connection.js
+../storage/upgrade.js
+../storage/read.js
+../storage/write.js
+./storage-schema-self-test.js
+./storage-fixture-roundtrip-self-test.js
+./storage-cleanup-reopen-self-test.js
+~~~
+
+סדר הרצה:
+
+~~~text
+await MarketFlowStorageSchemaSelfTest.run()
+await MarketFlowStorageFixtureSelfTest.run()
+await MarketFlowStorageCleanupSelfTest.run()
+~~~
+
+ה-cleanup מכוון **רק** ל-keys שמתחילים ב:
+
+~~~text
+__market_flow_self_test_stage_6_2__:
+~~~
+
+הבדיקה לא משתמשת ב-`clear()` ולכן אינה מוחקת records אחרים מה-`meta`.
+
+אם לא קיים fixture של Stage 6.2, הבדיקה נכשלת במפורש ומבקשת להריץ קודם את Stage 6.2.
