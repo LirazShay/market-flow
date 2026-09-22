@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "9",
-    "title": "Recorder diagnostics",
-    "status": "fast-and-browser-verification-pending"
+    "stage": "10",
+    "title": "Viewer bootstrap",
+    "status": "next"
   },
   "stages": [
     {
@@ -94,11 +94,11 @@
     {
       "stage": "9",
       "title": "Recorder diagnostics",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "9.1": "implemented-fast-and-browser-verification-pending — failure records/counters",
-        "9.2": "implemented-fast-and-browser-verification-pending — heartbeat",
-        "9.3": "implemented-fast-and-browser-verification-pending — storage estimate/diagnostics API"
+        "9.1": "complete-browser-ci-verified — failure records/counters",
+        "9.2": "complete-browser-ci-verified — heartbeat",
+        "9.3": "complete-browser-ci-verified — storage estimate/diagnostics API"
       }
     },
     {
@@ -170,14 +170,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35752125784,
-      "commit": "0d6855c00c20448ae54caf96259521cc0f123e2f",
+      "runId": 35753430439,
+      "commit": "aa9f674d4b1294499bba1188b313d0df8f83966e",
       "conclusion": "success",
       "tests": [
-        "24 Chromium tests",
-        "Stage 8 recorder→IndexedDB success boundary",
-        "DB commit failure rollback/in-memory failure path",
-        "API failure no-write behavior",
+        "26 Chromium tests",
+        "Stage 9 failed-cycle diagnostics",
+        "heartbeat + storage estimate",
+        "updated Stage 8 failure expectations",
         "existing recorder/storage regressions"
       ]
     },
@@ -190,13 +190,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35752055065,
-      "commit": "00b5e7edfc4731ac985bfb93f3e51ac358c7d6cd",
+      "runId": 35753214911,
+      "commit": "903b462fc2e67bb632c21726a2ca005651255ccb",
       "conclusion": "success",
-      "tests": 119,
-      "passed": 119,
+      "tests": 124,
+      "passed": 124,
       "failed": 0,
-      "durationMs": 34.882042
+      "durationMs": 54.402409
     },
     "testingRefactor": {
       "status": "complete",
@@ -378,6 +378,45 @@
         "DB commit precedes recorder in-memory success",
         "failed API/validation/DB persistence cannot partially update latest/history"
       ]
+    },
+    "stage9": {
+      "status": "complete",
+      "testsFirst": true,
+      "fastCi": {
+        "runId": 35753214911,
+        "commit": "903b462fc2e67bb632c21726a2ca005651255ccb",
+        "conclusion": "success",
+        "tests": 124,
+        "passed": 124,
+        "failed": 0
+      },
+      "browserVerification": {
+        "firstRun": {
+          "runId": 35753264326,
+          "commit": "d388ca97a4e744a8e53523b70c27b3b9048f2f6e",
+          "conclusion": "failure",
+          "cause": "two Stage 8 browser assertions still expected zero failed-cycle rows after Stage 9 intentionally began persisting T5 failure diagnostics"
+        },
+        "finalRun": {
+          "runId": 35753430439,
+          "commit": "aa9f674d4b1294499bba1188b313d0df8f83966e",
+          "conclusion": "success",
+          "tests": 26,
+          "passed": 26,
+          "failed": 0
+        },
+        "reason": "early-browser exception: Stage 9 adds real IndexedDB failed-cycle/heartbeat behavior and navigator.storage.estimate integration"
+      },
+      "verifiedBehaviors": [
+        "failed cycles persist to cycles + meta only",
+        "failed cycles never write history/latest",
+        "unknown failed-cycle counters remain null rather than guessed",
+        "persisted failedCycles and lastError update immediately",
+        "heartbeat can refresh recorderState independently of cycle success",
+        "periodic heartbeat interval is 5000ms while a persisted session is running",
+        "storage estimate exposes usage/quota/free/ratio",
+        "existing rollback semantics remain intact"
+      ]
     }
   },
   "fastContext": {
@@ -406,8 +445,8 @@
   },
   "recommendedChatBoundary": {
     "reached": false,
-    "reason": "Development continues in the current chat; Stage 8 persistence integration is active.",
-    "nextStage": "8"
+    "reason": "Development continues in the current chat; Stage 9 diagnostics is complete and viewer work begins at Stage 10.",
+    "nextStage": "10"
   },
   "navigation": {
     "allStages": "ROADMAP.md",

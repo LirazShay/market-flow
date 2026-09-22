@@ -208,8 +208,15 @@ Verified:
 - 8.3 atomic successful-cycle transaction
 - 8.4 recorder integration + failure/rollback behavior
 
-Current:
-Stage 9 — Recorder diagnostics implementation complete; Fast/Browser verification pending
+Stage 9 — Recorder diagnostics COMPLETE + Fast/Chromium verified
+
+Verified:
+- failed-cycle records + counters
+- heartbeat
+- storage estimate / diagnostics API
+
+Next:
+Stage 10 — Viewer bootstrap
 ~~~
 
 Stage 8 explicitly includes:

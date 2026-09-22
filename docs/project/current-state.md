@@ -224,8 +224,8 @@ Status:
 
 ~~~text
 Implementation in progress
-Stages 7–8 recorder + persistence: complete + Chromium verified
-Current focus: Stage 9 — recorder diagnostics
+Stages 7–9 recorder + persistence + diagnostics: complete + Chromium verified
+Current focus: Stage 10 — viewer bootstrap
 ~~~
 
 Location:
@@ -409,3 +409,26 @@ Data
 # Next work rule
 
 AI חדש צריך לקרוא את ה-source of truth של ה-workstream לפני שהוא שואל שאלות שכבר נענו. כאשר המשתמש כותב `תמשיך לשלב הבא`, יש להתקדם שלב מתוכנן אחד בלבד; אחרת היקף העבודה נקבע לפי boundary הנדסי/בדיקתי טבעי.
+
+
+## Stage 9 diagnostics — completed
+
+Verified recorder diagnostics now include:
+
+- persisted failed-cycle records;
+- failure counters + lastError;
+- heartbeat;
+- normalized browser storage estimate.
+
+Evidence:
+
+~~~text
+Fast CI: 124 passed / 0 failed
+Browser CI: 26 passed / 0 failed
+~~~
+
+Next workstream boundary inside V1:
+
+~~~text
+Stage 10 — Viewer bootstrap
+~~~

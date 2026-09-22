@@ -3,8 +3,8 @@
 Status:
 
 ~~~text
-Stage 5 complete — basic storage module foundation
-Stage 8 next — persistence integration
+Stages 5, 8 and recorder-diagnostics persistence complete
+Next consumer: Stage 10+ viewer
 ~~~
 
 התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
@@ -204,3 +204,23 @@ validated cycle
 → DB commit
 → only then in-memory completed/latest state
 ~~~
+
+
+## Stage 9 diagnostics persistence verification
+
+~~~text
+Fast CI: 124 passed / 0 failed
+Browser CI: 26 passed / 0 failed
+~~~
+
+`recorder-diagnostics-persistence.js` now implements:
+
+~~~text
+recordHeartbeat
+    meta
+
+recordFailedCycle
+    cycles + meta
+~~~
+
+Failed-cycle writes never touch `history` or `latest`.

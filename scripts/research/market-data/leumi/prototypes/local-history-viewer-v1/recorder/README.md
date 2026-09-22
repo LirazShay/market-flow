@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7 complete and browser-verified — next: Stage 8 persistence
+Stages 7–9 complete and verified — next: Stage 10 viewer bootstrap
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
@@ -228,3 +228,32 @@ Added diagnostics contracts:
 Failed API/validation/DB cycles never write `history` or `latest`.
 
 When exact failed-cycle counts are unavailable, they remain `null` rather than being guessed.
+
+
+## Stage 9 verification
+
+~~~text
+Fast CI
+Run 35753214911
+124 passed / 0 failed
+
+Browser CI
+Run 35753430439
+26 passed / 0 failed
+~~~
+
+Verified:
+
+- T5 failed-cycle persistence uses `cycles + meta` only;
+- `history` and `latest` remain untouched on failure;
+- unknown failed-cycle counters remain `null` instead of fabricated values;
+- persisted `failedCycles` and `lastError` update immediately;
+- heartbeat can update `recorderState.lastHeartbeatAtMs`;
+- recorder heartbeat interval is 5 seconds while the persisted session is active;
+- on-demand `navigator.storage.estimate()` is normalized into usage/quota/free/ratio diagnostics.
+
+Next planned stage:
+
+~~~text
+Stage 10 — Viewer bootstrap
+~~~

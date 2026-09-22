@@ -1,10 +1,6 @@
 name: Local History Viewer V1 Browser CI
-# Stage 9 retry trigger
 
 on:
-  push:
-    paths:
-      - ".github/workflows/local-history-viewer-v1-ci.yml"
   workflow_dispatch:
   workflow_call:
 

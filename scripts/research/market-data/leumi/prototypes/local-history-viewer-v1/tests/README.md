@@ -591,3 +591,22 @@ tests/automation/specs/recorder-diagnostics.spec.js
 ~~~
 
 Verifies normalized errors/storage estimates, failed-cycle records, recorder failure hooks, heartbeat persistence, counters, and no history/latest writes on failed cycles.
+
+
+---
+
+## Stage 9 final verification
+
+~~~text
+Fast CI
+Run 35753214911
+124 passed / 0 failed
+
+Browser CI
+Run 35753430439
+26 passed / 0 failed
+~~~
+
+The first browser run correctly exposed two stale Stage 8 expectations: failures are now intentionally persisted as diagnostic `cycles` rows. Those assertions were updated to preserve the real invariant: failures may write `cycles + meta`, but never `history + latest`.
+
+Browser CI is restored to manual/reusable triggers.
