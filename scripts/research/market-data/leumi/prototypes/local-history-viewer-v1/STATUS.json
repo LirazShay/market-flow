@@ -9,10 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "15",
-    "substep": "15.4",
-    "title": "Viewer diagnostics — Stage 15 acceptance and closure",
-    "status": "in-progress"
+    "stage": "16",
+    "title": "Reload and recovery",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -162,12 +161,12 @@
     {
       "stage": "15",
       "title": "Viewer diagnostics",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
         "15.1": "complete-browser-ci-verified — raw diagnostics snapshot from IndexedDB + storage estimate",
         "15.2": "complete-fast-ci-verified — pure recorder-health semantics + diagnostics presentation model",
         "15.3": "complete-browser-ci-verified — always-visible diagnostics metrics + initial/manual/broadcast IndexedDB refresh",
-        "15.4": "in-progress — acceptance review found missing Browser coverage for stale/error/stopped recorder-health rendering; adding targeted UI regression before closure"
+        "15.4": "complete-reviewed-and-ci-verified — acceptance review closed viewer-health coverage gap; mandatory Stage-closure Fast + full Browser CI green"
       }
     },
     {
@@ -209,14 +208,15 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35778938866,
-      "jobId": 106919156250,
-      "commit": "277aab8e8b106593af507045960d048a85a87cb5",
+      "runId": 35779817583,
+      "jobId": 106922164111,
+      "activationCommit": "42e73dd180c93bb6550c728301d74a65cb474ad2",
+      "codeTestState": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc",
       "conclusion": "success",
       "tests": [
-        "12 targeted viewer-cluster Chromium tests",
-        "viewer diagnostics + bootstrap + live-refresh + security detail",
-        "12 passed / 0 failed"
+        "47 Chromium tests",
+        "47 passed / 0 failed",
+        "mandatory Stage 15 closure full-suite run"
       ]
     },
     "fastCi": "verified-success",
@@ -228,14 +228,16 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35778918364,
-      "jobId": 106919086007,
-      "commit": "1a1d4ed9b71497e9b64e95a04c3eb29e8e9628a3",
+      "runId": 35779646666,
+      "runAttempt": 2,
+      "jobId": 106922602086,
+      "commit": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc",
       "conclusion": "success",
       "tests": 148,
       "passed": 148,
       "failed": 0,
-      "durationMs": 81.243135
+      "durationMs": 99.149448,
+      "note": "Fresh Stage 15 closure rerun on the final code/test state."
     },
     "testingRefactor": {
       "status": "complete",
@@ -1086,6 +1088,89 @@
         "CYCLE_COMMITTED refresh rereads diagnostics from IndexedDB through the same live-refresh path",
         "existing bootstrap/live-refresh/detail behavior remains green after migrating stale last-cycle synchronization assertions"
       ]
+    },
+    "stage15_4": {
+      "status": "complete",
+      "acceptanceReview": {
+        "reviewedAgainst": [
+          "ROADMAP.md Stage 15",
+          "docs/viewer-ux.md recorder status/header metrics/live diagnostics requirements",
+          "docs/test-plan.md viewer coverage intent",
+          "tests/TESTING_POLICY.md Stage-closure gate"
+        ],
+        "initialGap": {
+          "description": "Viewer-level Chromium coverage did not yet prove STALE/ERROR/STOPPED recorder-health rendering.",
+          "resolution": "Added a targeted UI regression that drives persisted recorderState through STALE, ERROR, STOPPED and UNKNOWN and verifies both visible Hebrew labels and shell recorderHealth state.",
+          "testCommit": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc"
+        },
+        "remainingGaps": []
+      },
+      "targetedHealthBrowser": {
+        "runId": 35779672661,
+        "jobId": 106921718864,
+        "activationCommit": "aeb1f3a29af53fe59717d31c68e3cca3c658e926",
+        "conclusion": "success",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "finalFastCi": {
+        "runId": 35779646666,
+        "runAttempt": 2,
+        "jobId": 106922602086,
+        "commit": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc",
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "finalBrowserCi": {
+        "runId": 35779817583,
+        "jobId": 106922164111,
+        "activationCommit": "42e73dd180c93bb6550c728301d74a65cb474ad2",
+        "codeTestState": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc",
+        "conclusion": "success",
+        "tests": 47,
+        "passed": 47,
+        "failed": 0
+      },
+      "workflowRestoreCommit": "bdaa7a4c49e25f937e379fe42b547a431e3e7634",
+      "verifiedBehaviors": [
+        "viewer diagnostics are always visible across MAIN and DETAIL",
+        "recorder status is derived from persisted recorderState with 15-second stale threshold",
+        "RUNNING, STALE, ERROR, STOPPED and UNKNOWN render with the documented Hebrew labels",
+        "last completed cycle and duration come from persisted diagnostics/cycle state",
+        "DB row counts include latest/history without scanning history rows for rendering",
+        "storage usage comes from normalized navigator.storage.estimate diagnostics",
+        "manual refresh rereads diagnostics from IndexedDB without market API calls",
+        "BroadcastChannel refresh rereads authoritative diagnostics from IndexedDB",
+        "zero values remain zero while unknown recorder-derived values remain null/dash",
+        "historical current-table/live-refresh/detail regressions remain green under the Stage 15 diagnostics contract"
+      ],
+      "closureDecision": "Stage 15 accepted and complete."
+    },
+    "stage15": {
+      "status": "complete",
+      "closedAt": "2026-09-22",
+      "substeps": [
+        "15.1 raw diagnostics snapshot",
+        "15.2 pure recorder-health/presentation model",
+        "15.3 always-visible diagnostics UI + refresh integration",
+        "15.4 acceptance + mandatory Stage-closure verification"
+      ],
+      "finalFastCi": {
+        "runId": 35779646666,
+        "runAttempt": 2,
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "finalBrowserCi": {
+        "runId": 35779817583,
+        "tests": 47,
+        "passed": 47,
+        "failed": 0
+      }
     }
   },
   "fastContext": {
@@ -1115,10 +1200,9 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 15.4 acceptance review found one verification gap: viewer-level stale/error/stopped health rendering is not yet covered in Chromium.",
-    "nextStage": "15",
-    "nextSubstep": "15.4"
+    "reached": true,
+    "reason": "Stage 15 is accepted and complete. The acceptance review closed the missing viewer-level health-state coverage, and mandatory Fast CI plus full Browser CI are green.",
+    "nextStage": "16"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
