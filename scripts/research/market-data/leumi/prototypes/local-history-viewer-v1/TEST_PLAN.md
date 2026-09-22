@@ -1271,3 +1271,99 @@ integrated report is reproducible
 ~~~
 
 לא מבצעים עדיין את המדידות עצמן. המדידה בפועל תבוצע בשלבי implementation/testing המאוחרים יותר.
+
+
+---
+
+# Automated CI + Live Verification Strategy
+
+הבדיקות של V1 יהיו דו-שכבתיות.
+
+## Layer A — Automated GitHub Actions
+
+Environment:
+
+~~~text
+GitHub Actions
+→ Node test tooling
+→ Playwright
+→ Chromium
+~~~
+
+Browser capabilities אמיתיות:
+
+~~~text
+IndexedDB
+DOM
+BroadcastChannel (where practical)
+storage APIs
+~~~
+
+External provider:
+
+~~~text
+MapHeat2 → mocked
+GetSecuritiesData → mocked
+~~~
+
+אין cookies/tokens/session של לאומי ב-CI.
+
+### CI suites planned
+
+~~~text
+1. storage-schema
+2. storage-roundtrip
+3. storage-cleanup-reopen
+4. recorder-universe
+5. recorder-chunks
+6. recorder-full-cycle
+7. recorder-loop
+8. persistence-atomicity
+9. viewer-current-table
+10. viewer-sorting
+11. viewer-history
+12. cross-tab/reload
+13. failure-paths
+14. full mocked E2E
+~~~
+
+כל suite בודק observable behavior ולא private implementation.
+
+## Layer B — Live browser verification
+
+מתבצע רק אחרי Layer A ירוק.
+
+Live verification בודק דברים שה-mock אינו יכול להוכיח:
+
+- response shape בפועל באתר.
+- current provider behavior.
+- same-origin/session behavior.
+- real timing/cadence.
+- real long-run stability.
+- storage growth עם payload אמיתי.
+
+Live test result חייב להיות מסומן:
+
+~~~text
+Verified
+Inferred
+Unknown
+~~~
+
+## Rule
+
+כאשר feature ניתן לבדיקה אוטומטית:
+
+~~~text
+CI test required before feature is Complete
+~~~
+
+כאשר feature תלוי ב-provider אמיתי:
+
+~~~text
+CI mocked test passes
++
+Live verification pending
+~~~
+
+עד שהמשתמש מריץ אותו בפועל.
