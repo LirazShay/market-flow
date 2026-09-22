@@ -109,7 +109,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נגדיר רק:
@@ -119,6 +119,12 @@ Next
 - stale/error states.
 
 #### Stage 4.5 — Storage-growth + integrated test plan
+
+Status:
+
+~~~text
+Next
+~~~
 
 נגדיר רק:
 - storage growth measurements.
