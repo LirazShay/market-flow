@@ -134,6 +134,7 @@ tests/
     pure-module-smoke.test.js
     config-logic.test.js
     universe-logic.test.js
+    securities-chunk-logic.test.js
     leumi-api-fixtures.test.js
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
@@ -161,8 +162,10 @@ recorder/
   pure/
     config-logic.js
     universe-logic.js
+    securities-chunk-logic.js
   config.js
   universe-loader.js
+  securities-chunk-fetcher.js
 ~~~
 
 ## Testing policy

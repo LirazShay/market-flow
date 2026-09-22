@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.2 — universe loader
+Stage 7.3 — single GetSecuritiesData chunk fetch
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
@@ -48,9 +48,27 @@ Stage 7.2 מוסיף:
 
 אם recordCount משתנה בין קריאת count לקריאה המלאה, הטעינה נכשלת במפורש במקום לקבל universe לא עקבי.
 
+Stage 7.3 מוסיף:
+
+- relative same-origin `GetSecuritiesData` URL.
+- validation ל-securityIds לפני request.
+- HTTP validation.
+- documented response-path validation.
+- validation ל-Key חסר/כפול.
+- exact requested/received membership validation בלי להניח response order.
+- preservation של raw Security records.
+- preservation של `Table.AsOfDate`.
+- chunk timing metadata:
+  - startedAtMs
+  - responseReceivedAtMs
+  - completedAtMs
+  - requestDurationMs
+  - parseDurationMs
+  - durationMs
+
 עדיין אין:
 
-- GetSecuritiesData.
+- multi-chunk cycle builder.
 - polling loop.
 - DB writes.
 - viewer integration.
