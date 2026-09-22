@@ -41,6 +41,7 @@
     async function run() {
         const fixturePrefix = fixtureSelfTest.fixturePrefix;
         const metaStoreName = schema.stores.meta.name;
+        const deletedKeys = [];
         let database;
 
         try {
@@ -64,8 +65,6 @@
                     "MarketFlowStorageFixtureSelfTest.run() first."
                 );
             }
-
-            const deletedKeys = [];
 
             for (const fixture of fixturesBeforeCleanup) {
                 await write.deleteRecord(
