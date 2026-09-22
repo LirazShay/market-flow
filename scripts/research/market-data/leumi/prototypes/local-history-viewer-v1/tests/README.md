@@ -276,3 +276,20 @@ It verifies observable results for:
 The automation deletes the dedicated test database before and after the suite to keep CI runs isolated.
 
 No Leumi API calls are made in Stage 6.6.
+
+
+### Stage 6.6 verified
+
+GitHub Actions verification:
+
+~~~text
+Run: 35738329705
+Commit: e12d472e68760b782b268dd0b0d401b989f916b3
+Conclusion: success
+~~~
+
+During the first automated run, CI exposed a real bug in the existing Stage 6.3 cleanup test: `deletedKeys` had block scope inside the first `try` block but was referenced later when building the result.
+
+That bug was fixed, then the full browser suite passed.
+
+Stage 6.1–6.3 are now verified automatically in real Chromium IndexedDB, not only implemented.
