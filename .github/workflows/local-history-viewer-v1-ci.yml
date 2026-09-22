@@ -36,8 +36,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run targeted Stage 15.3 diagnostics UI
-        run: npx playwright test tests/automation/specs/viewer-diagnostics.spec.js
+      - name: Run Stage 15.3 related viewer cluster
+        run: npx playwright test tests/automation/specs/viewer-diagnostics.spec.js tests/automation/specs/viewer-bootstrap.spec.js tests/automation/specs/viewer-live-refresh.spec.js tests/automation/specs/viewer-security-detail.spec.js
 
       - name: Upload Playwright diagnostics
         if: failure()
