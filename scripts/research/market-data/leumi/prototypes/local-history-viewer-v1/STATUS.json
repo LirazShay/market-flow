@@ -203,13 +203,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35774639107,
-      "commit": "323cf18eca73694ddbd76ba2d30c41eb15c82dee",
-      "conclusion": "failure-diagnostic-by-design",
+      "runId": 35775106899,
+      "commit": "e7c9dd9a7e1a6079626a3559cfeb98014f61971a",
+      "conclusion": "success-targeted-rca",
       "tests": [
         "1 targeted Chromium test",
         "Stage 14.4 only",
-        "diagnostic assertion exposed Playwright auto-scroll: beforeClick=-180, atClickCapture=-1285"
+        "1 passed / 0 failed",
+        "direct DOM activation preserved the intended pre-activation viewport contract"
       ]
     },
     "fastCi": "verified-success",
@@ -845,21 +846,28 @@
       ],
       "nextRequiredAction": "Fix scroll restoration, rerun the changed Stage 14.4 browser test/suite in Chromium, and do not advance currentFocus until green.",
       "diagnosticRca": {
-        "latestDiagnosticRun": 35774639107,
-        "diagnosticCommit": "323cf18eca73694ddbd76ba2d30c41eb15c82dee",
-        "experiment": "Capture current-table scrollLeft immediately before Playwright locator.click and again in a capture-phase click listener before the product row handler.",
-        "observation": {
-          "beforeClick": -180,
-          "atClickCapture": -1285
+        "latestDiagnosticRun": 35775106899,
+        "diagnosticCommit": "e7c9dd9a7e1a6079626a3559cfeb98014f61971a",
+        "experiment": "Activate the selected row with a direct DOM MouseEvent instead of Playwright locator.click, preserving the established -180 viewport before the product handler.",
+        "observations": {
+          "priorPlaywrightLocatorClick": {
+            "beforeClick": -180,
+            "atClickCapture": -1285,
+            "runId": 35774639107
+          },
+          "directDomActivation": {
+            "targetedChromiumTests": 1,
+            "passed": 1,
+            "failed": 0,
+            "runId": 35775106899
+          }
         },
-        "conclusion": "Confirmed: Playwright scrolls the target row into view before dispatching click. Product captureViewport therefore sees the Playwright-mutated -1285 value, not the test-set -180 value.",
-        "confirmedHypothesis": "Playwright auto-scroll changes scrollLeft before production captureViewport executes.",
-        "rejectedHypotheses": [
-          "The failure is explained only by restore running too early.",
-          "The original -180 value survives unchanged until the production row-activation handler."
-        ],
-        "unresolvedDesignQuestion": "Define the intended user contract: preserve viewport before activation, preserve viewport at actual activation, or preserve a semantic visible anchor/context rather than raw RTL scrollLeft pixels.",
-        "nextExperiment": "Avoid Playwright auto-scroll in the test (e.g. dispatch a DOM click at the already-established viewport) and determine whether production correctly restores the pre-activation viewport. Do not change production scroll logic until this isolates test-driver behavior from product behavior."
+        "conclusion": "The product can preserve and restore the pre-activation viewport when the activation event does not mutate scroll first. The original failure is caused by Playwright locator.click auto-scrolling the row before the product captureViewport handler runs.",
+        "confirmedRootCause": "Test-driver side effect: Playwright auto-scroll changes the scroll container before click dispatch, so the product correctly captures the already-mutated viewport.",
+        "productionBugConfirmed": false,
+        "testContractNeedsRevision": true,
+        "unresolvedDesignQuestion": "Choose the stable contract for the regression test: activate without test-driver auto-scroll when testing viewport preservation, or assert a semantic visible anchor/context instead of raw RTL scrollLeft pixels.",
+        "nextAction": "Convert the diagnostic into a stable regression test that does not let Playwright auto-scroll redefine the pre-activation viewport, then run that exact test and the relevant broader Browser suite."
       }
     }
   },
@@ -891,10 +899,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Targeted RCA experiment confirmed Playwright auto-scroll mutates the viewport before the product click handler. No production fix was made.",
+    "reason": "Targeted RCA proved the product scroll restoration works when activation does not include Playwright auto-scroll. No production fix was made.",
     "nextStage": "14",
     "nextSubstep": "14.4",
-    "nextAction": "Run one targeted experiment that activates the row without Playwright auto-scroll and test whether the product restores the pre-activation viewport correctly."
+    "nextAction": "Revise the Stage 14.4 regression test contract to avoid Playwright auto-scroll interference, then verify targeted Chromium and broader Browser regression."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
