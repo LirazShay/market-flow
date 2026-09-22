@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "7.5",
-    "title": "Recorder loop shell",
-    "status": "next"
+    "stage": "7-checkpoint",
+    "title": "Recorder Stage 7 browser checkpoint",
+    "status": "verification-pending"
   },
   "stages": [
     {
@@ -76,8 +76,8 @@
         "7.2": "complete",
         "7.3": "complete-fast-ci-verified",
         "7.4": "complete-fast-ci-verified",
-        "7.5": "planned",
-        "7.6": "planned"
+        "7.5": "complete-fast-ci-verification-pending",
+        "7.6": "implemented-browser-verification-pending"
       }
     },
     {

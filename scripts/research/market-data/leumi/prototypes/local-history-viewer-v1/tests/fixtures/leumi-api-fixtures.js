@@ -147,6 +147,32 @@ const scenarios = Object.freeze({
         mapHeatRecords: SUCCESS_MAP_RECORDS,
         securitiesStatus: 200,
         invalidSecuritiesStructure: true
+    }),
+
+    securitiesMissingRecord: Object.freeze({
+        mapHeatStatus: 200,
+        mapHeatRecords: SUCCESS_MAP_RECORDS,
+        securitiesStatus: 200,
+        securities: Object.freeze([
+            SUCCESS_SECURITIES[0],
+            SUCCESS_SECURITIES[1],
+            SUCCESS_SECURITIES[2]
+        ])
+    }),
+
+    securitiesDuplicateKey: Object.freeze({
+        mapHeatStatus: 200,
+        mapHeatRecords: SUCCESS_MAP_RECORDS,
+        securitiesStatus: 200,
+        securities: Object.freeze([
+            SUCCESS_SECURITIES[0],
+            SUCCESS_SECURITIES[1],
+            SUCCESS_SECURITIES[2],
+            SUCCESS_SECURITIES[3],
+            Object.freeze({
+                ...SUCCESS_SECURITIES[3]
+            })
+        ])
     })
 });
 

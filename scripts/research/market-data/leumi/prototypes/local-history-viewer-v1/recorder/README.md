@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.4 complete — next: Stage 7.5 recorder loop shell
+Stage 7.5 + 7.6 implemented — Stage 7 browser checkpoint pending
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
@@ -86,9 +86,30 @@ Stage 7.4 מוסיף:
 
 אם chunk נכשל, ה-cycle נכשל מיד ולא ממשיך ל-chunk הבא.
 
+Stage 7.5 מוסיף:
+
+- start/stop recorder loop.
+- target start-to-start cadence.
+- no-overlap scheduling.
+- immediate retry cadence when a cycle takes longer than the target interval, without overlap.
+- optional universe refresh every cycle.
+- in-memory latest cycle/error state.
+- completed/failed counters.
+- clean stop while waiting or while a cycle is already in flight.
+
+Stage 7.6 מוסיף mocked browser coverage עבור:
+
+- dynamic universe.
+- sequential chunk requests.
+- complete-cycle validation.
+- HTTP failure propagation.
+- missing/duplicate securities.
+- recorder start/stop.
+- no overlapping requests/cycles.
+- latest in-memory state.
+
 עדיין אין:
 
-- polling loop.
 - DB writes.
 - viewer integration.
 

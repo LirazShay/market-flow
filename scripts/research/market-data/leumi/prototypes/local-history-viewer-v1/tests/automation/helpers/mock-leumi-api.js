@@ -32,15 +32,35 @@ function getScenario(name) {
     return scenario;
 }
 
+function delay(ms) {
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+}
+
 async function installLeumiApiMocks(
     page,
-    scenarioName = "success"
+    scenarioName = "success",
+    options = {}
 ) {
     const scenario = getScenario(
         scenarioName
     );
 
     const calls = [];
+
+    const stats = {
+        activeSecuritiesRequests: 0,
+        maxActiveSecuritiesRequests: 0
+    };
+
+    const securitiesDelayMs =
+        options.securitiesDelayMs ??
+        0;
 
     await page.route(
         "**" + MAP_HEAT_PATH + "**",
@@ -112,58 +132,122 @@ async function installLeumiApiMocks(
             const requestUrl =
                 new URL(request.url());
 
+            const securityIdsValue =
+                requestUrl.searchParams.get(
+                    "securityIds"
+                ) ??
+                "";
+
+            const requestedIds =
+                securityIdsValue
+                    .split(",")
+                    .filter(Boolean);
+
             calls.push({
                 endpoint: "GetSecuritiesData",
                 method: request.method(),
                 url: request.url(),
                 securityIds:
+                    securityIdsValue,
+                responseType:
                     requestUrl.searchParams.get(
-                        "securityIds"
+                        "responseType"
+                    ),
+                isGto:
+                    requestUrl.searchParams.get(
+                        "is_gto"
+                    ),
+                force:
+                    requestUrl.searchParams.get(
+                        "force"
                     )
             });
 
-            if (
-                scenario.securitiesStatus !== 200
-            ) {
-                await route.fulfill({
-                    status:
-                        scenario.securitiesStatus,
-                    ...jsonResponse({
-                        error:
-                            "synthetic-securities-error"
-                    })
-                });
-                return;
-            }
+            stats.activeSecuritiesRequests++;
 
-            if (
-                scenario.invalidSecuritiesStructure
-            ) {
+            stats.maxActiveSecuritiesRequests =
+                Math.max(
+                    stats
+                        .maxActiveSecuritiesRequests,
+                    stats
+                        .activeSecuritiesRequests
+                );
+
+            try {
+                if (
+                    securitiesDelayMs >
+                    0
+                ) {
+                    await delay(
+                        securitiesDelayMs
+                    );
+                }
+
+                if (
+                    scenario.securitiesStatus !==
+                    200
+                ) {
+                    await route.fulfill({
+                        status:
+                            scenario.securitiesStatus,
+                        ...jsonResponse({
+                            error:
+                                "synthetic-securities-error"
+                        })
+                    });
+                    return;
+                }
+
+                if (
+                    scenario.invalidSecuritiesStructure
+                ) {
+                    await route.fulfill({
+                        status: 200,
+                        ...jsonResponse({
+                            data: {
+                                SecuritiesData: {}
+                            }
+                        })
+                    });
+                    return;
+                }
+
+                const requestedSet =
+                    new Set(
+                        requestedIds
+                    );
+
+                const matchingSecurities =
+                    (
+                        scenario.securities ??
+                        []
+                    ).filter(
+                        security =>
+                            requestedSet.has(
+                                String(
+                                    security.Key
+                                )
+                            )
+                    );
+
                 await route.fulfill({
                     status: 200,
-                    ...jsonResponse({
-                        data: {
-                            SecuritiesData: {}
-                        }
-                    })
-                });
-                return;
-            }
-
-            await route.fulfill({
-                status: 200,
-                ...jsonResponse(
-                    createSecuritiesPayload(
-                        scenario.securities
+                    ...jsonResponse(
+                        createSecuritiesPayload(
+                            matchingSecurities
+                        )
                     )
-                )
-            });
+                });
+            } finally {
+                stats.activeSecuritiesRequests--;
+            }
         }
     );
 
     return {
         scenarioName,
-        calls
+        calls,
+        stats
     };
 }
 

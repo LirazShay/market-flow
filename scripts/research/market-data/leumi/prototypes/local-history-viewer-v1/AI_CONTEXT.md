@@ -136,6 +136,7 @@ tests/
     universe-logic.test.js
     securities-chunk-logic.test.js
     cycle-logic.test.js
+    recorder-loop-logic.test.js
     leumi-api-fixtures.test.js
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
@@ -148,6 +149,7 @@ tests/
     helpers/mock-leumi-api.js
     specs/harness-smoke.spec.js
     specs/mock-leumi-api.spec.js
+    specs/recorder-stage-7.spec.js
 
 test tooling:
   package.json
@@ -165,10 +167,12 @@ recorder/
     universe-logic.js
     securities-chunk-logic.js
     cycle-logic.js
+    recorder-loop-logic.js
   config.js
   universe-loader.js
   securities-chunk-fetcher.js
   cycle-builder.js
+  recorder-loop.js
 ~~~
 
 ## Testing policy
