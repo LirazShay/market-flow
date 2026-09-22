@@ -14,6 +14,22 @@
 | test cases שתוכננו ל-V1 | [test-plan.md](test-plan.md) |
 | Clean Code / design / safe-change rules | [project engineering practices](../../../../../../../docs/project/engineering-practices.md) |
 
+## Normative specifications
+
+Durable behavioral contracts, invariants, failure semantics and reuse boundaries live in:
+
+~~~text
+../specs/README.md
+~~~
+
+Design docs in this directory explain deeper rationale/evidence. If design and spec appear inconsistent, perform a SPEC impact review and resolve the mismatch rather than silently choosing one.
+
+Repository-wide spec policy:
+
+~~~text
+../../../../../../../docs/project/specification-policy.md
+~~~
+
 ## What does not live here
 
 Current progress:
