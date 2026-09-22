@@ -2,6 +2,12 @@
 
 This directory contains the generated-delivery mechanism for Local History Viewer V1.
 
+Normative delivery contract:
+
+~~~text
+../specs/runtime-delivery.spec.md
+~~~
+
 Operational progress remains only in `../STATUS.json`.
 
 ## Source of truth
@@ -39,7 +45,7 @@ The dist directory is generated and ignored by Git.
 
 `market-flow-v1.runtime.js` is the readable assembled runtime used for inspection and debugging.
 
-`market-flow-v1.bookmarklet.txt` is the user-facing delivery artifact. It is generated as compact single-line JavaScript. Terser is intentionally configured with compression and identifier mangling disabled: comments/formatting are removed, but source identifiers and runtime behavior remain recognizable. Only URL-sensitive characters that can corrupt a `javascript:` URL are escaped.
+`market-flow-v1.bookmarklet.txt` is the user-facing delivery artifact. It is generated as compact single-line JavaScript. Terser is intentionally configured with compression and identifier mangling disabled: comments/formatting are removed, but source identifiers and runtime behavior remain recognizable. The Bookmarklet body is raw compact JavaScript prefixed only by `javascript:`; it is not whole-payload percent-encoded.
 
 The Bookmarklet remains self-contained. It does not fetch executable code from an external host.
 
