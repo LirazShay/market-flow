@@ -292,7 +292,63 @@ Implemented — browser execution pending
 
 ### Stage 7 — Recorder skeleton
 
-נשתמש ב-flow המאומת ונייצר cycle object, בלי viewer.
+Stage 7 מחולק לתת-שלבים קטנים:
+
+#### Stage 7.1 — Recorder module skeleton + configuration
+
+Status:
+
+~~~text
+Complete
+~~~
+
+Outputs:
+
+~~~text
+recorder/README.md
+recorder/config.js
+~~~
+
+מוגדרים רק configuration defaults + validation.
+
+אין fetch/polling/DB writes.
+
+#### Stage 7.2 — Universe loader
+
+Status:
+
+~~~text
+Next
+~~~
+
+נממש רק:
+- MapHeat2 count.
+- full universe load.
+- PaperId validation.
+- chunk planning לפי chunkSize.
+
+#### Stage 7.3 — Single chunk fetch
+
+נממש רק:
+- GetSecuritiesData request עבור chunk אחד.
+- response validation.
+- chunk timing metadata.
+
+#### Stage 7.4 — Single complete cycle builder
+
+נחבר chunks באופן sequential ונחזיר cycle object מלא בזיכרון.
+
+עדיין ללא polling loop וללא DB writes.
+
+#### Stage 7.5 — Recorder loop shell
+
+נוסיף:
+- start/stop.
+- target cadence.
+- no-overlap cycle scheduling.
+- in-memory latest cycle/error state.
+
+Stage 7 עדיין לא כותב ל-IndexedDB; persistence מתחיל ב-Stage 8.
 
 ### Stage 8 — Persist complete cycles
 
