@@ -11,7 +11,7 @@
   "currentFocus": {
     "stage": "19",
     "substep": "19.2",
-    "title": "Integrated V1 validation — live Leumi browser verification",
+    "title": "Integrated V1 validation — runtime assembly and Bookmarklet packaging",
     "status": "ready-to-start"
   },
   "stages": [
@@ -207,8 +207,9 @@
       "status": "in-progress",
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-        "19.2": "planned — live Leumi browser verification",
-        "19.3": "planned — long-run live report"
+        "19.2": "planned — runtime assembly/build + single browser payload + Bookmarklet-compatible launcher; hard prerequisite before live Leumi verification",
+        "19.3": "planned — live Leumi browser verification through the assembled runtime delivery path",
+        "19.4": "planned — long-run live report using the assembled runtime"
       }
     },
     {
@@ -1550,6 +1551,21 @@
         "viewer flow is validated without bypassing the recorder/persistence/channel path"
       ],
       "closureDecision": "Stage 19.1 complete. Mocked CI gate is green; live verification may begin."
+    },
+    "runtimeAssembly": {
+      "status": "not-started",
+      "requiredBeforeLiveLeumi": true,
+      "reason": "Current source modules are individually verified through the test harness, but no verified production-style assembly/Bookmarklet delivery path exists yet.",
+      "acceptanceIntent": [
+        "deterministic dependency ordering",
+        "single runnable browser payload generated from repository sources",
+        "Bookmarklet-compatible launcher/entry point",
+        "no duplicated business logic",
+        "idempotent/recoverable repeated launch",
+        "no secrets or private session material embedded in generated artifacts",
+        "browser smoke test of assembled output",
+        "clear generation/usage documentation"
+      ]
     }
   },
   "fastContext": {
@@ -1580,9 +1596,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Stage 19.1 full mocked E2E is complete. Targeted Chromium, Fast CI and the full 53-test Browser suite are green. Live verification is now unblocked.",
+    "reason": "Stage 19.1 mocked E2E is complete. A delivery-layer gap was identified: verified modules are not yet assembled into a single runnable browser payload/Bookmarklet path. Live verification is intentionally blocked until Stage 19.2 is designed, implemented and verified.",
     "nextStage": "19",
-    "nextSubstep": "19.2"
+    "nextSubstep": "19.2",
+    "nextAction": "Design and implement a deterministic runtime assembly/build mechanism that produces one browser-runnable payload plus a Bookmarklet-compatible launcher from the existing verified source modules. Add build/package tests and a browser smoke test before any live Leumi verification."
   },
   "navigation": {
     "allStages": "ROADMAP.md",

@@ -448,20 +448,53 @@ Recorder
 → history
 ~~~
 
-CI must pass before manual live verification.
+CI must pass before runtime packaging and live verification.
 
-### 19.2 — Live Leumi browser verification
+### 19.2 — Runtime assembly + Bookmarklet packaging
 
-Against the real browser session:
+This is a hard prerequisite before any live Leumi verification.
+
+Goal:
+
+~~~text
+existing verified modules
+→ deterministic assembly/build step
+→ one runnable browser payload
+→ Bookmarklet-compatible entry point
+→ real Leumi page launch
+~~~
+
+The project must not require a user to manually paste or load many source files in dependency order.
+
+Plan and implement a reproducible delivery mechanism that:
+
+- assembles the recorder, storage, messaging and viewer modules in the correct dependency order;
+- produces a single browser-runnable payload from the repository sources;
+- produces a Bookmarklet-compatible launcher/entry point;
+- remains idempotent/recoverable when launched again;
+- does not duplicate or fork business logic into a second implementation;
+- does not embed credentials, cookies, tokens, authorization headers, account data or private session state;
+- preserves same-origin IndexedDB/viewer behavior required by V1;
+- has automated build/package verification and a browser smoke test before live use;
+- documents exactly how to generate and use the runnable output from source.
+
+Prefer generated output from source over maintaining a large hand-copied Bookmarklet separately.
+
+Live verification is blocked until this stage is complete and verified.
+
+### 19.3 — Live Leumi browser verification
+
+Against the real browser session, using the verified runtime assembly/Bookmarklet delivery path from Stage 19.2:
 
 - real MapHeat2/GetSecuritiesData behavior;
 - recorder persistence;
 - viewer behavior;
+- assembly/launch behavior on the real site;
 - Verified/Inferred/Unknown outcomes.
 
-### 19.3 — Long-run live report
+### 19.4 — Long-run live report
 
-Run recorder + viewer for an extended period and save a reproducible report beside the prototype.
+Run the assembled recorder + viewer for an extended period and save a reproducible report beside the prototype.
 
 ## Stage 20 — V1 freeze
 
