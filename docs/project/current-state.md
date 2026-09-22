@@ -216,14 +216,15 @@ Important:
 
 ---
 
-# In planning
+# Active implementation
 
 ## Local History Viewer V1
 
 Status:
 
 ~~~text
-Planning only — no implementation yet
+Implementation in progress
+Current focus: Stage 6.4 — Playwright browser-test harness
 ~~~
 
 Location:
@@ -232,26 +233,63 @@ Location:
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
-Planning progress:
+Fast AI continuation entry point:
 
 ~~~text
-Stage 1 — Requirements + architecture: Complete
-Stage 2 — IndexedDB data model:       Complete
-Stage 3 — Viewer UX plan:             Next
+AI_CONTEXT.md
+STATUS.json
 ~~~
 
-Planned V1:
+Progress:
 
-- browser-only IndexedDB persistence.
-- latest state + full local history.
-- same-origin viewer tab.
-- live cross-tab notification.
-- sortable current table.
-- per-security history table.
-- diagnostics/storage visibility.
-- filtering intentionally postponed to V2.
+~~~text
+Stages 1–5: Complete
 
-Stage 2 data model:
+Stage 6:
+6.1–6.3 implemented — browser execution pending
+6.4 next
+6.5–6.7 planned
+
+Stage 7:
+7.1 complete
+7.2 complete
+7.3 next
+7.4–7.6 planned
+
+Stages 8–20:
+planned
+~~~
+
+Implemented foundation now includes:
+
+~~~text
+storage/
+  schema.js
+  connection.js
+  upgrade.js
+  read.js
+  write.js
+
+tests/
+  storage-schema-self-test.js
+  storage-fixture-roundtrip-self-test.js
+  storage-cleanup-reopen-self-test.js
+
+recorder/
+  config.js
+  universe-loader.js
+~~~
+
+V1 remains:
+
+- browser-only.
+- IndexedDB persistence.
+- same-origin viewer/recorder.
+- BroadcastChannel notification.
+- no server.
+- filtering postponed to V2.
+
+Current DB stores:
 
 ~~~text
 meta
@@ -262,24 +300,24 @@ latest
 history
 ~~~
 
-Detailed schema:
+Important:
+
+The storage foundation exists as prototype implementation, but full-cycle persistence, viewer UI and integrated V1 validation are not complete yet.
+
+Source of truth for current workstream progress:
 
 ~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/DATA_MODEL.md
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
 ~~~
-
-Important constraint:
-
-IndexedDB is origin-scoped, therefore recorder and viewer must share the Leumi origin in V1.
 
 ---
 
-# Not started
+# Not started / not productionized
 
 ~~~text
 production collector
-storage/database
-historical snapshots
+production persistence/database
+production historical snapshots
 derived metrics
 scanner/ranking
 momentum rules
