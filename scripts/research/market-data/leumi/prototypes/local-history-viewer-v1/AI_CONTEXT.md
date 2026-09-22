@@ -148,6 +148,9 @@ CI:
   .github/workflows/local-history-viewer-v1-ci.yml
 
 recorder/
+  pure/
+    config-logic.js
+    universe-logic.js
   config.js
   universe-loader.js
 ~~~

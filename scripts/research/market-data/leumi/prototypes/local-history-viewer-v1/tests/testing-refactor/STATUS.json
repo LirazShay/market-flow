@@ -5,13 +5,13 @@
   "updatedAt": "2026-09-22",
   "overallStatus": "in-progress",
   "currentStage": {
-    "id": "T2",
-    "title": "Fast unit-test harness",
+    "id": "T3",
+    "title": "Extract deterministic logic from browser adapters",
     "status": "complete"
   },
   "nextStage": {
-    "id": "T3",
-    "title": "Extract deterministic logic from browser adapters",
+    "id": "T4",
+    "title": "Build the fast unit-test base",
     "status": "next"
   },
   "resumeParentAt": {
@@ -32,7 +32,7 @@
     {
       "id": "T3",
       "title": "Extract deterministic logic from browser adapters",
-      "status": "planned"
+      "status": "complete"
     },
     {
       "id": "T4",
@@ -61,5 +61,9 @@
     "currentBrowserTrigger": "most prototype code changes",
     "identifiedProblem": "browser setup dominates feedback time for small changes"
   },
-  "fastTestCommand": "npm run test:unit"
+  "fastTestCommand": "npm run test:unit",
+  "extractedModules": [
+    "recorder/pure/config-logic.js",
+    "recorder/pure/universe-logic.js"
+  ]
 }
