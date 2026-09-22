@@ -82,7 +82,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נגדיר רק:
@@ -91,6 +91,12 @@ Next
 - rollback on failure.
 
 #### Stage 4.3 — Viewer/sorting/history test cases
+
+Status:
+
+~~~text
+Next
+~~~
 
 נגדיר רק:
 - current table.
