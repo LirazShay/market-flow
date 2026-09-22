@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 7.3 complete — next: Stage 7.4 complete-cycle builder
+Stage 7.4 — complete-cycle builder
 ~~~
 
 התיקייה הזו תכיל את recorder של ה-prototype.
@@ -66,9 +66,28 @@ Stage 7.3 מוסיף:
   - parseDurationMs
   - durationMs
 
+Stage 7.4 מוסיף:
+
+- sequential fetch של כל chunks.
+- delay רק בין chunks, לא אחרי האחרון.
+- no-overlap בתוך cycle יחיד.
+- validation שה-chunks מכסים בדיוק את universe.
+- validation של requested chunk מול result.
+- validation גלובלי ל-missing/unexpected/duplicate Keys.
+- in-memory complete cycle object בלבד.
+- per-chunk timing summary.
+- per-security metadata שמוכן ל-Stage 8:
+  - securityId
+  - chunkIndex
+  - chunkReceivedAtMs
+  - collectedAtMs
+  - serverAsOfDate
+  - raw data
+
+אם chunk נכשל, ה-cycle נכשל מיד ולא ממשיך ל-chunk הבא.
+
 עדיין אין:
 
-- multi-chunk cycle builder.
 - polling loop.
 - DB writes.
 - viewer integration.

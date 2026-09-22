@@ -135,6 +135,7 @@ tests/
     config-logic.test.js
     universe-logic.test.js
     securities-chunk-logic.test.js
+    cycle-logic.test.js
     leumi-api-fixtures.test.js
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
@@ -163,9 +164,11 @@ recorder/
     config-logic.js
     universe-logic.js
     securities-chunk-logic.js
+    cycle-logic.js
   config.js
   universe-loader.js
   securities-chunk-fetcher.js
+  cycle-builder.js
 ~~~
 
 ## Testing policy

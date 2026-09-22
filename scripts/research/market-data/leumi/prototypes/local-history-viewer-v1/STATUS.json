@@ -9,8 +9,8 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "7.4",
-    "title": "Single complete cycle builder",
+    "stage": "7.5",
+    "title": "Recorder loop shell",
     "status": "next"
   },
   "stages": [
@@ -75,7 +75,7 @@
         "7.1": "complete",
         "7.2": "complete",
         "7.3": "complete-fast-ci-verified",
-        "7.4": "planned",
+        "7.4": "complete-fast-ci-verification-pending",
         "7.5": "planned",
         "7.6": "planned"
       }

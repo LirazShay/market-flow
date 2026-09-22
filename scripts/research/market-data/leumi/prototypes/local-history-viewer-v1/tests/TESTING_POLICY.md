@@ -27,6 +27,20 @@ Do **not** run Chromium merely because a numbered substage completed.
 
 Browser CI is a checkpoint tool, not the default feedback loop.
 
+## 1.1 Tests-first change rule
+
+For new behavior, define the externally meaningful test cases before implementation whenever practical.
+
+For a bug fix:
+
+~~~text
+reproduce with a regression test
+→ fix implementation
+→ keep the regression test
+~~~
+
+Tests should target public behavior/contracts rather than private implementation details.
+
 ## 2. Test layers
 
 ### Fast unit tests
