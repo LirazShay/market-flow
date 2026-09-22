@@ -12,7 +12,7 @@
     "stage": "19",
     "substep": "19.3",
     "title": "Integrated V1 validation — live Leumi browser verification",
-    "status": "ready-to-start"
+    "status": "verification-pending"
   },
   "stages": [
     {
@@ -208,7 +208,7 @@
       "substeps": {
         "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
         "19.2": "complete-browser-ci-verified — deterministic runtime assembly + generated runtime/Bookmarklet + Chromium smoke",
-        "19.3": "planned — live Leumi browser verification through the assembled runtime delivery path",
+        "19.3": "verification-pending — requires execution in a real authenticated Leumi browser session; safe procedure prepared in docs/live-verification.md",
         "19.4": "planned — long-run live report using the assembled runtime"
       }
     },
@@ -223,7 +223,7 @@
     "playwrightHarness": "verified-in-github-actions",
     "githubActions": "verified-success",
     "mockedApiInfrastructure": "verified-in-github-actions",
-    "liveLeumiV1Integration": "not-started",
+    "liveLeumiV1Integration": "verification-pending",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
       "runId": 35788387620,
@@ -1627,6 +1627,34 @@
         "passed": 149,
         "failed": 0
       }
+    },
+    "stage19_3": {
+      "status": "verification-pending",
+      "prerequisiteRuntimeAssembly": "verified",
+      "blockingReason": "This environment has no access to the user's authenticated Leumi browser session, so real provider/session behavior cannot be truthfully verified here.",
+      "procedure": "docs/live-verification.md",
+      "procedureCommit": "d3d081b48e288aa2a5d255818ff74e8beaf88bc3",
+      "requiredLiveEvidence": [
+        "real MapHeat2/GetSecuritiesData behavior",
+        "recorder persistence in the real browser session",
+        "viewer behavior on the real Leumi origin",
+        "assembled Bookmarklet launch/repeated-launch behavior on the real site",
+        "stop/restart behavior with persisted IndexedDB state",
+        "Verified/Inferred/Unknown classification"
+      ],
+      "securityBoundary": [
+        "no cookies/tokens/authorization headers",
+        "no account numbers",
+        "no private session dumps or authenticated HAR files",
+        "record only sanitized counters/behavior"
+      ],
+      "priorAutomatedEvidence": {
+        "fastCiRunId": 35788333222,
+        "fastCiTests": "153 passed / 0 failed",
+        "browserCiRunId": 35788387620,
+        "browserCiTests": "54 passed / 0 failed",
+        "runtimeArtifact": "local-history-viewer-v1-runtime"
+      }
     }
   },
   "fastContext": {
@@ -1657,10 +1685,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Stage 19.2 runtime assembly and Bookmarklet packaging are verified. The generated delivery path is now available for provider-dependent validation.",
+    "reason": "Stage 19.3 is blocked only on provider-dependent execution in the user's real authenticated Leumi browser. The safe verification procedure is prepared; Stage 19.4 must not start until live evidence is recorded.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Run live Leumi browser verification using the verified generated runtime/Bookmarklet path and record Verified/Inferred/Unknown outcomes without committing private session data."
+    "nextAction": "Execute docs/live-verification.md in the authenticated Leumi browser using the verified generated runtime/Bookmarklet, then record sanitized Verified/Inferred/Unknown outcomes in STATUS.json."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
