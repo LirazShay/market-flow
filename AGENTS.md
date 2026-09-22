@@ -171,7 +171,34 @@ real provider behavior
 → live verification only when required
 ~~~
 
-Fast CI is the normal feedback loop. Browser CI is intentionally sparse and should not run for every small code change.
+Fast CI is the normal feedback loop. Browser CI is intentionally sparse for ordinary changes that do not modify browser tests or require browser-only proof.
+
+### Non-negotiable test-change gate
+
+Checkpoint scheduling controls **when broad suites are run for unchanged tests**. It never permits an edited test to remain unexecuted.
+
+If a test, test fixture, harness, or test helper is added or modified:
+
+~~~text
+change test
+→ execute that test in its real layer immediately
+→ fix every failure
+→ rerun until green
+→ only then continue to the next implementation unit
+~~~
+
+Rules:
+
+- changed unit tests must be executed before continuing;
+- changed Playwright/browser tests must be executed in Chromium before continuing;
+- if targeted browser execution is unavailable in CI, run the Browser suite rather than defer the changed test;
+- a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
+- a failing test blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
+- if the required environment cannot be run, mark the work `verification-pending` in the workstream `STATUS.json` and stop before the next feature/substep;
+- do not mark behavior verified from source inspection alone when its test layer has not run;
+- verification evidence must identify the run and code/test state being claimed as verified.
+
+This gate applies even when Fast CI is green.
 
 For browser work:
 - use real IndexedDB/DOM/BroadcastChannel where their semantics matter;
@@ -221,16 +248,26 @@ for material factual claims/evidence.
 
 ---
 
-## 6. Preserve proven behavior
+## 6. Preserve proven behavior and change safely
 
 Before modifying something already verified:
 
 - understand its observable behavior;
 - keep that behavior unless intentionally changing it;
 - prefer small changes over rewrites;
-- add/extend tests when practical.
+- add/extend tests when practical;
+- create or strengthen a characterization/regression test before risky changes;
+- prefer one behavior change at a time;
+- separate behavior change from structural refactoring when practical;
+- keep a nearby known-green checkpoint so regressions can be localized.
 
 Do not introduce architecture/frameworks/abstractions without a demonstrated need.
+
+Repository-wide Clean Code, design, refactoring, and safe-change rules live in:
+
+~~~text
+docs/project/engineering-practices.md
+~~~
 
 ---
 
@@ -303,6 +340,8 @@ A work batch is done when the relevant items are true:
 
 - code/change is valid;
 - available automated tests pass;
+- every added/modified test has been executed in its native test layer;
+- no red test or unexecuted changed test is carried into the next implementation unit;
 - live-only verification is explicitly marked pending when applicable;
 - no known failure is hidden;
 - integrity validations are present where needed;

@@ -140,7 +140,34 @@ real provider behavior
 
 Fast CI is the normal feedback loop.
 
-Browser CI is deliberately sparse. Do not pay Chromium setup/startup cost for every small deterministic change.
+Browser CI is deliberately sparse for changes that do not modify browser tests and do not need browser-only proof.
+
+### Non-negotiable test-change gate
+
+Checkpoint scheduling controls **when broad suites are run for unchanged tests**. It never permits an edited test to remain unexecuted.
+
+If a test, test fixture, harness, or test helper is added or modified:
+
+~~~text
+change test
+→ execute that test in its real layer immediately
+→ fix every failure
+→ rerun until green
+→ only then continue to the next implementation unit
+~~~
+
+Rules:
+
+- changed unit tests must be executed before continuing;
+- changed Playwright/browser tests must be executed in Chromium before continuing;
+- if targeted browser execution is unavailable in CI, run the Browser suite rather than defer the changed test;
+- a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
+- a failing test blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
+- if the required environment cannot be run, mark the work `verification-pending` in the workstream `STATUS.json` and stop before the next feature/substep;
+- do not mark behavior verified from source inspection alone when its test layer has not run;
+- verification evidence must identify the run and code/test state being claimed as verified.
+
+This gate applies even when Fast CI is green.
 
 For browser prototypes:
 
@@ -231,16 +258,26 @@ Do not silently invent defaults.
 
 ---
 
-# 9. Preserve proven flows
+# 9. Preserve proven flows / safe change
 
 Before changing a flow that already works:
 
 1. understand the verified behavior;
 2. preserve the observable contract unless intentionally changing it;
 3. add validations/tests before broad refactors when practical;
-4. prefer a small change over a rewrite.
+4. prefer a small change over a rewrite;
+5. add characterization tests when behavior exists but is insufficiently specified;
+6. introduce seams around hard-to-test dependencies before changing deeply coupled behavior;
+7. keep refactoring and behavior changes separate when practical;
+8. stop on the first unexplained red test and localize it before continuing.
 
 This is especially important for browser/research code where comparing with a proven version is valuable.
+
+The authoritative project-wide Clean Code / design / refactoring / legacy-safe-change rules are in:
+
+~~~text
+docs/project/engineering-practices.md
+~~~
 
 ---
 
@@ -431,6 +468,8 @@ Apply only the checklist items relevant to the current natural work unit.
 
 - [ ] code/change is syntactically/executably valid;
 - [ ] automated tests pass where available;
+- [ ] every added/modified test was executed in its native layer after its final edit;
+- [ ] no known red test is deferred to a later stage;
 - [ ] live-only verification is marked pending where required;
 - [ ] no known failure is hidden;
 - [ ] integrity validations exist where needed;
