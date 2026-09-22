@@ -1,4 +1,5 @@
 name: Local History Viewer V1 Browser CI
+# Stage 15.3 contract migration verification
 # Stage 15.3 implementation verification
 
 on:
