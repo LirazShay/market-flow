@@ -257,7 +257,25 @@ Temporary verification mechanisms must be restored before closing the work unit.
 
 ---
 
-# 12. Healthy-system Definition of Done
+# 12. Specification impact discipline
+
+Every meaningful change must perform a SPEC impact review using:
+
+~~~text
+docs/project/specification-policy.md
+~~~
+
+The review is mandatory even when the result is `No spec impact`.
+
+Changes to behavior, architecture, public APIs, persistence, provider assumptions, failure/recovery semantics, UI contracts, runtime delivery, security/privacy boundaries, or reuse/extension seams require the owning specs to be reviewed and updated in the same coherent batch when affected.
+
+A known stale spec is a repository-coherence defect. Do not knowingly complete work while leaving a contradictory durable spec behind.
+
+Specs describe intended durable contracts; tests describe executable evidence; code is implementation. A mismatch must be investigated and reconciled rather than hidden.
+
+---
+
+# 13. Healthy-system Definition of Done
 
 Relevant items must be true:
 
@@ -271,6 +289,7 @@ Relevant items must be true:
 - [ ] every numbered Stage closure has fresh full Browser CI evidence for its final state;
 - [ ] no known regression is deferred;
 - [ ] status is accurate;
+- [ ] SPEC impact review is complete and affected specs are synchronized;
 - [ ] temporary verification changes are restored;
 - [ ] repository has a clear next pointer;
 - [ ] another engineer/AI can continue without guessing.
