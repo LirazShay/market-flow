@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "14",
-    "substep": "14.2",
-    "title": "Security history drill-down — load older continuation",
-    "status": "in-progress"
+    "substep": "14.3",
+    "title": "Security history drill-down — row activation and detail UI",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -153,7 +153,7 @@
       "status": "in-progress",
       "substeps": {
         "14.1": "complete-browser-ci-verified — targeted bySecurityTime newest-first initial page (500 + hasMore)",
-        "14.2": "in-progress — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
+        "14.2": "complete-browser-ci-verified — continuation token + load-older without duplicates/skips, including equal-timestamp boundary",
         "14.3": "planned — row activation + detail summary/history table UI",
         "14.4": "planned — detail live refresh + return-to-main state preservation",
         "14.5": "planned — Stage 14 acceptance/verification"
@@ -203,14 +203,13 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35767420214,
-      "commit": "becfdb1d6e346715422d7340a4459204dafbacc0",
+      "runId": 35768158909,
+      "commit": "7d6885667f74d253cb27f05978b3e98797e7622f",
       "conclusion": "success",
       "tests": [
-        "38 Chromium tests",
-        "Stage 14.1 targeted bySecurityTime history read",
-        "500-row initial page + hasMore",
-        "per-security isolation + newest-first ordering",
+        "39 Chromium tests",
+        "Stage 14.2 load-older continuation",
+        "equal-collectedAtMs page-boundary coverage",
         "existing recorder/storage/viewer regressions"
       ]
     },
@@ -223,13 +222,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35767377980,
-      "commit": "bc98929ca982c2c61a92c31f85e272ac50557974",
+      "runId": 35768118980,
+      "commit": "ca668933b0b1bf62b63869af955e80576d96bc88",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 86.81866
+      "durationMs": 59.740473
     },
     "testingRefactor": {
       "status": "complete",
@@ -734,6 +733,50 @@
         "hasMore is true when an additional matching row exists beyond the first page",
         "security with no history returns an empty page with hasMore false"
       ]
+    },
+    "stage14_2": {
+      "status": "complete",
+      "testsFirst": true,
+      "testContractCommit": "59ba7396204c01938a723cdcfea5d70fbbe35cfa",
+      "implementationCommit": "5780c78d8d36044c7781edf537d62ab9c0426789",
+      "regressionTestFixCommit": "ca668933b0b1bf62b63869af955e80576d96bc88",
+      "fastCi": {
+        "runId": 35768118980,
+        "commit": "ca668933b0b1bf62b63869af955e80576d96bc88",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserCi": {
+        "firstRun": {
+          "runId": 35767947704,
+          "commit": "89273d8c16d50b437a75d7df30c3c723c7cafd67",
+          "conclusion": "failure",
+          "tests": 39,
+          "passed": 38,
+          "failed": 1,
+          "cause": "pre-existing Stage 10 viewer-reuse test asserted transient BOOTING state; the viewer had already validly advanced to EMPTY. Stage 14.2 test itself passed."
+        },
+        "finalRun": {
+          "runId": 35768158909,
+          "commit": "7d6885667f74d253cb27f05978b3e98797e7622f",
+          "conclusion": "success",
+          "tests": 39,
+          "passed": 39,
+          "failed": 0
+        },
+        "reason": "early-browser verification: Stage 14.2 changes real IndexedDB cursor continuation semantics"
+      },
+      "verifiedBehaviors": [
+        "loadOlderPage resumes strictly after the last row of the previous page",
+        "continuation identity includes both index key and primary key so equal collectedAtMs values are not skipped",
+        "first and older pages contain no duplicate history rows",
+        "combined pages preserve newest-first order",
+        "502-row fixture is returned as 500 + 2 with all 502 unique cycleIds",
+        "hasMore becomes false and continuation becomes null on the final page",
+        "continuation is scoped to the requested securityId"
+      ]
     }
   },
   "fastContext": {
@@ -761,10 +804,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 14.2 is in progress.",
+    "reached": true,
+    "reason": "Stage 14.2 is complete and verified. Stage 14 remains open; the next natural work is Stage 14.3 row activation and detail UI.",
     "nextStage": "14",
-    "nextSubstep": "14.2"
+    "nextSubstep": "14.3"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
