@@ -16,21 +16,13 @@ It is the currently active workstream, not the entire Market Flow project.
 | durable V1 design | docs/ |
 | testing / CI policy | tests/TESTING_POLICY.md |
 
-## Current milestone
+## Current status
+
+Live progress and verification results are intentionally kept only in:
 
 ~~~text
-Stages 1–12 complete
-Next: Stage 13 — Dynamic sorting
+STATUS.json
 ~~~
-
-Latest verification:
-
-~~~text
-Fast CI: 136 passed / 0 failed
-Viewer Checkpoint C: 34 Chromium passed / 0 failed
-~~~
-
-Always trust STATUS.json over this milestone text if development has advanced.
 
 ## Folder map
 

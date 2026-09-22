@@ -9,9 +9,8 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "13",
-    "substep": "13.4",
-    "title": "Dynamic sorting — final verification and Stage 13 closure",
+    "stage": "14",
+    "title": "Security history drill-down",
     "status": "ready-to-start"
   },
   "stages": [
@@ -139,12 +138,12 @@
     {
       "stage": "13",
       "title": "Dynamic sorting",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
         "13.1": "complete-fast-ci-verified — pure sorting state/comparator contract + unit tests",
         "13.2": "complete-fast-ci-verified — sortable accessible headers + interactive DOM sorting; Playwright coverage added, Chromium execution deferred to 13.3",
         "13.3": "complete-browser-ci-verified — selected sort preserved across BroadcastChannel-triggered IndexedDB reread/rerender",
-        "13.4": "planned — Fast CI verification and Stage 13 closure"
+        "13.4": "complete-reviewed-and-ci-verified — final acceptance review and Stage 13 closure"
       }
     },
     {
@@ -665,6 +664,36 @@
         "default DailyDealsQuantity header remains inactive after the preserved custom sort",
         "Stage 13.2 keyboard/header interaction coverage passes in Chromium"
       ]
+    },
+    "stage13": {
+      "status": "complete",
+      "reviewedAt": "2026-09-22",
+      "acceptanceReview": "no-gap-found",
+      "implementationChangedDuringClosureReview": false,
+      "fastCi": {
+        "runId": 35766523026,
+        "commit": "8e303956b16939a2a74e9fb7b16f897300bf60b4",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35766577036,
+        "commit": "813fbcd5849e281cda2452625128c5f70b511f26",
+        "conclusion": "success",
+        "tests": 36,
+        "passed": 36,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "default DailyDealsQuantity DESC with paperName ASC tie-breaker",
+        "single-column string/numeric/time toggle semantics",
+        "deterministic null/undefined/empty-string ordering without collapsing zero",
+        "keyboard-accessible sortable header buttons",
+        "aria-sort and visible ▲/▼ indicators",
+        "selected sort survives BroadcastChannel-triggered IndexedDB reread and rerender"
+      ]
     }
   },
   "fastContext": {
@@ -693,9 +722,8 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Stage 13.3 is complete and verified in Chromium. Stage 13 remains open; the next natural work is Stage 13.4 final verification and closure.",
-    "nextStage": "13",
-    "nextSubstep": "13.4"
+    "reason": "Stage 13 is complete and verified. The next planned work is Stage 14.",
+    "nextStage": "14"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
