@@ -9,20 +9,20 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "6.7",
-    "title": "Mock API fixture infrastructure",
-    "status": "ci-verification-pending"
+    "stage": "7.3",
+    "title": "Single chunk fetch",
+    "status": "next"
   },
   "recommendedNaturalBatch": [
     {
-      "stage": "6.7",
-      "title": "Mock API fixture infrastructure"
+      "stage": "7.3",
+      "title": "Single chunk fetch"
     }
   ],
-  "stopBoundaryAfterRecommendedBatch": "6.7",
+  "stopBoundaryAfterRecommendedBatch": "7.3",
   "nextAfterRecommendedBatch": {
-    "stage": "7.3",
-    "title": "Single chunk fetch"
+    "stage": "7.4",
+    "title": "Single complete cycle builder"
   },
   "stages": [
     {
@@ -67,7 +67,7 @@
     {
       "stage": "6",
       "title": "Test infrastructure + IndexedDB self-tests",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
         "6.1": "complete-ci-verified",
         "6.2": "complete-ci-verified",
@@ -75,7 +75,7 @@
         "6.4": "complete",
         "6.5": "complete",
         "6.6": "complete",
-        "6.7": "implemented-ci-verification-pending"
+        "6.7": "complete"
       }
     },
     {
@@ -166,18 +166,22 @@
     "storageSelfTests": "verified-in-github-actions",
     "playwrightHarness": "verified-in-github-actions",
     "githubActions": "verified-success",
-    "mockedApiInfrastructure": "implemented-ci-verification-pending",
+    "mockedApiInfrastructure": "verified-in-github-actions",
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 CI",
-      "runId": 35738329705,
-      "commit": "e12d472e68760b782b268dd0b0d401b989f916b3",
+      "runId": 35738834298,
+      "commit": "8cf907ec0101a7de65ac5e7dc4a80ff7f9e166f8",
       "conclusion": "success",
       "tests": [
         "harness smoke",
         "storage schema/open",
         "fixture round-trip",
-        "cleanup/reopen"
+        "cleanup/reopen",
+        "mocked MapHeat2 success/failure/invalid structure",
+        "mocked GetSecuritiesData success/failure/invalid structure",
+        "null vs zero fixture preservation",
+        "dynamic universe and duplicate/missing PaperId validation"
       ]
     }
   },
