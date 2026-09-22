@@ -45,8 +45,8 @@ MapHeat2 = universe / discovery / metadata source
 Evidence:
 
 ~~~text
-docs/leumi-api/mapheat2.md
-docs/leumi-api/api-flow.md
+docs/leumi-api/endpoints/mapheat2.md
+docs/leumi-api/overview/api-flow.md
 ~~~
 
 ---
@@ -64,8 +64,8 @@ GetSecuritiesData = dynamic/detailed market snapshot source
 Evidence:
 
 ~~~text
-docs/leumi-api/get-securities-data.md
-docs/leumi-api/api-flow.md
+docs/leumi-api/endpoints/get-securities-data.md
+docs/leumi-api/overview/api-flow.md
 ~~~
 
 ---
@@ -219,3 +219,51 @@ Decision: do not assume Node, C#, database or frontend stack.
 Browser JavaScript research scripts are evidence tools only.
 
 Revisit when the first production component is ready to be designed.
+
+---
+
+## D-017 — Separate research, production code and production tests
+
+Status: Accepted
+
+Decision:
+
+~~~text
+Research/browser probes:
+scripts/research/<domain>/<provider>/
+
+Production code:
+src/
+
+Production automated tests:
+tests/
+~~~
+
+For Leumi market-data research:
+
+~~~text
+scripts/research/market-data/leumi/
+├── capture/
+├── collection/
+├── demos/
+└── tests/
+~~~
+
+Documentation is organized separately under:
+
+~~~text
+docs/
+~~~
+
+Why:
+
+- research scripts have a different lifecycle from production code.
+- manual API research tests are not the same thing as automated product tests.
+- domain-first organization prevents one provider folder from becoming a mixed collection of market-data, execution and unrelated scripts.
+- local README files make the repository navigable for new AI agents.
+
+Details:
+
+~~~text
+docs/project/repository-structure.md
+~~~
