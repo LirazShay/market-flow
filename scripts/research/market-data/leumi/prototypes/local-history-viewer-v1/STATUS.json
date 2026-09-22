@@ -9,10 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "17",
-    "substep": "17.1",
-    "title": "Failure simulation — persistent-recorder failure matrix",
-    "status": "in-progress"
+    "stage": "18",
+    "title": "Storage growth test",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -184,11 +183,11 @@
     {
       "stage": "17",
       "title": "Failure simulation",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "17.1": "in-progress — audit existing failure coverage and add missing persistent-recorder invalid/missing/duplicate matrix",
-        "17.2": "planned — Stage 17 acceptance mapping across all seven ROADMAP failure cases",
-        "17.3": "planned — mandatory Stage-closure Fast + full Browser CI"
+        "17.1": "complete-browser-ci-verified — persistent-recorder invalid/missing/duplicate failure matrix added and green",
+        "17.2": "complete-reviewed — all seven ROADMAP failure cases mapped to deterministic CI coverage",
+        "17.3": "complete-reviewed-and-ci-verified — mandatory Stage-closure Fast + full Browser CI green"
       }
     },
     {
@@ -220,15 +219,15 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35781101317,
-      "jobId": 106926491081,
-      "activationCommit": "e0eb36cc5f1240f9541b712dff946bc95486adf3",
-      "codeTestState": "e6577e0a1565d17448d1481978e2658437d66892",
+      "runId": 35782030038,
+      "jobId": 106929622317,
+      "activationCommit": "8c7503acbf7601ecf8091cc06758878be10206c8",
+      "codeTestState": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
       "conclusion": "success",
       "tests": [
-        "50 Chromium tests",
-        "50 passed / 0 failed",
-        "mandatory Stage 16 closure full-suite run"
+        "51 Chromium tests",
+        "51 passed / 0 failed",
+        "mandatory Stage 17 closure full-suite run"
       ]
     },
     "fastCi": "verified-success",
@@ -240,16 +239,16 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35780885144,
+      "runId": 35781827757,
       "runAttempt": 2,
-      "jobId": 106926646533,
-      "commit": "e6577e0a1565d17448d1481978e2658437d66892",
+      "jobId": 106929790448,
+      "commit": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
       "conclusion": "success",
       "tests": 148,
       "passed": 148,
       "failed": 0,
-      "durationMs": 338.219515,
-      "note": "Fresh Stage 16 closure rerun on final recovery code/test state."
+      "durationMs": 453.551973,
+      "note": "Fresh Stage 17 closure rerun on final code/test state."
     },
     "testingRefactor": {
       "status": "complete",
@@ -1280,6 +1279,93 @@
         "close/reopen maintains a single viewer child window"
       ],
       "closureDecision": "Stage 16 accepted and complete."
+    },
+    "stage17": {
+      "status": "complete",
+      "closedAt": "2026-09-22",
+      "testsFirst": true,
+      "coverageAudit": {
+        "roadmapCases": [
+          {
+            "case": "failed API chunk",
+            "coverage": "existing recorder persistence integration + failed-cycle diagnostics; reverified in full Browser CI"
+          },
+          {
+            "case": "invalid response",
+            "coverage": "Stage 17 persistent-recorder matrix: invalidSecuritiesStructure"
+          },
+          {
+            "case": "duplicate/missing securities",
+            "coverage": "Stage 17 persistent-recorder matrix: securitiesMissingRecord + securitiesDuplicateKey"
+          },
+          {
+            "case": "failed validation",
+            "coverage": "missing/duplicate membership validation failures propagate through recorder failure path without current/history mutation"
+          },
+          {
+            "case": "DB write failure",
+            "coverage": "existing ConstraintError/rollback recorder integration; reverified in full Browser CI"
+          },
+          {
+            "case": "stale recorder",
+            "coverage": "existing viewer diagnostics Chromium coverage for STALE health; reverified in full Browser CI"
+          },
+          {
+            "case": "BroadcastChannel degraded/unavailable",
+            "coverage": "existing viewer live-refresh degraded fallback Chromium coverage; reverified in full Browser CI"
+          }
+        ],
+        "remainingGaps": []
+      },
+      "newFailureMatrix": {
+        "commit": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
+        "targetedBrowser": {
+          "runId": 35781862212,
+          "jobId": 106929056864,
+          "activationCommit": "bf924863a9ae9383facb6b9be9d8af431919a026",
+          "conclusion": "success",
+          "tests": 1,
+          "passed": 1,
+          "failed": 0
+        },
+        "scenarios": [
+          "invalidSecuritiesStructure",
+          "securitiesMissingRecord",
+          "securitiesDuplicateKey"
+        ],
+        "verifiedInvariants": [
+          "recorder completedCycles remains 0",
+          "recorder failedCycles increments to 1",
+          "latestCycle remains null",
+          "one persisted failed cycle exists with the original validation/response error",
+          "history remains empty",
+          "latest remains empty",
+          "persisted session failedCycles increments",
+          "recorderState completedCycles stays 0 and failedCycles becomes 1"
+        ]
+      },
+      "finalFastCi": {
+        "runId": 35781827757,
+        "runAttempt": 2,
+        "jobId": 106929790448,
+        "commit": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "finalBrowserCi": {
+        "runId": 35782030038,
+        "jobId": 106929622317,
+        "activationCommit": "8c7503acbf7601ecf8091cc06758878be10206c8",
+        "codeTestState": "0d7c8599ed2175636cbf500bfecaba6385ce37cb",
+        "conclusion": "success",
+        "tests": 51,
+        "passed": 51,
+        "failed": 0
+      },
+      "workflowRestoreCommit": "027790dd5ccae01c0175e0d69263f77acf25676c",
+      "closureDecision": "Stage 17 accepted and complete. All ROADMAP failure simulations have deterministic CI coverage and the full suite is green."
     }
   },
   "fastContext": {
@@ -1309,10 +1395,9 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 17 is in progress. Existing failure coverage is being reused; only missing integration cases will be added.",
-    "nextStage": "17",
-    "nextSubstep": "17.1"
+    "reached": true,
+    "reason": "Stage 17 is accepted and complete. All seven failure-simulation cases are covered and mandatory Fast CI plus full Browser CI are green.",
+    "nextStage": "18"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
