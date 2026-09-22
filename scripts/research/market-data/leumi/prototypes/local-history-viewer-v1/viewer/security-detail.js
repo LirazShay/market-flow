@@ -520,6 +520,31 @@
                 true;
         }
 
+        currentTable
+            .restoreViewport(
+                targetWindow
+            );
+
+        if (session) {
+            session.pendingSecurityId =
+                null;
+
+            session.securityId =
+                null;
+
+            session.row =
+                null;
+
+            session.continuation =
+                null;
+
+            session.hasMore =
+                false;
+
+            session.loadedRows =
+                [];
+        }
+
         setViewerState(
             targetWindow,
             "MAIN",
@@ -1009,6 +1034,64 @@
         );
     }
 
+    async function loadHistoryDepth(
+        securityId,
+        minimumRows
+    ) {
+        let page =
+            await historyData
+                .loadInitialPage(
+                    securityId
+                );
+
+        const rows = [
+            ...page.rows
+        ];
+
+        let hasMore =
+            page.hasMore;
+
+        let continuation =
+            page.continuation;
+
+        while (
+            rows.length <
+                minimumRows &&
+            hasMore &&
+            continuation
+        ) {
+            const olderPage =
+                await historyData
+                    .loadOlderPage(
+                        securityId,
+                        continuation
+                    );
+
+            rows.push(
+                ...olderPage.rows
+            );
+
+            hasMore =
+                olderPage.hasMore;
+
+            continuation =
+                olderPage.continuation;
+        }
+
+        return Object.freeze({
+            securityId,
+            pageSize:
+                historyData
+                    .INITIAL_PAGE_SIZE,
+            rows:
+                Object.freeze([
+                    ...rows
+                ]),
+            hasMore,
+            continuation
+        });
+    }
+
     async function openSecurity(
         targetWindow,
         row
@@ -1031,10 +1114,10 @@
 
         try {
             const page =
-                await historyData
-                    .loadInitialPage(
-                        row.securityId
-                    );
+                await loadHistoryDepth(
+                    row.securityId,
+                    0
+                );
 
             if (
                 session.pendingSecurityId !==
@@ -1103,6 +1186,101 @@
         }
     }
 
+    async function refreshFromModel(
+        targetWindow,
+        model
+    ) {
+        const session =
+            sessions.get(
+                targetWindow
+            );
+
+        if (!session) {
+            return false;
+        }
+
+        const viewerState =
+            targetWindow
+                .MarketFlowViewerShell
+                ?.getState?.();
+
+        if (
+            viewerState
+                ?.viewState !==
+                "DETAIL" ||
+            !session.securityId
+        ) {
+            return false;
+        }
+
+        const securityId =
+            session.securityId;
+
+        const row =
+            model
+                .rows
+                .find(
+                    candidate =>
+                        candidate
+                            .securityId ===
+                        securityId
+                );
+
+        if (!row) {
+            throw new Error(
+                "Selected security " +
+                securityId +
+                " is missing from the refreshed current-table model."
+            );
+        }
+
+        const minimumRows =
+            session
+                .loadedRows
+                .length;
+
+        const page =
+            await loadHistoryDepth(
+                securityId,
+                minimumRows
+            );
+
+        const latestState =
+            targetWindow
+                .MarketFlowViewerShell
+                ?.getState?.();
+
+        if (
+            latestState
+                ?.viewState !==
+                "DETAIL" ||
+            session.securityId !==
+                securityId
+        ) {
+            return false;
+        }
+
+        renderDetail(
+            targetWindow,
+            row,
+            page
+        );
+
+        setViewerState(
+            targetWindow,
+            "DETAIL",
+            "מציג היסטוריה עבור " +
+                (
+                    row.paperName ??
+                    row.securityId
+                ) +
+                ".",
+            securityId
+        );
+
+        return true;
+    }
+
     function attach(
         targetWindow
     ) {
@@ -1147,6 +1325,11 @@
             Object.freeze({
                 open:
                     row => {
+                        currentTable
+                            .captureViewport(
+                                targetWindow
+                            );
+
                         session.pendingSecurityId =
                             row.securityId;
 
@@ -1245,7 +1428,8 @@
             HISTORY_COLUMNS,
             attach,
             detach,
-            getState
+            getState,
+            refreshFromModel
         });
 
     console.log(

@@ -31,6 +31,9 @@
     const rowActivationHandlers =
         new WeakMap();
 
+    const viewportStateByWindow =
+        new WeakMap();
+
     if (
         !schema ||
         !connection ||
@@ -65,6 +68,23 @@
         statusText,
         latestError = null
     ) {
+        const activeViewState =
+            targetWindow
+                .MarketFlowViewerShell
+                ?.getState?.()
+                ?.viewState;
+
+        if (
+            activeViewState ===
+                "DETAIL" &&
+            (
+                viewState === "MAIN" ||
+                viewState === "EMPTY"
+            )
+        ) {
+            return;
+        }
+
         const documentRef =
             targetWindow.document;
 
@@ -331,6 +351,75 @@
             : "▼";
     }
 
+    function captureViewport(
+        targetWindow
+    ) {
+        const wrapper =
+            targetWindow
+                .document
+                .querySelector(
+                    "[data-role='current-market-table-wrap']"
+                );
+
+        if (!wrapper) {
+            return (
+                viewportStateByWindow.get(
+                    targetWindow
+                ) ??
+                Object.freeze({
+                    scrollLeft: 0,
+                    scrollTop: 0
+                })
+            );
+        }
+
+        const viewport =
+            Object.freeze({
+                scrollLeft:
+                    wrapper.scrollLeft,
+                scrollTop:
+                    wrapper.scrollTop
+            });
+
+        viewportStateByWindow.set(
+            targetWindow,
+            viewport
+        );
+
+        return viewport;
+    }
+
+    function restoreViewport(
+        targetWindow
+    ) {
+        const viewport =
+            viewportStateByWindow.get(
+                targetWindow
+            );
+
+        const wrapper =
+            targetWindow
+                .document
+                .querySelector(
+                    "[data-role='current-market-table-wrap']"
+                );
+
+        if (
+            !viewport ||
+            !wrapper
+        ) {
+            return false;
+        }
+
+        wrapper.scrollLeft =
+            viewport.scrollLeft;
+
+        wrapper.scrollTop =
+            viewport.scrollTop;
+
+        return true;
+    }
+
     function setRowActivationHandler(
         targetWindow,
         handler
@@ -429,6 +518,10 @@
 
         ensureStyles(
             documentRef
+        );
+
+        captureViewport(
+            targetWindow
         );
 
         clearPanel(
@@ -745,6 +838,12 @@
             wrapper
         );
 
+        if (!panel.hidden) {
+            restoreViewport(
+                targetWindow
+            );
+        }
+
         setText(
             documentRef,
             "[data-role='security-count']",
@@ -879,7 +978,9 @@
             loadSnapshot,
             renderModel,
             loadAndRender,
-            setRowActivationHandler
+            setRowActivationHandler,
+            captureViewport,
+            restoreViewport
         });
 
     console.log(
