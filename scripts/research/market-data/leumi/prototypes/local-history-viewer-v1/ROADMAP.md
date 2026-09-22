@@ -123,7 +123,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נגדיר רק:
@@ -137,6 +137,12 @@ Next
 ## Implementation foundation
 
 ### Stage 5 — IndexedDB module
+
+Status:
+
+~~~text
+Next
+~~~
 
 רק create/open/upgrade + stores + basic read/write helpers.
 
