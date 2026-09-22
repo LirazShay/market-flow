@@ -344,3 +344,30 @@ The Stage 6.7 Playwright suite verifies:
 - invalid GetSecuritiesData structure fixture.
 
 No live Leumi API request is made by these tests.
+
+
+### Stage 6.7 verified
+
+GitHub Actions verification:
+
+~~~text
+Run: 35738834298
+Commit: 8cf907ec0101a7de65ac5e7dc4a80ff7f9e166f8
+Conclusion: success
+~~~
+
+Verified in Chromium with deterministic synthetic fixtures:
+
+- MapHeat2 success path.
+- dynamic universe size.
+- arbitrary chunk planning.
+- duplicate PaperId rejection.
+- missing PaperId rejection.
+- MapHeat2 HTTP failure.
+- invalid MapHeat2 structure.
+- GetSecuritiesData success fixture.
+- null vs zero preservation.
+- GetSecuritiesData HTTP failure.
+- invalid GetSecuritiesData structure.
+
+Stage 6 is now complete.
