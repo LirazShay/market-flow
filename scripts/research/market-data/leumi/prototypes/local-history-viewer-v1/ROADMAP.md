@@ -95,7 +95,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נגדיר רק:
@@ -105,6 +105,12 @@ Next
 - per-security history.
 
 #### Stage 4.4 — Cross-tab/reload/recovery test cases
+
+Status:
+
+~~~text
+Next
+~~~
 
 נגדיר רק:
 - BroadcastChannel.
