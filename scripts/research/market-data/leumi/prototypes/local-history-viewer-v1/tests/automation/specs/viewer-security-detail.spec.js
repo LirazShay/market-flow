@@ -947,11 +947,25 @@ test(
             }
         );
 
-        await viewer
-            .locator(
-                "tr[data-security-id='1001']"
-            )
-            .click();
+        await viewer.evaluate(
+            () => {
+                const row =
+                    document.querySelector(
+                        "tr[data-security-id='1001']"
+                    );
+
+                row.dispatchEvent(
+                    new MouseEvent(
+                        "click",
+                        {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window
+                        }
+                    )
+                );
+            }
+        );
 
         const clickScrollDiagnostic =
             await viewer.evaluate(
