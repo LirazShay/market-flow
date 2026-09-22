@@ -12,7 +12,7 @@
     "stage": "19",
     "substep": "19.1",
     "title": "Integrated V1 validation — full mocked E2E in GitHub Actions",
-    "status": "ready-to-start"
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -204,11 +204,11 @@
     {
       "stage": "19",
       "title": "Integrated V1 validation",
-      "status": "planned",
+      "status": "in-progress",
       "substeps": {
-        "19.1": "planned",
-        "19.2": "planned",
-        "19.3": "planned"
+        "19.1": "in-progress — Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history",
+        "19.2": "planned — live Leumi browser verification",
+        "19.3": "planned — long-run live report"
       }
     },
     {
@@ -1526,8 +1526,8 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 18 is accepted and complete. Chromium storage growth was measured repeatedly, documented, and the mandatory Fast CI plus full Browser CI are green.",
+    "reached": false,
+    "reason": "Stage 19.1 is in progress. Full mocked E2E will be executed in Chromium CI before any live verification.",
     "nextStage": "19",
     "nextSubstep": "19.1"
   },
