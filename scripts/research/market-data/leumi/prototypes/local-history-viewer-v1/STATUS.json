@@ -10,8 +10,8 @@
   },
   "currentFocus": {
     "stage": "16",
-    "substep": "16.1",
-    "title": "Reload and recovery — browser recovery contract",
+    "substep": "16.4",
+    "title": "Reload and recovery — Stage 16 acceptance and closure",
     "status": "in-progress"
   },
   "stages": [
@@ -175,10 +175,10 @@
       "title": "Reload and recovery",
       "status": "in-progress",
       "substeps": {
-        "16.1": "in-progress — viewer reload must rebuild shell and reread IndexedDB",
-        "16.2": "planned — close/reopen must restore persisted current data and diagnostics",
-        "16.3": "planned — recovery must not depend on a running recorder or market API",
-        "16.4": "planned — Stage 16 acceptance + mandatory Stage-closure Fast/Browser CI"
+        "16.1": "complete-browser-ci-verified — viewer reload automatically rebuilds shell and rereads IndexedDB",
+        "16.2": "complete-browser-ci-verified — close/reopen restores newest persisted snapshot",
+        "16.3": "complete-browser-ci-verified — viewer recovery works without running recorder or market API",
+        "16.4": "in-progress — acceptance passed; running mandatory Stage-closure Fast + full Browser CI"
       }
     },
     {
@@ -1178,6 +1178,29 @@
         "passed": 47,
         "failed": 0
       }
+    },
+    "stage16Acceptance": {
+      "status": "verification-in-progress",
+      "reviewedAgainst": [
+        "ROADMAP.md Stage 16"
+      ],
+      "gapsFound": [],
+      "acceptanceCoverage": [
+        "viewer reload rebuilds the about:blank shell automatically",
+        "reload rereads persisted IndexedDB current data and diagnostics",
+        "close/reopen creates a fresh viewer and restores the newest persisted snapshot",
+        "viewer recovery succeeds with recorder stopped and market fetch unavailable",
+        "viewer recovery does not require API calls",
+        "named viewer remains a single child window after reopen"
+      ],
+      "targetedBrowser": {
+        "runId": 35780919120,
+        "jobId": 106925894629,
+        "conclusion": "success",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0
+      }
     }
   },
   "fastContext": {
@@ -1208,9 +1231,9 @@
   },
   "recommendedChatBoundary": {
     "reached": false,
-    "reason": "Stage 16 is in progress. Recovery behavior will be characterized in Chromium before bootstrap changes.",
+    "reason": "Stage 16 recovery contract is targeted-Chromium green. Mandatory Stage-closure Fast + full Browser CI are in progress.",
     "nextStage": "16",
-    "nextSubstep": "16.1"
+    "nextSubstep": "16.4"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
