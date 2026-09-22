@@ -54,9 +54,21 @@ docs/
 
 - current state.
 - system scope.
-- decisions.
+- compact decision index + individual durable decisions.
 - chat/workstream map.
 - repository structure.
+
+Decision navigation:
+
+~~~text
+docs/project/decisions.md
+    compact index
+
+docs/project/decisions/D-NNN.md
+    full individual decision
+~~~
+
+AI should scan the compact index first and read only relevant decision files.
 
 ## docs/leumi-api/
 
