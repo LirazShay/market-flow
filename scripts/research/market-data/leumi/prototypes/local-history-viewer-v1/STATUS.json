@@ -9,9 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "12",
-    "title": "Cross-tab live refresh",
-    "status": "in-progress-not-complete"
+    "stage": "13",
+    "title": "Dynamic sorting",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -126,13 +126,13 @@
     {
       "stage": "12",
       "title": "Cross-tab live refresh",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
-        "12.1": "implementation-present — requires review/completion before Stage 12 can close",
-        "12.2": "implementation-present — requires review/completion before Stage 12 can close",
-        "12.3": "implementation-present — requires review/completion before Stage 12 can close",
-        "12.4": "implementation-present — requires review/completion before Stage 12 can close",
-        "12.5": "not-complete — prior CI evidence exists but Stage 12 is not accepted/closed"
+        "12.1": "complete-reviewed-and-ci-verified — metadata-only channel contract",
+        "12.2": "complete-reviewed-and-ci-verified — commit-then-publish recorder boundary",
+        "12.3": "complete-reviewed-and-ci-verified — viewer IndexedDB reread on CYCLE_COMMITTED",
+        "12.4": "complete-reviewed-and-ci-verified — manual/degraded fallback behavior",
+        "12.5": "complete-ci-verified — Fast CI + Viewer Checkpoint C"
       }
     },
     {
@@ -532,7 +532,7 @@
       }
     },
     "viewerCheckpointC": {
-      "status": "technical-evidence-only-not-stage-closure",
+      "status": "accepted-for-stage-12-closure",
       "stages": [
         "10",
         "11",
@@ -541,7 +541,39 @@
       "browserRunId": 35756990977,
       "passed": 34,
       "failed": 0,
-      "note": "The run result is retained, but it does not mark Stage 12 complete."
+      "note": "Technical evidence was reviewed against Stage 12 acceptance criteria and explicitly accepted when Stage 12 was closed."
+    },
+    "stage12Closure": {
+      "status": "complete",
+      "reviewedAt": "2026-09-22",
+      "implementationChangedDuringClosureReview": false,
+      "acceptanceReview": "no-gap-found",
+      "fastCi": {
+        "runId": 35756792160,
+        "commit": "3e1cda4f3e01788ca52c555d74fa4ee1d41cc6ea",
+        "conclusion": "success",
+        "tests": 136,
+        "passed": 136,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35756990977,
+        "commit": "88bdca83190b949fb426e3dd0d4ea463f54fcfdc",
+        "conclusion": "success",
+        "tests": 34,
+        "passed": 34,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "BroadcastChannel name is market-flow-leumi-v1",
+        "channel messages are metadata-only and do not carry market row arrays",
+        "CYCLE_COMMITTED is published only after successful IndexedDB cycle commit",
+        "viewer handles CYCLE_COMMITTED by rereading IndexedDB and rerendering",
+        "manual refresh rereads IndexedDB without invoking market APIs",
+        "viewer startup remains usable when BroadcastChannel is unavailable",
+        "degraded live-refresh mode is surfaced in the UI when BroadcastChannel is unavailable"
+      ],
+      "reviewNote": "Existing Stage 12 implementation and tests were reviewed against ROADMAP, architecture and viewer UX acceptance intent. No additional implementation gap was found, so the existing successful Fast/Chromium evidence was accepted for explicit stage closure."
     }
   },
   "fastContext": {
@@ -569,9 +601,9 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 12 is still open. Do not advance to Stage 13 until Stage 12 is explicitly completed and status is updated.",
-    "nextStage": "12"
+    "reached": true,
+    "reason": "Stage 12 is explicitly complete and verified. The next planned work is Stage 13.",
+    "nextStage": "13"
   },
   "navigation": {
     "allStages": "ROADMAP.md",

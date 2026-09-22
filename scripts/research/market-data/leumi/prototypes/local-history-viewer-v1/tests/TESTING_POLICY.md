@@ -171,57 +171,37 @@ Purpose:
 - verify mocked endpoint wiring;
 - verify recorder browser globals still compose correctly.
 
-### Checkpoint B — Persistence integration complete ✅
+### Checkpoint B — Persistence integration complete
 
-Completed:
+Run after the Stage 8 persistence group is complete.
 
-~~~text
-Fast CI
-Run 35752055065
-119 passed / 0 failed
+Purpose:
 
-Browser CI
-Run 35752125784
-24 passed / 0 failed
-~~~
-
-Verified:
-
-- session/universe lifecycle persistence;
-- atomic cycles/history/latest/meta commit;
-- recorder commit-before-in-memory-success boundary;
-- DB rollback behavior;
-- API failure no-write behavior;
-- no partial visible latest/history state on failure.
+- verify session/universe lifecycle persistence;
+- verify atomic cycles/history/latest/meta commit;
+- verify recorder commit-before-in-memory-success boundary;
+- verify DB rollback and no-partial-write behavior.
 
 Stage 9 recorder diagnostics does not require another browser run by itself unless it changes browser-only behavior.
 
-### Checkpoint C — technical run exists; Stage 12 remains open
+Verification results belong in `STATUS.json`, not in this policy document.
 
-A prior run exists for Stages 10–12:
+### Checkpoint C — Viewer live-refresh boundary
 
-~~~text
-Fast CI
-Run 35756792160
-136 passed / 0 failed
+Run after the Stage 12 viewer live-refresh group is ready for closure.
 
-Browser CI
-Run 35756990977
-34 passed / 0 failed
-~~~
+Purpose:
 
-Verified:
+- verify DOM + same-origin viewer bootstrap;
+- verify IndexedDB current-table rendering;
+- verify BroadcastChannel metadata-only notifications;
+- verify recorder commit → viewer DB reread;
+- verify manual DB-only refresh;
+- verify BroadcastChannel-unavailable degraded fallback.
 
-- DOM + same-origin viewer bootstrap;
-- IndexedDB current-table rendering;
-- BroadcastChannel metadata-only notifications;
-- recorder commit → viewer DB reread;
-- manual DB-only refresh;
-- BroadcastChannel-unavailable degraded fallback.
+After this checkpoint is accepted and recorded in `STATUS.json`, sorting work should primarily use fast unit tests unless browser/UI behavior changes materially.
 
-Do not begin Stage 13 while `STATUS.json` still marks Stage 12 open. The prior Checkpoint C result is technical evidence only and does not itself close the stage.
-
-After Stage 12 is explicitly completed, Stage 13 sorting should primarily use fast unit tests unless browser/UI behavior changes materially.
+Verification results belong in `STATUS.json`, not in this policy document.
 
 ### Checkpoint D — Viewer history/diagnostics complete
 

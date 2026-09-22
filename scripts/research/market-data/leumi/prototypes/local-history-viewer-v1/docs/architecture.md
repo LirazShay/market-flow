@@ -4,8 +4,7 @@ Status:
 
 ~~~text
 Accepted V1 architecture
-Stages 1–7 implemented through the in-memory recorder boundary
-Stage 8 persistence integration next
+Operational progress is tracked only in ../STATUS.json
 ~~~
 
 ---
@@ -130,17 +129,15 @@ stored once in universe, not duplicated in every history row
 
 המטרה היא שה-viewer לעולם לא יקבל notification על data שטרם commit.
 
-## Stage 8 success boundary
+## Successful-cycle persistence boundary
 
-Stage 7 currently produces a validated complete cycle in memory.
-
-Once persistence is connected:
+The recorder produces a validated complete cycle before persistence.
 
 ~~~text
 validated cycle
 → atomic IndexedDB commit
 → only after commit: recorder completed/latest state
-→ later: BroadcastChannel notification
+→ BroadcastChannel notification
 ~~~
 
 A DB transaction failure must be treated as recorder failure.
@@ -174,7 +171,7 @@ Channel name:
 market-flow-leumi-v1
 ~~~
 
-Messages מינימליים (Stage 12 implementation uses metadata-only payloads):
+Messages מינימליים (metadata-only payloads):
 
 ~~~text
 RECORDER_STARTED
@@ -196,7 +193,7 @@ completedAt
 
 ה-viewer קורא את הנתונים מה-DB.
 
-Stage 12 verified boundary:
+Cross-tab notification boundary:
 
 ~~~text
 successful IndexedDB commit

@@ -2,7 +2,13 @@
 
 Updated: 2026-09-22
 
-This is the fast technical entry point for this workstream.
+This file contains compact **technical continuation context only**.
+
+Operational progress, completion state, verification-pending state and the exact next pointer live only in:
+
+~~~text
+STATUS.json
+~~~
 
 ## Read order
 
@@ -13,9 +19,9 @@ AI_CONTEXT.md
 → directly relevant tests
 ~~~
 
-In a fresh chat also read HANDOFF.md.
+In a fresh chat also read `HANDOFF.md`.
 
-STATUS.json is the only authoritative source for exact current/next progress.
+If this file and `STATUS.json` differ about progress, `STATUS.json` wins.
 
 ## Architecture
 
@@ -74,35 +80,15 @@ Failed API/validation/DB work never partially updates history/latest.
 
 - IndexedDB is source of truth.
 - BroadcastChannel is notification-only.
+- channel name: `market-flow-leumi-v1`.
 - viewer is same-origin.
+- viewer rereads IndexedDB after `CYCLE_COMMITTED`.
 - manual DB-only refresh remains fallback.
 - current table joins latest + universe by securityId.
 - missing universe metadata must not drop a latest row.
+- BroadcastChannel-unavailable mode must not block viewer startup or manual DB refresh.
 
-## Current milestone
-
-~~~text
-Stages 1–11 complete
-Stage 12 — Cross-tab live refresh: IN PROGRESS / NOT COMPLETE
-Do not start Stage 13 yet
-~~~
-
-Latest verification:
-
-~~~text
-Fast CI
-Run 35756792160
-136 passed / 0 failed
-
-Historical technical evidence:
-Viewer Checkpoint C
-Run 35756990977
-34 Chromium tests passed / 0 failed
-
-Important: this run does NOT close Stage 12. Stage 12 remains open in STATUS.json.
-~~~
-
-## Current implementation map
+## Implementation map
 
 ~~~text
 recorder/
@@ -135,46 +121,81 @@ tests/
   TESTING_POLICY.md
 ~~~
 
-## Current working set — Stage 12
+## Sorting technical contract
 
-Read:
+When `STATUS.json` points to sorting work, preserve this V1 contract:
 
 ~~~text
-ROADMAP.md                  # Stage 12
-STATUS.json
-docs/architecture.md        # BroadcastChannel / IndexedDB notification boundary
-docs/viewer-ux.md           # live refresh / fallback behavior
-messaging/
-viewer/live-refresh.js
+Default primary:
+DailyDealsQuantity DESC
+
+Final tie-breaker:
+paperName ASC
+
+V1:
+single-column sorting only
+~~~
+
+Numeric/time columns:
+
+~~~text
+first click  → DESC
+second click → ASC
+then toggle
+~~~
+
+String columns:
+
+~~~text
+first click  → ASC
+second click → DESC
+then toggle
+~~~
+
+Indicator:
+
+~~~text
+▲ ASC
+▼ DESC
+~~~
+
+Requirements:
+
+- deterministic null-safe ordering;
+- null/undefined/empty handling must not collapse zero;
+- final equal-value tie-breaker is paperName ASC;
+- live refresh must preserve selected sort column/direction;
+- sortable headers must remain keyboard-accessible.
+
+Likely working set for sorting:
+
+~~~text
 viewer/current-table.js
-recorder/recorder-loop.js
-tests/automation/specs/viewer-live-refresh.spec.js
+viewer/pure/current-table-logic.js
+tests/unit/current-table-logic.test.js
+tests/automation/specs/viewer-current-table.spec.js
+docs/viewer-ux.md
 tests/TESTING_POLICY.md
 ~~~
 
-Review and complete Stage 12 before any Stage 13 sorting work. Treat existing code and CI runs as implementation/evidence to inspect, not as proof that the stage is closed.
-
-Default:
-
-~~~text
-DailyDealsQuantity DESC
-paperName ASC tie-breaker
-~~~
-
-Single-column sorting only in V1.
-
 ## Testing
 
+Use the cheapest layer that proves behavior:
+
 ~~~text
-deterministic sorting
+pure deterministic behavior
 → Fast unit tests
 
-DOM/browser sorting interaction
-→ browser spec may be added now
-→ planned Chromium checkpoint after Stages 14–15 unless early-browser exception is justified
+IndexedDB / DOM / BroadcastChannel / same-origin behavior
+→ Playwright / Chromium at policy checkpoints
+
+provider/session behavior
+→ live verification only when mocks cannot prove it
 ~~~
 
-## Durable docs — only when needed
+For sorting, prefer unit tests for comparison/state logic. Add browser coverage for meaningful DOM/accessibility interaction, but follow `tests/TESTING_POLICY.md` for checkpoint timing.
+
+## Durable docs — read only when needed
 
 ~~~text
 docs/architecture.md
@@ -185,4 +206,4 @@ docs/project/decisions.md
 docs/leumi-api/
 ~~~
 
-If this file conflicts with durable design or STATUS.json, inspect the authoritative source and fix the conflict in the same work batch.
+Do not copy live completion state or the next pointer into this file; link back to `STATUS.json` instead.

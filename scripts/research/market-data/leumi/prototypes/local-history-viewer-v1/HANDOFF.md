@@ -1,93 +1,69 @@
 # Handoff — Local History Viewer V1
 
-Use this when entering this workstream in a fresh chat.
+Use this file when entering the workstream in a fresh chat.
 
-It is not the operational status source; STATUS.json is authoritative.
+This file intentionally contains **no live stage/completion snapshot**.
 
-## Current boundary
-
-~~~text
-Stages 1–11 complete
-Stage 12 — Cross-tab live refresh: IN PROGRESS / NOT COMPLETE
-Do not start Stage 13
-~~~
-
-Latest verified checkpoint:
+The only authoritative source for current progress, verification state and the next pointer is:
 
 ~~~text
-Fast CI
-Run 35756792160
-136 passed / 0 failed
-
-Historical technical evidence:
-Viewer Checkpoint C
-Run 35756990977
-34 Chromium tests passed / 0 failed
-
-This run does not mark Stage 12 complete.
+STATUS.json
 ~~~
 
-Verified viewer foundation:
-
-~~~text
-same-origin viewer
-→ IndexedDB current table
-→ BroadcastChannel notification
-→ IndexedDB reread
-→ manual refresh fallback
-~~~
-
-## Read in this order
+## Fresh-chat read order
 
 ~~~text
 /AGENTS.md
 AI_CONTEXT.md
 STATUS.json
-ROADMAP.md          # Stage 12 section
-STATUS.json
-docs/architecture.md
-docs/viewer-ux.md
-messaging/
-viewer/live-refresh.js
-viewer/current-table.js
-recorder/recorder-loop.js
-tests/automation/specs/viewer-live-refresh.spec.js
-relevant unit/browser tests
+ROADMAP.md          # read only the stage selected by STATUS.json
+target implementation files
+directly relevant tests
+tests/TESTING_POLICY.md when verification/checkpoint rules matter
 ~~~
 
-Do not reconstruct current state from old chat history.
+Read broader design docs only when changing architecture/schema/public behavior or resolving a contradiction.
 
-## Current implementation boundary: Stage 12
+Do not reconstruct current state from old chat history or from this handoff.
+
+## Core architecture
 
 ~~~text
-Cross-tab live refresh is not yet accepted as complete.
-
-Review the existing Stage 12 implementation and tests, identify any missing acceptance criteria or integration gaps, complete them, then explicitly close Stage 12 in STATUS.json.
-
-Do not begin Stage 13 until that is done.
-- equal values → paperName ASC tie-breaker
-- visual indicator ▲ / ▼
+Leumi browser tab
+→ Recorder
+→ validated complete cycle
+→ atomic IndexedDB persistence
+→ BroadcastChannel metadata notification
+→ same-origin Viewer
+→ viewer re-reads IndexedDB
 ~~~
-
-Default V1 sort:
-
-~~~text
-DailyDealsQuantity DESC
-tie-breaker: paperName ASC
-~~~
-
-This is a UX default, not a trading recommendation.
 
 ## Invariants to preserve
 
 - IndexedDB remains source of truth.
 - BroadcastChannel carries notifications, not market row payloads.
+- successful-cycle persistence is atomic across cycles/history/latest/meta.
+- notification happens only after the successful DB commit.
+- failed API/validation/DB work must not expose partial latest/history.
 - null != 0 != "" internally.
 - display: null/undefined/empty → —, zero → 0.
 - never hardcode universe size 561.
 - current-table rows must not be dropped because universe metadata is missing.
-- tests protect behavior, not private implementation details.
+- tests protect behavior/public contracts, not private implementation details.
+- repository is public: never commit credentials, cookies, tokens, account data or sensitive session dumps.
 
-## Verification rule
+## Continuation rule
 
-Stage 12 is still active. Reuse the existing Stage 12 Fast/Chromium evidence where valid, but do not treat it as stage closure. Run any additional verification required by the actual remaining gap before marking Stage 12 complete.
+When asked to continue:
+
+1. read the exact pointer in `STATUS.json`;
+2. read that stage in `ROADMAP.md`;
+3. inspect only its relevant implementation/tests;
+4. define behavior/tests first when practical;
+5. implement a coherent engineering boundary;
+6. run the required verification;
+7. update `STATUS.json` in the same batch.
+
+Do not mark a stage complete while required verification is pending.
+
+Do not copy the resulting current/next state back into this file.
