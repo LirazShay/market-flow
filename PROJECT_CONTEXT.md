@@ -2,12 +2,11 @@
 
 זהו מסמך הכניסה הראשי לכל AI, agent או מפתח שמגיע לפרויקט.
 
-לפני עבודה כלשהי יש לקרוא:
+נקודת הכניסה היא:
 
-1. AGENTS.md
-2. PROJECT_CONTEXT.md
-3. docs/project/current-state.md
-4. את התיעוד הרלוונטי למשימה הספציפית
+1. `AGENTS.md`
+2. אם ממשיכים workstream פעיל שיש בו `AI_CONTEXT.md` ו-`STATUS.json` — קוראים אותם ואת הקבצים הרלוונטיים בלבד.
+3. רק כאשר צריך context רוחבי/ארכיטקטוני/היסטורי — קוראים את `PROJECT_CONTEXT.md`, `docs/project/current-state.md` והתיעוד הרחב הרלוונטי.
 
 ה-repository הוא ה-source of truth. אין להניח שזיכרון מצ'אט קודם מעודכן יותר מהתיעוד שב-Git.
 
@@ -62,12 +61,28 @@ Market Data
 - ניתן לקבל את כל 561 הרשומות מ-GetSecuritiesData ב-3 batches של 187.
 - בוצע field coverage מלא על 561 הרשומות.
 - נבנה browser proof-of-concept שמציג את כל הנתונים בטבלה.
-- נבנה long-running polling test קונפיגורבילי, אך בדיקת ריצה ממושכת אמיתית עדיין Pending.
+- נבנה long-running polling test ונבדקה בפועל ריצה של 40.03 דקות: 481 cycles הושלמו, 0 נכשלו.
 
 לפרטים מלאים:
 
 ~~~text
 docs/leumi-api/
+~~~
+
+
+Workstream פעיל נוסף בתוך Phase 01:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
+~~~
+
+ה-Local History Viewer V1 כבר נמצא ב-implementation, עם IndexedDB foundation, browser self-tests ו-recorder foundation חלקי.
+
+להמשך מהיר של workstream זה:
+
+~~~text
+AI_CONTEXT.md
+STATUS.json
 ~~~
 
 ---
