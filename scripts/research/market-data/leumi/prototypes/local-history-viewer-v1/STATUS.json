@@ -1831,7 +1831,20 @@
       "directly relevant tests"
     ]
   },
-  "activeMiniProject": null,
+  "activeMiniProject": {
+    "id": "live-debug-bundle",
+    "title": "Sanitized live debug bundle for provider/session diagnostics",
+    "status": "in-progress",
+    "reason": "Live verification exposed ambiguous after-market behavior. Add a bounded exportable diagnostic bundle before changing market-open/closed behavior so real provider freshness can be diagnosed safely.",
+    "scope": [
+      "sanitized runtime/recorder/viewer diagnostics",
+      "bounded IndexedDB counts and recent cycles",
+      "per-cycle market-data/provider-time fingerprints and change counts",
+      "downloadable JSON through MarketFlowRuntime",
+      "tests and debug spec",
+      "no cookies/tokens/auth headers/account/session-storage/raw private data"
+    ]
+  },
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
@@ -1849,11 +1862,11 @@
     "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Specification hardening mini-project is complete and Fast CI verified. Main workstream remains at provider-dependent live verification.",
+    "reached": false,
+    "reason": "Live verification found an after-market behavior ambiguity; diagnostic evidence tooling is being added before changing collection semantics.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Execute docs/live-verification.md in the authenticated Leumi browser using the latest verified Bookmarklet, then record sanitized Verified/Inferred/Unknown outcomes."
+    "nextAction": "Complete and verify the sanitized Debug Bundle, then use it in the authenticated Leumi browser to determine provider freshness/market-state behavior before implementing the after-market policy."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
