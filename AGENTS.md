@@ -224,10 +224,9 @@ docs/leumi-api/
 - `endpoints/get-securities-data.md` — GetSecuritiesData.
 - `fields/field-reference-he.md` — פירוש שדות.
 - `fields/field-availability.md` — coverage/nullability.
-- `testing/verified-tests.md` — תוצאות בדיקה מאומתות.
-- `testing/polling-stability-test.md` — בדיקת polling ממושכת.
-- `reports/` — evidence היסטורי.
 - `samples/` — דוגמאות response מצומצמות.
+
+תיעוד שמסביר script מסוים, איך מריצים אותו, configuration שלו ותוצאות raw של הרצה נשמר ליד הקוד עצמו תחת `scripts/research/...`. אין לשכפל אותו תחת `docs/`.
 
 קוד מחקר:
 
