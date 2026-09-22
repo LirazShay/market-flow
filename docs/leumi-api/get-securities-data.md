@@ -30,9 +30,11 @@ data.SecuritiesData.Table.Security[]
 MapHeat2.PaperId == GetSecuritiesData.Key
 ~~~
 
-## בדיקות גודל בקשה שבוצעו
+בבדיקת 561 הניירות החיבור הזה היה מדויק ב-561/561.
 
-נבדקו בפועל:
+---
+
+## בדיקות גודל בקשה שבוצעו
 
 | מספר IDs | תוצאה |
 |---:|---|
@@ -43,35 +45,231 @@ MapHeat2.PaperId == GetSecuritiesData.Key
 | 400 | HTTP 403 |
 | 561 | HTTP 403 |
 
-לא חיפשנו את הגבול המדויק, משום שאין צורך בו כרגע.
+לא חיפשנו את הגבול המדויק, משום שאין בו צורך כרגע.
 
-## אסטרטגיה שנבדקה בהצלחה
+לא הוכח אם ה-403 נובע ממספר IDs, מאורך URL, מכלל אבטחה, ממגבלת backend או משילוב שלהם.
 
-561 IDs חולקו לשלוש קבוצות שוות:
+---
+
+## batching שנבדק בהצלחה
+
+561 IDs חולקו לשלוש קבוצות:
 
 ~~~text
 187 + 187 + 187 = 561
 ~~~
 
-שלוש הקריאות חזרו HTTP 200 והחזירו:
+תוצאה:
 
 ~~~text
-Request 1: 187
-Request 2: 187
-Request 3: 187
-~~~
+Request 1: HTTP 200 → 187
+Request 2: HTTP 200 → 187
+Request 3: HTTP 200 → 187
 
-בדיקת השלמות:
-
-~~~text
-Requested total: 561
-Received total: 561
-Unique securities: 561
+Requested: 561
+Received: 561
+Unique: 561
 Duplicates: 0
 Missing: 0
 ~~~
 
-## שדות שנצפו
+כרגע זהו מסלול האיסוף המוכח.
+
+---
+
+# Snapshot coverage מאומת — 2026-09-22
+
+הבדיקה המלאה נמצאת ב:
+
+[field-availability.md](field-availability.md)
+
+וה-report הגולמי:
+
+[reports/2026-09-22-1451-field-coverage.md](reports/2026-09-22-1451-field-coverage.md)
+
+ב-snapshot:
+
+~~~text
+561 Security records
+ItemType = "Equity" for 561/561
+type = 1 for 561/561
+~~~
+
+## שדות עם 100% value coverage
+
+~~~text
+BaseRate
+BaseRateChangePercentage
+ContinuousLastDealRate
+DailyAvrageRate
+DailyAvrageRateMaof
+DailyDealsQuantity
+DailyHighestRate
+DailyLowestRate
+DailyNISRevenue
+DailyTurnover
+ItemType
+Key
+LastDealRateBaseRateChangePercentage
+LastKnownRate
+LastKnownRateDate
+trade_time
+type
+~~~
+
+## שדות חלקיים
+
+~~~text
+BuyLimit1          96.79%  (543 usable, 18 null)
+BuyReturn1         96.79%  (543 usable, 18 null)
+BuyVolume1         96.79%  (543 usable, 18 null)
+ChangeBaseRateBuy1 96.79%  (543 usable, 18 null)
+
+SellLimit1         98.04%  (550 usable, 11 null)
+SellReturn1        98.04%  (550 usable, 11 null)
+SellVolume1        98.04%  (550 usable, 11 null)
+ChangeBaseRateSell1 98.04% (550 usable, 11 null)
+
+LastDealVolume     98.22%  (551 usable, 10 null)
+LastDealTimeOnly   86.45%  (485 usable, 76 empty strings)
+~~~
+
+### משמעות תכנונית
+
+Level 1 אינו guaranteed.
+
+כל consumer חייב לתמוך במצבים:
+
+~~~text
+BuyLimit1 = null
+SellLimit1 = null
+BuyVolume1 = null
+SellVolume1 = null
+LastDealVolume = null
+LastDealTimeOnly = ""
+~~~
+
+אין להמיר `null` ל-`0` באופן אוטומטי.
+
+---
+
+# Book depth 2–5
+
+בכל 561 המניות נבדקו כל השדות הבאים:
+
+~~~text
+BuyLimit2..5
+BuyVolume2..5
+SellLimit2..5
+SellVolume2..5
+ChangeBaseRateBuy2..5
+ChangeBaseRateSell2..5
+~~~
+
+תוצאה:
+
+~~~text
+coverage = 0%
+null = 561/561
+~~~
+
+### Conclusion
+
+**אין כרגע evidence ש-`GetSecuritiesData` מספק order-book depth 2–5 למניות דרך הקריאה הזו.**
+
+אין לבנות על fields אלה scanner, strategy או execution logic.
+
+אם נצטרך levels נוספים, יש לבצע מחקר endpoint נפרד.
+
+---
+
+# Fields נוספים עם 0% coverage
+
+גם השדות הבאים היו `null` בכל 561 רשומות ה-Equity:
+
+~~~text
+BnS_Bursa
+BnSDelta
+BnSGamma
+BnSOmega
+BnSTheta
+BnSVega
+GalumChangePercentage
+GalumPrice
+OpenPositions
+~~~
+
+הם נשארים חלק מה-schema אבל אינם מקור נתונים שימושי עבור ה-universe שנבדק.
+
+---
+
+# זמן ועסקה אחרונה
+
+## Always populated
+
+~~~text
+LastKnownRateDate
+trade_time
+~~~
+
+הם חזרו string ב-561/561.
+
+## Partially populated
+
+~~~text
+LastDealTimeOnly
+~~~
+
+חזר:
+
+~~~text
+485 values
+76 empty strings
+~~~
+
+ולכן empty string חייב להיות מטופל כ-"אין זמן עסקה זמין" ולא כ-timestamp תקין.
+
+---
+
+# 0 הוא data, לא missing
+
+נמצאו 76 ניירות עם:
+
+~~~text
+DailyDealsQuantity = 0
+DailyTurnover = 0
+DailyNISRevenue = 0
+DailyHighestRate = 0
+DailyLowestRate = 0
+DailyAvrageRate = 0
+~~~
+
+זה מראה למה אסור לבצע:
+
+~~~js
+if (!value) {
+    // missing
+}
+~~~
+
+בשדות מספריים.
+
+יש לבדוק במפורש:
+
+~~~js
+value === null
+value === undefined
+~~~
+
+בנפרד מ:
+
+~~~js
+value === 0
+~~~
+
+---
+
+# שדות שנצפו
 
 - Key
 - type
@@ -116,4 +314,16 @@ Missing: 0
 - GalumPrice
 - GalumChangePercentage
 
-בדוגמאות שנצפו, רמות ספר 2–5 והשדות האחרונים חזרו בדרך כלל `null`.
+---
+
+# Recommendation
+
+ל-live market snapshot:
+
+- להשתמש ב-`GetSecuritiesData` כמקור הדינמי הראשי.
+- לבצע batching שמרני.
+- לעשות join לפי `Key`.
+- לבצע validation של count/duplicates/missing.
+- לשמור fields nullable לפי coverage בפועל.
+- לא להשתמש ב-levels 2–5 עד שיש evidence חדש.
+- לשמור timestamp מקומי `collectedAt` בנוסף לזמני השרת.
