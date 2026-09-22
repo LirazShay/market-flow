@@ -193,6 +193,15 @@ red
 
 Checkpoint scheduling controls broad-suite frequency. It never authorizes leaving changed tests unexecuted.
 
+Every numbered Stage also has a full-browser closure gate:
+
+~~~text
+Stage ready to close
+→ Fast CI green
+→ full Browser CI green on final Stage state
+→ close Stage
+~~~
+
 If the required environment cannot be executed:
 
 ~~~text
@@ -257,6 +266,7 @@ Relevant items must be true:
 - [ ] error/integrity paths are explicit;
 - [ ] changed tests were executed after their final edits;
 - [ ] required unit/integration/browser layers are green;
+- [ ] every numbered Stage closure has fresh full Browser CI evidence for its final state;
 - [ ] no known regression is deferred;
 - [ ] status is accurate;
 - [ ] temporary verification changes are restored;
