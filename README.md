@@ -26,6 +26,7 @@ README.md
 | routing בין workstreams | docs/project/workstreams.md |
 | evidence/context רוחבי שאינו micro-status | docs/project/current-state.md |
 | החלטות durable | docs/project/decisions.md |
+| מדיניות Specs וחובת SPEC impact review | docs/project/specification-policy.md |
 | מבנה repository | docs/project/repository-structure.md |
 | Leumi market-data evidence | docs/leumi-api/README.md |
 
