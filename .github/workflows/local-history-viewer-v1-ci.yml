@@ -35,8 +35,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run targeted Stage 17 failure matrix
-        run: npx playwright test tests/automation/specs/recorder-persistence-integration.spec.js -g "Stage 17 persistent recorder rejects"
+      - name: Run browser tests
+        run: npm run test:browser
 
       - name: Upload Playwright diagnostics
         if: failure()
