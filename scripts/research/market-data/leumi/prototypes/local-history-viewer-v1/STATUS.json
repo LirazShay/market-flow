@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "14",
-    "substep": "14.1",
-    "title": "Security history drill-down — targeted initial history page",
-    "status": "in-progress"
+    "substep": "14.2",
+    "title": "Security history drill-down — load older continuation",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -152,7 +152,7 @@
       "title": "Security history drill-down",
       "status": "in-progress",
       "substeps": {
-        "14.1": "in-progress — targeted bySecurityTime newest-first initial page (500 + hasMore)",
+        "14.1": "complete-browser-ci-verified — targeted bySecurityTime newest-first initial page (500 + hasMore)",
         "14.2": "planned — load-older continuation without duplicates/skips",
         "14.3": "planned — row activation + detail summary/history table UI",
         "14.4": "planned — detail live refresh + return-to-main state preservation",
@@ -203,13 +203,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35766577036,
-      "commit": "813fbcd5849e281cda2452625128c5f70b511f26",
+      "runId": 35767420214,
+      "commit": "becfdb1d6e346715422d7340a4459204dafbacc0",
       "conclusion": "success",
       "tests": [
-        "36 Chromium tests",
-        "Stage 13.2 sortable header interaction",
-        "Stage 13.3 selected-sort preservation across BroadcastChannel live refresh",
+        "38 Chromium tests",
+        "Stage 14.1 targeted bySecurityTime history read",
+        "500-row initial page + hasMore",
+        "per-security isolation + newest-first ordering",
         "existing recorder/storage/viewer regressions"
       ]
     },
@@ -222,13 +223,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35766523026,
-      "commit": "8e303956b16939a2a74e9fb7b16f897300bf60b4",
+      "runId": 35767377980,
+      "commit": "bc98929ca982c2c61a92c31f85e272ac50557974",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 344.07029
+      "durationMs": 86.81866
     },
     "testingRefactor": {
       "status": "complete",
@@ -702,6 +703,37 @@
         "aria-sort and visible ▲/▼ indicators",
         "selected sort survives BroadcastChannel-triggered IndexedDB reread and rerender"
       ]
+    },
+    "stage14_1": {
+      "status": "complete",
+      "testsFirst": true,
+      "testContractCommit": "8964f8b9e008d4d92bc70953a3470d6c5f0033ff",
+      "implementationCommit": "bc98929ca982c2c61a92c31f85e272ac50557974",
+      "fastCi": {
+        "runId": 35767377980,
+        "commit": "bc98929ca982c2c61a92c31f85e272ac50557974",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35767420214,
+        "commit": "becfdb1d6e346715422d7340a4459204dafbacc0",
+        "conclusion": "success",
+        "tests": 38,
+        "passed": 38,
+        "failed": 0,
+        "reason": "early-browser verification: Stage 14.1 adds real IndexedDB index-cursor read semantics"
+      },
+      "verifiedBehaviors": [
+        "history is queried through history.bySecurityTime rather than scanning all history",
+        "initial history page is capped at 500 rows",
+        "rows are returned newest-first using prev cursor direction",
+        "query is isolated to the requested canonical securityId",
+        "hasMore is true when an additional matching row exists beyond the first page",
+        "security with no history returns an empty page with hasMore false"
+      ]
     }
   },
   "fastContext": {
@@ -729,10 +761,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 14.1 is in progress.",
+    "reached": true,
+    "reason": "Stage 14.1 is complete and verified. Stage 14 remains open; the next natural work is Stage 14.2 load-older continuation.",
     "nextStage": "14",
-    "nextSubstep": "14.1"
+    "nextSubstep": "14.2"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
