@@ -41,20 +41,38 @@ Rules:
 
 This gate applies even when Fast CI is green.
 
+### Mandatory Browser CI at every Stage closure
+
+Before **any numbered Stage** is marked `complete`, the full Browser CI suite must pass against the final code/test state of that Stage.
+
+~~~text
+Stage implementation complete
+→ Fast CI green
+→ full Browser CI green
+→ only then Stage = complete
+~~~
+
+Broad checkpoints remain useful as additional integration milestones, but they never replace this per-Stage Browser CI gate.
+
 ## 1. Default execution rule
 
 For ordinary implementation work:
 
 ~~~text
-change code
-→ add/update fast unit tests where applicable
-→ Fast CI runs automatically
-→ continue development
+every commit
+→ Fast CI
+
+browser behavior/test changed
+→ Chromium before continuing
+
+numbered Stage ready to close
+→ full Browser CI
+→ only then mark Stage complete
 ~~~
 
-Do **not** run Chromium merely because a numbered substage completed **when no browser test was changed and no browser-only behavior requires proof**.
+Do **not** run Chromium merely because a small substep or documentation-only commit completed. But Stage closure is always a Browser CI boundary.
 
-Browser CI remains a checkpoint tool for broad regression confidence. This does not weaken the hard gate above: a changed browser test must run immediately before development advances.
+A changed browser test or material browser-only implementation change must be verified immediately; do not wait for Stage closure.
 
 ## 1.1 Tests-first change rule
 
@@ -178,9 +196,21 @@ No automated live Leumi test belongs in normal CI.
 
 The planned live-provider checkpoint remains V1 Stage 19.2.
 
-## 4. Remaining V1 browser checkpoints
+## 4. Additional V1 integration checkpoints
 
-To keep Chromium runs sparse, use these planned boundaries.
+The checkpoints below are **additional broad integration milestones**. They no longer define the minimum Browser CI frequency.
+
+Minimum mandatory cadence:
+
+~~~text
+changed browser behavior/test
+→ Chromium immediately
+
+every numbered Stage closure
+→ full Browser CI
+~~~
+
+The checkpoints below add extra integration intent across related stages.
 
 ### Checkpoint A — Recorder skeleton complete
 
@@ -211,7 +241,7 @@ Purpose:
 - verify recorder commit-before-in-memory-success boundary;
 - verify DB rollback and no-partial-write behavior.
 
-Stage 9 recorder diagnostics does not require another browser run by itself unless it changes browser-only behavior.
+Stage 9 still requires its own full Browser CI before Stage 9 can be marked complete. Checkpoint B remains useful as the Stage 8 persistence milestone.
 
 Verification results belong in `STATUS.json`, not in this policy document.
 
@@ -228,7 +258,7 @@ Purpose:
 - verify manual DB-only refresh;
 - verify BroadcastChannel-unavailable degraded fallback.
 
-After this checkpoint is accepted and recorded in `STATUS.json`, sorting work should primarily use fast unit tests unless browser/UI behavior changes materially.
+After this checkpoint is accepted and recorded in `STATUS.json`, sorting logic should still prefer fast unit tests for deterministic behavior. Stage 13 nevertheless requires a full Browser CI run before Stage 13 closure, and any changed browser test/UI behavior requires immediate Chromium verification.
 
 Verification results belong in `STATUS.json`, not in this policy document.
 
@@ -290,9 +320,9 @@ all required Stage 19 evidence
 
 must be green/recorded.
 
-## 5. Early-browser exception
+## 5. Immediate browser-verification rule
 
-An unscheduled Browser CI run is justified only when a change materially touches browser-only behavior and waiting until the next planned checkpoint would leave too much integration risk.
+This is no longer merely an exception. Chromium verification is mandatory before continuing whenever a change materially touches browser-only behavior or changes browser tests/infrastructure.
 
 Examples:
 
@@ -302,7 +332,7 @@ Examples:
 - browser fetch adapter changed in a way not covered by pure tests;
 - a browser-only regression is being fixed.
 
-Do not use this exception for pure logic refactors that are fully covered by unit tests.
+Pure deterministic refactors that do not affect browser behavior and do not change browser tests can remain on the Fast CI path until the mandatory full Browser CI at Stage closure.
 
 ## 6. Test-placement rule
 
@@ -331,9 +361,10 @@ A normal implementation change can be considered locally verified when:
 - Fast CI passes;
 - every added/modified test has been executed after its final edit in the layer where it actually runs;
 - every changed browser test has passed Chromium before the next implementation unit starts;
-- no required browser checkpoint is due;
+- if a numbered Stage is being closed, full Browser CI passed on the final Stage state;
+- any additional integration checkpoint that is due also passed;
 - any live-provider verification that cannot be automated is explicitly marked pending.
 
 If a changed test has not run, the work is not locally verified. If a changed test is red, progression is blocked.
 
-A stage group that reaches one of the checkpoints above is not complete until its Browser CI checkpoint passes.
+No numbered Stage is complete until its own full Browser CI closure gate passes. Additional checkpoints above may impose further integration verification.
