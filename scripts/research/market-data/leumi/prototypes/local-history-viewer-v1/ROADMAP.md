@@ -229,7 +229,52 @@ Atomic full-cycle persistence עדיין שייך ל-Stage 8.
 
 ### Stage 6 — IndexedDB self-test
 
-נכניס test data, נקרא אותו חזרה וננקה.
+Stage 6 מחולק לתת-שלבים קטנים:
+
+#### Stage 6.1 — Schema/open browser self-test
+
+Status:
+
+~~~text
+Implemented — browser execution pending
+~~~
+
+Outputs:
+
+~~~text
+tests/README.md
+tests/storage-schema-self-test.js
+~~~
+
+בודק רק:
+- DB open/upgrade.
+- database name/version.
+- stores.
+- keyPath/autoIncrement.
+- indexes.
+
+לא מכניס test data ולא מוחק DB.
+
+#### Stage 6.2 — Small fixture write/read round-trip
+
+Status:
+
+~~~text
+Next
+~~~
+
+נוסיף fixture קטן בלבד ונאמת:
+- put/add.
+- get/getAll/count.
+- null/zero/empty-string round-trip.
+
+#### Stage 6.3 — Cleanup + reopen persistence self-test
+
+ננקה רק את fixture של הבדיקה ונאמת:
+- cleanup.
+- close/reopen.
+- schema remains valid.
+- test data does not remain.
 
 עדיין ללא Leumi API polling.
 
