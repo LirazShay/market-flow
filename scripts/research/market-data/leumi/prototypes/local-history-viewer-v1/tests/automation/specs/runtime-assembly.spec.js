@@ -201,6 +201,99 @@ test(
             typeof firstInstanceId
         ).toBe("string");
 
+        await page.waitForFunction(
+            () =>
+                window
+                    .MarketFlowRuntime
+                    .getSnapshot()
+                    .recorder
+                    .completedCycles >=
+                1
+        );
+
+        const debugBundle =
+            await page.evaluate(
+                async () =>
+                    await window
+                        .MarketFlowRuntime
+                        .createDebugBundle({
+                            recentCycleLimit:
+                                1
+                        })
+            );
+
+        expect(
+            debugBundle.formatVersion
+        ).toBe(1);
+
+        expect(
+            debugBundle.database
+                .rowCounts
+                .latest
+        ).toBe(4);
+
+        const downloadPromise =
+            page.waitForEvent(
+                "download"
+            );
+
+        const downloadResult =
+            await page.evaluate(
+                async () =>
+                    await window
+                        .MarketFlowRuntime
+                        .downloadDebugBundle({
+                            recentCycleLimit:
+                                1
+                        })
+            );
+
+        const download =
+            await downloadPromise;
+
+        expect(
+            download
+                .suggestedFilename()
+        ).toBe(
+            downloadResult.fileName
+        );
+
+        expect(
+            downloadResult
+                .byteLength
+        ).toBeGreaterThan(
+            0
+        );
+
+        expect(
+            downloadResult
+                .fileName
+        ).toMatch(
+            /^market-flow-debug-\d{8}-\d{6}\.json$/
+        );
+
+        const downloadedPath =
+            await download.path();
+
+        const downloadedBundle =
+            JSON.parse(
+                fs.readFileSync(
+                    downloadedPath,
+                    "utf8"
+                )
+            );
+
+        expect(
+            downloadedBundle
+                .formatVersion
+        ).toBe(1);
+
+        expect(
+            downloadedBundle
+                .safety
+                .rawMarketPayloadsIncluded
+        ).toBe(false);
+
         const pageCountBefore =
             page
                 .context()
