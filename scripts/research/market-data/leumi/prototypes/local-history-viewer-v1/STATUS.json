@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "19",
-    "substep": "19.1",
-    "title": "Integrated V1 validation — full mocked E2E in GitHub Actions",
-    "status": "in-progress"
+    "substep": "19.2",
+    "title": "Integrated V1 validation — live Leumi browser verification",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -206,7 +206,7 @@
       "title": "Integrated V1 validation",
       "status": "in-progress",
       "substeps": {
-        "19.1": "in-progress — Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history",
+        "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
         "19.2": "planned — live Leumi browser verification",
         "19.3": "planned — long-run live report"
       }
@@ -225,16 +225,15 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35783658571,
-      "jobId": 106935065704,
-      "activationCommit": "5db57618f356462890b47fb5c586780baef50827",
-      "codeTestState": "b56506d1e37254274d06ad40b02a80860c7cf3ca",
+      "runId": 35784775342,
+      "jobId": 106938784096,
+      "activationCommit": "45d7c9016041158e8c1b07afa6a097f500e39824",
+      "codeTestState": "1b287ace8944046bcd03b5e279759e9972bfe0c8",
       "conclusion": "success",
       "tests": [
-        "52 Chromium tests",
-        "52 passed / 0 failed",
-        "mandatory Stage 18 closure full-suite run",
-        "storage-growth benchmark reran inside the full suite and remained within the targeted measurement range"
+        "53 Chromium tests",
+        "53 passed / 0 failed",
+        "Stage 19.1 full mocked E2E included in full Browser suite"
       ]
     },
     "fastCi": "verified-success",
@@ -246,16 +245,14 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35783054912,
-      "runAttempt": 2,
-      "jobId": 106935198723,
-      "commit": "b56506d1e37254274d06ad40b02a80860c7cf3ca",
+      "runId": 35784632170,
+      "jobId": 106938313542,
+      "commit": "1b287ace8944046bcd03b5e279759e9972bfe0c8",
       "conclusion": "success",
       "tests": 148,
       "passed": 148,
       "failed": 0,
-      "durationMs": 93.832085,
-      "note": "Fresh Stage 18 closure rerun on the final code/test state containing the storage-growth benchmark."
+      "durationMs": 351.29291
     },
     "testingRefactor": {
       "status": "complete",
@@ -1497,6 +1494,62 @@
       },
       "workflowRestoreCommit": "96b86aadbdbb425189bd0d1ac8abeeaefca55b21",
       "closureDecision": "Stage 18 accepted and complete. Storage growth is measured reproducibly, documented with limitations, and V1 still performs no automatic retention."
+    },
+    "stage19_1": {
+      "status": "complete",
+      "testsFirst": true,
+      "initialTestCommit": "20f7d6d35712d5e7a8c0fc123e04427555f75bc3",
+      "initialBrowserRun": {
+        "runId": 35784512873,
+        "jobId": 106937920983,
+        "conclusion": "failure",
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "cause": "Test-contract bug: expected one MapHeat2 call, but the established universe-loader contract intentionally performs pageCount=1 probe followed by pageCount=4 full fetch."
+      },
+      "testContractFixCommit": "1b287ace8944046bcd03b5e279759e9972bfe0c8",
+      "targetedBrowser": {
+        "runId": 35784657545,
+        "jobId": 106938394950,
+        "conclusion": "success",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "fastCi": {
+        "runId": 35784632170,
+        "jobId": 106938313542,
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "fullBrowserCi": {
+        "runId": 35784775342,
+        "jobId": 106938784096,
+        "activationCommit": "45d7c9016041158e8c1b07afa6a097f500e39824",
+        "codeTestState": "1b287ace8944046bcd03b5e279759e9972bfe0c8",
+        "conclusion": "success",
+        "tests": 53,
+        "passed": 53,
+        "failed": 0
+      },
+      "workflowRestoreCommit": "f41210d609d69a6b4edde5cc906d15809a964b69",
+      "verifiedFlow": [
+        "viewer starts from an empty IndexedDB state",
+        "mock MapHeat2 universe probe and full fetch execute through the real API client",
+        "persistent recorder completes a full mocked market-data cycle",
+        "successful cycle commits cycles/history/latest/recorderState atomically to IndexedDB",
+        "post-commit CYCLE_COMMITTED notification refreshes the viewer through BroadcastChannel",
+        "viewer renders four persisted securities from IndexedDB",
+        "interactive paperName sort produces the expected ascending order",
+        "a second recorder cycle produces a second viewer live refresh",
+        "after two cycles IndexedDB contains 2 cycles, 4 latest rows and 8 history rows",
+        "security detail reads the selected security's two persisted history rows newest-first",
+        "viewer flow is validated without bypassing the recorder/persistence/channel path"
+      ],
+      "closureDecision": "Stage 19.1 complete. Mocked CI gate is green; live verification may begin."
     }
   },
   "fastContext": {
@@ -1526,10 +1579,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 19.1 is in progress. Full mocked E2E will be executed in Chromium CI before any live verification.",
+    "reached": true,
+    "reason": "Stage 19.1 full mocked E2E is complete. Targeted Chromium, Fast CI and the full 53-test Browser suite are green. Live verification is now unblocked.",
     "nextStage": "19",
-    "nextSubstep": "19.1"
+    "nextSubstep": "19.2"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
