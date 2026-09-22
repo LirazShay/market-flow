@@ -1,6 +1,12 @@
 # Recorder Module — Local History Viewer V1
 
-Durable component documentation only. Operational progress lives in:
+Durable component orientation only. The normative recorder contract lives in:
+
+~~~text
+../specs/recorder.spec.md
+~~~
+
+Operational progress lives in:
 
 ~~~text
 ../STATUS.json
@@ -35,9 +41,9 @@ MapHeat2
 ~~~text
 config.js
 universe-loader.js
-securities-chunk-loader.js
+securities-chunk-fetcher.js
 cycle-builder.js
-loop.js
+recorder-loop.js
 diagnostics.js
 pure/
 ~~~
