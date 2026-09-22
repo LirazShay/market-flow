@@ -74,3 +74,4 @@ shared/
 - ARCHITECTURE.md
 - ROADMAP.md
 - DATA_MODEL.md
+- TEST_PLAN.md
