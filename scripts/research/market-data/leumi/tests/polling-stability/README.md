@@ -30,7 +30,7 @@ GetSecuritiesData chunk 3
 → validate full snapshot
 ~~~
 
-## Default configuration
+## Default configuration שנבדק
 
 ~~~js
 SNAPSHOT_INTERVAL_MS: 3000
@@ -64,16 +64,59 @@ __marketFlowPolling.state.latestSnapshot
 - duplicates.
 - last error.
 
-## מה לשמור אחרי הרצה
+## Verified run — 2026-09-22
 
-לאחר בדיקה אמיתית יש לשמור report בתוך התיקייה הזו:
+דוח מלא:
+
+[reports/2026-09-22-1555-polling-stability.md](reports/2026-09-22-1555-polling-stability.md)
+
+תוצאה:
 
 ~~~text
-reports/YYYY-MM-DD-HHMM-polling-stability.md
+Runtime:                40.03 minutes
+Universe:               561
+Chunk sizes:            187 / 187 / 187
+
+Cycles completed:       481
+Cycles failed:            0
+Consecutive failures:     0
+
+Total HTTP requests:    1447
+HTTP 200:               1447
+HTTP 403:                  0
+HTTP 429:                  0
+HTTP 5xx:                  0
+
+Average request:         662 ms
+Average full cycle:     4986 ms
 ~~~
+
+### מסקנה
+
+ה-config הזה הוכח כרגע כיציב במשך 40 דקות לפחות ללא כשל HTTP או כשל validation.
+
+חשוב:
+
+~~~text
+SNAPSHOT_INTERVAL_MS = 3000
+~~~
+
+הוא target בלבד.
+
+בפועל:
+
+~~~text
+averageCycleDurationMs = 4986
+~~~
+
+ולכן full snapshot של 561 ניירות התקבל בערך כל 5 שניות, לא כל 3 שניות.
+
+ה-script אינו מאפשר overlapping cycles, וזה behavior רצוי כרגע.
 
 ## Status
 
 ~~~text
-Pending real-world long-running verification
+Verified for a 40-minute run
 ~~~
+
+עדיין לא הוכחו שעות רצופות, יום מסחר שלם, parallel batching או cadence אגרסיבי יותר.
