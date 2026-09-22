@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 4.1 + Stage 4.2 + Stage 4.3 complete
+Stage 4.1 + Stage 4.2 + Stage 4.3 + Stage 4.4 complete
 ~~~
 
 המסמך נבנה בהדרגה. כרגע מוגדר רק תת-השלב הראשון.
@@ -772,3 +772,260 @@ empty viewer state
 ~~~
 
 Cross-tab/reload/recovery behavior אינו חלק מ-Stage 4.3.
+
+
+---
+
+# Stage 4.4 — Cross-tab / Reload / Recovery Test Cases
+
+מטרה: להוכיח שה-recorder וה-viewer נשארים מופרדים, ש-BroadcastChannel הוא notification בלבד, ושפתיחה/סגירה/רענון של viewer לא פוגעים בהקלטה או בנתונים.
+
+## T4.4.1 — Viewer opens after recorder already started
+
+Procedure:
+
+1. start recorder.
+2. allow at least one successful committed cycle.
+3. only then open viewer.
+
+Pass criteria:
+
+- viewer loads current state from IndexedDB.
+- viewer does not require a past BroadcastChannel message.
+- latest rows are visible immediately after DB load.
+
+---
+
+## T4.4.2 — CYCLE_COMMITTED refreshes viewer from DB
+
+Procedure:
+
+1. viewer is open.
+2. recorder commits a new cycle.
+3. CYCLE_COMMITTED is broadcast.
+
+Pass criteria:
+
+- viewer receives notification.
+- viewer re-queries IndexedDB.
+- displayed cycle/data advances to the committed cycle.
+- message payload itself is not used as the source of market rows.
+
+---
+
+## T4.4.3 — Missed notification does not lose state
+
+Procedure:
+
+1. keep viewer closed while recorder commits one or more cycles.
+2. reopen viewer.
+
+Pass criteria:
+
+- viewer shows the latest committed state from IndexedDB.
+- no dependency on receiving every BroadcastChannel event.
+- history remains complete for committed cycles.
+
+---
+
+## T4.4.4 — Viewer reload does not stop recorder
+
+Procedure:
+
+1. recorder is running.
+2. viewer is open.
+3. reload viewer page/tab.
+4. wait for another recorder cycle.
+
+Pass criteria:
+
+- recorder continues independently.
+- new cycles continue to be committed.
+- reloaded viewer reconnects and shows fresh state.
+
+---
+
+## T4.4.5 — Viewer close does not stop recorder
+
+Procedure:
+
+1. recorder is running.
+2. close viewer tab.
+3. wait for several cycles.
+4. reopen viewer.
+
+Pass criteria:
+
+- recorder never stops because viewer closed.
+- cycle count continues increasing.
+- reopened viewer sees newer data than before close.
+
+---
+
+## T4.4.6 — Recorder stop preserves viewer data
+
+Procedure:
+
+1. recorder has committed data.
+2. stop recorder normally.
+3. keep viewer open.
+
+Pass criteria:
+
+- viewer keeps showing last committed latest/history.
+- recorder status becomes STOPPED.
+- data is not cleared.
+- manual refresh still reads the same persisted data.
+
+---
+
+## T4.4.7 — Recorder heartbeat becomes stale
+
+Fixture/Procedure:
+
+1. recorderState says RUNNING.
+2. lastHeartbeatAtMs is older than the configured stale threshold.
+3. no fresh heartbeat arrives.
+
+Pass criteria:
+
+- viewer status becomes STALE.
+- viewer does not delete or hide latest data.
+- stale is visually distinct from STOPPED and ERROR.
+
+---
+
+## T4.4.8 — Recorder resumes after stale state
+
+Procedure:
+
+1. viewer currently shows STALE.
+2. recorder writes a fresh heartbeat or completes a new cycle.
+
+Pass criteria:
+
+- viewer returns to RUNNING.
+- no viewer reload is required.
+- latest committed state remains consistent.
+
+---
+
+## T4.4.9 — Recorder error does not corrupt persisted data
+
+Procedure:
+
+1. commit a valid cycle.
+2. simulate recorder error after that cycle.
+3. expose RECORDER_ERROR / lastError.
+
+Pass criteria:
+
+- viewer shows ERROR state/banner.
+- previous latest/history remain readable.
+- no partial failed cycle appears as current.
+- error state is separate from data state.
+
+---
+
+## T4.4.10 — Manual viewer refresh is DB-only
+
+Procedure:
+
+1. click or invoke "רענן תצוגה".
+2. observe network/API behavior.
+
+Pass criteria:
+
+- viewer re-reads IndexedDB.
+- no MapHeat2 request is triggered.
+- no GetSecuritiesData request is triggered.
+- recorder state is unchanged.
+
+---
+
+## T4.4.11 — Multiple viewers can observe the same recorder
+
+Procedure:
+
+1. recorder is running.
+2. open viewer A.
+3. open viewer B.
+4. commit new cycle.
+
+Pass criteria:
+
+- both viewers can read the same IndexedDB.
+- both can react to the notification independently.
+- neither viewer becomes the owner of recorder lifecycle.
+- closing one viewer does not affect the other or recorder.
+
+---
+
+## T4.4.12 — DATABASE_CLEARED handling
+
+Procedure:
+
+1. viewer is open.
+2. clear prototype DB through the explicit clear flow.
+3. broadcast DATABASE_CLEARED after successful deletion.
+
+Pass criteria:
+
+- viewer transitions to EMPTY state.
+- stale in-memory rows are removed from display.
+- no automatic recorder restart occurs.
+- next state depends on whether recorder creates a fresh DB/session later.
+
+---
+
+## T4.4.13 — Reopen after browser tab recreation
+
+Procedure:
+
+1. recorder/viewer have persisted data.
+2. close viewer tab completely.
+3. create a fresh viewer tab in the same origin.
+
+Pass criteria:
+
+- viewer reconstructs state from IndexedDB.
+- no in-memory state from the old viewer is required.
+- latest/history/meta are sufficient for recovery.
+
+---
+
+## T4.4.14 — BroadcastChannel unavailable/failure fallback
+
+If BroadcastChannel cannot be created or a message is missed:
+
+Pass criteria:
+
+- viewer startup still works from IndexedDB.
+- manual refresh still works.
+- absence of BroadcastChannel is surfaced as degraded live-update behavior, not as DB failure.
+- persisted data remains usable.
+
+---
+
+# Stage 4.4 completion rule
+
+Stage 4.4 נחשב מתוכנן כאשר implementation עתידי יכול להוכיח:
+
+~~~text
+viewer can start after recorder
+DB is source of truth
+notifications trigger DB refresh
+missed notifications do not lose state
+viewer reload/close does not stop recorder
+recorder stop preserves data
+stale detection works
+recovery from stale works
+recorder error preserves last valid data
+manual refresh is DB-only
+multiple viewers are independent
+database clear transitions safely to empty
+fresh viewer reconstructs from persisted state
+BroadcastChannel failure does not destroy usability
+~~~
+
+Storage-growth/integrated long-run planning אינו חלק מ-Stage 4.4.
