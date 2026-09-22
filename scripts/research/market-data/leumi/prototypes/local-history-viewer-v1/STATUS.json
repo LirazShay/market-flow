@@ -10,8 +10,9 @@
   },
   "currentFocus": {
     "stage": "14",
-    "title": "Security history drill-down",
-    "status": "ready-to-start"
+    "substep": "14.1",
+    "title": "Security history drill-down — targeted initial history page",
+    "status": "in-progress"
   },
   "stages": [
     {
@@ -149,7 +150,14 @@
     {
       "stage": "14",
       "title": "Security history drill-down",
-      "status": "planned"
+      "status": "in-progress",
+      "substeps": {
+        "14.1": "in-progress — targeted bySecurityTime newest-first initial page (500 + hasMore)",
+        "14.2": "planned — load-older continuation without duplicates/skips",
+        "14.3": "planned — row activation + detail summary/history table UI",
+        "14.4": "planned — detail live refresh + return-to-main state preservation",
+        "14.5": "planned — Stage 14 acceptance/verification"
+      }
     },
     {
       "stage": "15",
@@ -721,9 +729,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Stage 13 is complete and verified. The next planned work is Stage 14.",
-    "nextStage": "14"
+    "reached": false,
+    "reason": "Stage 14.1 is in progress.",
+    "nextStage": "14",
+    "nextSubstep": "14.1"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
