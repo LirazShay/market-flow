@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "13",
-    "substep": "13.1",
-    "title": "Dynamic sorting — pure sorting contract",
-    "status": "in-progress"
+    "substep": "13.2",
+    "title": "Dynamic sorting — current-table sorting UI integration",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -141,7 +141,7 @@
       "title": "Dynamic sorting",
       "status": "in-progress",
       "substeps": {
-        "13.1": "in-progress — pure sorting state/comparator contract + unit tests",
+        "13.1": "complete-fast-ci-verified — pure sorting state/comparator contract + unit tests",
         "13.2": "planned — current-table sorting UI integration",
         "13.3": "planned — preserve sort across rerender/live refresh + browser coverage",
         "13.4": "planned — Fast CI verification and Stage 13 closure"
@@ -218,13 +218,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35756792160,
-      "commit": "3e1cda4f3e01788ca52c555d74fa4ee1d41cc6ea",
+      "runId": 35765460549,
+      "commit": "4bfb81a8d50c88f342662a71ee08dd0cb2fb749f",
       "conclusion": "success",
-      "tests": 136,
-      "passed": 136,
+      "tests": 143,
+      "passed": 143,
       "failed": 0,
-      "durationMs": 134.153527
+      "durationMs": 99.437781
     },
     "testingRefactor": {
       "status": "complete",
@@ -581,6 +581,40 @@
         "degraded live-refresh mode is surfaced in the UI when BroadcastChannel is unavailable"
       ],
       "reviewNote": "Existing Stage 12 implementation and tests were reviewed against ROADMAP, architecture and viewer UX acceptance intent. No additional implementation gap was found, so the existing successful Fast/Chromium evidence was accepted for explicit stage closure."
+    },
+    "stage13_1": {
+      "status": "complete",
+      "testsFirst": true,
+      "implementationCommit": "155200a75f8cea7efdca6f223a919751878556eb",
+      "firstFastCi": {
+        "runId": 35765366427,
+        "commit": "155200a75f8cea7efdca6f223a919751878556eb",
+        "conclusion": "failure",
+        "tests": 143,
+        "passed": 142,
+        "failed": 1,
+        "cause": "the new default-sort test expectation incorrectly placed DailyDealsQuantity=1 rows before the DailyDealsQuantity=7 row; comparator output matched the intended DESC contract"
+      },
+      "testCorrectionCommit": "4bfb81a8d50c88f342662a71ee08dd0cb2fb749f",
+      "finalFastCi": {
+        "runId": 35765460549,
+        "commit": "4bfb81a8d50c88f342662a71ee08dd0cb2fb749f",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "verifiedBehaviors": [
+        "default sort state is DailyDealsQuantity DESC",
+        "numeric/time columns first-select DESC and string columns first-select ASC",
+        "reselecting the same column toggles ASC/DESC",
+        "equal primary values use paperName ASC",
+        "zero remains a valid sortable value and is not collapsed with null/undefined/empty string",
+        "null/undefined/empty string sort deterministically after present values",
+        "sorting returns a new row array and does not mutate source order",
+        "unknown columns and invalid sort directions are rejected"
+      ],
+      "browserCheckpoint": "not-due — Stage 13.1 is pure deterministic logic; browser interaction remains for later Stage 13 substeps"
     }
   },
   "fastContext": {
@@ -608,9 +642,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 13 is in progress at substep 13.1.",
-    "nextStage": "13"
+    "reached": true,
+    "reason": "Stage 13.1 is complete and Fast CI verified. Stage 13 remains open; the next natural work is Stage 13.2 current-table sorting UI integration.",
+    "nextStage": "13",
+    "nextSubstep": "13.2"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
