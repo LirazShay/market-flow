@@ -9,7 +9,7 @@
 הסקריפט:
 
 ~~~text
-scripts/research/leumi/long-running-poll-test.js
+scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js
 ~~~
 
 ## Flow
