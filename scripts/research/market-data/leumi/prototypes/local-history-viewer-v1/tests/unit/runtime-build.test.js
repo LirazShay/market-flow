@@ -182,7 +182,7 @@ test(
 
         assert.equal(
             bookmarklet.includes(
-                "%2F*%20Market%20Flow"
+                "%20"
             ),
             false
         );
@@ -195,11 +195,9 @@ test(
         );
 
         assert.equal(
-            decodeURIComponent(
-                bookmarklet.slice(
-                    "javascript:"
-                        .length
-                )
+            bookmarklet.slice(
+                "javascript:"
+                    .length
             ),
             compactRuntimeText
         );
