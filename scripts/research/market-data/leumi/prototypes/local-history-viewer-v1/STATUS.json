@@ -75,7 +75,7 @@
         "7.1": "complete",
         "7.2": "complete",
         "7.3": "complete-fast-ci-verified",
-        "7.4": "complete-fast-ci-verification-pending",
+        "7.4": "complete-fast-ci-verified",
         "7.5": "planned",
         "7.6": "planned"
       }
@@ -177,13 +177,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35742991989,
-      "commit": "4935e94e260d3e8cbe0af85b1e7c47d12b3a11d3",
+      "runId": 35743848319,
+      "commit": "cc028cc7d5b1db139b3a26868ef5b49755039d57",
       "conclusion": "success",
-      "tests": 83,
-      "passed": 83,
+      "tests": 94,
+      "passed": 94,
       "failed": 0,
-      "durationMs": 32.600004
+      "durationMs": 44.803074
     },
     "testingRefactor": {
       "status": "complete",
@@ -199,6 +199,25 @@
         "tests": 9,
         "failed": 0
       }
+    },
+    "stage7_4": {
+      "testsFirst": true,
+      "firstRun": {
+        "runId": 35743746769,
+        "conclusion": "failure",
+        "tests": 94,
+        "passed": 92,
+        "failed": 2,
+        "cause": "two negative-path assertions expected a later global validation error, while implementation correctly failed earlier at the affected chunk membership boundary"
+      },
+      "finalRun": {
+        "runId": 35743848319,
+        "conclusion": "success",
+        "tests": 94,
+        "passed": 94,
+        "failed": 0
+      },
+      "browserCheckpoint": "deferred-until-stage-7-complete"
     }
   },
   "fastContext": {
