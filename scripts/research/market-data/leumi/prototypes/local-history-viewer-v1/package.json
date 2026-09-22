@@ -2,11 +2,12 @@
   "name": "market-flow-local-history-viewer-v1-tests",
   "version": "0.0.0",
   "private": true,
-  "description": "Browser test tooling for the Market Flow Local History Viewer V1 research prototype.",
+  "description": "Test tooling for the Market Flow Local History Viewer V1 research prototype.",
   "scripts": {
     "test": "playwright test",
     "test:browser": "playwright test",
-    "test:browser:smoke": "playwright test tests/automation/specs/harness-smoke.spec.js"
+    "test:browser:smoke": "playwright test tests/automation/specs/harness-smoke.spec.js",
+    "test:unit": "node --test"
   },
   "devDependencies": {
     "@playwright/test": "1.55.0"

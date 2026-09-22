@@ -5,13 +5,13 @@
   "updatedAt": "2026-09-22",
   "overallStatus": "in-progress",
   "currentStage": {
-    "id": "T1",
-    "title": "Audit + target architecture",
+    "id": "T2",
+    "title": "Fast unit-test harness",
     "status": "complete"
   },
   "nextStage": {
-    "id": "T2",
-    "title": "Fast unit-test harness",
+    "id": "T3",
+    "title": "Extract deterministic logic from browser adapters",
     "status": "next"
   },
   "resumeParentAt": {
@@ -27,7 +27,7 @@
     {
       "id": "T2",
       "title": "Fast unit-test harness",
-      "status": "planned"
+      "status": "complete"
     },
     {
       "id": "T3",
@@ -56,9 +56,10 @@
     }
   ],
   "baseline": {
-    "unitTests": "not-implemented",
+    "unitTests": "node-built-in-runner-ready",
     "browserTests": "playwright-chromium-working",
     "currentBrowserTrigger": "most prototype code changes",
     "identifiedProblem": "browser setup dominates feedback time for small changes"
-  }
+  },
+  "fastTestCommand": "npm run test:unit"
 }
