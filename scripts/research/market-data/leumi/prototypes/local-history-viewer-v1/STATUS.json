@@ -9,10 +9,9 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "16",
-    "substep": "16.4",
-    "title": "Reload and recovery — Stage 16 acceptance and closure",
-    "status": "in-progress"
+    "stage": "17",
+    "title": "Failure simulation",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -173,12 +172,12 @@
     {
       "stage": "16",
       "title": "Reload and recovery",
-      "status": "in-progress",
+      "status": "complete",
       "substeps": {
         "16.1": "complete-browser-ci-verified — viewer reload automatically rebuilds shell and rereads IndexedDB",
         "16.2": "complete-browser-ci-verified — close/reopen restores newest persisted snapshot",
-        "16.3": "complete-browser-ci-verified — viewer recovery works without running recorder or market API",
-        "16.4": "in-progress — acceptance passed; running mandatory Stage-closure Fast + full Browser CI"
+        "16.3": "complete-browser-ci-verified — recovery works without running recorder or market API",
+        "16.4": "complete-reviewed-and-ci-verified — acceptance passed; mandatory Stage-closure Fast + full Browser CI green"
       }
     },
     {
@@ -215,15 +214,15 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35779817583,
-      "jobId": 106922164111,
-      "activationCommit": "42e73dd180c93bb6550c728301d74a65cb474ad2",
-      "codeTestState": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc",
+      "runId": 35781101317,
+      "jobId": 106926491081,
+      "activationCommit": "e0eb36cc5f1240f9541b712dff946bc95486adf3",
+      "codeTestState": "e6577e0a1565d17448d1481978e2658437d66892",
       "conclusion": "success",
       "tests": [
-        "47 Chromium tests",
-        "47 passed / 0 failed",
-        "mandatory Stage 15 closure full-suite run"
+        "50 Chromium tests",
+        "50 passed / 0 failed",
+        "mandatory Stage 16 closure full-suite run"
       ]
     },
     "fastCi": "verified-success",
@@ -235,16 +234,16 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35779646666,
+      "runId": 35780885144,
       "runAttempt": 2,
-      "jobId": 106922602086,
-      "commit": "d7ceee3e9d0bf0571bb7774ce50ebd8b7b5efbdc",
+      "jobId": 106926646533,
+      "commit": "e6577e0a1565d17448d1481978e2658437d66892",
       "conclusion": "success",
       "tests": 148,
       "passed": 148,
       "failed": 0,
-      "durationMs": 99.149448,
-      "note": "Fresh Stage 15 closure rerun on the final code/test state."
+      "durationMs": 338.219515,
+      "note": "Fresh Stage 16 closure rerun on final recovery code/test state."
     },
     "testingRefactor": {
       "status": "complete",
@@ -1201,6 +1200,80 @@
         "passed": 3,
         "failed": 0
       }
+    },
+    "stage16": {
+      "status": "complete",
+      "closedAt": "2026-09-22",
+      "testsFirst": true,
+      "contractCommit": "4960d4469c020e98cd6d42d24827b9c92356d3b0",
+      "diagnosticRuns": [
+        {
+          "runId": 35780408237,
+          "activationCommit": "3ed2f1c8a9ec7fab636fdbe38f65863066e43a83",
+          "conclusion": "failure",
+          "tests": 3,
+          "passed": 2,
+          "failed": 1,
+          "cause": "Initial recovery test expected raw '1600' while the established current-table display contract formats it as '1,600'. This was a test-contract bug, not a product defect."
+        },
+        {
+          "runId": 35780585561,
+          "activationCommit": "d1baad597c456f48b816f3de2b04b550a3bace99",
+          "conclusion": "failure",
+          "tests": 3,
+          "passed": 2,
+          "failed": 1,
+          "cause": "After correcting the formatting assertion, viewer.reload() exposed the real defect: about:blank reload removed the viewer shell marker and runtime wiring."
+        }
+      ],
+      "testContractFixCommit": "be732a6f4ab07ce537011974cb3a3d5f1aa264e9",
+      "implementationCommit": "e6577e0a1565d17448d1481978e2658437d66892",
+      "targetedBrowser": {
+        "runId": 35780919120,
+        "jobId": 106925894629,
+        "activationCommit": "4a9f92327c450f6083925b18a432f494eac7dc73",
+        "conclusion": "success",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0
+      },
+      "acceptanceReview": {
+        "reviewedAgainst": [
+          "ROADMAP.md Stage 16"
+        ],
+        "remainingGaps": []
+      },
+      "finalFastCi": {
+        "runId": 35780885144,
+        "runAttempt": 2,
+        "jobId": 106926646533,
+        "commit": "e6577e0a1565d17448d1481978e2658437d66892",
+        "conclusion": "success",
+        "tests": 148,
+        "passed": 148,
+        "failed": 0
+      },
+      "finalBrowserCi": {
+        "runId": 35781101317,
+        "jobId": 106926491081,
+        "activationCommit": "e0eb36cc5f1240f9541b712dff946bc95486adf3",
+        "codeTestState": "e6577e0a1565d17448d1481978e2658437d66892",
+        "conclusion": "success",
+        "tests": 50,
+        "passed": 50,
+        "failed": 0
+      },
+      "workflowRestoreCommit": "eda163e685144ad3bd6c9114c088148da6e47795",
+      "verifiedBehaviors": [
+        "viewer.reload() automatically recovers the about:blank shell",
+        "reload reconnects security-detail, diagnostics and live-refresh runtime modules",
+        "reload rereads current-table and diagnostics from IndexedDB",
+        "close/reopen restores the newest persisted snapshot written while the viewer was closed",
+        "viewer recovery works when the recorder is not running",
+        "viewer recovery performs zero market fetch calls",
+        "close/reopen maintains a single viewer child window"
+      ],
+      "closureDecision": "Stage 16 accepted and complete."
     }
   },
   "fastContext": {
@@ -1230,10 +1303,9 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 16 recovery contract is targeted-Chromium green. Mandatory Stage-closure Fast + full Browser CI are in progress.",
-    "nextStage": "16",
-    "nextSubstep": "16.4"
+    "reached": true,
+    "reason": "Stage 16 is accepted and complete. Reload, close/reopen, recorder independence and persisted-state restoration are verified; mandatory Fast CI and full Browser CI are green.",
+    "nextStage": "17"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
