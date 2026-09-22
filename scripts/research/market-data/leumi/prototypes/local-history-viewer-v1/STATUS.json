@@ -170,18 +170,11 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 CI",
-      "runId": 35738834298,
-      "commit": "8cf907ec0101a7de65ac5e7dc4a80ff7f9e166f8",
+      "runId": 35740254929,
+      "commit": "085101f786968ce65c4edcef502dd258178fd846",
       "conclusion": "success",
       "tests": [
-        "harness smoke",
-        "storage schema/open",
-        "fixture round-trip",
-        "cleanup/reopen",
-        "mocked MapHeat2 success/failure/invalid structure",
-        "mocked GetSecuritiesData success/failure/invalid structure",
-        "null vs zero fixture preservation",
-        "dynamic universe and duplicate/missing PaperId validation"
+        "existing browser suite after pure-logic extraction"
       ]
     }
   },
