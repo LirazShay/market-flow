@@ -197,6 +197,7 @@ docs/project/current-state.md
 docs/project/system-scope.md
 docs/project/decisions.md
 docs/project/chat-map.md
+docs/project/repository-structure.md
 ~~~
 
 כאשר מצב הפרויקט משתנה באופן מהותי, יש לעדכן את `current-state.md`.
@@ -217,11 +218,15 @@ docs/leumi-api/
 
 כאשר משנים או לומדים משהו חדש על לאומי:
 
-- `api-flow.md` — flow בין endpoints.
-- `mapheat2.md` — MapHeat2.
-- `get-securities-data.md` — GetSecuritiesData.
-- `field-reference-he.md` — פירוש שדות.
-- `verified-tests.md` — תוצאות בדיקה מאומתות.
+- `overview/api-flow.md` — flow בין endpoints.
+- `overview/api-usage-guide.md` — המלצות עבודה.
+- `endpoints/mapheat2.md` — MapHeat2.
+- `endpoints/get-securities-data.md` — GetSecuritiesData.
+- `fields/field-reference-he.md` — פירוש שדות.
+- `fields/field-availability.md` — coverage/nullability.
+- `testing/verified-tests.md` — תוצאות בדיקה מאומתות.
+- `testing/polling-stability-test.md` — בדיקת polling ממושכת.
+- `reports/` — evidence היסטורי.
 - `samples/` — דוגמאות response מצומצמות.
 
 קוד מחקר:
