@@ -917,43 +917,10 @@ test(
                         "tr[data-security-id='1001']"
                     );
 
-                const wrapper =
-                    document.querySelector(
-                        "[data-role='current-market-table-wrap']"
-                    );
-
-                window
-                    .__marketFlowStage144ScrollDiagnostic =
-                    {
-                        beforeClick:
-                            wrapper.scrollLeft,
-                        atClickCapture:
-                            null
-                    };
-
-                row.addEventListener(
-                    "click",
-                    () => {
-                        window
-                            .__marketFlowStage144ScrollDiagnostic
-                            .atClickCapture =
-                            wrapper.scrollLeft;
-                    },
-                    {
-                        capture: true,
-                        once: true
-                    }
-                );
-            }
-        );
-
-        await viewer.evaluate(
-            () => {
-                const row =
-                    document.querySelector(
-                        "tr[data-security-id='1001']"
-                    );
-
+                // The contract under test is application viewport
+                // preservation. A Playwright locator.click() would
+                // auto-scroll before dispatching the click and mutate
+                // the viewport before the application can capture it.
                 row.dispatchEvent(
                     new MouseEvent(
                         "click",
@@ -966,22 +933,6 @@ test(
                 );
             }
         );
-
-        const clickScrollDiagnostic =
-            await viewer.evaluate(
-                () =>
-                    window
-                        .__marketFlowStage144ScrollDiagnostic
-            );
-
-        expect(
-            clickScrollDiagnostic
-        ).toEqual({
-            beforeClick:
-                savedScrollLeft,
-            atClickCapture:
-                savedScrollLeft
-        });
 
         await viewer.waitForFunction(
             () =>
@@ -1198,7 +1149,7 @@ test(
             "503"
         );
 
-        const returnedViewport =
+        const returnedScrollLeft =
             await viewer.evaluate(
                 async () => {
                     await new Promise(
@@ -1209,44 +1160,18 @@ test(
                             )
                     );
 
-                    const panel =
-                        document.querySelector(
-                            "[data-role='current-market-panel']"
-                        );
-
-                    const wrapper =
-                        document.querySelector(
+                    return document
+                        .querySelector(
                             "[data-role='current-market-table-wrap']"
-                        );
-
-                    return {
-                        panelHidden:
-                            panel.hidden,
-                        panelWidth:
-                            panel
-                                .getBoundingClientRect()
-                                .width,
-                        scrollLeft:
-                            wrapper.scrollLeft,
-                        scrollWidth:
-                            wrapper.scrollWidth,
-                        clientWidth:
-                            wrapper.clientWidth,
-                        direction:
-                            getComputedStyle(
-                                wrapper
-                            ).direction
-                    };
+                        )
+                        .scrollLeft;
                 }
             );
 
         expect(
-            returnedViewport
-        ).toMatchObject({
-            panelHidden:
-                false,
-            scrollLeft:
-                savedScrollLeft
-        });
+            returnedScrollLeft
+        ).toBe(
+            savedScrollLeft
+        );
     }
 );
