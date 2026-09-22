@@ -323,6 +323,22 @@
             return changed;
         }
 
+        function isUndefinedSentinel(
+            value
+        ) {
+            return (
+                value !== null &&
+                typeof value ===
+                    "object" &&
+                value.type ===
+                    "undefined" &&
+                Object.keys(
+                    value
+                ).length ===
+                    1
+            );
+        }
+
         function summarizeDistinctValues(
             summaries,
             selector
@@ -342,7 +358,10 @@
                 if (
                     value !== null &&
                     value !== undefined &&
-                    value !== ""
+                    value !== "" &&
+                    !isUndefinedSentinel(
+                        value
+                    )
                 ) {
                     values.add(
                         String(value)
