@@ -68,6 +68,15 @@
     let viewerWindow =
         null;
 
+    let recoveryTimer =
+        null;
+
+    let closingViewer =
+        false;
+
+    const reloadHandlerByWindow =
+        new WeakMap();
+
     function appendTextElement(
         documentRef,
         parent,
@@ -514,6 +523,286 @@
         return targetWindow;
     }
 
+    function detachViewerModules(
+        targetWindow
+    ) {
+        securityDetail.detach(
+            targetWindow
+        );
+
+        diagnostics.detach(
+            targetWindow
+        );
+
+        liveRefresh.detach(
+            targetWindow
+        );
+    }
+
+    function loadViewerData(
+        targetWindow
+    ) {
+        diagnostics
+            .refresh(
+                targetWindow
+            )
+            .catch(
+                error => {
+                    console.error(
+                        "Initial viewer diagnostics load failed.",
+                        error
+                    );
+                }
+            );
+
+        currentTable
+            .loadAndRender(
+                targetWindow
+            )
+            .catch(
+                () => {
+                    // Error state is rendered by the current-table module.
+                }
+            );
+    }
+
+    function removeReloadRecoveryHook(
+        targetWindow
+    ) {
+        const handler =
+            reloadHandlerByWindow
+                .get(
+                    targetWindow
+                );
+
+        if (!handler) {
+            return;
+        }
+
+        try {
+            targetWindow
+                .removeEventListener(
+                    "beforeunload",
+                    handler
+                );
+        } catch {
+            // Ignore cleanup failure during navigation.
+        }
+
+        reloadHandlerByWindow
+            .delete(
+                targetWindow
+            );
+    }
+
+    function cancelPendingRecovery() {
+        if (
+            recoveryTimer !==
+            null
+        ) {
+            clearTimeout(
+                recoveryTimer
+            );
+
+            recoveryTimer =
+                null;
+        }
+    }
+
+    function initializeViewerWindow(
+        targetWindow
+    ) {
+        removeReloadRecoveryHook(
+            targetWindow
+        );
+
+        renderShell(
+            targetWindow
+        );
+
+        securityDetail.attach(
+            targetWindow
+        );
+
+        diagnostics.attach(
+            targetWindow
+        );
+
+        liveRefresh.attach(
+            targetWindow
+        );
+
+        loadViewerData(
+            targetWindow
+        );
+    }
+
+    function scheduleReloadRecovery(
+        targetWindow
+    ) {
+        cancelPendingRecovery();
+
+        const startedAtMs =
+            Date.now();
+
+        const poll =
+            () => {
+                recoveryTimer =
+                    null;
+
+                if (
+                    closingViewer ||
+                    viewerWindow !==
+                        targetWindow ||
+                    targetWindow.closed
+                ) {
+                    return;
+                }
+
+                let marker =
+                    null;
+
+                let shell =
+                    null;
+
+                try {
+                    marker =
+                        targetWindow
+                            .document
+                            .documentElement
+                            ?.dataset
+                            ?.marketFlowViewer ??
+                        null;
+
+                    shell =
+                        targetWindow
+                            .MarketFlowViewerShell ??
+                        null;
+                } catch {
+                    marker =
+                        null;
+
+                    shell =
+                        null;
+                }
+
+                if (
+                    marker ===
+                        VIEWER_MARKER &&
+                    shell
+                ) {
+                    if (
+                        Date.now() -
+                            startedAtMs <
+                        5000
+                    ) {
+                        recoveryTimer =
+                            setTimeout(
+                                poll,
+                                25
+                            );
+                    }
+
+                    return;
+                }
+
+                try {
+                    initializeViewerWindow(
+                        targetWindow
+                    );
+
+                    installReloadRecoveryHook(
+                        targetWindow
+                    );
+
+                    targetWindow.focus();
+                } catch (error) {
+                    if (
+                        Date.now() -
+                            startedAtMs >=
+                        5000
+                    ) {
+                        console.error(
+                            "Viewer reload recovery failed.",
+                            error
+                        );
+
+                        return;
+                    }
+
+                    recoveryTimer =
+                        setTimeout(
+                            poll,
+                            25
+                        );
+                }
+            };
+
+        recoveryTimer =
+            setTimeout(
+                poll,
+                0
+            );
+    }
+
+    function installReloadRecoveryHook(
+        targetWindow
+    ) {
+        removeReloadRecoveryHook(
+            targetWindow
+        );
+
+        const handler =
+            () => {
+                if (
+                    closingViewer ||
+                    viewerWindow !==
+                        targetWindow
+                ) {
+                    return;
+                }
+
+                detachViewerModules(
+                    targetWindow
+                );
+
+                scheduleReloadRecovery(
+                    targetWindow
+                );
+            };
+
+        reloadHandlerByWindow
+            .set(
+                targetWindow,
+                handler
+            );
+
+        targetWindow
+            .addEventListener(
+                "beforeunload",
+                handler
+            );
+    }
+
+    function hasViewerShell(
+        targetWindow
+    ) {
+        try {
+            return Boolean(
+                targetWindow
+                    .MarketFlowViewerShell &&
+                targetWindow
+                    .document
+                    .documentElement
+                    ?.dataset
+                    ?.marketFlowViewer ===
+                    VIEWER_MARKER
+            );
+        } catch {
+            return false;
+        }
+    }
+
     function isViewerOpen() {
         return Boolean(
             viewerWindow &&
@@ -523,6 +812,20 @@
 
     function openViewer() {
         if (isViewerOpen()) {
+            if (
+                !hasViewerShell(
+                    viewerWindow
+                )
+            ) {
+                initializeViewerWindow(
+                    viewerWindow
+                );
+
+                installReloadRecoveryHook(
+                    viewerWindow
+                );
+            }
+
             viewerWindow.focus();
             return viewerWindow;
         }
@@ -540,7 +843,11 @@
         }
 
         try {
-            renderShell(
+            initializeViewerWindow(
+                viewerWindow
+            );
+
+            installReloadRecoveryHook(
                 viewerWindow
             );
         } catch (error) {
@@ -561,41 +868,6 @@
 
         viewerWindow.focus();
 
-        securityDetail.attach(
-            viewerWindow
-        );
-
-        diagnostics.attach(
-            viewerWindow
-        );
-
-        liveRefresh.attach(
-            viewerWindow
-        );
-
-        diagnostics
-            .refresh(
-                viewerWindow
-            )
-            .catch(
-                error => {
-                    console.error(
-                        "Initial viewer diagnostics load failed.",
-                        error
-                    );
-                }
-            );
-
-        currentTable
-            .loadAndRender(
-                viewerWindow
-            )
-            .catch(
-                () => {
-                    // Error state is rendered by the current-table module.
-                }
-            );
-
         return viewerWindow;
     }
 
@@ -606,21 +878,25 @@
             return;
         }
 
-        securityDetail.detach(
+        closingViewer =
+            true;
+
+        cancelPendingRecovery();
+
+        removeReloadRecoveryHook(
             viewerWindow
         );
 
-        diagnostics.detach(
-            viewerWindow
-        );
-
-        liveRefresh.detach(
+        detachViewerModules(
             viewerWindow
         );
 
         viewerWindow.close();
         viewerWindow =
             null;
+
+        closingViewer =
+            false;
     }
 
     function getViewerSnapshot() {
