@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "13",
-    "substep": "13.2",
-    "title": "Dynamic sorting — current-table sorting UI integration",
-    "status": "in-progress"
+    "substep": "13.3",
+    "title": "Dynamic sorting — preserve sort across rerender/live refresh + browser coverage",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -142,7 +142,7 @@
       "status": "in-progress",
       "substeps": {
         "13.1": "complete-fast-ci-verified — pure sorting state/comparator contract + unit tests",
-        "13.2": "in-progress — sortable headers, indicators, keyboard-accessible controls and DOM wiring",
+        "13.2": "complete-fast-ci-verified — sortable accessible headers + interactive DOM sorting; Playwright coverage added, Chromium execution deferred to 13.3",
         "13.3": "planned — preserve sort across rerender/live refresh + browser coverage",
         "13.4": "planned — Fast CI verification and Stage 13 closure"
       }
@@ -218,13 +218,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35765460549,
-      "commit": "4bfb81a8d50c88f342662a71ee08dd0cb2fb749f",
+      "runId": 35766143889,
+      "commit": "b7f95ade24abc1d5e6deaea863dd759eac38bd74",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 99.437781
+      "durationMs": 86.636384
     },
     "testingRefactor": {
       "status": "complete",
@@ -615,6 +615,29 @@
         "unknown columns and invalid sort directions are rejected"
       ],
       "browserCheckpoint": "not-due — Stage 13.1 is pure deterministic logic; browser interaction remains for later Stage 13 substeps"
+    },
+    "stage13_2": {
+      "status": "complete",
+      "implementationCommit": "b7f95ade24abc1d5e6deaea863dd759eac38bd74",
+      "fastCi": {
+        "runId": 35766143889,
+        "commit": "b7f95ade24abc1d5e6deaea863dd759eac38bd74",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserTestsAdded": [
+        "tests/automation/specs/viewer-current-table.spec.js — Stage 13.2 sortable headers / keyboard / aria-sort / toggle / row-order behavior"
+      ],
+      "browserCheckpoint": "deferred-to-13.3 — Stage 13.3 owns preservation-on-refresh verification and Chromium execution",
+      "verifiedBehaviorsByImplementationAndFastRegression": [
+        "default sort is applied when the table first renders",
+        "each current-table header renders as a real keyboard-accessible button",
+        "active header exposes aria-sort ascending/descending and inactive headers expose none",
+        "active sort renders ▲ for ASC and ▼ for DESC",
+        "header activation updates per-viewer sort state and rerenders without rereading market APIs"
+      ]
     }
   },
   "fastContext": {
@@ -642,10 +665,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 13.2 is in progress.",
+    "reached": true,
+    "reason": "Stage 13.2 implementation is complete and Fast CI is green. Chromium interaction coverage has been added but its execution is intentionally grouped with Stage 13.3 refresh-preservation verification.",
     "nextStage": "13",
-    "nextSubstep": "13.2"
+    "nextSubstep": "13.3"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
