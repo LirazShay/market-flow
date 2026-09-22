@@ -1,37 +1,48 @@
 # Roadmap — Local History Viewer V1
 
-העבודה תבוצע micro-step by micro-step.
+This file defines **scope and order only**.
 
-כל שלב אמור להסתיים ב-commit ברור ובמצב שניתן לבדיקה.
+Operational progress does **not** live here.
+
+Authoritative current status:
+
+~~~text
+STATUS.json
+~~~
+
+Fast AI context:
+
+~~~text
+AI_CONTEXT.md
+~~~
+
+Rule:
+
+~~~text
+ROADMAP.md = what/why/order
+STATUS.json = current/next/completed/pending
+~~~
+
+This prevents duplicated status markers from drifting out of sync.
 
 ---
 
-## Planning
+# Planning
 
-### Stage 1 — Requirements + architecture
-
-Status:
-
-~~~text
-Complete
-~~~
+## Stage 1 — Requirements + architecture
 
 Outputs:
 
-- README
-- REQUIREMENTS
-- ARCHITECTURE
-- ROADMAP
-
-אין implementation.
-
-### Stage 2 — Data model / IndexedDB schema review
-
-Status:
-
 ~~~text
-Complete
+README.md
+REQUIREMENTS.md
+ARCHITECTURE.md
+ROADMAP.md
 ~~~
+
+Defines V1 boundaries and browser-only architecture.
+
+## Stage 2 — Data model / IndexedDB schema
 
 Output:
 
@@ -39,17 +50,16 @@ Output:
 DATA_MODEL.md
 ~~~
 
-נסגרו field preservation, stores, keys, indexes, transaction boundaries, time model ו-storage policy.
+Defines:
 
-אין implementation.
+- six IndexedDB stores;
+- keys/indexes;
+- full raw-field preservation;
+- transaction boundaries;
+- time model;
+- no-retention V1 policy.
 
-### Stage 3 — Viewer UX plan
-
-Status:
-
-~~~text
-Complete
-~~~
+## Stage 3 — Viewer UX plan
 
 Output:
 
@@ -57,490 +67,321 @@ Output:
 VIEWER_UX.md
 ~~~
 
-עדיין ללא implementation.
+Defines current table, history detail, sorting, live-update behavior and diagnostics.
 
-### Stage 4 — Test plan
+## Stage 4 — Test plan
 
-Stage 4 מחולק לתת-שלבים קטנים:
-
-#### Stage 4.1 — Storage/schema test cases
-
-Status:
+Output:
 
 ~~~text
-Complete
+TEST_PLAN.md
 ~~~
 
-נגדיר רק בדיקות ל:
-- DB creation.
-- stores.
-- indexes.
-- reopen/persistence.
-
-#### Stage 4.2 — Write/atomicity test cases
-
-Status:
+Substeps:
 
 ~~~text
-Complete
+4.1 Storage/schema cases
+4.2 Write/atomicity cases
+4.3 Viewer/sorting/history cases
+4.4 Cross-tab/reload/recovery cases
+4.5 Storage-growth/integrated cases
 ~~~
-
-נגדיר רק:
-- successful writes.
-- latest/history consistency.
-- rollback on failure.
-
-#### Stage 4.3 — Viewer/sorting/history test cases
-
-Status:
-
-~~~text
-Complete
-~~~
-
-נגדיר רק:
-- current table.
-- sorting.
-- null/zero.
-- per-security history.
-
-#### Stage 4.4 — Cross-tab/reload/recovery test cases
-
-Status:
-
-~~~text
-Complete
-~~~
-
-נגדיר רק:
-- BroadcastChannel.
-- viewer reopen.
-- recorder independence.
-- stale/error states.
-
-#### Stage 4.5 — Storage-growth + integrated test plan
-
-Status:
-
-~~~text
-Complete
-~~~
-
-נגדיר רק:
-- storage growth measurements.
-- long-run integrated verification.
-
-אין לבצע את כל Stage 4 בהודעה אחת.
 
 ---
 
-## Implementation foundation
+# Implementation foundation
 
-### Stage 5 — IndexedDB module
+## Stage 5 — IndexedDB module
 
-Status:
-
-~~~text
-Complete
-~~~
-
-Stage 5 מחולק לתת-שלבים קטנים:
-
-#### Stage 5.1 — Storage module skeleton + schema constants
-
-Status:
+Substeps:
 
 ~~~text
-Complete
+5.1 Schema constants
+5.2 Open/close connection
+5.3 Version 1 schema creation
+5.4 Generic read helpers
+5.5 Generic write helpers
 ~~~
 
-Outputs:
+Implementation location:
 
 ~~~text
-storage/README.md
-storage/schema.js
+storage/
 ~~~
 
-מוגדרים רק:
-- database name/version.
-- store names.
-- keyPath.
-- autoIncrement.
-- index names/keyPaths.
+Atomic full-cycle persistence is intentionally deferred to Stage 8.
 
-אין עדיין פתיחת DB.
+## Stage 6 — Test infrastructure + IndexedDB self-tests
 
-#### Stage 5.2 — Open/close database connection
-
-Status:
+Goal:
 
 ~~~text
-Complete
+manual browser self-tests
++
+automated Chromium CI
 ~~~
 
-נממש רק:
-- indexedDB.open.
-- Promise wrapper.
-- open success/error.
-- close helper.
+### 6.1 — Schema/open browser self-test
 
-עדיין ללא schema creation.
+Checks:
 
-#### Stage 5.3 — Version 1 schema creation
-
-Status:
-
-~~~text
-Complete
-~~~
-
-נממש רק:
-- onupgradeneeded.
-- create object stores.
-- create indexes.
-
-#### Stage 5.4 — Basic generic read helpers
-
-Status:
-
-~~~text
-Complete
-~~~
-
-נממש רק helpers קטנים לקריאה:
-- get.
-- getAll.
-- count.
-
-#### Stage 5.5 — Basic generic write helpers
-
-Status:
-
-~~~text
-Complete
-~~~
-
-נממש רק helpers קטנים ל:
-- put.
-- add.
-- delete/clear כאשר נדרש.
-
-Atomic full-cycle persistence עדיין שייך ל-Stage 8.
-
-### Stage 6 — Test infrastructure + IndexedDB self-tests
-
-Status:
-
-~~~text
-In progress
-~~~
-
-Stage 6 מחולק לתת-שלבים קטנים. המטרה היא גם self-tests ידניים וגם CI אוטומטי ב-Chromium:
-
-#### Stage 6.1 — Schema/open browser self-test
-
-Status:
-
-~~~text
-Implemented — browser execution pending
-~~~
-
-Outputs:
-
-~~~text
-tests/README.md
-tests/storage-schema-self-test.js
-~~~
-
-בודק רק:
-- DB open/upgrade.
-- database name/version.
-- stores.
-- keyPath/autoIncrement.
+- DB open/upgrade;
+- database name/version;
+- stores;
+- keyPath/autoIncrement;
 - indexes.
 
-לא מכניס test data ולא מוחק DB.
+### 6.2 — Fixture write/read round-trip
 
-#### Stage 6.2 — Small fixture write/read round-trip
+Checks:
 
-Status:
+- add/put;
+- get/getAll/count;
+- null/zero/empty-string preservation.
 
-~~~text
-Implemented — browser execution pending
-~~~
+### 6.3 — Cleanup + reopen persistence
 
-נוסיף fixture קטן בלבד ונאמת:
-- put/add.
-- get/getAll/count.
-- null/zero/empty-string round-trip.
+Checks:
 
-#### Stage 6.3 — Cleanup + reopen persistence self-test
+- targeted fixture cleanup;
+- close/reopen;
+- schema remains valid;
+- fixture remains deleted.
 
-Status:
+### 6.4 — Playwright browser-test harness
 
-~~~text
-Implemented — browser execution pending
-~~~
+Build test tooling:
 
-ננקה רק את fixture של הבדיקה ונאמת:
-- cleanup.
-- close/reopen.
-- schema remains valid.
-- test data does not remain.
+- package/test scripts;
+- Playwright config;
+- Chromium runner;
+- local harness/page loading browser modules.
 
-עדיין ללא Leumi API polling.
+Node/Playwright are test tooling only, not a production-stack decision.
 
+### 6.5 — GitHub Actions CI workflow
 
-#### Stage 6.4 — Playwright browser-test harness
+Workflow should:
 
-Status:
+- install dependencies;
+- install Chromium;
+- run browser tests;
+- fail on test failure;
+- retain useful failure report/artifact.
 
-~~~text
-Next
-~~~
+No Leumi session/secrets.
 
-נקים test tooling בלבד:
+### 6.6 — Automate existing storage self-tests
 
-- package/test scripts.
-- Playwright configuration.
-- Chromium runner.
-- local test harness/page שמטעין את browser modules בסדר נכון.
+Run 6.1–6.3 automatically inside real Chromium IndexedDB.
 
-Node/Playwright הם test tooling בלבד ולא production stack.
+### 6.7 — Mock API fixture infrastructure
 
-#### Stage 6.5 — GitHub Actions CI workflow
-
-נוסיף workflow שרץ ב-push/PR:
-
-- install dependencies.
-- install Chromium.
-- run browser tests.
-- fail build on test failure.
-- upload useful test report/artifact on failure.
-
-ללא secrets וללא Leumi session.
-
-#### Stage 6.6 — Automate existing storage self-tests
-
-נחבר ל-CI את Stage 6.1–6.3:
-
-- schema/open.
-- fixture add/put/get/getAll/count.
-- null/zero/empty-string round-trip.
-- cleanup.
-- close/reopen persistence.
-
-IndexedDB יהיה IndexedDB אמיתי של Chromium.
-
-#### Stage 6.7 — Mock API fixture infrastructure
-
-נוסיף deterministic fixtures + request interception עבור:
+Provide deterministic sanitized fixtures/interception for:
 
 ~~~text
 MapHeat2
 GetSecuritiesData
 ~~~
 
-ה-fixtures יהיו קטנים ולא יכילו מידע רגיש.
+Cover at least:
 
-נכסה לפחות:
-
-- successful universe.
-- successful chunks.
-- null/zero values.
-- duplicate/missing cases.
-- HTTP failure.
+- successful universe;
+- successful chunks;
+- null/zero;
+- duplicate/missing data;
+- HTTP failure;
 - invalid response structure.
 
-לא מבצעים live API calls ב-CI.
+No live Leumi calls in CI.
 
-### Stage 7 — Recorder skeleton
+---
 
-Stage 7 מחולק לתת-שלבים קטנים:
+# Recorder
 
-#### Stage 7.1 — Recorder module skeleton + configuration
+## Stage 7 — Recorder skeleton
 
-Status:
+### 7.1 — Module skeleton + configuration
 
-~~~text
-Complete
-~~~
+Defines:
 
-Outputs:
+- target cadence;
+- chunk delay;
+- chunk size;
+- universe-refresh policy;
+- config validation.
 
-~~~text
-recorder/README.md
-recorder/config.js
-~~~
+### 7.2 — Universe loader
 
-מוגדרים רק configuration defaults + validation.
+Implements:
 
-אין fetch/polling/DB writes.
+- MapHeat2 count;
+- full universe;
+- PaperId validation;
+- dynamic chunk planning.
 
-#### Stage 7.2 — Universe loader
+### 7.3 — Single chunk fetch
 
-Status:
+Implement:
 
-~~~text
-Complete
-~~~
-
-נממש רק:
-- MapHeat2 count.
-- full universe load.
-- PaperId validation.
-- chunk planning לפי chunkSize.
-
-#### Stage 7.3 — Single chunk fetch
-
-Status:
-
-~~~text
-Next
-~~~
-
-נממש רק:
-- GetSecuritiesData request עבור chunk אחד.
-- response validation.
+- one GetSecuritiesData request;
+- response validation;
 - chunk timing metadata.
 
-#### Stage 7.4 — Single complete cycle builder
+### 7.4 — Single complete cycle builder
 
-נחבר chunks באופן sequential ונחזיר cycle object מלא בזיכרון.
+Combine chunks sequentially into one validated in-memory cycle object.
 
-עדיין ללא polling loop וללא DB writes.
+No DB writes yet.
 
-#### Stage 7.5 — Recorder loop shell
+### 7.5 — Recorder loop shell
 
-נוסיף:
-- start/stop.
-- target cadence.
-- no-overlap cycle scheduling.
+Add:
+
+- start/stop;
+- target cadence;
+- no-overlap scheduling;
 - in-memory latest cycle/error state.
 
-Stage 7 עדיין לא כותב ל-IndexedDB; persistence מתחיל ב-Stage 8.
+### 7.6 — Recorder mocked browser tests
 
+CI coverage:
 
-#### Stage 7.6 — Recorder mocked browser tests
-
-לפני Stage 7 Complete נוסיף CI tests עבור:
-
-- dynamic universe size.
-- chunk planning.
-- sequential chunk execution.
-- full-cycle completeness validation.
-- missing/duplicate rejection.
-- HTTP/error propagation.
-- no-overlap scheduling.
-- start/stop behavior.
-
-הבדיקות ישתמשו ב-mock API infrastructure של Stage 6.7.
-
-### Stage 8 — Persist complete cycles
-
-נחבר recorder ל-IndexedDB ונשמור latest/history/cycles.
-
-לפני Stage 8 Complete נוסיף automated browser integration tests עבור:
-
-- successful atomic cycle commit.
-- latest/history consistency.
-- second cycle replaces latest but preserves history.
-- rollback on injected failure.
-- failed API/validation cycle does not touch latest/history.
-- raw field preservation.
-
-
-### Stage 9 — Recorder diagnostics
-
-heartbeat, state, failures, counters ו-storage estimate.
+- dynamic universe size;
+- chunk planning;
+- sequential execution;
+- full-cycle completeness;
+- duplicate/missing rejection;
+- HTTP/error propagation;
+- no-overlap scheduling;
+- start/stop.
 
 ---
 
-## Viewer
+# Persistence
 
-### Stage 10 — Viewer bootstrap
+## Stage 8 — Persist complete cycles
 
-פתיחת same-origin tab וטעינת shell בסיסי.
+Connect recorder to IndexedDB.
 
-### Stage 11 — Current table from IndexedDB
+Persist:
 
-טעינת latest והצגת כל securities.
+~~~text
+cycles
+history
+latest
+meta
+~~~
 
-ללא live update עדיין.
+Required automated integration coverage:
 
-### Stage 12 — Cross-tab live refresh
+- successful atomic commit;
+- latest/history consistency;
+- second cycle replaces latest while preserving history;
+- rollback on injected failure;
+- failed API/validation cycle leaves latest/history unchanged;
+- full raw field preservation.
 
-BroadcastChannel + fallback refresh strategy.
+## Stage 9 — Recorder diagnostics
 
-### Stage 13 — Dynamic sorting
+Add:
 
-clickable headers, ASC/DESC, stable/null-safe sort.
-
-### Stage 14 — Security history drill-down
-
-click row → history table from IndexedDB.
-
-### Stage 15 — Viewer diagnostics
-
-recorder status, last cycle, DB row counts, storage usage.
-
-לפני סיום Viewer stages נוסיף Playwright tests עבור:
-
-- main current table.
-- default/dynamic sorting.
-- null/zero rendering.
-- row → detail navigation.
-- per-security history.
-- paging/load older.
-- sort-state preservation.
-- empty/error/stale states.
-- BroadcastChannel refresh.
-- viewer reload/close/reopen.
-- multiple viewers כאשר מעשי ב-browser test.
-
+- heartbeat;
+- recorder state;
+- failures;
+- counters;
+- storage estimate.
 
 ---
 
-## Resilience / validation
+# Viewer
 
-### Stage 16 — Reload and recovery
+## Stage 10 — Viewer bootstrap
 
-- reload viewer.
-- close/reopen viewer.
-- recorder continues.
-- DB state restored.
+Open/load a same-origin viewer shell.
 
-### Stage 17 — Failure simulation
+## Stage 11 — Current table from IndexedDB
 
-CI mocked failure tests:
+Load `latest` and display current securities.
 
-- failed API chunk.
-- invalid response structure.
-- duplicate/missing securities.
-- failed validation.
-- DB write failure path.
-- stale recorder detection.
-- BroadcastChannel unavailable/degraded path.
+## Stage 12 — Cross-tab live refresh
 
-רק אחרי שה-CI עובר נבצע live failure/recovery checks שניתן לבדוק בבטחה.
+Add BroadcastChannel notification handling plus fallback refresh behavior.
 
-### Stage 18 — Storage growth test
+## Stage 13 — Dynamic sorting
 
-נמדוד בפועל:
+Clickable headers, ASC/DESC, deterministic null-safe sorting.
+
+## Stage 14 — Security history drill-down
+
+Row → per-security history table from IndexedDB.
+
+## Stage 15 — Viewer diagnostics
+
+Show:
+
+- recorder status;
+- last cycle;
+- DB row counts;
+- storage usage.
+
+Automated viewer coverage should include:
+
+- current table;
+- default/dynamic sorting;
+- null/zero rendering;
+- row → detail;
+- isolated per-security history;
+- paging/load older;
+- sort-state preservation;
+- empty/error/stale;
+- BroadcastChannel refresh;
+- reload/close/reopen;
+- multiple viewers where practical.
+
+---
+
+# Resilience / validation
+
+## Stage 16 — Reload and recovery
+
+Verify:
+
+- viewer reload;
+- close/reopen;
+- recorder independence;
+- persisted-state restoration.
+
+## Stage 17 — Failure simulation
+
+Mocked CI cases:
+
+- failed API chunk;
+- invalid response;
+- duplicate/missing securities;
+- failed validation;
+- DB write failure;
+- stale recorder;
+- BroadcastChannel degraded/unavailable.
+
+Live recovery checks come only after CI passes.
+
+## Stage 18 — Storage growth test
+
+Measure actual:
 
 ~~~text
 rows/minute
 MB/minute
+bytes/history-row
 estimated hours before concern
 ~~~
 
-בלי להוסיף retention עדיין.
+No automatic retention in V1.
 
-### Stage 19 — Integrated V1 validation
+## Stage 19 — Integrated V1 validation
 
-#### Stage 19.1 — Full mocked E2E in GitHub Actions
-
-Chromium + mocked API:
+### 19.1 — Full mocked E2E in GitHub Actions
 
 ~~~text
 Recorder
@@ -551,44 +392,44 @@ Recorder
 → history
 ~~~
 
-ה-CI חייב לעבור לפני בקשת בדיקה ידנית.
+CI must pass before manual live verification.
 
-#### Stage 19.2 — Live Leumi browser verification
+### 19.2 — Live Leumi browser verification
 
-לאחר CI ירוק:
+Against the real browser session:
 
-- user runs against real Leumi session.
-- validate real MapHeat2/GetSecuritiesData behavior.
-- validate recorder persistence/viewer behavior.
-- record Verified vs Unknown results.
+- real MapHeat2/GetSecuritiesData behavior;
+- recorder persistence;
+- viewer behavior;
+- Verified/Inferred/Unknown outcomes.
 
-#### Stage 19.3 — Long-run live report
+### 19.3 — Long-run live report
 
-הרצה ממושכת עם recorder + viewer + sorting + history.
+Run recorder + viewer for an extended period and save a reproducible report beside the prototype.
 
-נשמור report ליד prototype.
+## Stage 20 — V1 freeze
 
-### Stage 20 — V1 freeze
+Finalize:
 
-- README מלא.
-- known limitations.
-- verified behavior.
-- cleanup.
+- README;
+- verified behavior;
+- known limitations;
+- cleanup;
 - version marker.
 
 ---
 
 # V2 backlog — intentionally excluded from V1
 
-- filtering.
-- multi-column filters.
-- saved filter presets.
-- derived momentum metrics.
-- charts.
-- column chooser/reorder.
-- retention policy.
-- export/import.
-- worker/background processing.
+- filtering;
+- multi-column filters;
+- saved filter presets;
+- derived momentum metrics;
+- charts;
+- column chooser/reorder;
+- retention policy;
+- export/import;
+- worker/background processing;
 - advanced history queries.
 
-V2 מתחיל רק לאחר ש-V1 יציב ומאומת.
+V2 begins only after V1 is stable and verified.

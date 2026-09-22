@@ -1,8 +1,13 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "workstream": "local-history-viewer-v1",
   "updatedAt": "2026-09-22",
   "overallStatus": "in-progress",
+  "authority": {
+    "operationalProgress": "STATUS.json",
+    "planAndOrder": "ROADMAP.md",
+    "fastContext": "AI_CONTEXT.md"
+  },
   "currentFocus": {
     "stage": "6.4",
     "title": "Playwright browser-test harness",
@@ -23,39 +28,144 @@
     "stage": "6.6",
     "title": "Automate existing storage self-tests"
   },
-  "progress": {
-    "stages1to5": "complete",
-    "stage6": {
-      "status": "in-progress",
-      "implemented": [
-        "6.1",
-        "6.2",
-        "6.3"
-      ],
-      "next": "6.4",
-      "remaining": [
-        "6.4",
-        "6.5",
-        "6.6",
-        "6.7"
-      ]
+  "stages": [
+    {
+      "stage": "1",
+      "title": "Requirements + architecture",
+      "status": "complete"
     },
-    "stage7": {
-      "status": "in-progress",
-      "complete": [
-        "7.1",
-        "7.2"
-      ],
-      "next": "7.3",
-      "remaining": [
-        "7.3",
-        "7.4",
-        "7.5",
-        "7.6"
-      ]
+    {
+      "stage": "2",
+      "title": "Data model / IndexedDB schema",
+      "status": "complete"
     },
-    "stages8to20": "planned"
-  },
+    {
+      "stage": "3",
+      "title": "Viewer UX plan",
+      "status": "complete"
+    },
+    {
+      "stage": "4",
+      "title": "Test plan",
+      "status": "complete",
+      "substeps": {
+        "4.1": "complete",
+        "4.2": "complete",
+        "4.3": "complete",
+        "4.4": "complete",
+        "4.5": "complete"
+      }
+    },
+    {
+      "stage": "5",
+      "title": "IndexedDB module",
+      "status": "complete",
+      "substeps": {
+        "5.1": "complete",
+        "5.2": "complete",
+        "5.3": "complete",
+        "5.4": "complete",
+        "5.5": "complete"
+      }
+    },
+    {
+      "stage": "6",
+      "title": "Test infrastructure + IndexedDB self-tests",
+      "status": "in-progress",
+      "substeps": {
+        "6.1": "implemented-browser-execution-pending",
+        "6.2": "implemented-browser-execution-pending",
+        "6.3": "implemented-browser-execution-pending",
+        "6.4": "next",
+        "6.5": "planned",
+        "6.6": "planned",
+        "6.7": "planned"
+      }
+    },
+    {
+      "stage": "7",
+      "title": "Recorder skeleton",
+      "status": "partially-complete",
+      "substeps": {
+        "7.1": "complete",
+        "7.2": "complete",
+        "7.3": "pending",
+        "7.4": "planned",
+        "7.5": "planned",
+        "7.6": "planned"
+      }
+    },
+    {
+      "stage": "8",
+      "title": "Persist complete cycles",
+      "status": "planned"
+    },
+    {
+      "stage": "9",
+      "title": "Recorder diagnostics",
+      "status": "planned"
+    },
+    {
+      "stage": "10",
+      "title": "Viewer bootstrap",
+      "status": "planned"
+    },
+    {
+      "stage": "11",
+      "title": "Current table from IndexedDB",
+      "status": "planned"
+    },
+    {
+      "stage": "12",
+      "title": "Cross-tab live refresh",
+      "status": "planned"
+    },
+    {
+      "stage": "13",
+      "title": "Dynamic sorting",
+      "status": "planned"
+    },
+    {
+      "stage": "14",
+      "title": "Security history drill-down",
+      "status": "planned"
+    },
+    {
+      "stage": "15",
+      "title": "Viewer diagnostics",
+      "status": "planned"
+    },
+    {
+      "stage": "16",
+      "title": "Reload and recovery",
+      "status": "planned"
+    },
+    {
+      "stage": "17",
+      "title": "Failure simulation",
+      "status": "planned"
+    },
+    {
+      "stage": "18",
+      "title": "Storage growth test",
+      "status": "planned"
+    },
+    {
+      "stage": "19",
+      "title": "Integrated V1 validation",
+      "status": "planned",
+      "substeps": {
+        "19.1": "planned",
+        "19.2": "planned",
+        "19.3": "planned"
+      }
+    },
+    {
+      "stage": "20",
+      "title": "V1 freeze",
+      "status": "planned"
+    }
+  ],
   "verification": {
     "storageSelfTests": "implemented-browser-execution-pending",
     "playwrightHarness": "not-started",

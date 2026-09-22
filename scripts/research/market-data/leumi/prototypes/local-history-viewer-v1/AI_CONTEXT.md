@@ -19,51 +19,18 @@ Read the wider project documentation only when:
 - a conflict or stale status is detected;
 - API evidence must be re-verified.
 
-## Current focus
+## Operational status
+
+`STATUS.json` is the **only authoritative source for current progress, current stage and next stage**.
+
+Do not infer operational status from `ROADMAP.md`.
 
 ~~~text
-Stage 6.4 — Playwright browser-test harness
+STATUS.json = current / next / completed / pending
+ROADMAP.md  = scope / order / stage definitions
 ~~~
 
-Natural next batch may include:
-
-~~~text
-6.4 Playwright harness
-+
-6.5 GitHub Actions workflow
-~~~
-
-if they remain one coherent test-infrastructure boundary.
-
-Do not continue beyond that natural boundary without a new user instruction.
-
-## Current progress
-
-~~~text
-Stages 1–5: Complete
-
-Stage 6:
-6.1 Implemented — browser execution pending
-6.2 Implemented — browser execution pending
-6.3 Implemented — browser execution pending
-6.4 Next
-6.5 Planned
-6.6 Planned
-6.7 Planned
-
-Stage 7:
-7.1 Complete
-7.2 Complete
-7.3 Next
-7.4 Planned
-7.5 Planned
-7.6 Planned
-
-Stages 8–20:
-Planned
-~~~
-
-The machine-readable pointer is `STATUS.json`.
+The roadmap is intentionally status-free to prevent drift.
 
 ## V1 architecture
 
