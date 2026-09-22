@@ -185,7 +185,7 @@ Complete
 Status:
 
 ~~~text
-Next
+Complete
 ~~~
 
 נממש רק:
@@ -194,6 +194,12 @@ Next
 - create indexes.
 
 #### Stage 5.4 — Basic generic read helpers
+
+Status:
+
+~~~text
+Next
+~~~
 
 נממש רק helpers קטנים לקריאה:
 - get.
