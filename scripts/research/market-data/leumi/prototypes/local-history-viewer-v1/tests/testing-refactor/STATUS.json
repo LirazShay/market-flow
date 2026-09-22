@@ -5,13 +5,13 @@
   "updatedAt": "2026-09-22",
   "overallStatus": "in-progress",
   "currentStage": {
-    "id": "T3",
-    "title": "Extract deterministic logic from browser adapters",
+    "id": "T4",
+    "title": "Build the fast unit-test base",
     "status": "complete"
   },
   "nextStage": {
-    "id": "T4",
-    "title": "Build the fast unit-test base",
+    "id": "T5",
+    "title": "Split CI by speed and purpose",
     "status": "next"
   },
   "resumeParentAt": {
@@ -37,7 +37,7 @@
     {
       "id": "T4",
       "title": "Build the fast unit-test base",
-      "status": "planned"
+      "status": "complete"
     },
     {
       "id": "T5",
@@ -81,5 +81,19 @@
         "conclusion": "success"
       }
     }
+  },
+  "fastUnitBase": {
+    "files": [
+      "tests/unit/config-logic.test.js",
+      "tests/unit/universe-logic.test.js",
+      "tests/unit/leumi-api-fixtures.test.js"
+    ],
+    "focus": [
+      "config validation",
+      "chunk planning",
+      "PaperId validation/canonicalization",
+      "record-count/completeness validation",
+      "fixture null-vs-zero behavior"
+    ]
   }
 }

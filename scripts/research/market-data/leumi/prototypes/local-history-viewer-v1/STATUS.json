@@ -9,20 +9,20 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "testing-refactor/T4",
-    "title": "Build the fast unit-test base",
+    "stage": "testing-refactor/T5",
+    "title": "Split CI by speed and purpose",
     "status": "next"
   },
   "recommendedNaturalBatch": [
     {
-      "stage": "T4",
-      "title": "Build the fast unit-test base"
+      "stage": "T5",
+      "title": "Split CI by speed and purpose"
     }
   ],
-  "stopBoundaryAfterRecommendedBatch": "T4",
+  "stopBoundaryAfterRecommendedBatch": "T5",
   "nextAfterRecommendedBatch": {
-    "stage": "T5",
-    "title": "Split CI by speed and purpose"
+    "stage": "T6",
+    "title": "Migration + checkpoint policy"
   },
   "stages": [
     {
@@ -190,9 +190,9 @@
   "activeMiniProject": {
     "id": "testing-refactor",
     "path": "tests/testing-refactor/",
-    "currentStage": "T3",
+    "currentStage": "T4",
     "currentStatus": "complete",
-    "nextStage": "T4",
+    "nextStage": "T5",
     "resumeMainStage": "7.3"
   }
 }

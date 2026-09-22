@@ -128,6 +128,12 @@ storage/
   write.js
 
 tests/
+  unit/
+    harness-smoke.test.js
+    pure-module-smoke.test.js
+    config-logic.test.js
+    universe-logic.test.js
+    leumi-api-fixtures.test.js
   storage-schema-self-test.js
   storage-fixture-roundtrip-self-test.js
   storage-cleanup-reopen-self-test.js

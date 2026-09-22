@@ -43,3 +43,30 @@ It proves that:
 - CommonJS test fixtures can be loaded on the fast path.
 
 Production/browser logic extraction is intentionally deferred to T3.
+
+
+## T4 fast test base
+
+The fast suite now covers the deterministic recorder foundation:
+
+~~~text
+config-logic.test.js
+universe-logic.test.js
+leumi-api-fixtures.test.js
+~~~
+
+Coverage includes:
+
+- default/override config behavior;
+- invalid config values;
+- chunk boundary/remainder behavior;
+- dynamic MapHeat URL pageCount;
+- PaperId canonicalization and ordering;
+- missing/duplicate PaperId failures;
+- record-count validation;
+- full-universe completeness validation;
+- synthetic fixture isolation;
+- null vs zero fixture preservation;
+- deterministic mocked failure scenarios.
+
+These tests deliberately do not duplicate IndexedDB/DOM/BroadcastChannel behavior, which remains browser-test territory.
