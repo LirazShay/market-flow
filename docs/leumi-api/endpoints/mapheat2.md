@@ -83,4 +83,4 @@ pageCount=561 → 561 records
 - ESGRatingEng
 - ESGRatingId
 
-הסבר השדות נמצא ב-[field-reference-he.md](field-reference-he.md).
+הסבר השדות נמצא ב-[field-reference-he.md](../fields/field-reference-he.md).

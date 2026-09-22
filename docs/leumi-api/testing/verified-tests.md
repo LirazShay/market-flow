@@ -106,7 +106,7 @@ Generated:
 
 Raw report:
 
-[reports/2026-09-22-1451-field-coverage.md](reports/2026-09-22-1451-field-coverage.md)
+[reports/2026-09-22-1451-field-coverage.md](../reports/2026-09-22-1451-field-coverage.md)
 
 ### Record counts
 
@@ -349,6 +349,6 @@ type:
 
 ## מסמכי המשך
 
-- [field-availability.md](field-availability.md)
-- [api-usage-guide.md](api-usage-guide.md)
-- [get-securities-data.md](get-securities-data.md)
+- [field-availability.md](../fields/field-availability.md)
+- [api-usage-guide.md](../overview/api-usage-guide.md)
+- [get-securities-data.md](../endpoints/get-securities-data.md)

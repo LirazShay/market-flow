@@ -1,46 +1,63 @@
-# Leumi API Research
+# Leumi Market Data API Research
 
-תיעוד של ההתנהגות שנצפתה בפועל בדף המניות של לאומי טרייד.
+תיעוד של ההתנהגות שנצפתה בפועל בדף המניות של לאומי.
 
-## מסמכים
+## Start here
 
-- [api-flow.md](api-flow.md) — איך שתי הקריאות משתלבות.
-- [api-usage-guide.md](api-usage-guide.md) — מדריך עבודה מלא: flow מומלץ, batching, source-of-truth, validation, NULL handling, schema drift והמלצות implementation.
-- [mapheat2.md](mapheat2.md) — תיעוד `MapHeat2`.
-- [get-securities-data.md](get-securities-data.md) — תיעוד `GetSecuritiesData`, batching ו-coverage שנמדד בפועל.
-- [field-reference-he.md](field-reference-he.md) — מילון שדות בעברית + availability שנמדדה.
-- [field-availability.md](field-availability.md) — ניתוח מפורט של NULL/empty/zero/coverage והמלצות שימוש.
-- [verified-tests.md](verified-tests.md) — תוצאות בדיקות שבוצעו בפועל.\n- [polling-stability-test.md](polling-stability-test.md) — מתודולוגיית בדיקת polling ממושכת והקונפיגורציה.
-- [reports/](reports/) — raw reports שנשמרים מכל snapshot בדיקה.
-- [samples/](samples/) — דוגמאות JSON מצומצמות מהתגובות שנצפו.
+1. [Overview](overview/README.md)
+2. [Endpoints](endpoints/README.md)
+3. [Fields](fields/README.md)
+4. [Testing](testing/README.md)
+
+## מבנה
+
+~~~text
+docs/leumi-api/
+├── README.md
+├── overview/
+│   ├── README.md
+│   ├── api-flow.md
+│   └── api-usage-guide.md
+├── endpoints/
+│   ├── README.md
+│   ├── mapheat2.md
+│   └── get-securities-data.md
+├── fields/
+│   ├── README.md
+│   ├── field-reference-he.md
+│   └── field-availability.md
+├── testing/
+│   ├── README.md
+│   ├── verified-tests.md
+│   └── polling-stability-test.md
+├── reports/
+│   ├── README.md
+│   └── ...
+└── samples/
+    ├── README.md
+    └── ...
+~~~
+
+## Code
+
+Research scripts נמצאים תחת:
+
+`scripts/research/market-data/leumi/`
+
+ומחולקים ל:
+
+- `capture/`
+- `collection/`
+- `demos/`
+- `tests/`
 
 ## Report מאומת נוכחי
 
 - [2026-09-22 14:51 — 561-security field coverage](reports/2026-09-22-1451-field-coverage.md)
 
-ב-report הזה נבדקו 561 רשומות מ-`MapHeat2` ו-561 רשומות מ-`GetSecuritiesData`.
-
-הוא משמש evidence ל:
-
-- availability של כל field.
-- null / empty / zero counts.
-- Book Level 1 availability.
-- העובדה ש-Book Levels 2–5 היו null ב-561/561.
-- cross-endpoint comparison.
-- join key `PaperId == Key` ב-561/561.
-
-## קוד מחקר
-
-- `scripts/research/market-data/leumi/capture/api-recorder.js` — מקליט Fetch/XHR.
-- `scripts/research/market-data/leumi/collection/fetch-all-securities.js` — קורא את כל הניירות ומאמת שלמות.
-- `scripts/research/market-data/leumi/demos/show-all-securities-table.js` — proof-of-concept מלא: שתי הקריאות, join והצגה בטבלה.
-- `scripts/research/market-data/leumi/tests/field-coverage/analyze-field-coverage.js` — מודד availability/NULL/type/sample עבור כל field ומשווה fields מקבילים בין שתי הקריאות.\n- `scripts/research/market-data/leumi/tests/polling-stability/long-running-poll-test.js` — בדיקת polling ממושכת וקונפיגורבילית למדידת יציבות הקריאות לאורך זמן.
-
 ## עקרון evidence
 
-התיעוד מתאר תעבורת HTTP שנצפתה בפועל.
-
-כל קביעה חייבת להיות אחת מ:
+כל קביעה חייבת להיות מסומנת לפי אחת הרמות:
 
 ~~~text
 Verified
@@ -48,15 +65,11 @@ Inferred
 Unknown
 ~~~
 
-לפי `AGENTS.md`.
-
 אין להפוך snapshot חד-פעמי ל-contract רשמי של API פנימי.
 
 ## גבול הידע הנוכחי
 
-לא בוצעה כרגע הנדסה לאחור של קוד ה-Angular לצורך אימות פונקציית המיזוג הפנימית של האתר.
-
-בנוסף, עדיין לא הוכחו:
+עדיין לא הוכחו בין היתר:
 
 - cadence מדויק של polling בכל מצב.
 - הסיבה המדויקת ל-HTTP 403 בבקשות גדולות.

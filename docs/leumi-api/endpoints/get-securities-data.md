@@ -81,11 +81,11 @@ Missing: 0
 
 הבדיקה המלאה נמצאת ב:
 
-[field-availability.md](field-availability.md)
+[field-availability.md](../fields/field-availability.md)
 
 וה-report הגולמי:
 
-[reports/2026-09-22-1451-field-coverage.md](reports/2026-09-22-1451-field-coverage.md)
+[reports/2026-09-22-1451-field-coverage.md](../reports/2026-09-22-1451-field-coverage.md)
 
 ב-snapshot:
 
