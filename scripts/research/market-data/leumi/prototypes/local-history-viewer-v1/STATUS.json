@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "workstream": "local-history-viewer-v1",
+  "updatedAt": "2026-09-22",
+  "overallStatus": "in-progress",
+  "currentFocus": {
+    "stage": "6.4",
+    "title": "Playwright browser-test harness",
+    "status": "next"
+  },
+  "recommendedNaturalBatch": [
+    {
+      "stage": "6.4",
+      "title": "Playwright browser-test harness"
+    },
+    {
+      "stage": "6.5",
+      "title": "GitHub Actions CI workflow"
+    }
+  ],
+  "stopBoundaryAfterRecommendedBatch": "6.5",
+  "nextAfterRecommendedBatch": {
+    "stage": "6.6",
+    "title": "Automate existing storage self-tests"
+  },
+  "progress": {
+    "stages1to5": "complete",
+    "stage6": {
+      "status": "in-progress",
+      "implemented": [
+        "6.1",
+        "6.2",
+        "6.3"
+      ],
+      "next": "6.4",
+      "remaining": [
+        "6.4",
+        "6.5",
+        "6.6",
+        "6.7"
+      ]
+    },
+    "stage7": {
+      "status": "in-progress",
+      "complete": [
+        "7.1",
+        "7.2"
+      ],
+      "next": "7.3",
+      "remaining": [
+        "7.3",
+        "7.4",
+        "7.5",
+        "7.6"
+      ]
+    },
+    "stages8to20": "planned"
+  },
+  "verification": {
+    "storageSelfTests": "implemented-browser-execution-pending",
+    "playwrightHarness": "not-started",
+    "githubActions": "not-started",
+    "mockedApiInfrastructure": "not-started",
+    "liveLeumiV1Integration": "not-started"
+  },
+  "fastContext": {
+    "file": "AI_CONTEXT.md",
+    "normalContinuationReads": [
+      "AI_CONTEXT.md",
+      "STATUS.json",
+      "target files",
+      "directly relevant tests"
+    ]
+  }
+}
