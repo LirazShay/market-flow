@@ -247,7 +247,7 @@ Local commands from the prototype directory:
 ~~~text
 npm install
 npx playwright install chromium
-npm test
+npm run test:browser
 ~~~
 
 ## Stage 6.5 — GitHub Actions
@@ -285,7 +285,7 @@ Verified steps:
 - real Chromium IndexedDB availability.
 - storage/self-test modules loaded without browser page errors.
 
-The workflow path filter intentionally ignores documentation/status-only changes so normal project-status updates do not spend CI time unnecessarily.
+At that historical Stage 6 checkpoint, path filtering avoided documentation-only runs. The current Browser CI is stricter: it runs only through `workflow_dispatch` or `workflow_call`.
 
 
 ---
@@ -413,3 +413,32 @@ Verified in Chromium with deterministic synthetic fixtures:
 - invalid GetSecuritiesData structure.
 
 Stage 6 is now complete.
+
+
+---
+
+## Testing refactor completed
+
+The testing-refactor mini-project completed on 2026-09-22.
+
+Final verification:
+
+~~~text
+Fast CI:    Run 35741459430 — 60 passed, 0 failed
+Browser CI: Run 35741876693 — 9 passed, 0 failed
+~~~
+
+Current default:
+
+~~~text
+ordinary change
+→ Fast CI
+
+planned browser checkpoint
+→ Browser CI
+
+provider-dependent verification
+→ Live Leumi
+~~~
+
+See `TESTING_POLICY.md` for the durable checkpoint map.

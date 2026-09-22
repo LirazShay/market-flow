@@ -3,17 +3,13 @@
   "miniProject": "testing-refactor",
   "parentWorkstream": "local-history-viewer-v1",
   "updatedAt": "2026-09-22",
-  "overallStatus": "in-progress",
+  "overallStatus": "complete",
   "currentStage": {
-    "id": "T6",
-    "title": "Migration + checkpoint policy",
-    "status": "complete"
-  },
-  "nextStage": {
     "id": "T7",
     "title": "End-to-end verification of the testing system",
-    "status": "next"
+    "status": "complete"
   },
+  "nextStage": null,
   "resumeParentAt": {
     "stage": "7.3",
     "title": "Single chunk fetch"
@@ -52,7 +48,7 @@
     {
       "id": "T7",
       "title": "End-to-end verification of the testing system",
-      "status": "planned"
+      "status": "complete"
     }
   ],
   "baseline": {
@@ -99,6 +95,31 @@
         "issue": "node --test default discovery included browser-only *-test.js files",
         "fix": "tests/unit/run-unit-tests.js loads only tests/unit/*.test.js"
       }
+    },
+    "t7": {
+      "fastCi": {
+        "workflow": "Local History Viewer V1 Fast CI",
+        "runId": 35741459430,
+        "commit": "c8668b6ac953602d6c387e9db27a76e8df8fa94a",
+        "conclusion": "success",
+        "tests": 60,
+        "passed": 60,
+        "failed": 0,
+        "durationMs": 26.994505
+      },
+      "browserCi": {
+        "workflow": "Local History Viewer V1 Browser CI",
+        "runId": 35741876693,
+        "commit": "8a2342c9dd027eccfb5176629e2c8a9ade184e99",
+        "conclusion": "success",
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "browser": "Chromium",
+        "note": "one-time push trigger used only to verify the final checkpoint workflow; final workflow restored to workflow_dispatch/workflow_call"
+      },
+      "coverageAudit": "existing unit, IndexedDB, mocked API and browser harness coverage retained",
+      "finalPolicy": "fast unit CI by default; browser checkpoint CI; live provider verification only when required"
     }
   },
   "fastUnitBase": {
@@ -148,5 +169,6 @@
     "liveCheckpoints": [
       "stage-19.2"
     ]
-  }
+  },
+  "completedAt": "2026-09-22"
 }

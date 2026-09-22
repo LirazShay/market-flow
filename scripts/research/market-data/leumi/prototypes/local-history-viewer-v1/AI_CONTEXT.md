@@ -129,6 +129,7 @@ storage/
 
 tests/
   unit/
+    run-unit-tests.js
     harness-smoke.test.js
     pure-module-smoke.test.js
     config-logic.test.js
@@ -166,30 +167,31 @@ recorder/
 
 ## Testing policy
 
-A testing-refactor mini-project is active:
+The testing-refactor mini-project is complete.
+
+Durable policy:
 
 ~~~text
-tests/testing-refactor/
+ordinary relevant changes
+→ fast Node unit tests / automatic Fast CI
+
+planned browser integration checkpoints
+→ Playwright + Chromium Browser CI
+
+provider-dependent behavior
+→ live Leumi verification only when required
 ~~~
 
-Temporary objective:
-
-~~~text
-many fast unit tests on ordinary relevant changes
-→ Playwright via manual/reusable checkpoint workflow
-→ live Leumi only for provider-dependent verification
-~~~
-
-Current detailed mini-project status:
-
-~~~text
-tests/testing-refactor/STATUS.json
-~~~
-
-Durable testing/checkpoint policy:
+Authoritative policy:
 
 ~~~text
 tests/TESTING_POLICY.md
+~~~
+
+Historical refactor plan/status:
+
+~~~text
+tests/testing-refactor/
 ~~~
 
 CI must not contain Leumi cookies, tokens, credentials, or account data.

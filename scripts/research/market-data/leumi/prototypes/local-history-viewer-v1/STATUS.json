@@ -9,8 +9,8 @@
     "fastContext": "AI_CONTEXT.md"
   },
   "currentFocus": {
-    "stage": "testing-refactor/T7",
-    "title": "End-to-end verification of the testing system",
+    "stage": "7.3",
+    "title": "Single chunk fetch",
     "status": "next"
   },
   "stages": [
@@ -158,12 +158,14 @@
     "mockedApiInfrastructure": "verified-in-github-actions",
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
-      "workflow": "Local History Viewer V1 CI",
-      "runId": 35740254929,
-      "commit": "085101f786968ce65c4edcef502dd258178fd846",
+      "workflow": "Local History Viewer V1 Browser CI",
+      "runId": 35741876693,
+      "commit": "8a2342c9dd027eccfb5176629e2c8a9ade184e99",
       "conclusion": "success",
       "tests": [
-        "existing browser suite after pure-logic extraction"
+        "browser harness smoke",
+        "mocked MapHeat2/GetSecuritiesData integration",
+        "real Chromium IndexedDB storage self-tests"
       ]
     },
     "fastCi": "verified-success",
@@ -178,6 +180,21 @@
       "runId": 35741459430,
       "commit": "c8668b6ac953602d6c387e9db27a76e8df8fa94a",
       "conclusion": "success"
+    },
+    "testingRefactor": {
+      "status": "complete",
+      "fastCi": {
+        "runId": 35741459430,
+        "conclusion": "success",
+        "tests": 60,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35741876693,
+        "conclusion": "success",
+        "tests": 9,
+        "failed": 0
+      }
     }
   },
   "fastContext": {
@@ -189,19 +206,19 @@
       "directly relevant tests"
     ]
   },
-  "activeMiniProject": {
-    "id": "testing-refactor",
-    "path": "tests/testing-refactor/",
-    "currentStage": "T6",
-    "currentStatus": "complete",
-    "nextStage": "T7",
-    "resumeMainStage": "7.3"
-  },
+  "activeMiniProject": null,
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
     "default": "fast-unit-ci",
     "browser": "checkpoint-only",
     "live": "provider-dependent-only"
+  },
+  "lastCompletedMiniProject": {
+    "id": "testing-refactor",
+    "path": "tests/testing-refactor/",
+    "status": "complete",
+    "completedAt": "2026-09-22",
+    "resumeMainStage": "7.3"
   }
 }
