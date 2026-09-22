@@ -8,11 +8,19 @@ Run from the prototype root:
 npm run test:unit
 ~~~
 
-The command uses Node's built-in test runner:
+The command uses Node's built-in `node:test` API through a tiny deterministic launcher:
 
 ~~~text
-node --test
+node tests/unit/run-unit-tests.js
 ~~~
+
+The launcher loads only:
+
+~~~text
+tests/unit/*.test.js
+~~~
+
+This intentionally prevents Node's default test discovery from trying to execute browser-only self-test files elsewhere under `tests/`.
 
 ## Naming
 
