@@ -10,9 +10,9 @@
   },
   "currentFocus": {
     "stage": "13",
-    "substep": "13.3",
-    "title": "Dynamic sorting — preserve sort across rerender/live refresh + browser coverage",
-    "status": "in-progress"
+    "substep": "13.4",
+    "title": "Dynamic sorting — final verification and Stage 13 closure",
+    "status": "ready-to-start"
   },
   "stages": [
     {
@@ -143,7 +143,7 @@
       "substeps": {
         "13.1": "complete-fast-ci-verified — pure sorting state/comparator contract + unit tests",
         "13.2": "complete-fast-ci-verified — sortable accessible headers + interactive DOM sorting; Playwright coverage added, Chromium execution deferred to 13.3",
-        "13.3": "in-progress — preserve selected sort across DB reread/rerender and verify in Chromium",
+        "13.3": "complete-browser-ci-verified — selected sort preserved across BroadcastChannel-triggered IndexedDB reread/rerender",
         "13.4": "planned — Fast CI verification and Stage 13 closure"
       }
     },
@@ -196,17 +196,14 @@
     "liveLeumiV1Integration": "not-started",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35756990977,
-      "commit": "88bdca83190b949fb426e3dd0d4ea463f54fcfdc",
+      "runId": 35766577036,
+      "commit": "813fbcd5849e281cda2452625128c5f70b511f26",
       "conclusion": "success",
       "tests": [
-        "34 Chromium tests",
-        "Stages 10–12 Viewer Checkpoint C",
-        "Stage 11 IndexedDB current-table rendering",
-        "Stage 12 BroadcastChannel live refresh",
-        "manual refresh fallback",
-        "BroadcastChannel unavailable degraded mode",
-        "existing recorder/storage regressions"
+        "36 Chromium tests",
+        "Stage 13.2 sortable header interaction",
+        "Stage 13.3 selected-sort preservation across BroadcastChannel live refresh",
+        "existing recorder/storage/viewer regressions"
       ]
     },
     "fastCi": "verified-success",
@@ -218,13 +215,13 @@
     },
     "fastCiLastRun": {
       "workflow": "Local History Viewer V1 Fast CI",
-      "runId": 35766143889,
-      "commit": "b7f95ade24abc1d5e6deaea863dd759eac38bd74",
+      "runId": 35766523026,
+      "commit": "8e303956b16939a2a74e9fb7b16f897300bf60b4",
       "conclusion": "success",
       "tests": 143,
       "passed": 143,
       "failed": 0,
-      "durationMs": 86.636384
+      "durationMs": 344.07029
     },
     "testingRefactor": {
       "status": "complete",
@@ -638,6 +635,36 @@
         "active sort renders ▲ for ASC and ▼ for DESC",
         "header activation updates per-viewer sort state and rerenders without rereading market APIs"
       ]
+    },
+    "stage13_3": {
+      "status": "complete",
+      "implementationChanged": false,
+      "testCommit": "8e303956b16939a2a74e9fb7b16f897300bf60b4",
+      "fastCi": {
+        "runId": 35766523026,
+        "commit": "8e303956b16939a2a74e9fb7b16f897300bf60b4",
+        "conclusion": "success",
+        "tests": 143,
+        "passed": 143,
+        "failed": 0
+      },
+      "browserCi": {
+        "runId": 35766577036,
+        "commit": "813fbcd5849e281cda2452625128c5f70b511f26",
+        "conclusion": "success",
+        "tests": 36,
+        "passed": 36,
+        "failed": 0,
+        "note": "Browser workflow was temporarily push-triggered only for the workflow file, then restored immediately to manual/workflow_call. The code/tests under verification are unchanged by the trigger-only commit."
+      },
+      "verifiedBehaviors": [
+        "selected LastKnownRate ASC sort survives BroadcastChannel CYCLE_COMMITTED refresh",
+        "viewer rereads fresh IndexedDB latest rows and reapplies the selected sort",
+        "row order changes according to fresh values under the preserved sort rather than resetting to default",
+        "aria-sort and ▲ indicator remain on the selected column after refresh",
+        "default DailyDealsQuantity header remains inactive after the preserved custom sort",
+        "Stage 13.2 keyboard/header interaction coverage passes in Chromium"
+      ]
     }
   },
   "fastContext": {
@@ -665,10 +692,10 @@
     "resumeMainStage": "7.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Stage 13.3 is in progress.",
+    "reached": true,
+    "reason": "Stage 13.3 is complete and verified in Chromium. Stage 13 remains open; the next natural work is Stage 13.4 final verification and closure.",
     "nextStage": "13",
-    "nextSubstep": "13.3"
+    "nextSubstep": "13.4"
   },
   "navigation": {
     "allStages": "ROADMAP.md",
