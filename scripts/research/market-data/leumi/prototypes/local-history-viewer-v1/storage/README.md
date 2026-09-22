@@ -3,7 +3,7 @@
 Status:
 
 ~~~text
-Stage 5.3 — version 1 schema creation
+Stage 5.4 — basic generic read helpers
 ~~~
 
 התיקייה הזו מיועדת לקוד IndexedDB של Local History Viewer V1.
@@ -13,41 +13,28 @@ Stage 5.3 — version 1 schema creation
 - `schema.js` — database/store/index names and schema metadata.
 - `connection.js` — Promise-based open/close helpers.
 - `upgrade.js` — version 1 object-store/index creation.
+- `read.js` — generic readonly helpers: get/getAll/count.
 
 ## Current boundary
 
-Stage 5.3 מוסיף את upgrade handler עבור יצירה ראשונה של DB version 1.
-
-ה-handler יוצר בדיוק את ששת ה-stores:
+Stage 5.4 מוסיף רק helpers כלליים לקריאה:
 
 ~~~text
-meta
-sessions
-universe
-cycles
-latest
-history
+get(database, storeName, key)
+getAll(database, storeName)
+count(database, storeName)
 ~~~
 
-ואת ה-indexes שמוגדרים ב-`schema.js`.
+כל helper:
+- משתמש ב-readonly transaction.
+- בודק שה-store מוכר ל-schema.
+- מחזיר Promise.
+- פותר את ה-Promise רק לאחר השלמת ה-transaction.
+- מעביר error/abort בצורה מפורשת.
 
-ה-upgrade path הנתמך כרגע הוא רק:
+`getAll` מיועד כרגע לקריאות קטנות כמו `latest` או `universe`; history גדול ייקרא בעתיד דרך index/paging ולא באמצעות full scan.
 
-~~~text
-0 -> 1
-~~~
-
-כל upgrade path אחר נכשל במפורש במקום לנחש migration.
-
-שימוש עתידי בפתיחה:
-
-~~~text
-MarketFlowStorageConnection.openDatabase({
-    onUpgradeNeeded: MarketFlowStorageUpgrade.upgradeDatabase
-})
-~~~
-
-עדיין אין generic read/write helpers; הם מתחילים ב-Stage 5.4.
+עדיין אין generic write helpers; הם שייכים ל-Stage 5.5.
 
 Source of truth:
 
