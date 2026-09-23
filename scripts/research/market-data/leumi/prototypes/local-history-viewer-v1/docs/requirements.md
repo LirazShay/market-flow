@@ -164,15 +164,17 @@ DB/API/validation failures נראים ב-console וב-status state.
 
 # Acceptance criteria for V1
 
-V1 נחשב עובד כאשר בבדיקה ידנית:
+V1 נחשב עובד כאשר evidence מתאים לשכבה מוכיח:
 
-1. recorder רץ לפחות כמה דקות.
+1. recorder מסוגל לרוץ לאורך זמן ללא overlap.
 2. IndexedDB מכיל latest + history.
-3. viewer נפתח בטאב נוסף.
-4. current table מכילה את כל securities שנאספו.
-5. הנתונים בטבלה משתנים עם הזמן.
-6. sorting עובד לפחות על string/number/time columns.
+3. viewer נפתח מאותו origin וקורא את ה-state מה-DB.
+4. current table מכילה את כל securities שנאספו ב-cycle complete.
+5. live-provider evidence מראה שהנתונים יכולים להשתנות בין cycles.
+6. sorting עובד על string/number/time columns.
 7. לחיצה על security מציגה history מההקלטה.
-8. reload של viewer לא מאבד history.
-9. recorder ממשיך לעבוד כאשר viewer נסגר.
+8. reload/reopen של viewer לא מאבד history.
+9. recorder אינו תלוי בחלון Viewer יחיד.
 10. אין missing/duplicate data ב-cycles שמסומנים complete.
+
+Browser semantics נבדקים ב-Chromium; behavior שתלוי בסשן/provider אמיתי דורש authenticated live evidence. תוצאות operational verification שייכות ל-`STATUS.json` או ל-`docs/history/`, לא למסמך הדרישות.
