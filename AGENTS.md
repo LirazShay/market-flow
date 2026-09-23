@@ -144,7 +144,55 @@ If fast context conflicts with a durable design/decision document:
 
 ---
 
-## 4. Testing policy
+## 4. KISS — simplest sufficient design by default
+
+Use the **simplest design that fully satisfies the current verified requirement**.
+
+~~~text
+current requirement + proven constraints
+→ smallest coherent solution
+→ verify
+→ stop
+~~~
+
+Do not add complexity merely because it may be useful later.
+
+Examples of complexity that require a concrete current need before introduction:
+
+- new abstraction layers;
+- generic frameworks or plugin systems;
+- loaders/updaters/rollback machinery;
+- generalized lifecycle/state machinery;
+- extra persistence/cache layers;
+- concurrency/parallelism;
+- retry/recovery orchestration;
+- extensibility points for hypothetical future consumers;
+- migrations or compatibility layers that no current supported version requires.
+
+Acceptable reasons to add complexity include:
+
+- a current requirement cannot be met cleanly without it;
+- an observed bug/failure requires it;
+- measured performance/reliability evidence requires it;
+- a repeated concept is stable enough that duplication is now causing real cost;
+- correctness, data integrity, security, testability, or recoverability requires it.
+
+Not acceptable by itself:
+
+~~~text
+"we may need this later"
+"this is more enterprise"
+"this is more flexible"
+"let's make it generic now"
+~~~
+
+When choosing a more complex approach, be able to state the concrete present-day reason the simpler approach is insufficient.
+
+KISS does **not** mean cutting required validation, tests, observability, security, or data-integrity guarantees. It means meeting those requirements with the minimum necessary machinery.
+
+---
+
+## 5. Testing policy
 
 Tests should protect observable/public behavior, not private implementation details.
 
@@ -252,7 +300,7 @@ Workstream-specific testing policy may further refine browser checkpoints.
 
 ---
 
-## 5. Data correctness rules
+## 6. Data correctness rules
 
 Never silently accept partial/corrupt data.
 
@@ -285,7 +333,7 @@ for material factual claims/evidence.
 
 ---
 
-## 6. Preserve proven behavior and change safely
+## 7. Preserve proven behavior and change safely
 
 Before modifying something already verified:
 
@@ -308,7 +356,7 @@ docs/project/engineering-practices.md
 
 ---
 
-## 7. Documentation cadence
+## 8. Documentation cadence
 
 ### Mandatory SPEC impact review
 
@@ -396,7 +444,7 @@ Cross-cutting/domain knowledge stays under `docs/`.
 
 ---
 
-## 8. Security
+## 9. Security
 
 Never commit:
 
@@ -412,7 +460,7 @@ Use sanitized fixtures/examples.
 
 ---
 
-## 9. Completion standard
+## 10. Completion standard
 
 A work batch is done when the relevant items are true:
 
@@ -438,14 +486,14 @@ At the end, report briefly:
 
 ---
 
-## 10. Priority order
+## 11. Priority order
 
 ~~~text
-Correctness
+Correctness / data integrity / security
+→ Simplicity
 → Observability
 → Testability
 → Documentation
-→ Simplicity
 → Speed
 ~~~
 
