@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 16,
-    "title": "Precursor-to-price conversion latency and opportunity half-life",
-    "status": "verification-pending",
-    "subfocus": "Issue #16 research definition completed without adding a core predictor: ConversionTimingState is nested in Progress Conversion Efficiency; OpportunityEvidenceDecayProfile/UsableLeadBudget is nested in Remaining Opportunity Lifecycle; book-pressure timing is diagnostic/validate-only. No universal half-life or timing threshold is assumed."
+    "issue": 6,
+    "title": "Wave segmentation and recent realized wave capacity",
+    "status": "in-progress",
+    "subfocus": "Issue #16 research definition and verification are complete. Issue #6 is now the next research unit, but no Stage #6 research content has been added yet."
   },
   "completedWorkUnits": [
     {
@@ -36,6 +36,11 @@
       "issue": 17,
       "title": "Core predictive signal prioritization and feature reduction",
       "result": "Reduced eight provisional concepts to four universal interfaces plus one conditional Renewal reserve, separated predictor/protective/synthesis roles, and fixed a leakage-safe incremental empirical selection contract with smallest-model preference."
+    },
+    {
+      "issue": 16,
+      "title": "Precursor-to-price conversion latency and opportunity half-life",
+      "result": "Collapsed six timing candidates into two nested timing interfaces: ConversionTimingState under Progress Conversion Efficiency and OpportunityEvidenceDecayProfile/UsableLeadBudget under Remaining Opportunity Lifecycle; book-pressure timing remains diagnostic/validate-only and no universal half-life is assumed."
     }
   ],
   "plannedIssues": [
@@ -61,6 +66,6 @@
   },
   "next": {
     "issue": 6,
-    "action": "Proceed to Issue #6 research definition for wave segmentation/recent realized wave capacity, constrained by the sparse-core architecture: segmentation may support Renewal/Memory/context but must not expand the universal predictive core without incremental evidence."
+    "action": "Define the minimal wave-segmentation contract needed for Renewal and recent-wave memory/capacity, with a strict rule that segmentation is support/context unless it proves incremental value beyond the sparse core."
   }
 }
