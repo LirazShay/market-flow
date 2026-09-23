@@ -38,7 +38,7 @@ The viewer does not own:
 
 ### Same-origin window
 
-The viewer opens/reuses a named child window:
+The viewer opens a same-origin child window using the preferred window name:
 
 ~~~text
 market-flow-leumi-v1-viewer
