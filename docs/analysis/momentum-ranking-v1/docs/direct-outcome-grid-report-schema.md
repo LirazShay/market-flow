@@ -22,27 +22,25 @@ Those remain separate concerns.
 
 ## 2. Primary reference families
 
-### Primary execution-aligned research family
+### Primary decision-aligned research family
 
 ~~~text
-ASK_ENTRY_TO_BID_EXIT
+BID_TO_FUTURE_BID
 ~~~
 
 At t0:
 
 ~~~text
-entry reference = ASK1(t0)
+reference = BID1(t0)
 ~~~
 
 Future path:
 
 ~~~text
-return(t) = BID1(t) / ASK1(t0) - 1
+return(t) = BID1(t) / BID1(t0) - 1
 ~~~
 
-This is gross displayed touch-price economics.
-
-It is not guaranteed execution.
+This directly measures advancement of the future sellable-side BID and does not embed current spread into the primary outcome.
 
 ### Parallel raw-market control
 
@@ -61,6 +59,14 @@ Future path uses MID(t).
 Purpose:
 
 > distinguish predictive market movement from spread/touch-price burden.
+
+### Secondary diagnostic family
+
+~~~text
+ASK_ENTRY_TO_BID_EXIT
+~~~
+
+This may be reported as conservative crossing-friction context, but it is not used to select/rank the predictive model.
 
 ### Deferred semantic family
 
@@ -157,8 +163,8 @@ per reference family.
 For the first useful research pass:
 
 ~~~text
-ASK_ENTRY_TO_BID_EXIT: 108 cells
-MID_MARKET:             108 cells
+BID_TO_FUTURE_BID: 108 cells
+MID_MARKET:         108 cells
 ~~~
 
 Total:
@@ -238,13 +244,15 @@ ObservedTimeToMFE_sec
 ObservedTimeToMAE_sec
 ~~~
 
-For touch-exit specifically:
+For the primary BID family:
 
 ~~~text
-FutureBidVsEntryAskReturn
-TouchExitMFE
-TouchExitMAE
+FutureBidVsCurrentBidReturn
+BidAdvanceMFE
+BidAdvanceMAE
 ~~~
+
+Optional ASK→future-BID diagnostic may also report its touch-exit equivalents, but they are not model-selection outcomes.
 
 Timing fields remain sampling-aware and must not imply true continuous event times.
 
@@ -430,7 +438,7 @@ To avoid cherry-picking one lucky cell, the summary must display:
 - all predeclared horizons;
 - all four targets;
 - all three adverse budgets;
-- touch-exit and MID views side by side;
+- BID-advance and MID views side by side;
 - coverage/censoring;
 - lateness/time-to-target;
 - MFE/MAE.
@@ -450,7 +458,7 @@ When reading a result, use this order:
 2. Is target-before-adverse improved?
 3. Is the improvement early enough / TimeToTarget acceptable?
 4. What happened to MAE?
-5. Is future BID touch-exit improved?
+5. Is future BID advancement improved?
 6. Does MID show the same underlying market improvement?
 7. Is the result stable across nearby horizons/targets rather than one isolated cell?
 ~~~
@@ -468,7 +476,7 @@ The raw Issue #15 surface does not hardcode:
 
 Those belong to execution/net-opportunity evaluation layers.
 
-ASK→future BID already captures the gross spread/touch hurdle without pretending to model full realized economics.
+Current spread is deliberately not a selection gate. The primary BID→future-BID outcome measures the movement objective directly. ASK→future-BID may remain a separate diagnostic only.
 
 ## 20. Versioning rule
 

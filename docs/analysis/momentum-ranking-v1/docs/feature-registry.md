@@ -1321,6 +1321,27 @@ L1 prices/volumes + LAST geometry/history
 
 # Family TE — Tradability / Execution Preconditions
 
+## Strategy-specific spread override
+
+For Momentum Ranking V1, spread-derived metrics are **diagnostic only**.
+
+The strategy's live-candidate eligibility is based on **recent executed trading activity** (trade recency / trades-per-time), because the model deliberately evaluates securities that are trading now.
+
+Therefore:
+
+~~~text
+TE-001 SpreadPct
+TE-002 SpreadStabilityState
+TE-005 SpreadTicks
+TE-012 SpreadBurdenToTarget
+~~~
+
+must not gate, rank or penalize candidates.
+
+`TE-014 ExecutionFeasibilityState` must ignore spread-derived inputs for this strategy.
+
+Spread values may remain stored for inspection/research, but no production ranking logic should depend on them unless a future empirical decision explicitly reopens the question.
+
 Purpose:
 
 > Determine whether an otherwise attractive market opportunity is observable and practically usable enough to remain eligible for ranking/execution evaluation.
@@ -1344,14 +1365,14 @@ This family primarily owns the second term.
 ### TE-001 — SpreadPct
 
 - **Family:** Tradability / Execution Preconditions
-- **Kind:** DERIVED
+- **Kind:** DIAGNOSTIC
 - **Raw sources:** valid BID1, ASK1
 - **Derivation:** candidate canonical form `(ASK1 - BID1) / MID * 100` when MID is valid and positive
 - **Unit / shape:** percent
-- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Role:** CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(L1 semantics/coverage) + PI
-- **Decision role:** Feasibility
+- **Decision role:** Context/Prior
 - **Meaning:** economic width of the currently displayed best spread relative to market-center price
 - **Plain-language intuition:** this is the percentage gap between the best displayed seller (`ASK1`) and best displayed buyer (`BID1`). It tells us how much price distance separates an immediate aggressive buy from an immediate aggressive sell at the current touch.
 - **Market mechanism / why it can matter:** every short trade must overcome market friction. A wider spread means more of the desired move is consumed before an immediate buy→sell round trip can even break even at displayed prices. A narrow spread makes the market cheaper to cross, but says nothing about direction.
@@ -1363,12 +1384,12 @@ This family primarily owns the second term.
 - **Known overlaps:** BD-003 compression/expansion; TE-005/TE-006
 - **Confidence limits:** displayed spread is not full realized execution cost; no L1 side means UNKNOWN rather than infinite/zero spread
 - **Validation targets:** executable opportunity after friction, fill/slippage outcomes, target-before-adverse after execution
-- **Research state:** Candidate
+- **Research state:** Diagnostic only for Momentum Ranking V1; ignored by ranking/eligibility
 
 ### TE-002 — SpreadStabilityState
 
 - **Family:** Tradability / Execution Preconditions
-- **Kind:** STATE
+- **Kind:** DIAGNOSTIC
 - **Raw sources:** TE-001 + BID1/ASK1 history
 - **Derivation:** characterize whether spread remains stable, widens, narrows or oscillates materially across recent observations
 - **Unit / shape:** STABLE / NARROWING / WIDENING / UNSTABLE / UNKNOWN
@@ -1387,7 +1408,7 @@ This family primarily owns the second term.
 - **Known overlaps:** BD-003 QuoteMigrationState
 - **Confidence limits:** must preserve the cause of spread change in Book family; this feature owns feasibility impact, not directional meaning
 - **Validation targets:** execution slippage, fill quality, executable target-before-adverse
-- **Research state:** Candidate
+- **Research state:** Diagnostic only for Momentum Ranking V1; ignored by ranking/eligibility
 
 ### TE-003 — TickSize
 
@@ -1608,7 +1629,7 @@ This family primarily owns the second term.
 ### TE-012 — SpreadBurdenToTarget
 
 - **Family:** Tradability / Execution Preconditions
-- **Kind:** DERIVED
+- **Kind:** DIAGNOSTIC
 - **Raw sources:** TE-001 + candidate target/remaining-move estimate
 - **Derivation:** `SpreadPct / positiveTargetPct` or equivalent burden relative to a defined remaining-move quantity
 - **Unit / shape:** ratio
@@ -1627,7 +1648,7 @@ This family primarily owns the second term.
 - **Known overlaps:** RemainingOpportunity, execution cost floor
 - **Confidence limits:** target must not be invented merely to compute this ratio; displayed spread is not the complete round-trip cost
 - **Validation targets:** net executable opportunity, target-before-adverse after friction
-- **Research state:** Candidate / blocked pending target semantics
+- **Research state:** Diagnostic only for Momentum Ranking V1; ignored by ranking/eligibility
 
 ### TE-013 — ExplicitCostFloorPct
 
@@ -1658,13 +1679,13 @@ This family primarily owns the second term.
 - **Family:** Tradability / Execution Preconditions
 - **Kind:** STATE
 - **Raw sources:** TE-001..TE-013 as available
-- **Derivation:** synthesize spread quality, L1 availability/stability, size/depth compatibility and latency/horizon compatibility without predicting direction
+- **Derivation:** synthesize L1 validity, recent executed-activity eligibility, size/depth compatibility where relevant and latency/horizon compatibility without predicting direction; spread-derived metrics are explicitly excluded for Momentum Ranking V1
 - **Unit / shape:** GOOD / MARGINAL / POOR / UNKNOWN + Strength/Confidence/Coverage
 - **Role:** GATE, PROTECTIVE
 - **Availability:** NOW for market-only subset; EXEC for size/cost-aware form
 - **Evidence:** PI + H
 - **Decision role:** Feasibility
-- **Meaning:** final feasibility summary used to reject or discount market opportunities that cannot realistically survive friction/latency
+- **Meaning:** final feasibility summary used to reject or discount opportunities that fail data/activity/timing/size requirements; displayed spread does not participate in this strategy's feasibility decision
 - **Plain-language intuition:** this is the final answer to “even if the market setup looks attractive, can we realistically trade it under current spread, depth, timing and cost conditions?”
 - **Market mechanism / why it can matter:** opportunity and feasibility are separate. A stock can be directionally excellent but impossible to capture because spread is too wide, depth too thin or latency too large.
 - **Objective connection:** this protects the ranking from choosing theoretically attractive moves that cannot survive real entry/exit mechanics within the short horizon.

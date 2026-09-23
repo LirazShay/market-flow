@@ -3,6 +3,35 @@
 Issue: #15  
 Date: 2026-09-23
 
+## Strategy correction — active-trading eligibility and spread
+
+For Momentum Ranking V1, the candidate universe is expected to contain securities with **recent executed trading activity**.
+
+Therefore:
+
+~~~text
+recent executed activity / trade recency
+= eligibility signal for "alive now"
+
+displayed spread
+= raw diagnostic only
+= NOT a ranking input
+= NOT an eligibility gate
+~~~
+
+The primary future-price outcome is BID advancement:
+
+~~~text
+FutureBidVsCurrentBidReturn(h) =
+(BID1(endpoint_h) / BID1(t0) - 1) * 100
+~~~
+
+and the corresponding future BID path is used for MFE/MAE and target/adverse timing.
+
+`ASK(t0) → future BID` remains an optional conservative execution-friction diagnostic only. It must not be used as the primary signal-selection outcome because doing so embeds current spread into the target and would contradict the active-trading strategy assumption.
+
+---
+
 ## 1. Purpose
 
 Define the historical labels needed to answer the project's actual question:
@@ -269,7 +298,32 @@ FutureLastReturn(h)
 
 LAST outcomes are supplementary and must remain distinct from MID and touch-exit outcomes.
 
-## 11. Historical future-BID exitability surfaces
+## 11. Future-BID outcome surfaces
+
+### 11.0 Current BID reference → future BID — PRIMARY
+
+~~~text
+FutureBidVsCurrentBidReturn(h) =
+(BID1(endpoint_h) / BID1(t0) - 1) * 100
+~~~
+
+For every valid future BID observation:
+
+~~~text
+BidAdvanceReturn(t) =
+(BID1(t) / BID1(t0) - 1) * 100
+~~~
+
+Then:
+
+~~~text
+BidAdvanceMFE(h) = max BidAdvanceReturn(t)
+BidAdvanceMAE(h) = min BidAdvanceReturn(t)
+~~~
+
+This is the primary decision-aligned outcome family for sparse-core selection.
+
+It measures whether the exit-side BID advanced after NOW without embedding current spread into the label.
 
 ### 11.1 Historical LAST reference → future BID
 
@@ -565,22 +619,25 @@ Do not inspect test outcomes to choose the target/adverse grid, endpoint toleran
 
 ## 21. Required parallel views
 
-Issue #15 should preserve at least three distinct outcome views:
+Issue #15 should preserve these distinct outcome views:
 
 ~~~text
-1. raw market-center movement
+1. PRIMARY: BID advancement
+   BID(t0) → future BID
+
+2. raw market-center control
    MID-based
 
-2. trade-price movement
-   LAST-based when semantics are verified
+3. optional diagnostic only
+   ASK(t0) → future BID
 
-3. gross touch-exit movement
-   ASK(t0) / LAST(t0) → future BID
+4. trade-price movement
+   LAST-based only when semantics are verified
 ~~~
 
 They answer different questions.
 
-Do not average them into one label.
+Do not average them into one label, and do not use the ASK→BID diagnostic to penalize ranking for displayed spread.
 
 ## 22. Interpretation boundary
 

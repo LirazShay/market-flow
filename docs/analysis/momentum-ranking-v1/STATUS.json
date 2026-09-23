@@ -14,7 +14,7 @@
     "issue": 19,
     "title": "Simplify Momentum Ranking into practical Hebrew metric shortlist",
     "status": "in-progress",
-    "subfocus": "User-facing simplification checkpoint added. Internal research remains available, but all remaining work must collapse toward about 5–7 practical metrics plus a few hard gates, explained in plain Hebrew."
+    "subfocus": "Critical strategy correction applied: spread is removed from ranking/eligibility and retained only as raw diagnostic. Live-candidate eligibility is based on recent executed trading activity. Primary research outcome is corrected to current BID -> future BID, with MID control; ASK->future BID is diagnostic only."
   },
   "completedWorkUnits": [
     {
@@ -67,6 +67,6 @@
   },
   "next": {
     "issue": 19,
-    "action": "Build the first plain-Hebrew metric map: classify intuitive metrics such as % rise/minute, trades/minute, trades/hour, BID/ASK movement, ASK-LAST/BID-LAST distance, spread and recent-high distance as CORE/SUPPORT/GATE/CONTEXT/REDUNDANT, with simple reasons. Do not add new research families."
+    "action": "Build the first plain-Hebrew practical metric map under the corrected assumptions: prioritize % rise/speed, recent trades-per-time/activity persistence, BID/ASK movement, activity-to-progress conversion, path usability, remaining opportunity and recent-high/reset context; classify spread as IGNORE/REDUNDANT for ranking."
   }
 }

@@ -48,27 +48,27 @@ after stronger retained concepts are already known?
 
 ## 2. Primary outcome hierarchy
 
-### Primary execution-aligned research view
+### Primary decision-aligned research view
 
-Where valid L1 data permits:
+Where valid BID data permits:
 
 ~~~text
-entry reference = ASK1(t0)
-future exit reference = BID1(t)
+reference = BID1(t0)
+future path = BID1(t)
 ~~~
 
-Primary labels:
+Primary labels are computed on BID advancement from NOW:
 
 ~~~text
-FutureBidVsEntryAskReturn
-TouchExitMFE
-TouchExitMAE
+FutureBidVsCurrentBidReturn
+BidAdvanceMFE
+BidAdvanceMAE
 target-before-adverse
 ObservedTimeToTarget
 ObservedTimeToAdverse
 ~~~
 
-This is still touch-price research, not guaranteed fills.
+This directly asks whether the sellable-side BID advanced after detection, without penalizing a candidate for the contemporaneous displayed spread.
 
 ### Parallel raw-market control
 
@@ -83,7 +83,11 @@ MID TimeToTarget
 
 Purpose:
 
-> distinguish market-prediction value from spread/touch-price economics.
+> distinguish BID-side advancement from broader market-center movement.
+
+### Secondary diagnostic only — ASK entry to future BID
+
+`ASK1(t0) → future BID1(t)` may be retained as a conservative crossing-friction diagnostic, but it is **not** the primary selection outcome and must not gate/rank the predictive model.
 
 ### LAST
 
@@ -542,11 +546,11 @@ The following are evaluated as trust/execution gates, not competing predictors:
 ~~~text
 DataQuality
 Freshness / ObservationAge
+RecentExecutedActivityNow
 Two-sided L1 validity
-Spread burden
 latency
-size/depth feasibility
-explicit cost feasibility
+size/depth feasibility where relevant
+explicit cost feasibility where relevant
 ~~~
 
 A gate may improve net results by rejecting unusable cases.

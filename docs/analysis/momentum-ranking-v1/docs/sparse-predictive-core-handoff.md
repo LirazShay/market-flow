@@ -76,12 +76,22 @@ It is not an additive alpha vote.
 ~~~text
 DataQuality
 Freshness / ObservationAge
+RecentExecutedActivityNow
 Two-sided L1 validity
-Spread burden
 latency
-size/depth feasibility
-explicit costs
+size/depth feasibility where relevant
+explicit costs where relevant
 ~~~
+
+### Spread non-decision rule
+
+For this strategy, candidate securities are expected to be **actively trading now**. Eligibility is driven by recent executed activity (recent trades, trade-rate and time since last trade), not by the displayed spread.
+
+`SpreadPct` / spread stability / spread-to-target burden must not gate, rank or penalize a candidate.
+
+The spread may remain stored as raw/diagnostic market data, but its value is ignored by the Momentum Ranking decision path.
+
+This also avoids double-penalizing the same displayed gap when future BID movement is already evaluated directly.
 
 ## Context excluded by default
 
