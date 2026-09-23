@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Remaining Opportunity/Target Frontier RO-001..RO-014. Observed move, market potential remaining and operationally capturable remaining are explicitly separated, with target/time/adverse/friction budgets preserved as a structured frontier rather than one momentum score."
+    "subfocus": "Deep-rationale retrofit completed for Recent Wave Memory/Capacity Prior WM-001..WM-017. Recent same-stock history is documented as a conditional prior with explicit denominator, failure memory, comparability, recency, fallback and segmentation-robustness requirements—not a directional prediction."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Recent Wave Memory/Capacity Prior WM-001..WM-017 to the deep-rationale documentation contract, explaining why recent same-stock history is a conditional capacity prior with denominator/failure/coverage requirements rather than a prediction that the next wave will repeat."
+    "action": "Retrofit Multi-Horizon/Local Regime/Session Context MR-001..MR-019 to the deep-rationale documentation contract, explaining cross-scale context, counter-trend micro-opportunities, transferability, evidence-specific decay, regime breaks and session/time-of-day normalization without broad-trend vetoes."
   }
 }

@@ -3750,6 +3750,13 @@ It does **not** own:
 - **Evidence:** PI
 - **Decision role:** Context/Prior, Freshness/Trust
 - **Meaning:** prevents unfinished current episodes from contaminating completed-wave statistics
+- **Plain-language intuition:** this labels each remembered episode as truly finished, still active/incomplete, or invalid. We must not treat an unfinished move as if we already know its final size or outcome.
+- **Market mechanism / why it can matter:** memory statistics are easy to bias if active waves are allowed to contribute their current partial amplitude as though they were completed outcomes, or if future completion information leaks backward.
+- **Objective connection:** the engine will use recent history to judge whether current opportunity scale/timing looks plausible. That prior is only trustworthy if historical episodes were closed without future leakage.
+- **Favorable / unfavorable interpretation:** `COMPLETED` means the episode is eligible for completed-wave summaries; `ACTIVE_CENSORED` means the outcome is not yet known and must be handled separately; `INVALID` means exclude it.
+- **Failure modes / counterexamples:** a poor wave-completion rule can label episodes too early or too late; active-censored episodes are not equivalent to failures.
+- **Relationship to other evidence:** Issue #6 owns segmentation/completion semantics; WM-001 is the memory-family gate that prevents those semantics from leaking into statistics incorrectly.
+- **Worked example:** a wave currently +0.40% and still rising cannot be entered into “completed wave amplitude” at +0.40% until the episode is actually complete under the defined rule.
 - **Known overlaps:** Issue #6 segmentation lifecycle
 - **Confidence limits:** exact completion semantics remain blocked on Issue #6; ACTIVE_CENSORED must not be silently treated as a failure or completed success
 - **Validation targets:** leakage-safe backtests, memory-statistic correctness
@@ -3767,6 +3774,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, RemainingOpportunity
 - **Meaning:** describes the recent upward excursion scale this stock/regime has actually demonstrated
+- **Plain-language intuition:** this summarizes how large recent comparable upward excursions tended to be—not just one maximum, but a distribution such as median and upper percentiles.
+- **Market mechanism / why it can matter:** different securities and regimes naturally produce different short-horizon movement scales. A stock that recently produced repeated +0.30% to +0.50% excursions under similar conditions may support larger targets than one whose comparable moves were mostly +0.05%.
+- **Objective connection:** this helps judge whether a proposed target size is even plausible for this stock now, while remaining only a prior—not a promise that the next move will match history.
+- **Favorable / unfavorable interpretation:** larger robust capacity can support larger target candidates; smaller capacity suggests more modest targets. The distribution is more informative than the single largest wave.
+- **Failure modes / counterexamples:** successful waves are selected episodes and can overstate typical opportunity; regime changes can invalidate recent amplitudes; small sample counts can make percentiles meaningless.
+- **Relationship to other evidence:** RO TargetFeasibilityFrontier uses this as context, while Issue #15's all-observation outcome surface provides the denominator needed to avoid selection bias.
+- **Worked example:** recent comparable waves: +0.12%, +0.18%, +0.20%, +0.22%, +0.45%. Median≈0.20%; the +0.45% maximum should not become the default target.
 - **Known overlaps:** RO TargetFeasibilityFrontier; Issue #6 wave amplitude
 - **Confidence limits:** not a target promise; max is diagnostic only; distribution must be conditioned by comparability/coverage
 - **Validation targets:** target-specific future excursion, incremental value over Issue #15 baseline
@@ -3784,6 +3798,13 @@ It does **not** own:
 - **Evidence:** PI
 - **Decision role:** Context/Prior
 - **Meaning:** preserves an extreme recent observation for diagnostics without using it as the default target anchor
+- **Plain-language intuition:** this remembers the biggest recent comparable wave, but labels it explicitly as an extreme diagnostic rather than “what usually happens.”
+- **Market mechanism / why it can matter:** extremes can reveal that the stock is physically capable of larger movement under certain conditions, but a single outlier is poor evidence for expected repeatability.
+- **Objective connection:** the maximum can help explain edge cases or define an outer research bound, but it must not trick the system into chasing unrealistic targets.
+- **Favorable / unfavorable interpretation:** a large max can expand our awareness of possible capacity; it should not materially raise confidence without supporting distribution/coverage.
+- **Failure modes / counterexamples:** one news-driven spike can dominate the statistic; a max from a different regime may be irrelevant; maxima grow mechanically with sample size.
+- **Relationship to other evidence:** WM-003 is subordinate to WM-002's robust distribution and WM-010 coverage.
+- **Worked example:** nine waves around +0.15% and one +1.20% spike → max=1.20%, but the profile still says normal recent capacity is much smaller.
 - **Known overlaps:** WM-002
 - **Confidence limits:** one outlier can dominate; must not be scored as strong capacity evidence by itself
 - **Validation targets:** robustness / outlier sensitivity
@@ -3801,6 +3822,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, RemainingOpportunity
 - **Meaning:** captures how quickly this security has recently converted movement opportunities
+- **Plain-language intuition:** this remembers how fast comparable recent opportunities reached useful targets, not just how far they eventually moved.
+- **Market mechanism / why it can matter:** two stocks can both produce +0.30% excursions, but one may do it in 15 seconds and the other in 3 minutes. For our strategy, the first is much more aligned.
+- **Objective connection:** speed memory helps decide whether a target is plausible within the required timeout and whether enough time remains after latency.
+- **Favorable / unfavorable interpretation:** consistently fast target attainment can support short timeouts; slow profiles suggest the same amplitude may be unsuitable for our horizon.
+- **Failure modes / counterexamples:** fastest single hit is unstable; speed can vary drastically by regime; linear extrapolation from historical speed is invalid.
+- **Relationship to other evidence:** WM-004 supplies historical timing context to RO frontier and Issue #16 conversion-latency research.
+- **Worked example:** recent +0.20% targets reached in 12s, 18s, 25s, 80s. Median timing matters more than quoting only the 12s fastest case.
 - **Known overlaps:** Issue #16 conversion latency; RO target frontier
 - **Confidence limits:** do not extrapolate linearly from speed; fastest single observation is not a robust prior
 - **Validation targets:** TimeToTarget, usable lead, target-before-adverse
@@ -3818,6 +3846,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** describes how much adverse path recent successful excursions required
+- **Plain-language intuition:** this remembers how far comparable successful moves typically went against the entry direction before eventually reaching their target.
+- **Market mechanism / why it can matter:** a stock can have good upward capacity but require deep drawdowns on the way. That may make the opportunity hard to trade even if the final excursion is large.
+- **Objective connection:** we care about target-before-adverse, not eventual success at any cost. Historical adverse-path capacity helps calibrate how clean or painful target paths have recently been.
+- **Favorable / unfavorable interpretation:** low adverse excursion and short recovery can support clean target paths; high adverse excursion/time-under-water warns that gross upside may be hard to capture.
+- **Failure modes / counterexamples:** only looking at successful waves creates survivorship bias; future MAE labels must never leak into the original decision point.
+- **Relationship to other evidence:** RO AdversePathBudget consumes this as prior context; Issue #15/#11 owns future MAE outcome labels.
+- **Worked example:** two recent +0.25% successes: one dipped only -0.03%, another dipped -0.22% before recovery. Same target hit, very different path quality.
 - **Known overlaps:** RO AdversePathBudget; Issue #15 outcomes
 - **Confidence limits:** future outcome labels are produced by Issue #15/11; no leakage into the episode decision point
 - **Validation targets:** MAE-before-target, TimeUnderWater, target-before-adverse
@@ -3835,6 +3870,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** distinguishes a stock with rare large waves from one that repeatedly presents useful short-horizon opportunities
+- **Plain-language intuition:** this measures how often useful opportunities actually appeared among all eligible comparable observations, not only how impressive the successful waves looked.
+- **Market mechanism / why it can matter:** a stock can produce spectacular moves once an hour but be dead most of the time, while another produces smaller but frequent usable excursions.
+- **Objective connection:** our ranking benefits from candidates that not only *can* move, but have recently produced useful target opportunities with meaningful frequency under comparable conditions.
+- **Favorable / unfavorable interpretation:** denser recent useful-opportunity arrival can strengthen prior support; sparse arrival means capacity may be real but rarely accessible.
+- **Failure modes / counterexamples:** this cannot be estimated from completed waves alone; denominator definition matters; no calibrated probability claim before validation.
+- **Relationship to other evidence:** Issue #15 supplies the all-observation denominator. WM-006 converts that baseline into same-stock recent opportunity-arrival context.
+- **Worked example:** Stock A has 3 big successful waves among 3,000 eligible observations; Stock B has 15 modest useful excursions among 300. Wave-only memory might favor A, arrival profile may favor B.
 - **Known overlaps:** Issue #15 FastOpportunityPrior
 - **Confidence limits:** cannot be derived from completed waves alone; no probability claim before calibrated validation
 - **Validation targets:** future target-before-adverse frequency, rank usefulness
@@ -3852,6 +3894,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, RemainingOpportunity, PathRisk
 - **Meaning:** objective-aligned memory of what recently happened for the exact types of targets the engine evaluates
+- **Plain-language intuition:** this remembers recent results separately for concrete target/time/adverse combinations instead of averaging all “good waves” together.
+- **Market mechanism / why it can matter:** a stock may be good at +0.10%/20s opportunities but poor at +0.30%/20s opportunities. Target-specific memory preserves that distinction.
+- **Objective connection:** this directly supports the same target grid used by RemainingOpportunity and validation.
+- **Favorable / unfavorable interpretation:** strong recent support for a specific target tuple can increase contextual confidence; weak/failed history can lower it. It remains prior evidence, not prediction.
+- **Failure modes / counterexamples:** small cell counts can look perfect by chance; overlapping target definitions create correlated evidence; regime mismatch can make recent target profiles stale.
+- **Relationship to other evidence:** WM-007 is historical context for RO-007/008, while Issue #15 remains the primary direct outcome surface.
+- **Worked example:** last hour: +0.10%/30s succeeded 18/40 comparable cases; +0.30%/30s only 2/40. Those targets should not receive the same support.
 - **Known overlaps:** RO-008 TargetFeasibilityFrontier
 - **Confidence limits:** prior/context only; must not be copied directly into online probability or target recommendation
 - **Validation targets:** incremental value for target support / frontier calibration
@@ -3869,6 +3918,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** ensures recent memory contains cautionary evidence, not only successful waves
+- **Plain-language intuition:** this explicitly remembers what went wrong recently: adverse barrier hit first, no progress, false start, failed retest, pressure that never converted, etc.
+- **Market mechanism / why it can matter:** success-only memory systematically makes the past look better than reality. Failure memory tells us how often similar setups stalled or broke down.
+- **Objective connection:** the system wants to avoid repeating recent failure patterns, especially when the same current state resembles them.
+- **Favorable / unfavorable interpretation:** fewer comparable failures can improve prior confidence; repeated recent failures are cautionary. A failure cluster can also signal a regime shift.
+- **Failure modes / counterexamples:** failure categories can overlap; one event should not be counted multiple incompatible ways without policy; some failures may simply be target definitions that were too ambitious.
+- **Relationship to other evidence:** PH/PR define live stall/failure states; WM-008 remembers their recent historical outcomes.
+- **Worked example:** five recent breakout-like attempts: one success, three failed breaks, one timeout. Success-only memory would show one “good wave”; failure memory reveals the dominant pattern.
 - **Known overlaps:** PR failure states; PH stalls; Issue #15
 - **Confidence limits:** failure categories need explicit causal-time definitions; no double counting of one episode into incompatible categories without policy
 - **Validation targets:** false-positive reduction, target-before-adverse
@@ -3886,6 +3942,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** distinguishes “moves a lot” from “recently produces usable upward excursions with manageable downside”
+- **Plain-language intuition:** this keeps upward capacity, downward/adverse capacity and general movement capacity separate instead of using one volatility-like number.
+- **Market mechanism / why it can matter:** high movement capacity can mean big upside, big downside, or both. For our objective, upside without manageable adverse path is not equivalent to good opportunity.
+- **Objective connection:** the ranking should prefer movement capacity aligned with useful upward targets rather than merely high volatility.
+- **Favorable / unfavorable interpretation:** strong upward capacity with modest adverse capacity is more supportive; symmetric huge up/down movement is more risky; strong downside history must still not automatically veto a fresh micro-opportunity.
+- **Failure modes / counterexamples:** recent direction asymmetry can reverse; broad volatility regimes can dominate; tiny samples can exaggerate asymmetry.
+- **Relationship to other evidence:** WM-009 qualifies WM-002/005 and later interacts with MR regime context.
+- **Worked example:** both stocks move ~0.4% frequently. Stock A recent upside +0.4% with typical adverse -0.05%; Stock B upside +0.4% but downside/adverse often -0.35%. Same movement scale, different opportunity quality.
 - **Known overlaps:** broad volatility context
 - **Confidence limits:** broad downside history must not automatically veto a fresh upward micro-opportunity
 - **Validation targets:** target-before-adverse, MAE, target-size frontier
@@ -3903,6 +3966,13 @@ It does **not** own:
 - **Evidence:** PI
 - **Decision role:** Freshness/Trust, Context/Prior
 - **Meaning:** prevents tiny samples such as 2/2 or 3/3 from masquerading as strong memory evidence
+- **Plain-language intuition:** this records how much relevant historical evidence actually exists and how comparable it is to now.
+- **Market mechanism / why it can matter:** a perfect-looking pattern from two examples is far less trustworthy than a similar pattern supported by dozens of recent comparable observations.
+- **Objective connection:** prior influence should shrink when sample size, denominator, recency or regime match is weak rather than letting small-sample luck drive ranking.
+- **Favorable / unfavorable interpretation:** larger effective comparable coverage supports more trust; tiny/mismatched coverage should reduce prior weight toward zero.
+- **Failure modes / counterexamples:** raw count alone is insufficient—100 old mismatched samples can be worse than 20 recent matched ones; no universal minimum count is assumed yet.
+- **Relationship to other evidence:** FQ owns general coverage; WM-010 is specifically the coverage/denominator for historical memory transfer.
+- **Worked example:** 3 successes/3 comparable cases with denominator 3 is much weaker evidence than 30/50 comparable cases, despite the first having a 100% raw hit rate.
 - **Known overlaps:** FQ coverage; Issue #9 regime transferability
 - **Confidence limits:** no universal minimum count yet; effective sample size depends on comparability/weighting
 - **Validation targets:** confidence calibration, prior robustness
@@ -3932,6 +4002,13 @@ ComparableMemoryCoverage {
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** interface for asking whether current formation is comparable enough to recent memory to transfer evidence
+- **Plain-language intuition:** this asks “how similar is the current setup to the historical episodes we want to learn from?” across shape, timing, activity, book, path and market context.
+- **Market mechanism / why it can matter:** historical evidence transfers poorly when the current state is structurally different—for example different liquidity, path noise or session phase.
+- **Objective connection:** only comparable history should influence estimates of remaining target/time/adverse opportunity now.
+- **Favorable / unfavorable interpretation:** stronger multidimensional similarity can justify more prior influence; poor similarity means history should be heavily discounted.
+- **Failure modes / counterexamples:** nearest-neighbor style similarity can produce false confidence in high-dimensional sparse data; similarity does not imply identical outcome.
+- **Relationship to other evidence:** Issue #7 owns the actual similarity methodology; WM-011 defines the dimensions/interface only.
+- **Worked example:** current move matches prior episodes in speed/activity but occurs with much wider spread and choppier path. Similarity is partial, not “same pattern.”
 - **Known overlaps:** Issue #7 pattern similarity
 - **Confidence limits:** Issue #5 does not define final similarity function; no nearest-neighbor certainty claim
 - **Validation targets:** incremental prior value, recurrence robustness
@@ -3964,6 +4041,13 @@ broadMarketContext
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Freshness/Trust
 - **Meaning:** makes confidence loss explicit when the model backs off to broader, less-specific history
+- **Plain-language intuition:** when there are not enough exact matching examples, this records how far the system had to broaden its historical comparison set.
+- **Market mechanism / why it can matter:** broader pooling gives more samples but less relevance. The tradeoff between specificity and sample size should be visible.
+- **Objective connection:** the ranking should know whether a prior comes from very similar same-stock cases or from weak fallback history before trusting it.
+- **Favorable / unfavorable interpretation:** `EXACT_STATE_REGIME` is most specific; broader fallback layers generally carry lower confidence; `NONE` means no usable prior.
+- **Failure modes / counterexamples:** exact matches can be too few to trust; broader cross-sectional pooling can introduce bias; fallback order itself requires validation.
+- **Relationship to other evidence:** WM-010 coverage and WM-011 similarity determine fallback; MR EvidenceTransferability later qualifies it further.
+- **Worked example:** no exact same-regime cases → fall back to same-stock recent history. The prior remains usable but confidence must drop.
 - **Known overlaps:** Issue #9 EvidenceTransferability
 - **Confidence limits:** fallback order itself requires validation; broader pooling can introduce bias
 - **Validation targets:** confidence calibration, target-support robustness
@@ -3981,6 +4065,13 @@ broadMarketContext
 - **Evidence:** PI
 - **Decision role:** Context/Prior
 - **Meaning:** exposes whether the memory prior is based on very recent or stale observations
+- **Plain-language intuition:** this shows how old the historical examples are rather than compressing them into one average age.
+- **Market mechanism / why it can matter:** recent behavior may be more relevant in fast-changing intraday regimes, while older samples can become misleading after a regime shift.
+- **Objective connection:** our short-horizon prior should adapt quickly enough that stale capacity/failure history does not dominate fresh current evidence.
+- **Favorable / unfavorable interpretation:** fresher examples can support transferability; older memory deserves less weight unless regime/state remains stable.
+- **Failure modes / counterexamples:** recency alone is not enough—a very recent sample from a different regime can be worse than an older but comparable one.
+- **Relationship to other evidence:** MR EvidenceSpecificDecay/RegimeBreakState ultimately decides how recency affects influence.
+- **Worked example:** prior built from 10 examples, 8 from the last 5 minutes and 2 from 40 minutes ago is different from an average-age metric that hides that distribution.
 - **Known overlaps:** Issue #9 evidence-specific decay
 - **Confidence limits:** recency alone does not determine transferability; regime break can dominate elapsed time
 - **Validation targets:** prior decay, confidence calibration
@@ -3998,6 +4089,13 @@ broadMarketContext
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** captures whether the recent movement environment is broadening or shrinking
+- **Plain-language intuition:** this asks whether recent amplitude/speed/opportunity-arrival capacity has been increasing, stable or contracting over successive comparable windows.
+- **Market mechanism / why it can matter:** opportunity scale can change over time. A stock may transition from quiet/small excursions into larger/faster movement—or the reverse.
+- **Objective connection:** target sizes and timeouts that worked ten minutes ago may become too ambitious if capacity is contracting, or too conservative if capacity is expanding.
+- **Favorable / unfavorable interpretation:** `EXPANDING` means movement environment is broadening, not necessarily upward; `CONTRACTING` means reduced capacity; `CONFLICTED` means dimensions disagree.
+- **Failure modes / counterexamples:** expansion can include adverse volatility and worse execution; one news burst can distort the trend.
+- **Relationship to other evidence:** WM-014 is memory-context trend; MR later determines whether this is a regime shift and whether priors remain transferable.
+- **Worked example:** median 30s excursion rises 0.08%→0.14%→0.22% while adverse path also rises sharply. Capacity expands, but quality may not improve.
 - **Known overlaps:** Regime context
 - **Confidence limits:** expanding capacity is not automatically bullish; downside risk/execution difficulty may also expand
 - **Validation targets:** target frontier changes, MAE, opportunity arrival
@@ -4015,6 +4113,13 @@ broadMarketContext
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** summarizes whether useful short-horizon opportunities have recently been dense or sparse
+- **Plain-language intuition:** this labels the recent environment as producing many, normal or few useful opportunities.
+- **Market mechanism / why it can matter:** some periods repeatedly generate usable short excursions; others are quiet even if occasional big waves occur.
+- **Objective connection:** dense recent opportunity arrival can strengthen context for active scanning, while quiet periods reduce prior expectation of near-term opportunities.
+- **Favorable / unfavorable interpretation:** `ACTIVE` means opportunities have recently been frequent; `QUIET` means sparse. Neither means the next opportunity is “due.”
+- **Failure modes / counterexamples:** periodicity illusion is dangerous; active periods can end abruptly; only a valid all-observation denominator can support the state.
+- **Relationship to other evidence:** WM-015 summarizes WM-006 and spacing/context; it must never become a timer predicting the next wave.
+- **Worked example:** 12 target-qualified opportunities in 20 minutes vs 1 in 20 minutes can distinguish ACTIVE from QUIET, but neither tells exactly when the next one arrives.
 - **Known overlaps:** WaveFrequency / InterWaveSpacing
 - **Confidence limits:** must never be interpreted as “next wave is due now”
 - **Validation targets:** target-arrival rate, prior usefulness
@@ -4032,6 +4137,13 @@ broadMarketContext
 - **Evidence:** PI
 - **Decision role:** Freshness/Trust, Context/Prior
 - **Meaning:** blocks false confidence in memory features that exist only under one convenient wave definition
+- **Plain-language intuition:** this recomputes memory under several defensible wave-segmentation rules and asks whether the conclusions survive.
+- **Market mechanism / why it can matter:** if a “strong capacity” result disappears when the wave-start threshold changes slightly, the finding may be an artifact of how we sliced the data.
+- **Objective connection:** the ranking should rely on robust historical structure, not a hand-picked segmentation rule that makes past waves look impressive.
+- **Favorable / unfavorable interpretation:** `ROBUST` means the conclusion survives reasonable definitions; `FRAGILE` means prior influence should be reduced.
+- **Failure modes / counterexamples:** alternative segmentation rules can themselves be poor; robustness does not prove predictive value.
+- **Relationship to other evidence:** Issue #6 owns segmentation variants; WM-016 converts their sensitivity into trust/context.
+- **Worked example:** median wave amplitude remains ~0.20% across three reasonable segmentation rules → robust. Values 0.08%, 0.22%, 0.60% → fragile.
 - **Known overlaps:** Issue #6 segmentation research
 - **Confidence limits:** alternative definitions must themselves be defensible; this is methodological robustness, not alpha
 - **Validation targets:** stability of downstream target/support improvements
@@ -4049,6 +4161,13 @@ broadMarketContext
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Freshness/Trust
 - **Meaning:** compact interface for injecting recent same-stock history into RemainingOpportunity without treating memory as an independent bullish vote
+- **Plain-language intuition:** this is the final structured summary of what the stock recently demonstrated, how comparable those examples are, what failed, how fresh the memory is and how much confidence we should give it.
+- **Market mechanism / why it can matter:** historical context can improve interpretation of current signals when the same stock behaves consistently under similar conditions—but only if coverage, similarity and regime transferability are adequate.
+- **Objective connection:** the prior helps RO decide whether current target/time/adverse possibilities are plausible for this stock now, without overriding fresh live evidence.
+- **Favorable / unfavorable interpretation:** supportive capacity + low failure + strong coverage/similarity can strengthen contextual confidence; poor coverage/transferability should reduce influence nearly to zero; cautionary memory can lower target support.
+- **Failure modes / counterexamples:** no direct probability is allowed; recent history can break abruptly; same-stock memory can overfit; memory must prove incremental value beyond current state + Issue #15 baseline.
+- **Relationship to other evidence:** WM-017 feeds RO/MR as Context/Prior. It is not a separate alpha vote and must not be added on top of its own component metrics.
+- **Worked example:** current setup resembles 40 recent same-stock cases: moderate amplitude capacity, fast target timing, low adverse path, 8 failures, strong regime match. That can raise confidence in a modest target—not assert that the next move will repeat the median.
 - **Known overlaps:** Issues #7/#9, RO PotentialRemaining/TargetFrontier
 - **Confidence limits:** no direct probability; poor coverage/transferability must be able to reduce influence near zero
 - **Validation targets:** incremental target-before-adverse value beyond current-state + Issue #15 baseline
