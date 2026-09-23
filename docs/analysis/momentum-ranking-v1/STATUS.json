@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "workstream": "momentum-ranking-v1",
-  "updatedAt": "2026-09-23",
+  "updatedAt": "2026-09-24",
   "overallStatus": "in-progress",
   "authority": {
     "operationalProgress": "STATUS.json",
@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 17,
-    "title": "Core predictive signal prioritization and feature reduction",
+    "issue": 15,
+    "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "Stage 17.D completed. Cross-group elimination leaves four universal core interfaces (Fresh Market Repricing, Progress Conversion Efficiency, Path Usability/Adverse Efficiency, Remaining Opportunity Lifecycle) plus Fresh Reset/Renewal as a conditional reserve rather than a universal vote."
+    "subfocus": "Issue #17 sparse-core conceptual research and empirical selection contract are complete. The provisional handoff is four universal interfaces plus conditional Renewal reserve; empirical retention now depends on Issue #15 outcomes and Issue #11 leakage-safe validation. Extraction/cadence implementation remains deferred to Issue #18."
   },
   "completedWorkUnits": [
     {
@@ -31,6 +31,11 @@
       "issue": 5,
       "title": "Build feature registry and evidence taxonomy",
       "result": "Registered and deeply documented 176 material feature/state entries across PW/AF/BD/TE/FQ/PH/PR/SQ/RO/WM/MR/CS, completed ownership/double-counting audits, and mapped all remaining checkpoint concepts to explicit downstream research issues."
+    },
+    {
+      "issue": 17,
+      "title": "Core predictive signal prioritization and feature reduction",
+      "result": "Reduced eight provisional concepts to four universal interfaces plus one conditional Renewal reserve, separated predictor/protective/synthesis roles, and fixed a leakage-safe incremental empirical selection contract with smallest-model preference."
     }
   ],
   "plannedIssues": [
@@ -55,7 +60,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 17,
-    "action": "Stage 17.E only: define the empirical selection/elimination contract for the four universal interfaces plus conditional Renewal reserve, using Issue #15 direct outcomes and Issue #11 leakage-safe validation. Do not begin extraction/cadence implementation."
+    "issue": 15,
+    "action": "Continue Issue #15 at the research-definition level only: finalize the target/adverse/horizon outcome grid and outcome-report schema needed by the sparse-core empirical contract, while leaving extraction/cadence/how-to-get-the-data implementation to Issue #18."
   }
 }
