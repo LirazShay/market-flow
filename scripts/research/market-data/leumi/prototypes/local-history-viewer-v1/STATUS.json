@@ -28,9 +28,9 @@
   "activeMiniProject": {
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
-    "phase": "E",
-    "phaseStatus": "in-progress",
-    "title": "Release-path latency",
+    "phase": "F",
+    "phaseStatus": "planned",
+    "title": "Final optimization verification",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
     "baseline": {
@@ -78,6 +78,16 @@
       },
       "decision": "No test, sample-size, checkpoint, or policy change.",
       "specImpact": "No spec impact."
+    },
+    "phaseE": {
+      "status": "complete-browser-ci-verified",
+      "browserCiRunId": 35867930699,
+      "result": "Ordinary full Browser CI now defaults to publish_runtime=false and completed in about 46s with 56/56 Chromium tests passing; rolling release publication is explicit and remains downstream of successful Browser CI.",
+      "browserJob": "about 41s",
+      "playwright": "26.1s",
+      "priorPublishLatency": "about 10-15s after browser verification",
+      "publicationModel": "same workflow; explicit publish_runtime boolean input; default false",
+      "specImpact": "No spec impact."
     }
   },
   "verification": {
@@ -120,12 +130,12 @@
     }
   },
   "next": {
-    "action": "Benchmark verification-only Browser CI and make rolling release publication explicit.",
+    "action": "Execute Phase F final optimization verification only.",
     "steps": [
-      "add a boolean publish_runtime input to workflow_dispatch/workflow_call with default false",
-      "keep publish-runtime dependent on successful browser-tests and main branch",
-      "benchmark a full verification run with publication skipped",
-      "retain explicit publication for release-worthy verified runs without creating a second workflow"
+      "run the final Fast CI on the durable no-push workflow state",
+      "run one final full Browser CI on the optimized durable state without publication",
+      "compare final timing against the original baseline and confirm no temporary benchmark scaffolding remains",
+      "only after Phase F is green return to the remaining Stage 20 V1-freeze closure work"
     ]
   },
   "history": {
