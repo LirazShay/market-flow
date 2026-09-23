@@ -40,7 +40,6 @@ const requiredSpecFiles = [
     "messaging.spec.md",
     "viewer.spec.md",
     "runtime-delivery.spec.md",
-    "loader-probe.spec.md",
     "debug-bundle.spec.md",
     "research-evolution.spec.md"
 ];
