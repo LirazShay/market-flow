@@ -294,12 +294,6 @@ test(
                 .rawMarketPayloadsIncluded
         ).toBe(false);
 
-        const pageCountBefore =
-            page
-                .context()
-                .pages()
-                .length;
-
         await page.locator(
             "#runtime-bookmarklet"
         ).click();
@@ -321,13 +315,10 @@ test(
         );
 
         expect(
-            page
-                .context()
-                .pages()
-                .length
-        ).toBe(
-            pageCountBefore
-        );
+            repeatedSnapshot
+                .recorder
+                .isRunning
+        ).toBe(true);
 
         await page.evaluate(
             async () => {
