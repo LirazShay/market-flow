@@ -19,6 +19,8 @@ write/change exact browser test
 
 Do not run the full Browser suite merely to prove an expected red.
 
+After implementation code changes, browser verification is mandatory on the final changed state. A localized change may use the smallest relevant Chromium target; shared runtime/harness/storage/messaging/viewer integration, cross-component, or multi-area changes require the full Browser suite.
+
 In addition, **every numbered Stage requires a full Browser CI run before it can be marked complete**. Additional browser checkpoints are integration milestones beyond this minimum cadence; they do not replace per-Stage verification.
 
 Status:
