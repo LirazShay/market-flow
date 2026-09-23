@@ -632,3 +632,72 @@ No spec impact.
 The runtime-delivery spec already defines publication as something a successful Browser CI run **may** perform and requires only that stable publication follow successful Browser CI. Phase E changes scheduling/default invocation, not the durable distribution invariant.
 
 Phase E is accepted. The next unit is Phase F final optimization verification and freeze handoff.
+
+
+## Phase F final verification
+
+The optimized configuration was verified one final time before handing control back to the remaining Stage 20 freeze work.
+
+Final full Chromium verification:
+
+~~~text
+run: 35868415694
+result: 56 / 56 passed
+workers: 2
+cache: hit
+publish-runtime: skipped
+Playwright suite: 27.8s
+browser-tests job: about 47s
+workflow elapsed: about 51s
+~~~
+
+The temporary `push` trigger used only to start this final verification was removed immediately afterward.
+
+Final durable Browser CI state therefore retains:
+
+- `workflow_dispatch` / `workflow_call` only;
+- `publish_runtime=false` by default;
+- explicit opt-in verified publication;
+- Playwright Chromium cache;
+- pinned `ubuntu-24.04`;
+- `workers=2`;
+- all 56 browser tests;
+- unchanged Stage 18 storage-growth coverage;
+- zero retries.
+
+### Final comparison
+
+| Metric | Original baseline | Final verified range/state | Improvement |
+|---|---:|---:|---:|
+| Playwright suite | 39.0s | 24.1–27.8s | roughly 29–38% faster |
+| Browser-test job | ~67s | ~39–47s | roughly 30–42% faster |
+| Ordinary verification workflow | ~90s | ~46–51s | roughly 43–49% faster |
+
+The range reflects normal GitHub-hosted-runner variance across repeated successful runs.
+
+### Coverage and safety review
+
+~~~text
+browser tests removed: 0
+browser tests skipped for speed: 0
+storage-growth sample reduction: 0
+retries added: 0
+production/runtime behavior changed for speed: no
+temporary benchmark trigger retained: no
+~~~
+
+The only browser-test behavior change during the project was the corrected semantic wait in `viewer-live-refresh.spec.js`, discovered through an unexpected race during optimization and regression-verified afterward.
+
+### Result
+
+The test-runtime optimization mini-project is accepted.
+
+It reduced ordinary full Browser verification from about 90 seconds to roughly 46–51 seconds while preserving the full 56-test Chromium suite and all existing browser-storage/integration coverage.
+
+SPEC impact review:
+
+~~~text
+No spec impact.
+~~~
+
+The next work is no longer test optimization. Control returns to the remaining Stage 20 V1-freeze cleanup and closure tasks.
