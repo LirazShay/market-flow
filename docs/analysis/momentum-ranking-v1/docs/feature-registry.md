@@ -1288,6 +1288,13 @@ This family primarily owns the second term.
 - **Availability:** NOW
 - **Evidence:** PV(L1 semantics/coverage) + PI
 - **Meaning:** economic width of the currently displayed best spread relative to market-center price
+- **Plain-language intuition:** this is the percentage gap between the best displayed seller (`ASK1`) and best displayed buyer (`BID1`). It tells us how much price distance separates an immediate aggressive buy from an immediate aggressive sell at the current touch.
+- **Market mechanism / why it can matter:** every short trade must overcome market friction. A wider spread means more of the desired move is consumed before an immediate buy→sell round trip can even break even at displayed prices. A narrow spread makes the market cheaper to cross, but says nothing about direction.
+- **Objective connection:** our target move is intentionally small and fast, so spread burden can be a large fraction of the available opportunity. A stock may have excellent upward momentum yet still be unusable if the spread consumes most of the expected exit gain.
+- **Favorable / unfavorable interpretation:** smaller spread is generally better for feasibility; larger spread is worse. But a narrow spread is not bullish, and a temporarily wide spread can narrow before entry. Interpretation should be relative to the candidate target and stability.
+- **Failure modes / counterexamples:** the displayed spread may change before execution; apparent narrowness can coexist with tiny depth; realized slippage can exceed the spread; missing L1 must remain UNKNOWN rather than be treated as zero cost.
+- **Relationship to other evidence:** BD-003 explains *why* spread changed; TE-001 owns only the friction implication. TE-012 later compares spread directly with the target size.
+- **Worked example:** BID=100.00, ASK=100.20, MID=100.10 gives spread≈0.20%. If the target is only +0.25%, the spread alone consumes most of that move; if the target is +1.0%, the same spread is much less dominant.
 - **Known overlaps:** BD-003 compression/expansion; TE-005/TE-006
 - **Confidence limits:** displayed spread is not full realized execution cost; no L1 side means UNKNOWN rather than infinite/zero spread
 - **Validation targets:** executable opportunity after friction, fill/slippage outcomes, target-before-adverse after execution
@@ -1304,6 +1311,13 @@ This family primarily owns the second term.
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** distinguishes a currently narrow spread that is persistent from one that is flickering or rapidly deteriorating
+- **Plain-language intuition:** this asks whether the current spread stays similar across recent observations or keeps widening, narrowing or jumping around.
+- **Market mechanism / why it can matter:** a narrow spread visible for one snapshot may disappear before an order reaches the market. Stable spread makes the current friction estimate more credible; unstable spread means execution conditions can change faster than our decision path.
+- **Objective connection:** because our holding horizon is short, spread instability can consume a large share of the opportunity between detection and execution. A target that looks feasible at decision time may become untradeable seconds later.
+- **Favorable / unfavorable interpretation:** stable/narrowing can improve feasibility; widening/unstable is cautionary. Narrowing is not bullish—it may happen because ASK falls, BID rises, or both.
+- **Failure modes / counterexamples:** sampling can miss intra-interval widening; a stable spread can still sit at poor absolute levels; a narrowing spread can accompany falling prices.
+- **Relationship to other evidence:** TE-002 owns execution reliability of the spread, while BD-003 retains directional cause. FQ freshness determines whether the observed stability is recent enough.
+- **Worked example:** spread stays near 0.10% for six observations → more reliable friction estimate. Spread alternates 0.05%, 0.40%, 0.08%, 0.35% → current 0.08% should not be trusted as stable.
 - **Known overlaps:** BD-003 QuoteMigrationState
 - **Confidence limits:** must preserve the cause of spread change in Book family; this feature owns feasibility impact, not directional meaning
 - **Validation targets:** execution slippage, fill quality, executable target-before-adverse
@@ -1320,6 +1334,13 @@ This family primarily owns the second term.
 - **Availability:** FUTURE
 - **Evidence:** U(current project source)
 - **Meaning:** minimum legal price increment needed to interpret one-tick movement and spread granularity
+- **Plain-language intuition:** tick size is the smallest allowed price step. If tick size is 0.10, prices may move 100.00→100.10, but not 100.00→100.03.
+- **Market mechanism / why it can matter:** when one tick is economically large, a single quote change can look like strong percentage momentum even though it is just the minimum legal move. Tick size also determines how coarse the spread and target grid can be.
+- **Objective connection:** our targets can be very small. If one tick already equals a large share of the target, the opportunity behaves discretely rather than smoothly, and entry/exit precision is constrained.
+- **Favorable / unfavorable interpretation:** smaller economic tick usually gives finer price granularity; larger tick can create bigger jumps and queue competition. Neither is directionally positive or negative.
+- **Failure modes / counterexamples:** inferring tick size from a few observed quotes can be wrong; market rules may vary by price band/security/phase. Therefore this remains blocked until authoritative semantics are sourced.
+- **Relationship to other evidence:** TE-003 is the raw market rule; TE-004 converts it to percent, TE-005 expresses spread in ticks.
+- **Worked example:** at price 100, tick 0.10 = 0.10%. A target of +0.20% is only two ticks, so one-tick noise or queue movement is economically large.
 - **Known overlaps:** TE-004, TE-005
 - **Confidence limits:** no verified tick-size source currently exists in the repository; do not infer canonical tick size from a few observed quote differences
 - **Validation targets:** spread burden, one-tick jump artifacts, executable opportunity
@@ -1336,6 +1357,13 @@ This family primarily owns the second term.
 - **Availability:** FUTURE
 - **Evidence:** PI + U(source dependency)
 - **Meaning:** economic size of one legal tick for this security at the current price
+- **Plain-language intuition:** this converts one tick from price units into a percentage of the stock price, making it easier to compare tick burden across securities.
+- **Market mechanism / why it can matter:** the same absolute tick has different economic meaning at different prices. A 0.10 tick is huge for a 5.00 stock and tiny for a 500.00 stock.
+- **Objective connection:** short targets should be interpreted relative to tick granularity. If the target is only one or two ticks, apparent continuous precision in percentages is misleading.
+- **Favorable / unfavorable interpretation:** smaller TickPct means finer resolution; larger TickPct means coarser price steps. This affects feasibility and noise interpretation, not direction.
+- **Failure modes / counterexamples:** wrong reference price or stale tick schedule makes the value invalid; price-band changes can alter tick regime.
+- **Relationship to other evidence:** TE-004 explains economic granularity; TE-005 says how many ticks wide the spread is; PW speed metrics need TickPct to avoid overreacting to one-tick jumps.
+- **Worked example:** tick=0.10 at price 10 → 1%; tick=0.10 at price 100 → 0.1%. Same tick size, tenfold different economic effect.
 - **Known overlaps:** TE-005, PW-003 one-tick speed artifacts
 - **Confidence limits:** blocked until TE-003 is verified; reference-price convention must be explicit
 - **Validation targets:** price-noise interpretation, executable opportunity
@@ -1352,6 +1380,13 @@ This family primarily owns the second term.
 - **Availability:** FUTURE
 - **Evidence:** PI + U(source dependency)
 - **Meaning:** describes spread granularity in market-structure terms, complementary to SpreadPct
+- **Plain-language intuition:** this asks how many legal price steps separate BID from ASK.
+- **Market mechanism / why it can matter:** one-tick spread may be structurally tight even if that one tick is economically large; several ticks may be structurally wide even if the percent gap is small. Both views matter.
+- **Objective connection:** execution feasibility depends on both economic burden and price-grid structure. A target only two ticks away behaves differently from a target twenty ticks away.
+- **Favorable / unfavorable interpretation:** fewer spread ticks is generally easier to cross, but not automatically cheap in percent terms. More ticks usually increases queue/price uncertainty.
+- **Failure modes / counterexamples:** without authoritative TickSize, the metric is invalid; fractional/rounding tolerance matters; spread can jump between snapshots.
+- **Relationship to other evidence:** TE-001 answers “how expensive is the spread in percent?” TE-005 answers “how coarse/wide is it in legal price steps?”
+- **Worked example:** spread 0.20 with tick 0.10 = 2 ticks. Another stock may also have 2 ticks but a very different percent burden.
 - **Known overlaps:** TE-001, TE-004
 - **Confidence limits:** blocked until tick size is verified; should not replace SpreadPct because economic and tick burdens answer different questions
 - **Validation targets:** executable opportunity, slippage/fill quality
@@ -1368,6 +1403,13 @@ This family primarily owns the second term.
 - **Availability:** EXEC
 - **Evidence:** PV(ASK1 displayed quantity semantics) + PI + H
 - **Meaning:** how large a contemplated aggressive entry is relative to currently displayed best-ask quantity
+- **Plain-language intuition:** this compares our intended buy quantity with the quantity currently displayed for sale at ASK1.
+- **Market mechanism / why it can matter:** if our order is large relative to visible ask depth, we may consume the whole level and need higher prices for the remainder. That raises entry slippage risk.
+- **Objective connection:** a short target can be destroyed by poor entry. Even if the stock rises, buying too much through a thin ask can leave too little remaining gain to exit profitably.
+- **Favorable / unfavorable interpretation:** low ratio means current displayed ask could theoretically absorb the intended size; high ratio means visible L1 is insufficient. Neither case guarantees actual fill quality.
+- **Failure modes / counterexamples:** displayed depth can cancel; hidden/deeper liquidity is unknown; ratio<=1 does not guarantee queue priority or fill; ratio>1 does not tell how far price must move without L2.
+- **Relationship to other evidence:** BD depth features describe market state; TE-006 converts that state into size-specific feasibility. This belongs in parameterized ExecutionEvaluator, not the market alpha score.
+- **Worked example:** intended buy=500 shares, ASK1 depth=2,000 → ratio 0.25. Intended buy=5,000 → ratio 2.5, so visible top-level depth is insufficient.
 - **Known overlaps:** Book displayed-depth features; future L2 execution analysis
 - **Confidence limits:** displayed depth can cancel/change; ratio <= 1 does not guarantee fill; ratio > 1 gives no information about prices beyond ASK1 without L2
 - **Validation targets:** fill ratio, entry slippage, implementation shortfall
@@ -1384,6 +1426,13 @@ This family primarily owns the second term.
 - **Availability:** EXEC
 - **Evidence:** PV(BID1 displayed quantity semantics) + PI + H
 - **Meaning:** how large a contemplated aggressive exit is relative to currently displayed best-bid quantity
+- **Plain-language intuition:** this compares how much we want to sell with how much is currently displayed to buy at BID1.
+- **Market mechanism / why it can matter:** if our sell size exceeds visible bid depth, only part may exit at the best bid; the rest may require lower prices or waiting.
+- **Objective connection:** our real objective ends with selling. A theoretical gain at BID1 is less useful if the displayed quantity cannot absorb our position.
+- **Favorable / unfavorable interpretation:** low ratio improves current exit feasibility; high ratio raises slippage/partial-fill risk. It is not a directional signal.
+- **Failure modes / counterexamples:** BID depth can disappear; hidden/deeper buyers may exist but are unseen; even low ratio does not guarantee execution before others consume the queue.
+- **Relationship to other evidence:** BD-017/018 show touch-level exitability; TE-007 asks whether that touch price is meaningful for the intended size.
+- **Worked example:** position=1,000 shares, BID1 depth=5,000 → ratio 0.20. If BID1 depth is only 200 → ratio 5.0, so the headline bid price is not enough to assume full exit.
 - **Known overlaps:** Book displayed-depth features; future L2 execution analysis
 - **Confidence limits:** displayed L1 is not guaranteed liquidity and does not reveal deeper exit prices
 - **Validation targets:** exit slippage, fill ratio, adverse execution
@@ -1400,6 +1449,13 @@ This family primarily owns the second term.
 - **Availability:** NOW
 - **Evidence:** PV
 - **Meaning:** prevents spread/depth/execution assumptions when one or both L1 sides are unavailable/invalid
+- **Plain-language intuition:** before computing spread or execution feasibility, this simply checks that both a valid best bid and valid best ask actually exist.
+- **Market mechanism / why it can matter:** one-sided or invalid quotes make spread and round-trip touch economics undefined. Treating missing data as zero would create fake “great” execution conditions.
+- **Objective connection:** a stock cannot be evaluated honestly for quick entry/exit if the required current market sides are missing or invalid.
+- **Favorable / unfavorable interpretation:** TRUE only means minimum quote availability exists. FALSE/UNKNOWN blocks dependent calculations; it does not mean bearish.
+- **Failure modes / counterexamples:** two quotes can exist but be extremely thin or stale; quote presence is necessary, not sufficient.
+- **Relationship to other evidence:** TE-008 is a hard prerequisite for TE-001/006/007 and overlaps with FQ data-quality coverage.
+- **Worked example:** BID valid, ASK missing → spread is UNKNOWN, not zero, and aggressive entry feasibility cannot be computed.
 - **Known overlaps:** DataQuality coverage
 - **Confidence limits:** presence of two quotes does not itself imply sufficient liquidity
 - **Validation targets:** data/execution eligibility
@@ -1416,6 +1472,13 @@ This family primarily owns the second term.
 - **Availability:** NOW
 - **Evidence:** PV(sequential collection constraint) + PI
 - **Meaning:** execution-feasibility view of per-security observation age
+- **Plain-language intuition:** this asks how old the market snapshot is for this specific stock when we are making the decision.
+- **Market mechanism / why it can matter:** in a fast market, a quote that is several seconds old may no longer exist. Sequential collection means different securities can have different effective ages at the same ranking moment.
+- **Objective connection:** if our whole opportunity horizon is 20–30 seconds, spending several seconds merely observing stale data can consume a meaningful fraction of the trade before we act.
+- **Favorable / unfavorable interpretation:** lower age is better for trust/feasibility; higher age reduces usable lead. Old data is not bearish—it is less actionable.
+- **Failure modes / counterexamples:** clock skew or wrong timestamp ownership can misstate age; a quiet stock may not have changed despite age, but the system cannot assume that.
+- **Relationship to other evidence:** FQ-002 owns the canonical observation-age calculation; TE-009 only consumes it from an execution perspective to avoid duplicated definitions.
+- **Worked example:** target horizon 30s and observation age 6s means 20% of the horizon is already gone before ranking/decision latency is added.
 - **Known overlaps:** FQ-002
 - **Confidence limits:** primary ownership belongs to FQ-002; TE must not independently recompute a competing age
 - **Validation targets:** ranking correctness under cycle skew, executable opportunity
@@ -1432,6 +1495,13 @@ This family primarily owns the second term.
 - **Availability:** NOW for observation→ranking; EXEC for order-submit/fill phases
 - **Evidence:** PI
 - **Meaning:** measures how much time is consumed before an opportunity can be acted on
+- **Plain-language intuition:** this measures the delay from observing a possible signal until the system actually reaches the point where an order could be submitted/acted upon.
+- **Market mechanism / why it can matter:** fast opportunities decay while computation, ranking, UI/decision and order submission occur. A correct signal can become useless simply because action arrives late.
+- **Objective connection:** the project explicitly targets seconds-to-minutes. Therefore latency is part of the opportunity budget, not an engineering footnote.
+- **Favorable / unfavorable interpretation:** lower latency preserves more opportunity; higher latency consumes it. Again, latency is not directional.
+- **Failure modes / counterexamples:** partial measurement may exclude broker/network/fill time; simulated latency may differ from production; average latency can hide spikes.
+- **Relationship to other evidence:** TE-009 is data age; TE-010 is system decision delay. RO TimeBudgetAfterLatency combines these with expected entry delay.
+- **Worked example:** signal observed at t=0, ranked at t=2s, order-ready at t=4s → decision latency 4s. On a 20s opportunity, that is materially different from 0.5s.
 - **Known overlaps:** TE-009, Freshness
 - **Confidence limits:** future end-to-end values require real execution telemetry
 - **Validation targets:** observable horizon feasibility, implementation shortfall
@@ -1448,6 +1518,13 @@ This family primarily owns the second term.
 - **Availability:** NOW/FUTURE depending horizon model
 - **Evidence:** PI + H
 - **Meaning:** expresses whether system latency is small relative to the opportunity horizon or consumes a material fraction of it
+- **Plain-language intuition:** this asks “what fraction of the opportunity's expected lifetime are we spending just waiting/processing?”
+- **Market mechanism / why it can matter:** the same 3-second latency is trivial for a 5-minute move but huge for a 10-second move. Relative latency matters more than absolute latency.
+- **Objective connection:** if latency consumes most of the target horizon, the system may detect the opportunity correctly but still arrive too late to capture it.
+- **Favorable / unfavorable interpretation:** small ratio means timing overhead is modest; large ratio means the opportunity is structurally hard to use. Ratio ≥1 suggests the nominal horizon may expire before action completes.
+- **Failure modes / counterexamples:** the horizon itself may be uncertain; a long-lived move can survive high ratio estimates; average latency can understate tail delays.
+- **Relationship to other evidence:** TE-011 links engineering timing to RO/SQ opportunity timing. It should not be interpreted without a target horizon.
+- **Worked example:** effective latency 2s / horizon 20s = 0.10. The same 2s / horizon 5s = 0.40—four times more damaging relative to the opportunity.
 - **Known overlaps:** Freshness, RemainingOpportunity
 - **Confidence limits:** horizon itself is provisional before adaptive-horizon research/calibration
 - **Validation targets:** TimeToTarget, executable opportunity, missed-opportunity rate
@@ -1464,6 +1541,13 @@ This family primarily owns the second term.
 - **Availability:** FUTURE
 - **Evidence:** PI + H
 - **Meaning:** asks whether the displayed spread is small or large relative to the useful move being pursued
+- **Plain-language intuition:** this compares friction with reward. A 0.20% spread is enormous if we only expect +0.25%, but modest if the realistic target is +1.0%.
+- **Market mechanism / why it can matter:** short trades fail economically when transaction friction consumes too much of the gross move. Absolute spread alone cannot tell that; burden must be relative to the target.
+- **Objective connection:** this is one of the most direct feasibility checks for our small, fast targets: is there enough expected movement left after paying the market's current two-sided friction?
+- **Favorable / unfavorable interpretation:** low burden is good; high burden can make an otherwise valid market opportunity unusable. It is still not directional.
+- **Failure modes / counterexamples:** target estimates may be wrong; displayed spread is not total realized cost; passive execution may pay less spread but introduces fill risk.
+- **Relationship to other evidence:** TE-001 provides SpreadPct, RO provides target/remaining opportunity. TE-012 combines them without pretending to predict direction.
+- **Worked example:** spread=0.10%, target=0.50% → burden=20%. Spread=0.10%, target=0.15% → burden≈67%, leaving little room before other costs.
 - **Known overlaps:** RemainingOpportunity, execution cost floor
 - **Confidence limits:** target must not be invented merely to compute this ratio; displayed spread is not the complete round-trip cost
 - **Validation targets:** net executable opportunity, target-before-adverse after friction
@@ -1480,6 +1564,13 @@ This family primarily owns the second term.
 - **Availability:** EXEC
 - **Evidence:** PI
 - **Meaning:** keeps account-specific explicit costs separate from market-microstructure friction
+- **Plain-language intuition:** this converts known commissions/fees for a contemplated round trip into a percentage of the trade size.
+- **Market mechanism / why it can matter:** fixed/minimum fees hurt small trades disproportionately. Two identical market opportunities can have different net results for different order sizes or broker schedules.
+- **Objective connection:** the project ultimately cares about net executable opportunity, so explicit costs must be subtracted somewhere—but they should not contaminate the stock's intrinsic market score.
+- **Favorable / unfavorable interpretation:** lower cost floor leaves more of the move available; higher cost floor can eliminate small targets. It has no directional meaning.
+- **Failure modes / counterexamples:** fee schedules can change; taxes/venue costs may differ; hardcoding one user's capital or broker makes the model non-general.
+- **Relationship to other evidence:** TE-013 belongs to parameterized execution profile. TE-001/012 cover market friction; RO/Execution layer later combines both.
+- **Worked example:** ₪12 round-trip cost on ₪2,000 notional = 0.60% explicit cost floor; the same ₪12 on ₪20,000 = 0.06%.
 - **Known overlaps:** TE-012, future NetExecutableOpportunity
 - **Confidence limits:** must never hardcode one user's historical capital/commission assumptions into the general ranking model
 - **Validation targets:** net executable opportunity
@@ -1496,6 +1587,13 @@ This family primarily owns the second term.
 - **Availability:** NOW for market-only subset; EXEC for size/cost-aware form
 - **Evidence:** PI + H
 - **Meaning:** final feasibility summary used to reject or discount market opportunities that cannot realistically survive friction/latency
+- **Plain-language intuition:** this is the final answer to “even if the market setup looks attractive, can we realistically trade it under current spread, depth, timing and cost conditions?”
+- **Market mechanism / why it can matter:** opportunity and feasibility are separate. A stock can be directionally excellent but impossible to capture because spread is too wide, depth too thin or latency too large.
+- **Objective connection:** this protects the ranking from choosing theoretically attractive moves that cannot survive real entry/exit mechanics within the short horizon.
+- **Favorable / unfavorable interpretation:** `GOOD` means current feasibility evidence is broadly compatible with execution; `MARGINAL` means opportunity may survive only with enough gross edge; `POOR` can gate the candidate; `UNKNOWN` means insufficient evidence, not neutral.
+- **Failure modes / counterexamples:** without L2, hidden liquidity and actual execution telemetry remain unknown; a `GOOD` snapshot can deteriorate before fill; account-specific size/cost can change the state.
+- **Relationship to other evidence:** TE-014 consumes TE metrics as a feasibility synthesis and should remain separate from directional family scores. RO CapturableRemaining later combines market opportunity with this feasibility state.
+- **Worked example:** strong upward PW/BD state + spread 0.35% + target 0.30% + thin bid depth → market opportunity may be real, but `ExecutionFeasibilityState=POOR` because friction already exceeds the target.
 - **Known overlaps:** DataQuality, Freshness, future ExecutionEvaluator
 - **Confidence limits:** GOOD does not guarantee a fill; without L2 and execution telemetry the state is necessarily partial
 - **Validation targets:** implementation shortfall, fill ratio, net executable opportunity

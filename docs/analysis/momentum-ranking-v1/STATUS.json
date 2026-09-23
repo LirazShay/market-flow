@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Book/Directional Flow BD-001..BD-019. Quote-price migration, displayed quantity/persistence, LAST-to-quote geometry, family directional state and historical buyer exitability are now explained as distinct mechanisms with explicit failure modes."
+    "subfocus": "Deep-rationale retrofit completed for Tradability/Execution Preconditions TE-001..TE-014. Spread, tick granularity, displayed depth, latency and explicit costs are documented as feasibility/friction dimensions, never directional alpha."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Tradability/Execution Preconditions TE-001..TE-014 to the deep-rationale documentation contract, explaining spread/tick/depth/latency/cost as feasibility constraints rather than bullish signals."
+    "action": "Retrofit Freshness/Data Quality FQ-001..FQ-014 to the deep-rationale documentation contract, explaining why freshness, temporal alignment, semantic validity, coverage and consistency control trust rather than direction."
   }
 }
