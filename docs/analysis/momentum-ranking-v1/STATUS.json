@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Evidence taxonomy established; next build the registry schema and first feature families."
+    "subfocus": "Registry schema and Price/Wave family established; next populate Activity/Flow."
   },
   "completedWorkUnits": [
     {
@@ -41,6 +41,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Create the feature-registry schema and populate the first coherent family set using the evidence taxonomy."
+    "action": "Populate the Activity/Flow family in the feature registry, preserving overlap boundaries with Price/Wave and future Path/Exhaustion families."
   }
 }
