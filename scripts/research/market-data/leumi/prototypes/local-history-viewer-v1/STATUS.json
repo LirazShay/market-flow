@@ -226,19 +226,17 @@
     "liveLeumiV1Integration": "verification-pending",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35791124103,
-      "jobId": 106959592817,
-      "publishJobId": 106959929632,
-      "activationCommit": "80f56233ce275bef2292c99d241be4d795a8bc0f",
-      "workflowRestoreCommit": "b8604d105131936778e535d191af9812fc80e3d1",
+      "runId": 35853701628,
+      "jobId": 107157116510,
+      "publishJobId": 107157399294,
+      "activationCommit": "21136ffe5dc8f5b26453b7c84da39006c8cc6941",
+      "workflowRestoreCommit": "76afeee5818b808db284e0324c773fd6f8d38311",
       "conclusion": "success",
       "tests": [
-        "54 Chromium tests",
-        "54 passed / 0 failed",
-        "raw Bookmarklet contains no %20 and executes successfully",
-        "Bookmarklet packaging has no arbitrary absolute size ceiling",
-        "assembled Bookmarklet initial/repeated/restart behavior verified",
-        "rolling stable GitHub Release publication verified"
+        "55 Chromium tests",
+        "55 passed / 0 failed",
+        "final code state after abandoned-loader cleanup verified",
+        "generated runtime artifacts published successfully"
       ]
     },
     "fastCi": "verified-success",
@@ -1856,9 +1854,11 @@
       "nextLiveQuestion": "After market hours, do successive complete cycles contain unchanged market fingerprints and/or unchanged provider-time fingerprints while Leumi still returns complete HTTP 200 data?"
     },
     "testingPolicyTargetedFirst": {
-      "status": "complete",
-      "policy": "Browser tests-first/TDD uses the smallest sufficient targeted Chromium run for red/green. Full Browser CI is reserved for numbered Stage closure, explicit integration checkpoints, broad shared-browser-infrastructure risk, suite-only reproduction, or explicit request.",
-      "expectedRed": "An intentional TDD/regression red is valid when the exact targeted test fails for the intended missing behavior; it does not block implementation.",
+      "status": "complete-updated",
+      "policy": "Targeted-first applies to the TDD red/green micro-loop, not as a reason to skip browser verification after code changes.",
+      "expectedRed": "An intentional TDD/regression red may be demonstrated with the exact targeted Chromium test only.",
+      "postCodeGate": "Any production/runtime/browser code change requires Chromium verification on the final changed state. Localized changes may use targeted Chromium; shared runtime/harness/storage/messaging/viewer integration, cross-component or multi-area changes require full Browser CI.",
+      "stageGate": "Every numbered Stage closure still requires full Browser CI.",
       "unexpectedRed": "Unexpected red, or red remaining after the intended fix, blocks progression.",
       "updatedDocuments": [
         "AGENTS.md",
@@ -1873,8 +1873,19 @@
         "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/README.md",
         "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/README.md"
       ],
-      "specImpact": "No product-spec impact; this changes engineering/test execution policy only.",
-      "ci": "not-run — documentation/policy-only change; no production code or test implementation changed"
+      "specImpact": "No product-spec impact; this is engineering/test execution policy.",
+      "finalStateBrowserVerification": {
+        "reason": "Loader experiment cleanup/restoration changed runtime/build/test-related repository state, so a full Browser CI run was executed per the strengthened policy.",
+        "runId": 35853701628,
+        "browserJobId": 107157116510,
+        "publishJobId": 107157399294,
+        "conclusion": "success",
+        "tests": 55,
+        "passed": 55,
+        "failed": 0,
+        "duration": "25.2s",
+        "workflowRestoreCommit": "76afeee5818b808db284e0324c773fd6f8d38311"
+      }
     }
   },
   "fastContext": {
@@ -1891,10 +1902,11 @@
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
     "default": "fast-ci-every-commit",
-    "browser": "immediate-on-browser-change-plus-full-suite-at-every-numbered-stage-closure",
-    "additionalCheckpoints": "cross-stage integration milestones only; never a substitute for per-stage Browser CI",
+    "browser": "every production/runtime/browser code change requires Chromium verification on the final changed state; targeted is allowed for localized code, full suite required for shared runtime/harness/storage/messaging/viewer integration, cross-component or multi-area changes, and every numbered Stage closure",
+    "tddRed": "expected browser TDD red may use only the exact targeted Chromium test; full Browser CI is not required merely to prove expected red",
+    "additionalCheckpoints": "cross-stage integration milestones remain additional; they never replace post-code Chromium verification or per-stage full Browser CI",
     "live": "provider-dependent-only",
-    "hardGate": "No added/modified test may be deferred unexecuted. Red or unexecuted changed tests block progression. No numbered Stage may be marked complete without fresh full Browser CI on its final state."
+    "hardGate": "No production/runtime/browser code change may move forward without Chromium verification on its final state. No added/modified test may remain unexecuted. No numbered Stage may be marked complete without fresh full Browser CI."
   },
   "lastCompletedMiniProject": {
     "id": "specification-hardening",
@@ -1905,10 +1917,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Permanent/remote loader work was intentionally abandoned as over-engineering. Version replacement policy is refresh the authenticated Leumi tab and run the new self-contained Bookmarklet/JS; IndexedDB remains persisted across page refresh.",
+    "reason": "Testing policy is now explicit: code changes require Chromium verification; expected TDD red alone may stay targeted. Abandoned loader cleanup final code state passed full Browser CI.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Resume live Leumi verification. For a new code version: refresh the Leumi page, run the new verified Bookmarklet, let several cycles complete, and use Export Debug to investigate the after-market static-data behavior."
+    "nextAction": "Resume live Leumi verification and investigate after-market static-data behavior using the current verified Bookmarklet and Export Debug."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
