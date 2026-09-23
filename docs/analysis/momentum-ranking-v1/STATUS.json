@@ -14,7 +14,7 @@
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "verification-pending",
-    "subfocus": "Existing-history analyzer semantics and IndexedDB adapter are implemented and verified: deterministic Node test green, Fast CI green, and Browser CI 58/58 green on synthetic frozen-schema IndexedDB. Only execution against the real same-origin LHV V1 history remains pending before cadence/jitter/coverage claims or tolerance choices."
+    "subfocus": "One-click self-contained bookmarklet delivery for the verified read-only history analyzer is implemented and awaiting Chromium CI verification. Real same-origin history execution is still required before empirical cadence/jitter/coverage claims or tolerance choices."
   },
   "completedWorkUnits": [
     {
@@ -72,6 +72,6 @@
   },
   "next": {
     "issue": 15,
-    "action": "Execute MarketFlowIssue15HistoryCoverage.run({download:true}) on the same Leumi origin that owns the real market-flow-leumi-history-v1 IndexedDB, capture the sanitized aggregate report, and use it to evaluate 5/10/20/30/40/50/60/90/120s coverage. Do not choose endpointTolerance/maxAllowedPathGap/minimumPathCoverage before that report, and do not change collection cadence (Issue #18 owns that)."
+    "action": "Verify the generated one-click history-coverage bookmarklet in Chromium, then execute that verified bookmarklet on the same Leumi origin that owns the real market-flow-leumi-history-v1 IndexedDB and capture the sanitized aggregate report. Do not choose coverage tolerances or alter collection cadence before the real report."
   }
 }

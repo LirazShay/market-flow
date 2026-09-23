@@ -23,6 +23,20 @@ The script reads only `securityId`, `sessionId`, and `collectedAtMs`. The genera
 
 ## Browser use
 
+### Preferred: one-click bookmarklet
+
+Use:
+
+~~~text
+run-history-coverage.bookmarklet.txt
+~~~
+
+Create a browser bookmark whose URL is the complete one-line contents of that file. While the Leumi market page is open on the origin that owns `market-flow-leumi-history-v1`, click the bookmark.
+
+The bookmarklet is self-contained: it does not fetch code from GitHub or another host. It reads the existing database in readonly mode and downloads a sanitized aggregate JSON report automatically.
+
+### DevTools alternative
+
 Run on the same Leumi browser origin that owns `market-flow-leumi-history-v1`.
 
 1. Load/paste `history-coverage-analyzer.js` in DevTools.
@@ -61,6 +75,7 @@ The test covers exact endpoint semantics, non-edge cadence misses, session bound
 
 - Pure timing semantics: testable deterministically.
 - IndexedDB adapter: Chromium verified against a synthetic database with the frozen V1 `history` key/index shape; the test also proves the analyzer leaves all history rows unchanged and refuses to create a missing database.
+- One-click bookmarklet delivery: pending Chromium verification in this work unit.
 - Actual cadence/jitter/evaluability numbers: require execution against the real local IndexedDB history and remain unknown until that run is captured.
 
 ## Verification evidence

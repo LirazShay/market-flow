@@ -14,6 +14,27 @@ const analyzerSource = fs.readFileSync(
     "utf8"
 );
 
+const toolRoot = path.dirname(
+    analyzerPath
+);
+
+const bookmarkletBuilder = require(
+    path.join(
+        toolRoot,
+        "build-bookmarklet.js"
+    )
+);
+
+const bookmarkletPath = path.join(
+    toolRoot,
+    "run-history-coverage.bookmarklet.txt"
+);
+
+const bookmarklet = fs.readFileSync(
+    bookmarkletPath,
+    "utf8"
+);
+
 async function createDatabase(
     page,
     dbName,
@@ -495,3 +516,289 @@ test(
         );
     }
 );
+
+test(
+    "Issue #15 one-click bookmarklet downloads only the sanitized aggregate report",
+    async ({ page }) => {
+        await page.goto(
+            "/tests/automation/harness.html"
+        );
+
+        const dbName =
+            "market-flow-leumi-history-v1";
+
+        await page.evaluate(
+            dbName =>
+                new Promise(
+                    (resolve, reject) => {
+                        const request =
+                            indexedDB.deleteDatabase(
+                                dbName
+                            );
+
+                        request.onsuccess =
+                            () =>
+                                resolve();
+
+                        request.onerror =
+                            () =>
+                                reject(
+                                    request.error
+                                );
+
+                        request.onblocked =
+                            () =>
+                                reject(
+                                    new Error(
+                                        "Synthetic database cleanup was blocked."
+                                    )
+                                );
+                    }
+                ),
+            dbName
+        );
+
+        const rows = [
+            {
+                cycleId: 1,
+                securityId: "A",
+                sessionId: 1,
+                collectedAtMs: 1000,
+                data: {
+                    secretRawMarker:
+                        "MUST_NOT_LEAVE_INDEXEDDB"
+                }
+            },
+            {
+                cycleId: 2,
+                securityId: "A",
+                sessionId: 1,
+                collectedAtMs: 6000,
+                data: {
+                    secretRawMarker:
+                        "MUST_NOT_LEAVE_INDEXEDDB"
+                }
+            },
+            {
+                cycleId: 3,
+                securityId: "A",
+                sessionId: 1,
+                collectedAtMs: 11000,
+                data: {
+                    secretRawMarker:
+                        "MUST_NOT_LEAVE_INDEXEDDB"
+                }
+            },
+            {
+                cycleId: 4,
+                securityId: "A",
+                sessionId: 1,
+                collectedAtMs: 16000,
+                data: {
+                    secretRawMarker:
+                        "MUST_NOT_LEAVE_INDEXEDDB"
+                }
+            }
+        ];
+
+        await createDatabase(
+            page,
+            dbName,
+            rows
+        );
+
+        const before =
+            await readAllHistory(
+                page,
+                dbName
+            );
+
+        expect(
+            bookmarklet
+                .startsWith(
+                    "javascript:"
+                )
+        ).toBe(
+            true
+        );
+
+        expect(
+            /[\r\n]/.test(
+                bookmarklet
+            )
+        ).toBe(
+            false
+        );
+
+        expect(
+            bookmarklet
+        ).toBe(
+            bookmarkletBuilder
+                .buildBookmarkletText(
+                    analyzerSource
+                )
+        );
+
+        await page.evaluate(
+            href => {
+                const anchor =
+                    document.createElement(
+                        "a"
+                    );
+
+                anchor.id =
+                    "issue-15-history-coverage-bookmarklet";
+
+                anchor.href =
+                    href;
+
+                anchor.textContent =
+                    "run issue 15 measurement";
+
+                document.body.appendChild(
+                    anchor
+                );
+            },
+            bookmarklet
+        );
+
+        const downloadPromise =
+            page.waitForEvent(
+                "download"
+            );
+
+        await page.locator(
+            "#issue-15-history-coverage-bookmarklet"
+        ).click();
+
+        const download =
+            await downloadPromise;
+
+        const report =
+            await page.evaluate(
+                async () =>
+                    await window
+                        .__marketFlowIssue15CoverageRunPromise
+            );
+
+        expect(
+            report.horizonsSec
+        ).toEqual(
+            [
+                5,
+                10,
+                20,
+                30,
+                40,
+                50,
+                60,
+                90,
+                120
+            ]
+        );
+
+        expect(
+            report.integrity
+                .historyStoreRowCount
+        ).toBe(
+            rows.length
+        );
+
+        expect(
+            report.integrity
+                .indexCoverageExact
+        ).toBe(
+            true
+        );
+
+        expect(
+            download
+                .suggestedFilename()
+        ).toMatch(
+            /^market-flow-issue15-history-coverage-\d+\.json$/
+        );
+
+        const downloadedPath =
+            await download.path();
+
+        const downloadedText =
+            fs.readFileSync(
+                downloadedPath,
+                "utf8"
+            );
+
+        const downloadedReport =
+            JSON.parse(
+                downloadedText
+            );
+
+        expect(
+            downloadedReport
+                .integrity
+                .historyStoreRowCount
+        ).toBe(
+            rows.length
+        );
+
+        expect(
+            downloadedText.includes(
+                "MUST_NOT_LEAVE_INDEXEDDB"
+            )
+        ).toBe(
+            false
+        );
+
+        expect(
+            Object.hasOwn(
+                downloadedReport,
+                "rawData"
+            )
+        ).toBe(
+            false
+        );
+
+        const after =
+            await readAllHistory(
+                page,
+                dbName
+            );
+
+        expect(
+            after
+        ).toEqual(
+            before
+        );
+
+        await page.evaluate(
+            dbName =>
+                new Promise(
+                    (resolve, reject) => {
+                        const request =
+                            indexedDB.deleteDatabase(
+                                dbName
+                            );
+
+                        request.onsuccess =
+                            () =>
+                                resolve();
+
+                        request.onerror =
+                            () =>
+                                reject(
+                                    request.error
+                                );
+
+                        request.onblocked =
+                            () =>
+                                reject(
+                                    new Error(
+                                        "Synthetic database cleanup was blocked."
+                                    )
+                                );
+                    }
+                ),
+            dbName
+        );
+    }
+);
+
