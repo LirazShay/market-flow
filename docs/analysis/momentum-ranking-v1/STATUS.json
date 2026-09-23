@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Price/Wave, Activity/Flow, Book/Directional Flow and Tradability/Execution Preconditions established; next populate Freshness/Data Quality."
+    "subfocus": "Price/Wave, Activity/Flow, Book/Directional Flow, Tradability and Freshness/Data Quality established; next populate Path Quality/Wave Health."
   },
   "completedWorkUnits": [
     {
@@ -41,6 +41,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate the Freshness/Data Quality family: evidence age/reconfirmation, per-security observation age, cycle integrity, coverage and confidence/trust gates."
+    "action": "Populate the Path Quality/Wave Health family: directional efficiency, reversals, giveback, path cleanliness and effort-vs-result deterioration/exhaustion evidence."
   }
 }

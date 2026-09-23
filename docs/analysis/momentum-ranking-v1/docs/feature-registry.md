@@ -971,17 +971,17 @@ This family primarily owns the second term.
 
 - **Family:** Tradability / Execution Preconditions
 - **Kind:** CONTEXT
-- **Raw sources:** per-security observation timestamp + decision/current timestamp
-- **Derivation:** elapsed time since the security's relevant market observation
+- **Raw sources:** FQ-002 PerSecurityObservationAgeSeconds
+- **Derivation:** consume the primary freshness-owned observation age as an execution-feasibility input
 - **Unit / shape:** seconds
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(sequential collection constraint) + PI
-- **Meaning:** accounts for the fact that a validated full cycle is not a simultaneous market instant and different securities have different observation ages
-- **Known overlaps:** Freshness/DataQuality
-- **Confidence limits:** must use the actual per-security observation time rather than only full-cycle completion time
+- **Meaning:** execution-feasibility view of per-security observation age
+- **Known overlaps:** FQ-002
+- **Confidence limits:** primary ownership belongs to FQ-002; TE must not independently recompute a competing age
 - **Validation targets:** ranking correctness under cycle skew, executable opportunity
-- **Research state:** Candidate; ownership may later move to Freshness/DataQuality while TE consumes it
+- **Research state:** Consumer alias of FQ-002
 
 ### TE-010 — DecisionLatencySeconds
 
@@ -1003,7 +1003,7 @@ This family primarily owns the second term.
 
 - **Family:** Tradability / Execution Preconditions
 - **Kind:** DERIVED
-- **Raw sources:** TE-009/TE-010 + candidate opportunity horizon
+- **Raw sources:** FQ-002/TE-010 + candidate opportunity horizon
 - **Derivation:** `effectiveLatency / targetHorizon`
 - **Unit / shape:** ratio
 - **Role:** GATE, PROTECTIVE
@@ -1100,12 +1100,313 @@ predicted/target horizon <= effective system latency
 → opportunity may be structurally unobservable/unusable
 ~~~
 
+# Family FQ — Freshness / Data Quality
+
+Purpose:
+
+> Decide whether the evidence being interpreted is technically valid, sufficiently complete, temporally aligned and still fresh enough for a seconds-to-~2-minute objective.
+
+This family does **not** predict direction. It controls whether directional/opportunity evidence deserves to be trusted.
+
+## Existing project contract
+
+Local History Viewer V1 already defines a validated complete cycle and preserves real collection timing:
+
+~~~text
+requested
+received
+unique
+missing
+duplicates
+response structure
+~~~
+
+and stores:
+
+~~~text
+cycleStartedAt
+cycleCompletedAt
+chunkIndex
+chunkReceivedAt
+collectedAt per security
+server AsOfDate when available
+~~~
+
+Therefore this family consumes those validated semantics rather than inventing a second definition of cycle completeness.
+
+### FQ-001 — CycleIntegrityState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** GATE
+- **Raw sources:** validated cycle diagnostics from collector/storage boundary
+- **Derivation:** PASS only when requested/received/unique/missing/duplicates/response-structure checks satisfy the complete-cycle contract; otherwise FAIL with explicit reason(s)
+- **Unit / shape:** PASS / FAIL + diagnostics
+- **Role:** GATE
+- **Availability:** NOW
+- **Evidence:** PV
+- **Meaning:** prevents ranking on a cycle that is partial, duplicated or structurally invalid
+- **Known overlaps:** none; this is foundational
+- **Confidence limits:** a structurally complete cycle can still contain stale or semantically invalid individual fields
+- **Validation targets:** ranking-input eligibility, integrity regressions
+- **Research state:** Candidate based on existing verified contract
+
+### FQ-002 — PerSecurityObservationAgeSeconds
+
+- **Family:** Freshness / Data Quality
+- **Kind:** DERIVED
+- **Raw sources:** per-record `collectedAt` + ranking/decision timestamp
+- **Derivation:** `decisionTime - collectedAt(security)`
+- **Unit / shape:** seconds
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PV(time semantics) + PI
+- **Meaning:** exact age of the market observation used for this security when it is compared/ranked
+- **Known overlaps:** TE-009 consumer alias; FQ-003/FQ-008
+- **Confidence limits:** must use per-security timestamp; cycle completion time alone hides sequential-chunk skew
+- **Validation targets:** ranking stability under skew, missed opportunity, executable opportunity
+- **Research state:** Candidate / primary owner of observation age
+
+### FQ-003 — CycleObservationSkewSeconds
+
+- **Family:** Freshness / Data Quality
+- **Kind:** DERIVED
+- **Raw sources:** minimum and maximum valid per-security `collectedAt` within a cycle
+- **Derivation:** `maxCollectedAt - minCollectedAt`
+- **Unit / shape:** seconds
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PV(sequential collection) + PI
+- **Meaning:** quantifies how non-simultaneous the full-universe comparison is
+- **Known overlaps:** FQ-002
+- **Confidence limits:** skew is cycle-level; individual securities still need their own observation age
+- **Validation targets:** cross-sectional rank fairness, horizon feasibility
+- **Research state:** Candidate
+
+### FQ-004 — FeatureDependencyCoverage
+
+- **Family:** Freshness / Data Quality
+- **Kind:** DERIVED
+- **Raw sources:** explicit dependency list for each feature + current availability/validity
+- **Derivation:** ratio/count of valid required/optional dependencies while preserving which critical dependency is missing
+- **Unit / shape:** coverage ratio + missing-dependency set
+- **Role:** GATE, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI
+- **Meaning:** records how much of a feature's intended evidence was actually available instead of silently substituting zero/neutral
+- **Known overlaps:** family coverage, confidence
+- **Confidence limits:** critical missing inputs may invalidate a feature even when numeric coverage looks high
+- **Validation targets:** feature eligibility, confidence calibration
+- **Research state:** Candidate
+
+### FQ-005 — FieldSemanticValidityState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** GATE
+- **Raw sources:** provider-field semantics/validation rules + current field value
+- **Derivation:** validate null/empty/zero/range/phase semantics per field rather than generic truthiness
+- **Unit / shape:** VALID / INVALID / UNKNOWN + reason
+- **Role:** GATE
+- **Availability:** NOW
+- **Evidence:** PV + PI
+- **Meaning:** enforces `null != 0 != "" != undefined` and prevents invalid executable-like values from entering features
+- **Known overlaps:** TE-008 for two-sided L1
+- **Confidence limits:** provider semantics not yet verified remain UNKNOWN rather than guessed
+- **Validation targets:** data-integrity regressions, feature correctness
+- **Research state:** Candidate
+
+### FQ-006 — SignalEvidenceAgeSeconds
+
+- **Family:** Freshness / Data Quality
+- **Kind:** DERIVED
+- **Raw sources:** timestamp of the event/state transition that created the current signal + decision time
+- **Derivation:** `decisionTime - signalEvidenceTime`
+- **Unit / shape:** seconds
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Meaning:** distinguishes “the current snapshot is fresh” from “the bullish evidence itself happened long ago”
+- **Known overlaps:** FQ-002, PW-007/PW-008, RemainingOpportunity
+- **Confidence limits:** requires explicit event/state timestamps; do not approximate every signal's age from cycle age
+- **Validation targets:** TimeToTarget, continuation, remaining opportunity
+- **Research state:** Candidate
+
+### FQ-007 — ReconfirmationState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** STATE
+- **Raw sources:** recent confirming observations across the feature's own evidence family
+- **Derivation:** classify whether a prior signal has been recently confirmed, merely persisted without new evidence, weakened or invalidated
+- **Unit / shape:** RECONFIRMED / PERSISTING / AGING_UNCONFIRMED / WEAKENING / INVALIDATED / UNKNOWN
+- **Role:** CONFIRMING, PROTECTIVE, GATE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Meaning:** allows fresh confirming evidence to renew a signal without pretending the original event happened again
+- **Known overlaps:** FQ-006, sequence/lifecycle states
+- **Confidence limits:** reconfirmation criteria are family-specific; no universal “same value again = confirmation” rule
+- **Validation targets:** continuation, false-positive reduction, TimeToTarget
+- **Research state:** Candidate
+
+### FQ-008 — FreshnessState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** STATE
+- **Raw sources:** FQ-002, FQ-006, FQ-007 + target-horizon context
+- **Derivation:** synthesize observation age, signal age and reconfirmation into FRESH / RECONFIRMED / AGING / STALE / INVALID
+- **Unit / shape:** state + Strength/Confidence
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** NOW + HISTORY
+- **Evidence:** PI + H
+- **Meaning:** family-level answer to whether this evidence is still timely for the short objective
+- **Known overlaps:** TE-011 latency-to-horizon, RemainingOpportunity
+- **Confidence limits:** thresholds must be horizon-aware; five seconds can be trivial for one signal and fatal for another
+- **Validation targets:** target-before-adverse, TimeToTarget, false-positive reduction
+- **Research state:** Provisional composite
+
+### FQ-009 — TemporalAlignmentState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** STATE
+- **Raw sources:** timestamps of all observations feeding a multi-source feature
+- **Derivation:** compare source ages and observation intervals before treating them as one coherent snapshot
+- **Unit / shape:** ALIGNED / ACCEPTABLE_SKEW / MATERIAL_SKEW / UNKNOWN
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI
+- **Meaning:** prevents LAST-vs-BID/ASK or cross-family sequences from pretending asynchronous observations were simultaneous
+- **Known overlaps:** FQ-002/FQ-003
+- **Confidence limits:** acceptable skew depends on target horizon and feature semantics
+- **Validation targets:** feature correctness, next-direction labels, rank stability
+- **Research state:** Candidate
+
+### FQ-010 — CrossFieldConsistencyState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** STATE
+- **Raw sources:** logically related fields plus documented semantics
+- **Derivation:** apply only proven/defensible checks; flag contradictions without treating unusual but possible market events as corruption
+- **Unit / shape:** CONSISTENT / SUSPICIOUS / INVALID / UNKNOWN + reasons
+- **Role:** GATE, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI
+- **Meaning:** catches impossible/semantically contradictory inputs while preserving genuine extreme events
+- **Known overlaps:** FQ-005
+- **Confidence limits:** do not assert invariants between non-atomic fields/endpoints unless verified; unusual is not bad data
+- **Validation targets:** data-integrity regressions, outlier handling
+- **Research state:** Candidate
+
+### FQ-011 — FamilyEvidenceCoverage
+
+- **Family:** Freshness / Data Quality
+- **Kind:** DERIVED
+- **Raw sources:** FQ-004 across all features required/optional for one evidence family
+- **Derivation:** summarize family-level availability while preserving critical-missing flags
+- **Unit / shape:** ratio + critical-missing set
+- **Role:** GATE, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI
+- **Meaning:** allows Price/Activity/Book/etc. to expose how complete their evidence actually is
+- **Known overlaps:** family Confidence
+- **Confidence limits:** coverage is not predictive strength; 100% complete weak evidence remains weak
+- **Validation targets:** confidence calibration, family eligibility
+- **Research state:** Candidate
+
+### FQ-012 — CrossSectionalCoverage
+
+- **Family:** Freshness / Data Quality
+- **Kind:** DERIVED
+- **Raw sources:** count of valid securities for a normalized feature + eligible universe size
+- **Derivation:** `validFeatureCount / eligibleUniverseCount`, retaining absolute counts
+- **Unit / shape:** ratio + valid/eligible
+- **Role:** CONTEXT, GATE
+- **Availability:** NOW
+- **Evidence:** PI
+- **Meaning:** qualifies percentile/rank evidence; 99th percentile among 20 valid securities is weaker context than 99th among 500
+- **Known overlaps:** cross-sectional normalization
+- **Confidence limits:** high coverage does not mean high-quality values; universe eligibility must also be valid
+- **Validation targets:** rank robustness, confidence calibration
+- **Research state:** Candidate
+
+### FQ-013 — DataQualityState
+
+- **Family:** Freshness / Data Quality
+- **Kind:** STATE
+- **Raw sources:** FQ-001..FQ-012 as applicable
+- **Derivation:** synthesize cycle integrity, semantic validity, temporal alignment and coverage into technical trust
+- **Unit / shape:** GOOD / DEGRADED / POOR / INVALID / UNKNOWN + Confidence/Coverage/reasons
+- **Role:** GATE, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PV + PI
+- **Meaning:** technical answer to whether downstream interpretation can be trusted enough to participate in ranking
+- **Known overlaps:** all downstream family confidence calculations
+- **Confidence limits:** DataQuality is not predictive Confidence; perfect data can support a weak hypothesis
+- **Validation targets:** ranking-input eligibility, integrity regressions
+- **Research state:** Provisional composite
+
+### FQ-014 — PredictiveConfidenceInputs
+
+- **Family:** Freshness / Data Quality
+- **Kind:** CONTEXT
+- **Raw sources:** FQ-008/FQ-011/FQ-013 + cross-family evidence diversity/agreement from later composition research
+- **Derivation:** preserve dimensions separately rather than multiplying prematurely
+- **Unit / shape:** DataQuality / Freshness / Coverage / EvidenceDiversity / Agreement
+- **Role:** CONTEXT
+- **Availability:** NOW + FUTURE
+- **Evidence:** PI + H
+- **Meaning:** provides ingredients for later confidence composition without confusing confidence with signal strength
+- **Known overlaps:** CentralRanker composition
+- **Confidence limits:** final confidence mapping is deferred to Issues #10/#11; this is not probability
+- **Validation targets:** confidence calibration, top-K reliability
+- **Research state:** Candidate context bundle
+
+---
+
+## Freshness / Data Quality ownership boundary
+
+This family owns **technical trust and evidence timeliness**, not directional opportunity.
+
+Important distinctions:
+
+~~~text
+fresh data != bullish data
+complete data != strong signal
+strong signal != high confidence
+~~~
+
+A stock can have:
+
+~~~text
+Price/Wave Strength = 95
+DataQuality = GOOD
+Freshness = STALE
+~~~
+
+and be rejected/discounted because the evidence is no longer timely.
+
+Likewise:
+
+~~~text
+Price/Wave Strength = 55
+DataQuality = GOOD
+Freshness = FRESH
+~~~
+
+means the system is confident that the current evidence is merely mediocre.
+
+Primary ownership correction:
+
+~~~text
+FQ-002 owns per-security observation age.
+TE-009 consumes it for execution feasibility.
+~~~
+
+Do not maintain two competing calculations.
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Freshness / Data Quality
+Path Quality / Wave Health
 ~~~
 
-It will own evidence age, coverage, cycle integrity and technical trust, while Tradability consumes the relevant latency/availability consequences.
+It will own directional efficiency, reversals, giveback/path cleanliness and cross-family effort-vs-result deterioration used for exhaustion risk.
