@@ -1,8 +1,12 @@
 # Historical Work Notes
 
-Completed temporary plans/mini-projects live here so they do not clutter executable code/test folders.
+Historical evidence, completed temporary plans, old status snapshots and investigation context live here so the normal AI continuation path stays small.
 
-These files are historical evidence and rationale. They are **not** the current operational source of truth.
+These files are **cold context**:
+
+- they are preserved for fresh chats that need to understand how/why the current state was reached;
+- they are not read on every normal continuation;
+- they are not the current operational source of truth.
 
 Current V1 status:
 
@@ -10,9 +14,49 @@ Current V1 status:
 ../../STATUS.json
 ~~~
 
-Current test policy:
+Current technical continuation context:
+
+~~~text
+../../AI_CONTEXT.md
+~~~
+
+## When to read history
+
+Read this history index, then only the relevant entry, when:
+
+- the user asks how/why a past decision was made;
+- current evidence conflicts with a previous assumption;
+- an unexpected failure may repeat an older failure class;
+- a durable decision/spec references historical evidence;
+- resuming or comparing with a completed mini-project;
+- the current compact context is insufficient to explain an existing design.
+
+Do **not** preload all history in a fresh chat.
+
+## Status snapshots
+
+### 2026-09-23 — pre context-compaction snapshot
+
+~~~text
+status-snapshots/2026-09-23-pre-context-compaction.json
+~~~
+
+Full historical snapshot of the former large `STATUS.json`, including accumulated Stage/CI/verification history before the hot-context compaction.
+
+Use it only when a past Stage/run/verification detail is actually needed.
+
+## Completed mini-projects
+
+### Testing refactor
+
+~~~text
+testing-refactor/
+~~~
+
+Historical testing-pyramid refactor plan, status and verification evidence.
+
+Durable current testing rules live in:
 
 ~~~text
 ../../tests/TESTING_POLICY.md
 ~~~
-
