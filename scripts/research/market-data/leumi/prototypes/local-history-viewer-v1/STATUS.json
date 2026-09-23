@@ -29,7 +29,7 @@
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
     "phase": "C",
-    "phaseStatus": "planned",
+    "phaseStatus": "in-progress",
     "title": "Controlled suite parallelism",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
@@ -97,12 +97,13 @@
     }
   },
   "next": {
-    "action": "Execute Phase C controlled suite parallelism only.",
+    "action": "Benchmark workers=2 in two full Chromium runs before accepting or rejecting parallelism.",
     "steps": [
-      "benchmark workers=2 against the accepted workers=1 setup baseline",
       "keep all 56 browser tests and storage-growth coverage unchanged",
-      "run at least two full Chromium passes before accepting parallelism",
-      "if concurrency exposes shared-state coupling, diagnose it rather than masking failures or increasing retries"
+      "change only the Playwright worker count for the experiment",
+      "run the full Chromium suite twice with workers=2",
+      "compare Playwright and browser-job elapsed time against the accepted workers=1 warm-cache baseline",
+      "if failures appear, perform RCA before any rerun or workaround"
     ]
   },
   "history": {
