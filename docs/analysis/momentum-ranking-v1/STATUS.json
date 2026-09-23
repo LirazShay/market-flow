@@ -14,7 +14,7 @@
     "issue": 17,
     "title": "Core predictive signal prioritization and feature reduction",
     "status": "in-progress",
-    "subfocus": "Staged mini-research plan established for eight provisional concepts. No eight-way ranking has been performed; research will proceed in separate A-E stages."
+    "subfocus": "Stage 17.A completed. Fresh Price Impulse and BID/Quote Migration Strength are too overlapping for two core slots and are merged into one provisional parent: Fresh Market Repricing. The provisional parent-concept count is reduced from eight to seven."
   },
   "completedWorkUnits": [
     {
@@ -56,6 +56,6 @@
   },
   "next": {
     "issue": 17,
-    "action": "Stage 17.A only: deeply compare Fresh Price Impulse vs BID/Quote Migration Strength, including directness, lead/confirmation role, redundancy boundary, failure modes and provisional priority. Do not yet rank concepts 3–8."
+    "action": "Stage 17.B only: compare Activity-to-Price Conversion, Clean Path/Adverse Efficiency, and Stall/Effort-to-Progress Deterioration. Determine which are independent information channels versus merge candidates; do not yet analyze concepts 6–8."
   }
 }
