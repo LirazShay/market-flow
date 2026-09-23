@@ -5,8 +5,9 @@ Describe the coherent behavior/design change.
 ## Verification
 
 - [ ] Relevant tests were run after their final edit.
-- [ ] Any changed browser test/behavior was verified in Chromium.
-- [ ] Required broader CI/checkpoint was run when applicable.
+- [ ] Changed/new browser tests were verified with the smallest sufficient targeted Chromium run first.
+- [ ] Expected TDD red was demonstrated with the targeted test, not an unnecessary full Browser suite.
+- [ ] Required broader CI/checkpoint was run only when applicable (for example Stage closure, integration checkpoint, or broad shared-infrastructure risk).
 
 ## SPEC impact review
 
