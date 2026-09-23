@@ -1,8 +1,22 @@
 name: Local History Viewer V1 Browser CI
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
+    inputs:
+      publish_runtime:
+        description: "Publish the verified runtime to the rolling release after Browser CI"
+        required: false
+        default: false
+        type: boolean
   workflow_call:
+    inputs:
+      publish_runtime:
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -66,7 +80,7 @@ jobs:
   publish-runtime:
     name: Publish rolling runtime download
     needs: browser-tests
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && inputs.publish_runtime == true
     runs-on: ubuntu-latest
     timeout-minutes: 3
 
