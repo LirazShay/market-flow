@@ -53,7 +53,9 @@ There is no arbitrary absolute Bookmarklet size ceiling in the build. The packag
 
 ## Stable verified download
 
-A successful full Browser CI run on `main` publishes the two generated files to a rolling GitHub Release:
+A successful full Browser CI run on `main` can publish the two generated files to a rolling GitHub Release when the workflow input `publish_runtime=true` is selected.
+
+Ordinary Browser CI verification leaves `publish_runtime=false` (the default), so verification completes without waiting for release publication. Release publication remains downstream of the same successful Browser CI job rather than using an unverified build.
 
 ~~~text
 tag:
