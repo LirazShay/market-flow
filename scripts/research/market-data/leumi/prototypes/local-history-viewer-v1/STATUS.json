@@ -1855,53 +1855,6 @@
       },
       "nextLiveQuestion": "After market hours, do successive complete cycles contain unchanged market fingerprints and/or unchanged provider-time fingerprints while Leumi still returns complete HTTP 200 data?"
     },
-    "loaderProbe": {
-      "status": "release-asset-transport-rejected-live",
-      "spec": "specs/loader-probe.spec.md",
-      "stableReleaseTag": "local-history-viewer-v1-runtime-latest",
-      "tagVerifiedCommit": "b152e38c717cf18884e99dc2d0335f01d6391585",
-      "artifacts": {
-        "manifest": {
-          "name": "market-flow-v1.manifest.json",
-          "assetId": 583557454,
-          "sizeBytes": 418,
-          "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.manifest.json"
-        },
-        "probe": {
-          "name": "market-flow-loader-probe.bookmarklet.txt",
-          "assetId": 583557419,
-          "sizeBytes": 7415,
-          "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-loader-probe.bookmarklet.txt"
-        }
-      },
-      "automatedEvidence": {
-        "fastCi": {
-          "runId": 35850234923,
-          "jobId": 107145914552,
-          "tests": 166,
-          "passed": 166,
-          "failed": 0
-        },
-        "browserCi": {
-          "runId": 35849961303,
-          "jobId": 107145032621,
-          "publishJobId": 107145396886,
-          "tests": 57,
-          "passed": 57,
-          "failed": 0,
-          "duration": "34.4s"
-        }
-      },
-      "liveQuestion": "Can the real authenticated Leumi origin fetch the stable manifest/runtime and compile the verified runtime under its actual CSP/network policy?",
-      "liveResult": {
-        "verified": "Direct GitHub Release download URL is not fetchable cross-origin from the Leumi origin because its response does not expose Access-Control-Allow-Origin.",
-        "implication": "Do not build the permanent loader on direct release-asset fetch.",
-        "notTested": [
-          "remote runtime SHA-256 on Leumi origin",
-          "remote runtime compilation on Leumi origin"
-        ]
-      }
-    },
     "testingPolicyTargetedFirst": {
       "status": "complete",
       "policy": "Browser tests-first/TDD uses the smallest sufficient targeted Chromium run for red/green. Full Browser CI is reserved for numbered Stage closure, explicit integration checkpoints, broad shared-browser-infrastructure risk, suite-only reproduction, or explicit request.",
@@ -1933,55 +1886,7 @@
       "directly relevant tests"
     ]
   },
-  "activeMiniProject": {
-    "id": "permanent-loader",
-    "title": "Permanent self-updating Market Flow Loader",
-    "status": "in-progress",
-    "reason": "Live POCs proved raw.githubusercontent.com and api.github.com are readable from the Leumi origin and Function compilation is permitted. Build the permanent loader in bounded verified stages.",
-    "principles": [
-      "one permanent small Bookmarklet installed once",
-      "only verified published runtime may be loaded",
-      "build identity and artifact integrity are separate concepts",
-      "IndexedDB is never deleted by code upgrade",
-      "upgrade waits for recorder/persistence to quiesce",
-      "failed upgrade must preserve or restore a usable known-good runtime",
-      "exploratory POCs stay outside the repository until a design is accepted"
-    ],
-    "steps": {
-      "LDR1": {
-        "title": "Loader contract, architecture and pure version/decision model",
-        "status": "in-progress"
-      },
-      "LDR2": {
-        "title": "Verified raw.githubusercontent.com publication transport",
-        "status": "planned"
-      },
-      "LDR3": {
-        "title": "Permanent loader fetch + integrity + INSTALL/REUSE",
-        "status": "planned"
-      },
-      "LDR4": {
-        "title": "Graceful runtime dispose + hot UPGRADE lifecycle",
-        "status": "planned"
-      },
-      "LDR5": {
-        "title": "Rollback / last-known-good recovery",
-        "status": "planned"
-      },
-      "LDR6": {
-        "title": "Viewer build/version/update diagnostics",
-        "status": "planned"
-      },
-      "LDR7": {
-        "title": "Integrated targeted Chromium + full loader checkpoint",
-        "status": "planned"
-      },
-      "LDR8": {
-        "title": "One-time migration from legacy self-contained Bookmarklet",
-        "status": "planned"
-      }
-    }
-  },
+  "activeMiniProject": null,
   "executionScopePolicy": "adaptive-no-fixed-stage-per-message",
   "testingPolicy": {
     "file": "tests/TESTING_POLICY.md",
@@ -1999,11 +1904,11 @@
     "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Permanent Loader implementation started at LDR1.",
+    "reached": true,
+    "reason": "Permanent/remote loader work was intentionally abandoned as over-engineering. Version replacement policy is refresh the authenticated Leumi tab and run the new self-contained Bookmarklet/JS; IndexedDB remains persisted across page refresh.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Complete LDR1 pure contract/decision model before implementing raw publication or browser loader side effects."
+    "nextAction": "Resume live Leumi verification. For a new code version: refresh the Leumi page, run the new verified Bookmarklet, let several cycles complete, and use Export Debug to investigate the after-market static-data behavior."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
@@ -2124,5 +2029,11 @@
         "resolution": "Stage 14.4 verification is green; normal Stage 14 progression may resume at 14.5."
       }
     ]
+  },
+  "versionReplacementPolicy": {
+    "status": "adopted-simple-policy",
+    "rule": "For code-version replacement, refresh the Leumi page and run the new self-contained Bookmarklet/JS. Do not implement permanent loader/hot-upgrade/restart lifecycle now.",
+    "persistence": "Page refresh does not intentionally delete the Market Flow IndexedDB database; persisted latest/history remains available.",
+    "scope": "operational guidance only; no additional runtime lifecycle feature is planned at this time"
   }
 }
