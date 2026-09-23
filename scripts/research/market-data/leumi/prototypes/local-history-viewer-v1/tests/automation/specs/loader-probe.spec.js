@@ -175,11 +175,17 @@ test(
         ).click();
 
         await page.waitForFunction(
-            () =>
-                window
-                    .MarketFlowLoaderProbeLastResult
-                    ?.completedAtMs !==
-                null
+            () => {
+                const result =
+                    window
+                        .MarketFlowLoaderProbeLastResult;
+
+                return Boolean(
+                    result &&
+                    result.completedAtMs !==
+                        null
+                );
+            }
         );
 
         const result =
@@ -378,11 +384,17 @@ test(
         ).click();
 
         await page.waitForFunction(
-            () =>
-                window
-                    .MarketFlowLoaderProbeLastResult
-                    ?.completedAtMs !==
-                null
+            () => {
+                const result =
+                    window
+                        .MarketFlowLoaderProbeLastResult;
+
+                return Boolean(
+                    result &&
+                    result.completedAtMs !==
+                        null
+                );
+            }
         );
 
         const result =
