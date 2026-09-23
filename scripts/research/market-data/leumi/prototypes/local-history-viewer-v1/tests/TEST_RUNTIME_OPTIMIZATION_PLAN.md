@@ -200,3 +200,56 @@ aim for comfortably below the current ~90s verification path
 ~~~
 
 No arbitrary target justifies unsafe test deletion or hidden skipping.
+
+## Phase A findings
+
+Baseline evidence from Browser CI run `35862723542`:
+
+| Cost area | Observed elapsed |
+|---|---:|
+| npm dependency install | ~3s |
+| `playwright install --with-deps chromium` | ~20.6s |
+| runtime build + Playwright command | ~40.2s |
+| Playwright-reported 56-test suite | 39.0s |
+| `storage-growth.spec.js` alone | ~12.2s |
+| browser-tests job overall | ~67s |
+| end-to-end workflow including rolling publication | ~90s |
+
+Setup observation:
+
+- the Chromium setup step runs apt/dependency work on every fresh runner;
+- it also downloads a Playwright Chromium Headless Shell of about 104 MB;
+- this is the largest non-test cost and is the first low-risk optimization target.
+
+Suite-isolation audit:
+
+- no `test.describe.serial`;
+- no `beforeAll` / `afterAll` ordering dependency;
+- no browser spec writes shared repository files;
+- the local HTTP server is static/read-only;
+- Playwright creates isolated browser contexts for ordinary tests, so IndexedDB state is isolated between tests;
+- no browser spec depends on shared `process.env` mutation.
+
+Result:
+
+- a controlled `workers=2` experiment is technically reasonable;
+- it is not yet accepted and must be benchmarked/repeated before becoming the default.
+
+Storage-growth observation:
+
+- benchmark sample = 20 measured cycles × 561 securities = 11,220 added history rows;
+- the test also intentionally waits for repeated `navigator.storage.estimate()` stabilization;
+- most of its ~12s runtime is meaningful IndexedDB volume work, not a single accidental sleep;
+- sample-size reduction therefore needs measurement-validity evidence before any change.
+
+Optimization order chosen from the evidence:
+
+~~~text
+Phase B: reduce repeated Chromium/setup cost
+→ Phase C: benchmark safe worker parallelism
+→ Phase D: review storage-growth sample cost
+→ Phase E: remove rolling-release publication from ordinary verification critical path if useful
+→ Phase F: repeated full verification + timing comparison
+~~~
+
+This order attacks overhead first and avoids weakening tests prematurely.
