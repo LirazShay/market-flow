@@ -14,7 +14,7 @@
     "issue": 14,
     "title": "Objective alignment audit and first-principles short-horizon hypotheses",
     "status": "in-progress",
-    "subfocus": "Audit passes 1–4 completed. Pass 4 redefined cross-sectional ranking as secondary selection after absolute eligibility and made hysteresis opportunity-aware and time-bounded."
+    "subfocus": "Audit passes 1–5 completed. Pass 5 retained Recent Wave Memory as a conditional capacity/timing/path prior, with all-observation excursion memory as the required baseline denominator."
   },
   "completedWorkUnits": [
     {
@@ -44,6 +44,6 @@
   },
   "next": {
     "issue": 14,
-    "action": "Audit Recent Wave Memory / realized wave capacity against the direct short-horizon opportunity objective."
+    "action": "Audit Multi-Horizon Context and Local Regime/Decay against the direct short-horizon opportunity objective."
   }
 }

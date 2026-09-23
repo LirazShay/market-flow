@@ -1476,3 +1476,409 @@ is there any eligible opportunity?
 → maintain leader only while its current opportunity remains valid
 → switch only when challenger advantage is meaningful enough to justify delay/uncertainty
 ~~~
+
+
+---
+
+# Audit pass 5 — Recent Wave Memory / realized wave capacity
+
+## Verdict: KEEP, but as a conditional prior/reference — not a directional trigger
+
+Recent same-stock history is potentially valuable because it tells us what movement scale, timing and adverse path the security has recently demonstrated.
+
+But:
+
+~~~text
+recently demonstrated capacity
+!=
+guaranteed next-wave capacity
+!=
+directional signal
+~~~
+
+The memory should answer:
+
+> Under states/regimes similar to now, what short-horizon upward excursions, times-to-target and adverse paths has this stock recently produced?
+
+It should not answer:
+
+> It made three +0.30% waves, therefore another +0.30% wave is likely now.
+
+External high-frequency literature documents persistent/clustered volatility and strong intraday periodicity. That supports treating recent movement environment as potentially informative context, while also warning that recent amplitude can merely reflect time-of-day or a volatility regime rather than a repeatable directional pattern.
+
+Research leads:
+- https://www.sciencedirect.com/science/article/pii/S0927539897000042
+- https://www.sciencedirect.com/science/article/pii/S0304405X01000551
+- https://www.sciencedirect.com/science/article/abs/pii/S037837581000217X
+
+These are not TASE validation.
+
+---
+
+## Major correction: wave memory alone cannot estimate opportunity probability
+
+If the system stores only completed waves, it observes cases where a wave existed but omits all eligible moments where no useful wave followed.
+
+Example:
+
+~~~text
+4 recent waves reached +0.30%
+~~~
+
+does not tell us whether those 4 waves came from 5 eligible opportunities, 50 observations, or 5,000 observations.
+
+Therefore wave memory cannot by itself answer:
+
+~~~text
+from NOW, how likely/useful is a fast excursion?
+~~~
+
+Issue #15's all-observation future-excursion surface is the required denominator/baseline.
+
+New principle:
+
+~~~text
+ObservationBasedExcursionMemory = baseline
+WaveMemory = structured conditional context / explanation
+~~~
+
+Wave memory must prove incremental value beyond direct observation-based outcome history.
+
+---
+
+## Separate four different kinds of recent capacity
+
+Do not compress capacity into one amplitude number.
+
+### 1. Amplitude capacity
+
+How large recent upward excursions/waves have been.
+
+Candidates:
+- median/P75/P90 upward amplitude;
+- target-hit counts;
+- target-hit rates with a valid denominator.
+
+### 2. Speed capacity
+
+How quickly useful targets were reached.
+
+Candidates:
+- median TimeToTarget;
+- lower/upper time quantiles;
+- fastest credible target time;
+- target-specific time distribution.
+
+### 3. Adverse-path capacity
+
+What had to be tolerated before the upward target.
+
+Candidates:
+- MAE before target;
+- giveback;
+- time-under-water;
+- recovery time.
+
+### 4. Opportunity-arrival capacity
+
+How often useful excursions appeared from eligible decision states.
+
+This cannot be derived only from segmented waves.
+
+Candidates:
+- eligible-state count;
+- target-before-adverse count;
+- opportunity-arrival rate/intensity over defined windows.
+
+These dimensions answer different questions and must remain separate.
+
+---
+
+## Demote RecentWaveAmplitudeMax
+
+Maximum recent wave amplitude is fragile because one extreme event can dominate, belong to another regime, create an unrealistic target anchor, and say nothing about frequency.
+
+Verdict:
+
+~~~text
+RecentWaveAmplitudeMax = diagnostic/context only
+~~~
+
+Median/P75/quantiles are better distribution summaries, but they still remain conditional context rather than guarantees.
+
+---
+
+## Target-specific memory is more useful than generic wave size
+
+For this objective, a generic typical-wave number is less useful than target-specific memory:
+
+~~~text
+for +0.10% target:
+  hit count / eligible count
+  TimeToTarget distribution
+  MAE-before-target distribution
+
+for +0.20% target:
+  ...
+
+for +0.30% target:
+  ...
+~~~
+
+Candidate:
+
+~~~text
+RecentConditionalTargetProfile
+~~~
+
+This aligns memory directly with the TargetFeasibilityFrontier from audit pass 3.
+
+---
+
+## Success memory must be paired with failure memory
+
+Repeated similar failed setups are at least as important as successful waves.
+
+Candidate memory should preserve:
+- target reached;
+- adverse barrier first;
+- timeout/no-progress;
+- break/retest failure;
+- pressure-without-progress;
+- execution infeasibility where measurable.
+
+New candidates:
+
+~~~text
+RecentTargetFailureProfile
+RecentStallProfile
+RecentFalseStartProfile
+~~~
+
+Three recent successes and seven recent failures are very different from three successes and zero failures.
+
+---
+
+## Separate upward capacity from general volatility
+
+A stock with large recent moves in both directions may have high movement capacity but poor upward path quality.
+
+Therefore keep separate:
+
+~~~text
+UpwardExcursionCapacity
+DownwardAdverseCapacity
+GeneralMovementCapacity
+~~~
+
+A deeply negative daily stock can still have strong short upward excursion capacity; downward history must not become an automatic veto.
+
+---
+
+## Regime and time-of-day matching are mandatory qualifiers
+
+Intraday volatility has strong periodic structure, so a stock's recent large movement near one phase/time may not be comparable with a quieter period.
+
+Memory should carry:
+
+~~~text
+recency
+timeOfDayMatch
+sessionPhaseMatch
+spread/liquidityMatch
+activityMatch
+volatility/pathMatch
+bookStateMatch
+broadMarketMatch
+~~~
+
+No single fixed decay curve is justified yet. Issue #9 owns detailed local-regime/decay research.
+
+---
+
+## New concept: ComparableMemoryCoverage
+
+A recent-memory prior is only useful if enough comparable history exists.
+
+Candidate:
+
+~~~text
+ComparableMemoryCoverage {
+  rawSampleCount
+  eligibleDenominator
+  comparableSampleCount
+  effectiveRecencyWeightedCount
+  regimeMatchQuality
+}
+~~~
+
+Do not allow 2/2 successes, 3/3 waves, or one extreme wave to masquerade as high-confidence evidence.
+
+---
+
+## New concept: hierarchical memory fallback
+
+Exact state matches may be scarce.
+
+Candidate fallback:
+
+~~~text
+exact state + regime
+→ looser state + regime
+→ same-stock recent session
+→ same-stock broader session
+→ cross-sectional comparable states
+→ UNKNOWN
+~~~
+
+Each fallback must reduce specificity/confidence.
+
+---
+
+## Current unfinished wave must not leak into completed-wave memory
+
+The active wave/leg can influence current-state features, but completed-wave statistics should not silently include future information from that same episode.
+
+Candidate:
+
+~~~text
+WaveMemoryEpisodeStatus =
+COMPLETED / ACTIVE_CENSORED / INVALID
+~~~
+
+This is important for later leakage-safe validation.
+
+---
+
+## Wave segmentation is a model choice, not ground truth
+
+Different segmentation thresholds can create different wave counts, amplitudes, durations and recurrence statistics.
+
+Issue #6 must test whether wave-memory features add predictive value across reasonable segmentation definitions rather than only one convenient threshold.
+
+---
+
+## Inter-wave spacing must not become periodicity prediction
+
+InterWaveSpacing and WaveFrequency may describe opportunity density/rhythm.
+
+Do not infer:
+
+~~~text
+last waves were 3 minutes apart
+→ next wave is due now
+~~~
+
+without strong empirical evidence.
+
+A safer interpretation is that the recent opportunity-arrival environment is active or quiet.
+
+---
+
+## Capacity trend — KEEP, but interpret as environment change
+
+Rising recent wave amplitude/frequency can mean the local movement environment is expanding.
+
+Candidate:
+
+~~~text
+CapacityTrend =
+EXPANDING / STABLE / CONTRACTING / UNKNOWN
+~~~
+
+But this is not inherently bullish. It may increase upside opportunity, downside adverse risk and execution difficulty.
+
+---
+
+## Pattern similarity should adjust conditional prior/confidence, not override current evidence
+
+Issue #7 remains useful, but the correct question is:
+
+> When the current formation resembles prior recent formations, do their subsequent target/adverse outcomes add information beyond today's current Price/Activity/Book/Path state?
+
+If not, pattern similarity is redundant.
+
+Candidate:
+
+~~~text
+RecentWavePrior {
+  supportiveOutcomeEvidence
+  cautionaryOutcomeEvidence
+  comparableSampleCount
+  similarity
+  recency
+  regimeMatch
+  outcomeConsistency
+  confidence
+}
+~~~
+
+Do not convert it directly into a large additive bullish score.
+
+---
+
+# New hypotheses from audit pass 5
+
+## AG. ObservationBasedExcursionMemoryBaseline
+
+All-observation target/adverse outcomes are the denominator against which wave-memory value must be judged.
+
+## AH. RecentConditionalTargetProfile
+
+Target-specific hit/time/adverse summaries are more objective-aligned than a generic typical wave amplitude.
+
+## AI. FourCapacityDecomposition
+
+Separate amplitude, speed, adverse-path and opportunity-arrival capacity.
+
+## AJ. ComparableMemoryCoverage
+
+Memory confidence requires valid denominator, comparable sample count, recency and regime match.
+
+## AK. FailureMemory
+
+Store recent failed target attempts / false starts / stalls alongside successful waves.
+
+## AL. DirectionalCapacityAsymmetry
+
+Keep upward excursion capacity separate from downside/adverse movement capacity and general volatility.
+
+## AM. HierarchicalMemoryFallback
+
+Back off from exact current-state matches to broader memory only with explicit confidence loss.
+
+## AN. ActiveWaveCensoring
+
+Do not contaminate completed-wave memory or validation with the unfinished current episode.
+
+## AO. SegmentationSensitivity
+
+Wave-memory usefulness must survive reasonable alternative segmentation definitions.
+
+## AP. OpportunityArrivalEnvironment
+
+Use wave frequency/inter-wave spacing to describe active vs quiet opportunity environment, not deterministic periodic timing.
+
+---
+
+## Audit verdict
+
+~~~text
+Recent Wave Memory = KEEP
+Primary role = conditional prior / target-feasibility / path-time context
+Directional trigger role = NO, unless independently validated
+~~~
+
+Most important correction:
+
+~~~text
+recent waves were large
+!=
+next move will be large
+
+but may mean
+this stock/regime has recently demonstrated the ability
+to produce fast excursions of this scale
+~~~
+
+That evidence becomes useful only after conditioning on current state, target/horizon, adverse path, comparable regime, valid denominator, sample size, recency and execution feasibility.
