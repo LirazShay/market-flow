@@ -1,11 +1,6 @@
 name: Local History Viewer V1 Browser CI
 
 on:
-  push:
-    paths:
-      - "scripts/research/momentum-ranking-v1/issue-15-history-coverage/**"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/issue-15-history-coverage.spec.js"
-      - ".github/workflows/local-history-viewer-v1-ci.yml"
   workflow_dispatch:
     inputs:
       publish_runtime:

@@ -75,7 +75,7 @@ The test covers exact endpoint semantics, non-edge cadence misses, session bound
 
 - Pure timing semantics: testable deterministically.
 - IndexedDB adapter: Chromium verified against a synthetic database with the frozen V1 `history` key/index shape; the test also proves the analyzer leaves all history rows unchanged and refuses to create a missing database.
-- One-click bookmarklet delivery: pending Chromium verification in this work unit.
+- One-click bookmarklet delivery: Chromium verified. The committed bookmarklet is checked against the deterministic builder output, runs against the canonical IndexedDB name, downloads the aggregate report, exports no raw `data` payload, and leaves history unchanged.
 - Actual cadence/jitter/evaluability numbers: require execution against the real local IndexedDB history and remain unknown until that run is captured.
 
 ## Verification evidence
@@ -85,3 +85,5 @@ The test covers exact endpoint semantics, non-edge cadence misses, session bound
 - Browser CI run `35928310088`: success, `58/58` Chromium tests.
 - The first browser run exposed a wrong expected fixture count in the new test; the analyzer behavior was correct. The expectation was corrected and the full Chromium suite reran green.
 - Real local IndexedDB measurement remains pending; no empirical cadence/coverage numbers are claimed yet.
+- Fast CI run `35928987727`: success.
+- Browser CI run `35928987824`: success, `59/59` Chromium tests including the self-contained bookmarklet download path.
