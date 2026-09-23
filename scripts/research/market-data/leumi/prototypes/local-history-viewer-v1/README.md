@@ -2,49 +2,41 @@
 
 Browser-only research prototype inside Market Flow.
 
-ה-README הזה מתאר boundaries ו-navigation יציבים בלבד.
+This README is the stable workstream orientation page, not a progress diary.
 
-## 30-second orientation
+## Fresh-chat HOT path
 
-| Question | File |
+~~~text
+README.md
+→ STATUS.json
+→ AI_CONTEXT.md
+~~~
+
+Repository-wide rules are already loaded from `AGENTS.md`.
+
+After HOT context, read only the current Stage scope, target files/tests and owning SPEC(s) needed for the task.
+
+Historical rationale remains available from:
+
+~~~text
+docs/history/README.md
+~~~
+
+but is not preloaded by default.
+
+## Where to look
+
+| Need | File |
 |---|---|
-| exact operational progress | STATUS.json |
-| compact technical context | AI_CONTEXT.md |
-| full V1 plan/order | ROADMAP.md |
-| fresh-chat instructions | HANDOFF.md |
-| reusable continuation prompt | NEXT_CHAT_PROMPT.md |
-| durable normative contracts / Specs | specs/README.md |
-| durable V1 design / rationale | docs/ |
-| testing / CI policy | tests/TESTING_POLICY.md |
-| engineering / safe-change policy | [project engineering practices](../../../../../../docs/project/engineering-practices.md) |
-
-## Operational state source
-
-~~~text
-STATUS.json
-~~~
-
-אין להעתיק ל-README הזה current stage, completion state, next pointer או latest CI snapshot.
-
-## Folder map
-
-~~~text
-local-history-viewer-v1/
-├── README.md
-├── ROADMAP.md
-├── STATUS.json
-├── AI_CONTEXT.md
-├── HANDOFF.md
-├── NEXT_CHAT_PROMPT.md
-│
-├── specs/
-├── docs/
-├── recorder/
-├── storage/
-├── messaging/
-├── viewer/
-└── tests/
-~~~
+| exact operational progress / next action | `STATUS.json` |
+| compact technical context / invariants | `AI_CONTEXT.md` |
+| full plan / stage scope | `ROADMAP.md` |
+| durable normative contracts | `specs/README.md` |
+| durable design / rationale | `docs/README.md` |
+| preserved historical evidence | `docs/history/README.md` |
+| testing policy | `tests/TESTING_POLICY.md` |
+| optional human fresh-chat helper | `HANDOFF.md` |
+| optional copy/paste continuation prompt | `NEXT_CHAT_PROMPT.md` |
 
 ## V1 flow
 
@@ -52,10 +44,10 @@ local-history-viewer-v1/
 MapHeat2
 → dynamic universe
 → sequential GetSecuritiesData chunks
-→ validated cycle
+→ validated complete cycle
 → atomic IndexedDB persistence
 → metadata-only BroadcastChannel notification
-→ viewer re-reads IndexedDB
+→ Viewer rereads IndexedDB
 → current/history UI
 ~~~
 
@@ -63,46 +55,32 @@ MapHeat2
 
 V1 includes:
 
-- dynamic universe; never hardcode a universe size.
-- sequential collection baseline.
-- complete-cycle validation.
-- IndexedDB local history.
-- same-origin viewer.
-- current table, sorting and per-security history.
-- recorder/viewer diagnostics.
-- tests-first development under `tests/TESTING_POLICY.md`.
+- dynamic universe; never hardcode a universe size;
+- sequential collection baseline;
+- complete-cycle validation;
+- IndexedDB local history;
+- same-origin Viewer;
+- current table, sorting and per-security history;
+- recorder/viewer diagnostics;
+- self-contained runtime/Bookmarklet;
+- bounded sanitized Debug Bundle.
 
 V1 intentionally excludes:
 
-- server/external DB.
-- production architecture.
-- execution.
-- advanced charts.
-- filtering.
-- derived momentum metrics.
+- server/external DB;
+- production architecture;
+- execution;
+- advanced charts/filtering;
+- derived momentum metrics;
 - automatic retention.
 
 ## Source-of-truth ownership
 
 ~~~text
-STATUS.json
-    operational progress + verification state
-
-ROADMAP.md
-    stage definitions/order/scope
-
-AI_CONTEXT.md
-    compact technical continuation only
-
-HANDOFF.md
-    fresh-chat read/continuation instructions
-
-specs/
-    durable normative behavior/contracts/invariants
-
-docs/
-    durable design/evidence/rationale
-
-tests/TESTING_POLICY.md
-    verification policy
+STATUS.json  = live progress / current verification
+ROADMAP.md   = plan / order / scope
+AI_CONTEXT   = compact technical continuation
+specs/       = durable behavior/contracts/invariants
+docs/        = durable design/evidence/rationale
+docs/history = cold historical evidence
 ~~~
