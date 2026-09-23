@@ -489,12 +489,340 @@ AF-001..AF-009
 → cross-family sequence/confirmation logic
 ~~~
 
+# Family BD — Book / Directional Flow
+
+Purpose:
+
+> Describe how the best displayed bid/ask are moving, where the latest trade sits relative to them, and whether persistent L1 behavior leans upward, downward or remains conflicted.
+
+This family works with **displayed L1 evidence**. It does not claim true signed order flow from the current snapshot feed.
+
+## Provider-source semantics
+
+Verified project documentation currently gives:
+
+~~~text
+BuyLimit1   = BID1 price
+SellLimit1  = ASK1 price
+BuyVolume1  = displayed quantity at BID1
+SellVolume1 = displayed quantity at ASK1
+~~~
+
+Measured coverage was partial, so all L1-dependent features are nullable/UNKNOWN when required inputs are invalid.
+
+Critical interpretation rule:
+
+~~~text
+Δ displayed queue != executed flow
+~~~
+
+A decrease in displayed quantity may reflect execution, cancellation or quote replacement. An increase may reflect new displayed liquidity or replacement. Without event-level order messages/trade tape, do not infer exact participant intent or aggressor flow from queue changes alone.
+
+The conceptual `LAST` abstraction remains explicit. For continuous-trading trade-location features, `ContinuousLastDealRate` is a provider candidate because its documented meaning is the last continuous-session trade rate; final implementation must still define the canonical phase-aware mapping rather than silently mixing it with `LastKnownRate`.
+
+### BD-001 — BestBidMoveProfile
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** `BuyLimit1` history + timestamps
+- **Derivation:** price change/return of valid BID1 across recent observation windows
+- **Unit / shape:** price/percent profile
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PV(field semantics/coverage) + PI + GL + H
+- **Meaning:** detects whether the best displayed buyer level is chasing upward, holding or retreating
+- **Known overlaps:** BD-003, PW-002 MID movement
+- **Confidence limits:** BID1 can disappear or jump because displayed liquidity changes; invalid/zero quote must not be treated as a real price
+- **Validation targets:** next MID direction, target-before-adverse, continuation
+- **Research state:** Candidate
+
+### BD-002 — BestAskMoveProfile
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** `SellLimit1` history + timestamps
+- **Derivation:** price change/return of valid ASK1 across recent observation windows
+- **Unit / shape:** price/percent profile
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PV(field semantics/coverage) + PI + GL + H
+- **Meaning:** detects whether the best displayed seller level is moving upward, holding or retreating downward
+- **Known overlaps:** BD-003, PW-002 MID movement
+- **Confidence limits:** quote movement is observable behavior, not proof of seller intention
+- **Validation targets:** next MID direction, target-before-adverse, continuation/exhaustion
+- **Research state:** Candidate
+
+### BD-003 — QuoteMigrationState
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** BD-001, BD-002
+- **Derivation:** classify the joint movement of BID1 and ASK1
+- **Unit / shape:** candidate states such as BID_CHASING / ASK_RETREATING / WHOLE_BOOK_UP / WHOLE_BOOK_DOWN / COMPRESSION / EXPANSION / STABLE / UNKNOWN
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** preserves **who moved** rather than reducing every change to a spread change
+- **Known overlaps:** PW-002 MID movement; future Tradability spread-state features
+- **Confidence limits:** compression is ambiguous unless its cause is retained; same final spread can result from opposite market behaviors
+- **Validation targets:** next MID direction, target-before-adverse, TimeToTarget
+- **Research state:** Candidate
+
+### BD-004 — L1QueueImbalance
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** `BuyVolume1`, `SellVolume1`
+- **Derivation:** candidate normalized form `(BuyVolume1 - SellVolume1) / (BuyVolume1 + SellVolume1)` when both quantities are valid and denominator > 0
+- **Unit / shape:** bounded ratio in approximately [-1, +1]
+- **Role:** LEADING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PV(input availability) + GL + H
+- **Meaning:** summarizes displayed top-of-book quantity asymmetry
+- **Known overlaps:** BD-005, BD-008
+- **Confidence limits:** displayed quantity is not participant count, commitment or guaranteed executable liquidity; one snapshot can be spoofed/cancelled/temporary; predictive value may depend on tick regime
+- **Validation targets:** next MID direction, target-before-adverse, continuation
+- **Research state:** Candidate
+
+### BD-005 — MicropriceTilt
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** BID1, ASK1, BuyVolume1, SellVolume1
+- **Derivation:** candidate microprice `(ASK1*BuyVolume1 + BID1*SellVolume1)/(BuyVolume1+SellVolume1)`; tilt measured relative to MID and/or spread
+- **Unit / shape:** price plus normalized tilt
+- **Role:** LEADING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** expresses how displayed L1 quantity imbalance shifts a queue-weighted reference inside the spread
+- **Known overlaps:** BD-004 by construction; PW-002
+- **Confidence limits:** highly redundant with queue imbalance; should not receive an independent full vote; invalid when required L1 fields are unavailable or spread is not valid
+- **Validation targets:** next MID direction, target-before-adverse
+- **Research state:** Candidate / redundancy-sensitive
+
+### BD-006 — BidDisplayedDepthPersistence
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** `BuyVolume1`, BID1 history
+- **Derivation:** characterize whether meaningful displayed BID1 quantity persists while price/book evolves; exact persistence semantics TBD
+- **Unit / shape:** PERSISTENT / TRANSIENT / REBUILDING / WEAKENING / UNKNOWN
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** distinguishes a one-frame large bid from displayed support that survives/reappears across observations
+- **Known overlaps:** BD-004, BD-008
+- **Confidence limits:** persistence across ~snapshot intervals is not order identity; cancellations/replacements cannot be reconstructed
+- **Validation targets:** target-before-adverse, low-MAE continuation, breakdown
+- **Research state:** Candidate
+
+### BD-007 — AskDisplayedDepthPersistence
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** `SellVolume1`, ASK1 history
+- **Derivation:** characterize persistence/replenishment/weakening of displayed ASK1 quantity across observations; exact semantics TBD
+- **Unit / shape:** PERSISTENT / TRANSIENT / REPLENISHING / WEAKENING / UNKNOWN
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** distinguishes a one-frame ask quantity from a repeatedly displayed seller-side quantity pattern
+- **Known overlaps:** BD-004, BD-008, future Exhaustion
+- **Confidence limits:** apparent replenishment between snapshots is only a pattern, not proof of iceberg/absorption or seller identity
+- **Validation targets:** continuation/exhaustion, target-before-adverse, breakout acceptance
+- **Research state:** Candidate
+
+### BD-008 — DisplayedPressurePersistenceState
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** BD-004, BD-006, BD-007 plus quote migration
+- **Derivation:** synthesize whether displayed top-of-book pressure persistently leans upward/downward or remains unstable/conflicted
+- **Unit / shape:** UP_LEAN / DOWN_LEAN / BALANCED / CONFLICTED / UNSTABLE / UNKNOWN
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** family-level displayed-pressure evidence that requires persistence rather than a single queue snapshot
+- **Known overlaps:** BD-004..BD-007
+- **Confidence limits:** still displayed liquidity only; does not equal signed executed flow
+- **Validation targets:** next MID direction, target-before-adverse, continuation
+- **Research state:** Provisional composite
+
+### BD-009 — AskLastGapPct
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** valid ASK1 + canonical phase-aware `LAST`
+- **Derivation:** `(ASK1 - LAST) / LAST * 100`
+- **Unit / shape:** percent
+- **Role:** CONTEXT, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** measures the economic distance between the latest trade and current best displayed ask
+- **Known overlaps:** BD-012, spread/tradability
+- **Confidence limits:** gap size alone is ambiguous; a wide gap may mean poor spread rather than “room to rise”; interpretation requires cause/dynamics
+- **Validation targets:** TimeToTarget, target-before-adverse, continuation
+- **Research state:** Candidate
+
+### BD-010 — LastBidGapPct
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** canonical phase-aware `LAST` + valid BID1
+- **Derivation:** `(LAST - BID1) / LAST * 100`
+- **Unit / shape:** percent
+- **Role:** CONTEXT, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** measures the economic distance between the latest trade and current best displayed bid
+- **Known overlaps:** BD-012, spread/tradability
+- **Confidence limits:** value alone is not directional proof; stale trade price can sit outside the current spread
+- **Validation targets:** target-before-adverse, breakdown/continuation
+- **Research state:** Candidate
+
+### BD-011 — MidLastGapPct
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** MID from valid BID1/ASK1 + canonical phase-aware `LAST`
+- **Derivation:** `(MID - LAST) / LAST * 100`
+- **Unit / shape:** signed percent
+- **Role:** CONTEXT, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** describes whether the latest trade lies above or below the current quote midpoint and by how much
+- **Known overlaps:** BD-012; PW-006 PriceMidAgreement
+- **Confidence limits:** current snapshot is not transaction-level synchronized trade/quote data; do not treat this as exact aggressor classification
+- **Validation targets:** next MID direction, target-before-adverse
+- **Research state:** Candidate
+
+### BD-012 — LastSpreadPosition
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** BID1, ASK1, canonical phase-aware `LAST`
+- **Derivation:** `(LAST - BID1) / (ASK1 - BID1)` when the spread is valid and positive
+- **Unit / shape:** normalized spread position; ordinary in-spread values around 0=BID, 0.5=MID, 1=ASK
+- **Role:** CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** compact representation of where the latest trade lies relative to the current displayed spread
+- **Known overlaps:** BD-009, BD-010, BD-011
+- **Confidence limits:** values may fall outside [0,1] when the quote moved after the latest trade; that is informative timing/context, not something to clamp silently; no exact trade-sign claim
+- **Validation targets:** next MID direction, continuation, target-before-adverse
+- **Research state:** Candidate
+
+### BD-013 — LastSpreadPositionVelocity
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** BD-012 history + observation times
+- **Derivation:** direction/rate of movement of LAST's normalized position inside the spread across valid observations
+- **Unit / shape:** normalized-position change per time plus trend state
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** detects whether recent trades are migrating toward ASK or toward BID rather than using one static location
+- **Known overlaps:** BD-014, PW-001 trade-price movement
+- **Confidence limits:** must retain concurrent quote movement; position can change because LAST moved, quotes moved, or both
+- **Validation targets:** next MID direction, target-before-adverse, continuation/exhaustion
+- **Research state:** Candidate
+
+### BD-014 — LastQuoteGapDynamicsState
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** BD-001, BD-002, BD-009..BD-013 and `LAST` movement
+- **Derivation:** classify **why** LAST-to-quote geometry is changing rather than scoring gap contraction alone
+- **Unit / shape:** candidate states LAST_CHASING_ASK / ASK_RETREATING_TO_LAST / LAST_FALLING_TO_BID / BID_CHASING_LAST / WHOLE_STRUCTURE_UP / WHOLE_STRUCTURE_DOWN / CONFLICTED / UNKNOWN
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** distinguishes buyer-side advance from seller-side ask retreat even when both numerically shrink `ASK-LAST`
+- **Known overlaps:** BD-003, BD-013, PW-004 acceleration
+- **Confidence limits:** observable price-path interpretation only; labels must not be phrased as participant intention
+- **Validation targets:** next MID direction, TimeToTarget, target-before-adverse, continuation
+- **Research state:** Candidate
+
+### BD-015 — TradeLocationTrendState
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** BD-011/BD-012/BD-013 over several observations
+- **Derivation:** synthesize whether latest-trade location persistently leans toward ASK, BID, center or oscillates
+- **Unit / shape:** ASK_LEAN / BID_LEAN / CENTERED / MIGRATING_UP / MIGRATING_DOWN / CONFLICTED / UNKNOWN
+- **Role:** CONFIRMING, CONTEXT, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** a safer snapshot-based directional-pressure proxy than pretending to classify every unseen trade
+- **Known overlaps:** BD-012..BD-014
+- **Confidence limits:** sparse observations miss individual prints; cannot reconstruct true signed trade flow
+- **Validation targets:** next MID direction, target-before-adverse, continuation
+- **Research state:** Candidate
+
+### BD-016 — L1DirectionalFlowState
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** BD-003, BD-008, BD-014, BD-015 plus PW-006/AF-011 as optional confirmation context
+- **Derivation:** family-level synthesis of quote migration, persistent displayed pressure and trade-location trend
+- **Unit / shape:** UPWARD_FLOW / DOWNWARD_FLOW / BALANCED / CONFLICTED / UNKNOWN + Strength/Confidence/Coverage
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + GL + H
+- **Meaning:** best available L1 directional-pressure summary from current data without mislabeling it true signed order flow
+- **Known overlaps:** Sequence, Price/Wave confirmation, future trade-tape flow
+- **Confidence limits:** low confidence when only one evidence subtype is available; quote generation can be large relative to executed activity; disagreement across price/activity/book should remain visible
+- **Validation targets:** next MID direction, target-before-adverse, TimeToTarget, future cross-sectional rank
+- **Research state:** Provisional composite
+
+---
+
+## Book / Directional Flow ownership boundary
+
+This family owns **L1 quote movement, displayed pressure, and trade location relative to L1**.
+
+It does not own:
+
+- spread-cost/tradability penalties;
+- true signed trade flow;
+- execution queue position;
+- deeper-book pressure;
+- claims of spoofing, iceberg or participant intent;
+- exhaustion conclusions that require effort-vs-price-progress evidence.
+
+Important causality guard:
+
+~~~text
+same gap change != same market story
+~~~
+
+Example:
+
+~~~text
+ASK-LAST shrinks because LAST ↑ while ASK holds
+!=
+ASK-LAST shrinks because ASK ↓ while LAST holds
+~~~
+
+The final model should consume BD-016 plus explicit conflict/confidence context rather than summing BD-004, BD-005, BD-009..BD-015 as independent votes.
+
+Preferred flow:
+
+~~~text
+L1 prices/volumes + LAST geometry
+→ BD-001..BD-015
+→ BD-016 L1DirectionalFlowState
+→ family Strength + Confidence + Coverage
+→ cross-family sequence/confirmation logic
+~~~
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Book / Directional Flow
+Tradability / Execution Preconditions
 ~~~
 
-It will own L1 quote movement, displayed pressure, ASK↔LAST/BID↔LAST/MID↔LAST geometry and LAST position inside the spread.
+It will own spread burden, tick burden, L1 depth/size feasibility, spread stability and observability/latency constraints, without duplicating directional Book evidence.

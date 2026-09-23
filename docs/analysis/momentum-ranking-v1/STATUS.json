@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Price/Wave and Activity/Flow families established; next populate Book/Directional Flow including ASK/LAST spread-location signals."
+    "subfocus": "Price/Wave, Activity/Flow and Book/Directional Flow families established; next populate Tradability/Execution Preconditions."
   },
   "completedWorkUnits": [
     {
@@ -41,6 +41,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate the Book/Directional Flow family, including L1 quote movement, displayed pressure, ASK-LAST/BID-LAST/MID-LAST gaps and LAST position inside spread."
+    "action": "Populate the Tradability/Execution Preconditions family: spread/tick burden, L1 depth/size feasibility, spread stability and latency/observability gates."
   }
 }
