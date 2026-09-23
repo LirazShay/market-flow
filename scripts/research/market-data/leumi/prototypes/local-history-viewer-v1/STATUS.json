@@ -29,7 +29,7 @@
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
     "phase": "D",
-    "phaseStatus": "planned",
+    "phaseStatus": "in-progress",
     "title": "Expensive-test review",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
@@ -109,12 +109,12 @@
     }
   },
   "next": {
-    "action": "Execute Phase D expensive-test review only.",
+    "action": "Complete Phase D storage-growth cost and critical-path analysis.",
     "steps": [
-      "characterize the remaining storage-growth cost under the accepted workers=2 configuration",
-      "separate meaningful IndexedDB volume work from avoidable setup or waiting",
-      "do not reduce the benchmark sample unless measurement validity is preserved by evidence",
-      "evaluate checkpoint placement only if it can be changed explicitly without weakening numbered-Stage Browser CI requirements"
+      "measure storage-growth local elapsed time from both accepted workers=2 full Chromium runs",
+      "compare its finish time with full-suite completion to determine whether it is still on the critical path",
+      "separate fixed storage-estimate waiting from meaningful IndexedDB volume work",
+      "keep the 20-cycle sample unless evidence shows a material wall-clock gain without weakening measurement validity"
     ]
   },
   "history": {
