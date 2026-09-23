@@ -20,6 +20,36 @@ A smaller but faster useful move may outrank a larger slower move. Do not annual
 
 Score 0–100 is an internal comparative scale, not probability.
 
+## Objective invariant: this is not a general buy recommendation engine
+
+The system is intentionally different from conventional stock analysis and many trading models.
+
+It is **not** trying to decide whether a security is generally attractive, healthy, fundamentally strong, in a favorable daily trend or suitable to hold.
+
+Its target is:
+
+> a fresh, short-lived upward opportunity starting around now, preferably measurable in seconds and with an outer research horizon of roughly two minutes, that is observable/tradable enough to capture and exit.
+
+Consequences:
+
+- a security may be strongly negative for the day and still become the best current candidate if a new local upward wave is forming;
+- a security may be strongly positive for the day and still be unattractive if the useful move has already happened;
+- daily return, 30/60-minute trend, prior losses and broader context must not become automatic accept/reject rules;
+- those longer-context variables deserve weight only if they add out-of-sample information about the short target;
+- the objective is **remaining opportunity from now**, not descriptive stock quality;
+- validation must use seconds-to-~2-minute outcomes such as TimeToTarget, target-before-adverse, MFE/MAE and execution-aware feasibility;
+- feature selection must reject signals that are good at explaining “good stocks” but do not improve this short-horizon target.
+
+A concise test for every future feature:
+
+~~~text
+Does this help distinguish which stock can make a useful upward move from NOW,
+fast enough to matter before roughly two minutes,
+with an acceptable adverse/execution path?
+~~~
+
+If not, it does not belong merely because it is common in trading analysis.
+
 ---
 
 # 2. Mental model and architecture

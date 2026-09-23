@@ -40,6 +40,31 @@ chat        = active reasoning/research surface
 #3 — [Research] Momentum Ranking V1 — master research program
 ~~~
 
+## Objective invariant — short-lived opportunity, not stock quality
+
+This workstream does **not** answer:
+
+~~~text
+Is this a good stock?
+Should this stock be owned?
+Is the company/stock healthy today?
+Will it rise over hours/days?
+~~~
+
+It answers a much narrower question:
+
+> Is there a sufficiently strong, fast, executable **upward opportunity from now** that could plausibly be captured and exited within seconds, with an outer research horizon of roughly two minutes?
+
+Therefore:
+
+- a stock can be sharply negative on the day and still be an excellent current candidate;
+- a stock can be strong/healthy on the day and still be a poor current candidate if the immediate wave is stale, slow, exhausted or untradeable;
+- daily trend, fundamentals and broader direction are context only unless they demonstrate incremental value for this short-horizon objective;
+- the engine must optimize **remaining short-horizon opportunity**, not general buy desirability;
+- every feature/heuristic must justify itself against seconds-to-~2-minute outcomes, not against conventional investing/trading intuition.
+
+This invariant should guide all research, feature selection, scoring, validation and future implementation.
+
 ## Core architecture
 
 ~~~text

@@ -8,6 +8,17 @@ Rank the dynamic TASE equity universe for the best **remaining executable short-
 
 This is a ranking problem first, not exact-price regression.
 
+Critical objective invariant:
+
+~~~text
+not "is this a good stock / good buy?"
+but
+"is there a usable upward move from NOW that can plausibly be captured and exited within seconds to ~2 minutes?"
+~~~
+
+A stock may be deeply negative on the day and still rank highly if the immediate microstructure supports a fresh fast upward opportunity. Conversely, a strong daily stock may rank poorly if the current move is stale/exhausted/slow. Broader trend is context, not a default veto.
+
+
 ~~~text
 92/100 != 92% probability
 ~~~
