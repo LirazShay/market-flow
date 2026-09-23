@@ -135,3 +135,20 @@ How data is extracted and how frequently the provider is polled is a separate de
 Do not increase provider load merely because faster polling may be technically possible.
 
 Use the slowest cadence that preserves the information actually required by the empirically retained core.
+
+## Timing ownership from Issue #16
+
+Issue #16 does not add a new universal predictor.
+
+```text
+ConversionTimingState
+→ nested in Progress Conversion Efficiency
+
+OpportunityEvidenceDecayProfile / UsableLeadBudget
+→ nested in Remaining Opportunity Lifecycle
+
+Book-pressure conversion timing
+→ diagnostic / validate-only
+```
+
+Do not assume a universal SignalOpportunityHalfLife. A half-life is reportable only if empirical incremental-value decay is sufficiently monotonic/stable and a 50% crossing is identifiable out of sample.

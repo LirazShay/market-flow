@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 15,
-    "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
+    "issue": 16,
+    "title": "Precursor-to-price conversion latency and opportunity half-life",
     "status": "verification-pending",
-    "subfocus": "Issue #15 research definition is now fixed through outcome-grid v1 and aggregate report schema: H={5,10,20,30,40,50,60,90,120}s, T={0.10,0.20,0.30,0.50}%, A={0.10,0.20,0.30}%, with ASK(t0)->future BID primary and MID parallel control. Empirical generation/extraction remains deferred."
+    "subfocus": "Issue #16 research definition completed without adding a core predictor: ConversionTimingState is nested in Progress Conversion Efficiency; OpportunityEvidenceDecayProfile/UsableLeadBudget is nested in Remaining Opportunity Lifecycle; book-pressure timing is diagnostic/validate-only. No universal half-life or timing threshold is assumed."
   },
   "completedWorkUnits": [
     {
@@ -60,7 +60,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 16,
-    "action": "Proceed to Issue #16 research definition: prioritize precursor-to-price conversion latency and opportunity half-life concepts against the sparse core, without implementing data extraction or increasing polling cadence."
+    "issue": 6,
+    "action": "Proceed to Issue #6 research definition for wave segmentation/recent realized wave capacity, constrained by the sparse-core architecture: segmentation may support Renewal/Memory/context but must not expand the universal predictive core without incremental evidence."
   }
 }
