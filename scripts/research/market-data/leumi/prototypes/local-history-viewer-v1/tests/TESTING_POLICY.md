@@ -33,6 +33,7 @@ unexpected red
 → stop
 → diagnose
 → targeted rerun
+→ Learning Review before closing the incident
 ~~~
 
 Rules:
@@ -55,6 +56,31 @@ Rules:
 - verification evidence must identify the run and code/test state being claimed as verified.
 
 This gate applies even when Fast CI is green.
+
+### Unexpected-failure learning gate
+
+An unexpected failure is not complete merely because the target becomes green.
+
+After a meaningful unexpected test/CI/browser/live-verification failure, complete the lightweight Failure Review from:
+
+~~~text
+../../../../../../../docs/project/continuous-improvement.md
+~~~
+
+At minimum answer:
+
+~~~text
+technical root cause
+reasoning/process cause
+escape cause
+what we would do differently
+smallest prevention
+learning promotion decision
+~~~
+
+Expected TDD red is exempt unless the red phase itself exposes an unexpected defect or process mistake.
+
+If the lesson is reusable, promote it to the narrowest correct owner. If it is not reusable, keep the regression/local prevention and explicitly avoid instruction churn.
 
 ### Mandatory Browser CI at every Stage closure
 
@@ -386,7 +412,8 @@ A normal implementation change can be considered locally verified when:
 - every changed browser test has passed its smallest sufficient targeted Chromium run before the next implementation unit starts;
 - if a numbered Stage is being closed, full Browser CI passed on the final Stage state;
 - any additional integration checkpoint that is due also passed;
-- any live-provider verification that cannot be automated is explicitly marked pending.
+- any live-provider verification that cannot be automated is explicitly marked pending;
+- if a meaningful unexpected failure occurred, its Failure Review and learning-promotion decision are complete.
 
 If a changed test has not run, the work is not locally verified. If a changed test is red, progression is blocked.
 
