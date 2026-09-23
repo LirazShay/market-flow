@@ -13,7 +13,8 @@
   "currentFocus": {
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
-    "status": "in-progress"
+    "status": "in-progress",
+    "subfocus": "Evidence taxonomy established; next build the registry schema and first feature families."
   },
   "completedWorkUnits": [
     {
@@ -40,6 +41,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Build and verify the durable feature registry and evidence taxonomy from the checkpoint."
+    "action": "Create the feature-registry schema and populate the first coherent family set using the evidence taxonomy."
   }
 }
