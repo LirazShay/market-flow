@@ -60,5 +60,13 @@ The test covers exact endpoint semantics, non-edge cadence misses, session bound
 ## Evidence status
 
 - Pure timing semantics: testable deterministically.
-- IndexedDB adapter: requires Chromium/browser verification.
+- IndexedDB adapter: Chromium verified against a synthetic database with the frozen V1 `history` key/index shape; the test also proves the analyzer leaves all history rows unchanged and refuses to create a missing database.
 - Actual cadence/jitter/evaluability numbers: require execution against the real local IndexedDB history and remain unknown until that run is captured.
+
+## Verification evidence
+
+- Deterministic Node semantics test: green.
+- Fast CI run `35928309965`: success.
+- Browser CI run `35928310088`: success, `58/58` Chromium tests.
+- The first browser run exposed a wrong expected fixture count in the new test; the analyzer behavior was correct. The expectation was corrected and the full Chromium suite reran green.
+- Real local IndexedDB measurement remains pending; no empirical cadence/coverage numbers are claimed yet.
