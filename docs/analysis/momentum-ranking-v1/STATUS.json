@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 5,
-    "title": "Build feature registry and evidence taxonomy",
+    "issue": 15,
+    "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "Cross-Sectional/Relative Edge Context CS-001..CS-018 added. Relative comparison is explicitly downstream of absolute opportunity/trust/feasibility, rank-rise is decomposed into self vs peer effects, and sequential-observation comparability is first-class."
+    "subfocus": "Issue #5 feature registry/evidence taxonomy completed after final checkpoint coverage audit. Next research begins with the direct all-observation outcome surface required to calibrate target-before-adverse, MFE/MAE, TimeToTarget and touch-exit outcomes."
   },
   "completedWorkUnits": [
     {
@@ -26,6 +26,11 @@
       "issue": 14,
       "title": "Objective alignment audit and first-principles short-horizon hypotheses",
       "result": "Re-audited existing research against the capturable seconds-to-~2-minute objective, reframed conventional context/signals, introduced direct outcome/latency hypotheses, and propagated requirements into the downstream research backlog."
+    },
+    {
+      "issue": 5,
+      "title": "Build feature registry and evidence taxonomy",
+      "result": "Registered and deeply documented 176 material feature/state entries across PW/AF/BD/TE/FQ/PH/PR/SQ/RO/WM/MR/CS, completed ownership/double-counting audits, and mapped all remaining checkpoint concepts to explicit downstream research issues."
     }
   ],
   "plannedIssues": [
@@ -48,7 +53,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 5,
-    "action": "Run the final Issue #5 coverage audit against research-checkpoint.md and objective-alignment-audit.md: verify every material concept has one registry owner or explicit downstream issue owner, fix any remaining gaps, then decide whether Issue #5 can close."
+    "issue": 15,
+    "action": "Define the direct all-observation outcome-surface contract first: eligible observation denominator, target/time/adverse grid, MFE/MAE/TimeToTarget/WhichBarrierFirst labels, future-BID exitability labels, timestamp tolerance and no-leakage boundaries before any implementation."
   }
 }

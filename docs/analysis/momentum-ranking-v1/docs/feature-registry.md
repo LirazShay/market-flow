@@ -2767,7 +2767,7 @@ It does **not** own:
 
 - **Family:** Pullback / Retest / Micro-Barrier State
 - **Kind:** DERIVED
-- **Raw sources:** current decision reference + recent micro/leg highs or other explicitly defined local barriers
+- **Raw sources:** current decision reference + path-relevant candidate barriers such as recent ~30/60/120s highs, wave high, leg high, and daily/continuous high **only when it lies inside or near the current short target path**; exact source hierarchy remains research-defined
 - **Derivation:** smallest positive distance to a relevant barrier that lies above current reference and inside the researched short path
 - **Unit / shape:** percent
 - **Role:** CONTEXT, PROTECTIVE
@@ -2780,7 +2780,7 @@ It does **not** own:
 - **Objective connection:** a short target is less attractive if most of the required move first runs directly into a nearby obstacle.
 - **Favorable / unfavorable interpretation:** no relevant nearby barrier can simplify the path; a very close barrier raises uncertainty. But a close barrier can become positive if crossed and accepted quickly.
 - **Failure modes / counterexamples:** not every historical high is meaningful; distant daily levels should not contaminate a 20s target; barrier relevance must be observable at decision time.
-- **Relationship to other evidence:** PR-009 gives absolute distance; PR-010 scales it to target; PR-011/012 measure what happens when the level is crossed.
+- **Relationship to other evidence:** PR-009 owns target-path relevance for candidate levels. Recent ~30/60/120s highs, wave/leg highs and even daily/continuous highs are not separate bullish features; they matter only when they qualify as a nearby barrier. PR-010 scales distance to target and PR-011/012 measure clearance/acceptance.
 - **Worked example:** current 100.00, micro-high 100.08, target 100.15. The barrier sits over halfway toward the target and is operationally relevant.
 - **Known overlaps:** PR-010; daily/recent high context
 - **Confidence limits:** broad/distant daily highs are not automatically relevant; barrier definition must be causal/observable at decision time
