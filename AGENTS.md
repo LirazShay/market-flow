@@ -173,7 +173,7 @@ real provider behavior
 → live verification only when required
 ~~~
 
-Fast CI is the normal feedback loop. Browser CI is intentionally sparse for ordinary changes that do not modify browser tests or require browser-only proof.
+Fast CI is the normal cheap feedback loop, but this browser-based workstream must not treat it as sufficient proof after code changes. Any production/runtime/browser code change requires Chromium verification on the final changed code state.
 
 ### Non-negotiable test-change gate
 
@@ -204,8 +204,11 @@ Rules:
 - do **not** run the full Browser suite merely to prove an expected TDD red;
 - an intentional red phase is complete when the targeted test fails for the intended behavior gap; that expected red does not block moving to implementation;
 - after implementation/fix, the same targeted browser test must pass before widening verification;
-- widen from exact test → spec/related cluster only when coupling, shared fixtures/harness, or evidence makes that useful;
-- run the full Browser suite only at a required Stage/checkpoint boundary, for broad shared-browser-infrastructure risk, when the bug reproduces only in the suite, or when explicitly requested;
+- **any production/runtime/browser code change requires a Chromium run on the final changed code state**, even when no browser test file itself changed;
+- for a small localized code change, the smallest relevant Chromium test/spec may satisfy the immediate code-change gate;
+- for runtime assembly, shared harness/fixture, storage integration, messaging, viewer integration, cross-component behavior, or multi-area code changes, run the full Browser suite;
+- widen from exact test → spec/related cluster when coupling, shared fixtures/harness, or evidence makes that useful;
+- run the full Browser suite at required Stage/checkpoint boundaries and for broad/shared browser code risk; do not skip browser execution merely because the code previously matched a known-good design;
 - if targeted browser execution is unavailable, do not substitute an expensive full suite solely to demonstrate an expected red; establish a targeted execution path or mark that proof pending;
 - a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
 - an **unexpected** failing test, or a test still red after the supposed fix, blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
@@ -415,6 +418,7 @@ A work batch is done when the relevant items are true:
 
 - code/change is valid;
 - available automated tests pass;
+- every code change has the required Chromium verification on its final state; documentation-only changes are exempt;
 - every added/modified test has been executed in its native test layer;
 - no red test or unexecuted changed test is carried into the next implementation unit;
 - if a numbered Stage is being closed, full Browser CI passed on that Stage's final state;
