@@ -323,7 +323,7 @@ Depth, size, latency, queue priority, slippage, impact and explicit costs remain
 
 ## 12. Target / adverse grid
 
-Issue #15 labels must operate on explicit tuples:
+Issue #15 labels operate on explicit tuples:
 
 ~~~text
 TargetCandidate {
@@ -334,24 +334,33 @@ TargetCandidate {
 }
 ~~~
 
-where `referenceFamily` identifies the curve being tested, for example:
+The fixed v1 research grid and aggregate report schema are defined normatively in:
+
+`docs/analysis/momentum-ranking-v1/docs/direct-outcome-grid-report-schema.md`
+
+Grid v1:
+
+~~~text
+H = {5,10,20,30,40,50,60,90,120} seconds
+T = {0.10%,0.20%,0.30%,0.50%}
+A = {0.10%,0.20%,0.30%}
+~~~
+
+Primary reference family:
+
+~~~text
+ASK_ENTRY_TO_BID_EXIT
+~~~
+
+Parallel raw-market control:
 
 ~~~text
 MID_MARKET
-LAST_MARKET
-ASK_ENTRY_TO_BID_EXIT
-LAST_ENTRY_TO_BID_EXIT
 ~~~
 
-The percentage target/adverse grids are **not fixed in this work unit**.
+LAST-based families remain secondary/blocked until canonical phase-aware LAST semantics are verified.
 
-Rules for the later grid definition:
-
-- declare the grid before evaluating results;
-- do not optimize target values separately on the same sample used to report performance;
-- preserve small/fast and larger/slower combinations;
-- keep market-reference and touch-exit grids distinguishable;
-- do not hardcode one user's account size/commission into the raw market labels.
+These are research barriers, not optimized production thresholds.
 
 ## 13. First observed target/adverse events
 

@@ -13,8 +13,8 @@
   "currentFocus": {
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
-    "status": "in-progress",
-    "subfocus": "Issue #17 sparse-core conceptual research and empirical selection contract are complete. The provisional handoff is four universal interfaces plus conditional Renewal reserve; empirical retention now depends on Issue #15 outcomes and Issue #11 leakage-safe validation. Extraction/cadence implementation remains deferred to Issue #18."
+    "status": "verification-pending",
+    "subfocus": "Issue #15 research definition is now fixed through outcome-grid v1 and aggregate report schema: H={5,10,20,30,40,50,60,90,120}s, T={0.10,0.20,0.30,0.50}%, A={0.10,0.20,0.30}%, with ASK(t0)->future BID primary and MID parallel control. Empirical generation/extraction remains deferred."
   },
   "completedWorkUnits": [
     {
@@ -60,7 +60,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 15,
-    "action": "Continue Issue #15 at the research-definition level only: finalize the target/adverse/horizon outcome grid and outcome-report schema needed by the sparse-core empirical contract, while leaving extraction/cadence/how-to-get-the-data implementation to Issue #18."
+    "issue": 16,
+    "action": "Proceed to Issue #16 research definition: prioritize precursor-to-price conversion latency and opportunity half-life concepts against the sparse core, without implementing data extraction or increasing polling cadence."
   }
 }
