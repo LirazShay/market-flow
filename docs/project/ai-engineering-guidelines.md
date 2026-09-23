@@ -142,7 +142,7 @@ real provider behavior
 
 Fast CI is the normal feedback loop.
 
-Browser CI is deliberately sparse for changes that do not modify browser tests and do not need browser-only proof.
+Fast CI is cheap feedback, but browser-based production/runtime code changes still require Chromium verification on the final changed state. Documentation-only changes are exempt.
 
 ### Non-negotiable test-change gate
 
@@ -172,8 +172,11 @@ Rules:
 - do **not** run the full Browser suite merely to establish an expected TDD red;
 - an intentional red that fails for the intended missing behavior is valid evidence and permits moving to implementation;
 - after implementation/fix, rerun the same targeted test until green before widening;
-- widen to a spec/related cluster only when shared fixtures, harness, integration coupling, or observed evidence justify it;
-- reserve full Browser CI for required Stage/checkpoint boundaries, broad shared-browser-infrastructure risk, suite-only reproduction, or explicit request;
+- any production/runtime/browser code change requires Chromium verification on the final changed state, even if no Playwright file changed;
+- small localized code changes may use the smallest relevant targeted Chromium test/spec;
+- shared runtime/harness/storage/messaging/viewer integration, cross-component, or multi-area code changes require the full Browser suite;
+- widen to a spec/related cluster when shared fixtures, harness, integration coupling, or observed evidence justify it;
+- full Browser CI remains mandatory at Stage/checkpoint boundaries and for broad/shared browser risk;
 - if targeted browser execution is unavailable, do not substitute a full expensive suite solely to demonstrate expected red; establish a targeted path or mark that proof pending;
 - a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
 - an unexpected red, or a red that remains after the supposed fix, blocks progression;
@@ -520,6 +523,7 @@ Apply only the checklist items relevant to the current natural work unit.
 
 - [ ] code/change is syntactically/executably valid;
 - [ ] automated tests pass where available;
+- [ ] every production/runtime/browser code change received Chromium verification on its final state;
 - [ ] every added/modified test was executed in its native layer after its final edit;
 - [ ] no known red test is deferred to a later stage;
 - [ ] if closing a numbered Stage, full Browser CI passed on that Stage's final state;
