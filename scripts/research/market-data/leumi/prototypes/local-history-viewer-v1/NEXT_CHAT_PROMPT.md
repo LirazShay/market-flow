@@ -61,7 +61,10 @@ intentional TDD/regression red
 
 browser behavior/test changed
 → targeted Chromium immediately
-→ widen only when justified
+
+production/runtime/browser code changed
+→ Chromium on final changed state
+→ full Browser CI for shared runtime/harness/storage/messaging/viewer integration or multi-area changes
 
 numbered Stage closure
 → Fast CI green
