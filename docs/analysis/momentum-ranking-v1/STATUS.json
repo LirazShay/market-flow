@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Registry schema and Price/Wave family established; next populate Activity/Flow."
+    "subfocus": "Price/Wave and Activity/Flow families established; next populate Book/Directional Flow including ASK/LAST spread-location signals."
   },
   "completedWorkUnits": [
     {
@@ -41,6 +41,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate the Activity/Flow family in the feature registry, preserving overlap boundaries with Price/Wave and future Path/Exhaustion families."
+    "action": "Populate the Book/Directional Flow family, including L1 quote movement, displayed pressure, ASK-LAST/BID-LAST/MID-LAST gaps and LAST position inside spread."
   }
 }

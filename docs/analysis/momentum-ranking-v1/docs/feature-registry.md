@@ -256,12 +256,245 @@ PW-001..PW-009
 
 Raw profiles remain available for diagnostics, research and later empirical models.
 
+# Family AF — Activity / Flow
+
+Purpose:
+
+> Describe how much executed market activity is occurring, whether participation is expanding or contracting, and how quickly that activity regime is changing.
+
+This family is deliberately **direction-agnostic** by itself. High activity means that something is happening; direction must come from Price/Wave, Book/Directional Flow and sequence/context.
+
+This family does **not** own:
+- price response;
+- buyer/seller aggressor classification;
+- book pressure;
+- effort-vs-result exhaustion conclusions;
+- exact inter-trade durations without trade tape.
+
+## Provider-source semantics
+
+Verified project documentation currently gives:
+
+~~~text
+DailyDealsQuantity = cumulative number of trades today
+DailyTurnover      = cumulative quantity traded today
+DailyNISRevenue    = cumulative monetary turnover today
+LastDealVolume     = quantity in latest trade; nullable in measured snapshot
+~~~
+
+For short-window features, deltas are valid only across observations that belong to the same compatible session/epoch and pass monotonicity/reset checks.
+
+A negative cumulative delta is **not** valid negative activity; it indicates reset/session/schema/data-integrity handling is required.
+
+### AF-001 — TradeCountDeltaProfile
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** `DailyDealsQuantity` history + observation timestamps
+- **Derivation:** cumulative-count difference across candidate windows, with session/reset validation
+- **Unit / shape:** trade-count profile; candidate horizons around 5/10/20/30/60/120s
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PV(field semantics/coverage) + PI(derivation) + H(predictive value)
+- **Meaning:** how many executions occurred during recent windows
+- **Known overlaps:** AF-002, AF-003, AF-004
+- **Confidence limits:** sampling windows are approximate to actual observation times; multiple unseen trades occur between snapshots; valid zero differs from missing/reset
+- **Validation targets:** TimeToTarget, target-before-adverse, continuation, cross-sectional future rank
+- **Research state:** Candidate
+
+Important: overlapping windows are a **profile**, not independent additive votes.
+
+### AF-002 — TradeRateProfile
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** AF-001 + actual elapsed time
+- **Derivation:** `tradeCountDelta / elapsedSeconds`
+- **Unit / shape:** trades per second profile
+- **Role:** LEADING, CONFIRMING
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** converts recent trade count into an elapsed-time-aware activity rate
+- **Known overlaps:** AF-001, AF-003
+- **Confidence limits:** short intervals are quantized by collector cadence; rate does not reveal direction or individual trade timing
+- **Validation targets:** short-horizon target hit, TimeToTarget, continuation
+- **Research state:** Candidate
+
+### AF-003 — TradeRateAccelerationState
+
+- **Family:** Activity / Flow
+- **Kind:** STATE
+- **Raw sources:** adjacent comparable slices from AF-001/AF-002
+- **Derivation:** compare current trade rate with immediately preceding comparable interval(s); exact robust thresholds TBD
+- **Unit / shape:** ACCELERATING / STEADY / DECELERATING / UNKNOWN
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** detects whether executed activity itself is waking up or cooling down
+- **Known overlaps:** AF-004; Sequence family
+- **Confidence limits:** requires enough aligned observations; a single burst may be transient; high acceleration is not directional
+- **Validation targets:** target-before-adverse, TimeToTarget, continuation/exhaustion transition
+- **Research state:** Candidate
+
+### AF-004 — ActivityBurstState
+
+- **Family:** Activity / Flow
+- **Kind:** STATE
+- **Raw sources:** AF-001/AF-002/AF-003 + cross-sectional normalization
+- **Derivation:** identify a fresh material increase in executed activity relative to immediately preceding local windows and current market cross-section; exact mapping TBD
+- **Unit / shape:** DORMANT / NORMAL / WAKING / BURSTING / HIGH_ACTIVITY / COOLING / UNKNOWN
+- **Role:** LEADING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** interpretable activity-regime state rather than a raw trade-count threshold
+- **Known overlaps:** AF-003, future self-normalization/time-of-day context
+- **Confidence limits:** without historical self-baseline, “unusual for this stock at this hour” cannot yet be claimed; market-wide bursts require relative context
+- **Validation targets:** opportunity onset, future rank, TimeToTarget
+- **Research state:** Provisional state
+
+### AF-005 — TurnoverQuantityDeltaProfile
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** `DailyTurnover` history + timestamps
+- **Derivation:** cumulative traded-quantity difference across validated windows
+- **Unit / shape:** provider quantity units per window
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PV(field semantics/coverage) + PI + H
+- **Meaning:** measures how much inventory/quantity actually changed hands recently
+- **Known overlaps:** AF-001, AF-006, AF-007
+- **Confidence limits:** raw quantity is not directly comparable across securities without normalization; session/reset checks required
+- **Validation targets:** target-before-adverse, TimeToTarget, continuation
+- **Research state:** Candidate
+
+### AF-006 — MoneyTurnoverDeltaProfile
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** `DailyNISRevenue` history + timestamps
+- **Derivation:** cumulative monetary-turnover difference across validated windows
+- **Unit / shape:** provider monetary units per window
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PV(field semantics/coverage) + PI + H
+- **Meaning:** measures recent economic value of executed activity, complementing trade count and raw quantity
+- **Known overlaps:** AF-001, AF-005, AF-007
+- **Confidence limits:** absolute money flow differs greatly by security size/liquidity; needs cross-sectional and later self/time-of-day normalization
+- **Validation targets:** target-before-adverse, TimeToTarget, future rank
+- **Research state:** Candidate
+
+### AF-007 — AverageExecutedQuantityPerTrade
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** AF-001 + AF-005
+- **Derivation:** `turnoverQuantityDelta / tradeCountDelta` when `tradeCountDelta > 0`
+- **Unit / shape:** quantity per trade
+- **Role:** CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** distinguishes many smaller executions from fewer larger executions within the sampled window
+- **Known overlaps:** AF-001, AF-005; `LastDealVolume`
+- **Confidence limits:** arithmetic mean can be dominated by one large trade; impossible when no trades occurred; does not reveal the distribution of individual trade sizes
+- **Validation targets:** continuation, path quality, target-before-adverse
+- **Research state:** Candidate
+
+### AF-008 — ParticipationExpansionState
+
+- **Family:** Activity / Flow
+- **Kind:** STATE
+- **Raw sources:** AF-003, AF-005, AF-006 and their recent changes
+- **Derivation:** synthesize whether trade frequency, quantity and monetary turnover are expanding together, diverging or cooling; exact mapping TBD
+- **Unit / shape:** EXPANDING / COUNT_LED / SIZE_LED / MIXED / CONTRACTING / UNKNOWN
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** asks whether the activity burst is broad-based across several executed-activity dimensions rather than visible in one counter only
+- **Known overlaps:** AF-003..AF-007; future EvidenceDiversity logic
+- **Confidence limits:** count/quantity/money are correlated and must not be treated as three independent votes; direction remains unknown without other families
+- **Validation targets:** opportunity onset, TimeToTarget, target-before-adverse
+- **Research state:** Provisional composite
+
+### AF-009 — LastDealVolumeContext
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** `LastDealVolume` + recent quantity/trade context where available
+- **Derivation:** contextualize latest trade quantity relative to recent sampled executed quantity/trade-size measures; exact robust reference TBD
+- **Unit / shape:** relative/contextual value or state
+- **Role:** CONTEXT, CONFIRMING
+- **Availability:** NOW
+- **Evidence:** PV(field meaning + partial availability) + PI + H
+- **Meaning:** captures whether the latest reported trade is small/typical/large relative to recent local activity
+- **Known overlaps:** AF-007; future Book/Execution features
+- **Confidence limits:** measured coverage was partial; latest-trade timestamp alignment to the snapshot must be respected; one print alone is weak evidence
+- **Validation targets:** continuation, target-before-adverse
+- **Research state:** Candidate / lower confidence
+
+### AF-010 — TrueInterTradeDurationProfile
+
+- **Family:** Activity / Flow
+- **Kind:** DERIVED
+- **Raw sources:** transaction-by-transaction timestamps
+- **Derivation:** exact durations between consecutive trades
+- **Unit / shape:** seconds/milliseconds profile
+- **Role:** LEADING, CONTEXT
+- **Availability:** TAPE
+- **Evidence:** U(project availability) + GL + H
+- **Meaning:** true event-time pulse of executions, distinct from snapshot-based trade-rate proxies
+- **Known overlaps:** AF-002, AF-003
+- **Confidence limits:** cannot be reconstructed from cumulative counters plus sparse snapshots; must not be faked from current collector cadence
+- **Validation targets:** opportunity onset, TimeToTarget, event-time continuation
+- **Research state:** Blocked pending trade tape
+
+### AF-011 — ActivityFlowState
+
+- **Family:** Activity / Flow
+- **Kind:** STATE
+- **Raw sources:** AF-001 through AF-009 where valid
+- **Derivation:** family-level synthesis; candidate states DORMANT / NORMAL / WAKING / ACCELERATING / EXPANDING / HIGH_ACTIVITY / COOLING / UNDETERMINED
+- **Unit / shape:** enum/state + Strength/Confidence/Coverage
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** single family-level representation used by higher-level opportunity logic instead of independently summing correlated activity measures
+- **Known overlaps:** Sequence, cross-sectional normalization, future regime/self-baseline context
+- **Confidence limits:** does not determine direction; high activity can accompany either continuation or reversal; unavailable fields reduce coverage rather than becoming zero
+- **Validation targets:** target-before-adverse, TimeToTarget, future rank, opportunity onset
+- **Research state:** Provisional composite
+
+---
+
+## Activity / Flow ownership boundary
+
+This family owns **executed-activity intensity and its change**.
+
+It does not own the conclusion:
+
+~~~text
+high effort + poor price progress = exhaustion
+~~~
+
+because that conclusion requires Price/Wave information. The raw Activity side of that comparison comes from this family; the cross-family interpretation belongs to the future WaveHealth/Exhaustion owner.
+
+Likewise, AF-001/AF-005/AF-006 are related measures. Their agreement may strengthen family confidence, but they must not become three independent additive votes in the final ranking.
+
+Preferred flow:
+
+~~~text
+AF-001..AF-009
+→ AF-011 ActivityFlowState
+→ family Strength + Confidence + Coverage
+→ cross-family sequence/confirmation logic
+~~~
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Activity / Flow
+Book / Directional Flow
 ~~~
 
-It must own trade-rate/acceleration and participation expansion while avoiding duplicate ownership of price response and future exhaustion semantics.
+It will own L1 quote movement, displayed pressure, ASK↔LAST/BID↔LAST/MID↔LAST geometry and LAST position inside the spread.
