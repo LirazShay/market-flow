@@ -60,6 +60,14 @@ Sanitized Stage 19.3/19.4 evidence covering the real Leumi browser run, long-run
 
 ## Completed mini-projects
 
+### Stage 20 V1 freeze
+
+~~~text
+v1-freeze/2026-09-23-stage-20-v1-freeze.md
+~~~
+
+Final freeze cleanup, Browser CI optimization summary, closure-gate evidence and IndexedDB teardown Failure Review.
+
 ### Browser CI runtime optimization
 
 ~~~text
