@@ -36,6 +36,7 @@ decisions.md
 | [D-018](decisions/D-018.md) | Documentation follows code ownership | Accepted | documentation, repository-structure |
 | [D-019](decisions/D-019.md) | Local History Viewer V1 is a browser-only prototype | Accepted for V1 planning | local-history-viewer-v1, architecture |
 | [D-020](decisions/D-020.md) | Tests-first pyramid: fast unit default, sparse browser checkpoints | Accepted / evolved | testing, ci, playwright |
+| [D-021](decisions/D-021.md) | KISS: simplest sufficient design, complexity only when proven necessary | Accepted | architecture, simplicity, kiss, yagni |
 
 ## Fast lookup
 
@@ -48,6 +49,9 @@ Data identity/null/raw preservation
 
 Repository/docs/workflow
 → D-002, D-003, D-017, D-018
+
+Architecture / complexity / KISS
+→ D-001, D-021
 
 Local History Viewer V1
 → D-019, D-020
