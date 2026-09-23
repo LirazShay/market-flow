@@ -14,7 +14,7 @@
     "issue": 17,
     "title": "Core predictive signal prioritization and feature reduction",
     "status": "in-progress",
-    "subfocus": "Stage 17.C completed. Move Consumption/Remaining Opportunity and Usable Lead/Opportunity Stage are merged into Remaining Opportunity Lifecycle; Fresh Reset/Renewal remains a separate conditional core candidate. Provisional parent count reduced from six to five."
+    "subfocus": "Stage 17.D completed. Cross-group elimination leaves four universal core interfaces (Fresh Market Repricing, Progress Conversion Efficiency, Path Usability/Adverse Efficiency, Remaining Opportunity Lifecycle) plus Fresh Reset/Renewal as a conditional reserve rather than a universal vote."
   },
   "completedWorkUnits": [
     {
@@ -56,6 +56,6 @@
   },
   "next": {
     "issue": 17,
-    "action": "Stage 17.D only: perform cross-group elimination across the five provisional concepts, classify raw predictors vs conditional/protective/synthesis roles, remove remaining double counting, and produce the provisional sparse core plus reserve/demoted concepts. Do not yet define the Stage 17.E empirical protocol."
+    "action": "Stage 17.E only: define the empirical selection/elimination contract for the four universal interfaces plus conditional Renewal reserve, using Issue #15 direct outcomes and Issue #11 leakage-safe validation. Do not begin extraction/cadence implementation."
   }
 }
