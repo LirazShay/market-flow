@@ -25,8 +25,8 @@ Verify that every material concept preserved in `research-checkpoint.md` and `ob
 | Recent same-stock capacity/failure/coverage/conditional memory | WM |
 | Multi-horizon context, regime, transferability, decay, session/time-of-day | MR |
 | Absolute-first cross-sectional comparison, percentile/rank context, rank-rise cause, async comparability | CS |
-| Direct all-observation MFE/MAE/TimeToTarget/target-before-adverse/future-BID outcome surfaces | Issue #15 |
-| Activity/Book→Price conversion latency and signal opportunity half-life | Issue #16 |
+| Direct all-observation MFE/MAE/TimeToTarget/target-before-adverse/future-BID outcome surfaces, including `FutureBidVsEntryLastReturn` / `FutureBidVsEntryAskReturn` | Issue #15 |
+| Activity/Book→Price conversion latency and signal opportunity half-life, including `ActivityToPriceConversionLatency`, `BookPressureToPriceConversionLatency`, `PressureConversionEfficiency`, `ProgressStallClock` and `SignalOpportunityHalfLife` | Issue #16 |
 | Wave/leg segmentation and reference semantics | Issue #6 |
 | Recent-wave recurrence/pattern similarity | Issue #7 |
 | Deeper multi-horizon research | Issue #8 |

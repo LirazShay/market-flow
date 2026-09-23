@@ -14,7 +14,7 @@
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "Issue #5 feature registry/evidence taxonomy completed after final checkpoint coverage audit. Next research begins with the direct all-observation outcome surface required to calibrate target-before-adverse, MFE/MAE, TimeToTarget and touch-exit outcomes."
+    "subfocus": "Issue #5 is complete and handed off. No Issue #15 outcome contract has been defined yet; the first work unit is to specify the eligible-observation denominator, target/time/adverse grid, direct outcome labels, future-BID exitability labels, timestamp tolerance and leakage boundaries."
   },
   "completedWorkUnits": [
     {
