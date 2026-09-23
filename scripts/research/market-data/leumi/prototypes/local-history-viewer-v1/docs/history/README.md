@@ -60,6 +60,14 @@ Sanitized Stage 19.3/19.4 evidence covering the real Leumi browser run, long-run
 
 ## Completed mini-projects
 
+### Browser CI runtime optimization
+
+~~~text
+test-runtime-optimization/2026-09-23-browser-ci-optimization.md
+~~~
+
+Historical Stage 20 optimization plan, timing measurements, flaky-test RCA and final verification evidence. Durable test/checkpoint rules remain in `../../tests/TESTING_POLICY.md`.
+
 ### Testing refactor
 
 ~~~text
