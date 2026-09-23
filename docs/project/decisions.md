@@ -39,6 +39,7 @@ decisions.md
 | [D-021](decisions/D-021.md) | KISS: simplest sufficient design, complexity only when proven necessary | Accepted | architecture, simplicity, kiss, yagni |
 | [D-022](decisions/D-022.md) | Failure-to-learning loop and continuous improvement | Accepted | quality, learning, rca, process, testing |
 | [D-023](decisions/D-023.md) | Progressive context loading with preserved cold history | Accepted | ai-context, navigation, history, efficiency |
+| [D-024](decisions/D-024.md) | Repository self-maintenance is part of every change | Accepted | maintenance, hygiene, source-of-truth, ai-workflow |
 
 ## Fast lookup
 
@@ -60,6 +61,9 @@ Failures / RCA / continuous improvement
 
 AI context / fresh-chat loading / preserved history
 → D-023
+
+Repository self-maintenance / no-cleanup debt
+→ D-024
 
 Local History Viewer V1
 → D-019, D-020
