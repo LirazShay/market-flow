@@ -1,61 +1,70 @@
 # AI Context — Local History Viewer V1
 
-Updated: 2026-09-22
+Compact technical continuation context for a fresh chat.
 
-This file contains compact **technical continuation context only**.
-
-Operational progress, completion state, verification-pending state and the exact next pointer live only in:
+Live progress / current Stage / exact next action live only in:
 
 ~~~text
 STATUS.json
 ~~~
 
-## Read order
+Default fresh-chat order:
 
 ~~~text
-AI_CONTEXT.md
+README.md
 → STATUS.json
-→ target files
-→ directly relevant tests
+→ AI_CONTEXT.md
+→ current Stage scope / target files / direct tests / owning SPEC as needed
 ~~~
 
-In a fresh chat also read `HANDOFF.md`.
+Historical rationale is preserved and discoverable from:
 
-If this file and `STATUS.json` differ about progress, `STATUS.json` wins.
+~~~text
+docs/history/README.md
+~~~
+
+Read history only when the current task needs to understand how/why the present state was reached.
 
 ## Architecture
 
 ~~~text
-Leumi browser tab
+authenticated Leumi browser tab
 → Recorder
 → validated complete cycle
-→ IndexedDB
+→ atomic IndexedDB persistence
    ├── meta
    ├── sessions
    ├── universe
    ├── cycles
    ├── latest
    └── history
-→ BroadcastChannel metadata notification
+→ metadata-only BroadcastChannel notification
 → same-origin Viewer
-→ viewer re-reads IndexedDB
+→ Viewer rereads IndexedDB
 ~~~
 
-V1 is browser-only. No server/external DB.
+V1 is a browser-only research prototype. It does not choose the future production stack.
 
 ## Critical invariants
 
-### API/data
+### Provider / data
 
-- never hardcode universe size 561;
-- verified join: MapHeat2.PaperId == GetSecuritiesData.Key;
-- canonical securityId = String(PaperId or Key);
-- conservative verified chunk baseline = 187, configurable;
-- sequential chunk requests until evidence supports otherwise;
-- null, 0, "" are distinct;
-- preserve full raw Security in history/latest;
-- preserve full raw MapHeat in universe;
-- MapHeat2 + GetSecuritiesData are not one atomic shared snapshot.
+- never hardcode universe size;
+- verified join: `MapHeat2.PaperId == GetSecuritiesData.Key`;
+- canonical security ID: `String(PaperId or Key)`;
+- conservative verified chunk baseline: 187, configurable;
+- chunk collection is sequential unless new evidence justifies change;
+- preserve full raw MapHeat universe records;
+- preserve full raw GetSecuritiesData Security objects;
+- MapHeat2 + GetSecuritiesData are not one atomic provider snapshot;
+- `null != 0 != "" != undefined`;
+- do not infer unknown field semantics.
+
+Provider evidence/details:
+
+~~~text
+../../../../../../docs/leumi-api/
+~~~
 
 ### Persistence
 
@@ -66,180 +75,116 @@ market-flow-leumi-history-v1
 version 1
 ~~~
 
-Successful cycle is atomic across:
+Successful cycle persistence is atomic across:
 
 ~~~text
 cycles + history + latest + meta
 ~~~
 
-DB commit succeeds before recorder exposes completed/latest in memory.
+Commit succeeds before the Recorder exposes successful completion in memory.
 
-Failed API/validation/DB work never partially updates history/latest.
+API / validation / DB failure must not leave partial `latest` or `history`.
 
-### Viewer/messaging
+### Viewer / messaging
 
 - IndexedDB is source of truth.
-- BroadcastChannel is notification-only.
-- channel name: `market-flow-leumi-v1`.
-- viewer is same-origin.
-- viewer rereads IndexedDB after `CYCLE_COMMITTED`.
-- manual DB-only refresh remains fallback.
-- current table joins latest + universe by securityId.
-- missing universe metadata must not drop a latest row.
-- BroadcastChannel-unavailable mode must not block viewer startup or manual DB refresh.
+- BroadcastChannel is notification only.
+- channel: `market-flow-leumi-v1`.
+- Viewer is same-origin.
+- Viewer rereads IndexedDB after `CYCLE_COMMITTED`.
+- manual DB-only refresh remains a fallback.
+- missing universe metadata must not drop a valid latest row.
+- BroadcastChannel-unavailable mode must not block startup/manual refresh.
+- shared UI/state should have one authoritative owner/writer unless coordination is explicit.
+
+### Runtime / version replacement
+
+Normal delivery is the self-contained verified Bookmarklet/runtime.
+
+For a new code version:
+
+~~~text
+refresh the Leumi page
+→ run the new verified Bookmarklet
+~~~
+
+Do not build a permanent loader/hot-upgrade mechanism unless a future current requirement proves it necessary.
+
+Refreshing the page does not intentionally delete the Market Flow IndexedDB database.
 
 ## Implementation map
 
 ~~~text
 recorder/
-  pure/
-  browser adapters + loop + diagnostics
+    provider collection, cycle loop, diagnostics, pure logic
 
 storage/
-  schema/read/write
-  lifecycle persistence
-  successful-cycle persistence
-  diagnostics persistence
-  pure record builders
+    IndexedDB schema/read/write, lifecycle, atomic successful-cycle persistence
 
 messaging/
-  channel.js
-  pure/channel-message-logic.js
+    BroadcastChannel adapter + pure message contract
 
 viewer/
-  bootstrap.js
-  current-table.js
-  history-data.js
-  security-detail.js
-  live-refresh.js
-  pure/
-    viewer-state.js
-    current-table-logic.js
+    bootstrap, current table, history/detail, refresh, diagnostics, pure UI logic
+
+runtime/
+    deterministic assembled runtime + Bookmarklet packaging
+
+debug/
+    bounded sanitized Debug Bundle
+
+specs/
+    durable responsibility contracts
 
 tests/
-  unit/
-  automation/
-  fixtures/
-  TESTING_POLICY.md
+    unit + Playwright + fixtures
 ~~~
 
-## Sorting technical contract
+## Task-to-context routing
 
-When `STATUS.json` points to sorting work, preserve this V1 contract:
+Do not preload all of these.
+
+| Task | Read when needed |
+|---|---|
+| current work / next action | `STATUS.json` |
+| Stage scope/order | current Stage only in `ROADMAP.md` |
+| recorder behavior | `specs/recorder.spec.md`, recorder files/tests |
+| provider semantics | `specs/provider-data-contract.spec.md`, `docs/leumi-api/` |
+| persistence | `specs/persistence.spec.md`, storage files/tests |
+| messaging | `specs/messaging.spec.md` |
+| viewer behavior | `specs/viewer.spec.md`, viewer files/tests |
+| runtime packaging | `specs/runtime-delivery.spec.md`, runtime files/tests |
+| Debug Bundle | `specs/debug-bundle.spec.md`, debug files/tests |
+| test/verification rules | `tests/TESTING_POLICY.md` |
+| E2E failure | `tests/E2E_DEBUGGING.md` |
+| non-trivial refactor/design | project `engineering-practices.md` |
+| unexpected failure learning | project `continuous-improvement.md` |
+| past Stage/run/mini-project rationale | `docs/history/README.md` |
+| durable cross-cutting rationale | project `decisions.md` |
+
+## Verification summary
+
+Use the cheapest valid test layer.
 
 ~~~text
-Default primary:
-DailyDealsQuantity DESC
+pure deterministic
+→ unit
 
-Final tie-breaker:
-paperName ASC
+browser behavior/integration
+→ Chromium
 
-V1:
-single-column sorting only
+provider-only semantics
+→ live verification
 ~~~
 
-Numeric/time columns:
+After production/runtime/browser code changes, Chromium verification is required on the final changed state.
+
+Expected TDD red may stay targeted; broad verification follows the workstream testing policy.
+
+Detailed policy:
 
 ~~~text
-first click  → DESC
-second click → ASC
-then toggle
-~~~
-
-String columns:
-
-~~~text
-first click  → ASC
-second click → DESC
-then toggle
-~~~
-
-Indicator:
-
-~~~text
-▲ ASC
-▼ DESC
-~~~
-
-Requirements:
-
-- deterministic null-safe ordering;
-- null/undefined/empty handling must not collapse zero;
-- final equal-value tie-breaker is paperName ASC;
-- live refresh must preserve selected sort column/direction;
-- sortable headers must remain keyboard-accessible.
-
-Likely working set for sorting:
-
-~~~text
-viewer/current-table.js
-viewer/pure/current-table-logic.js
-tests/unit/current-table-logic.test.js
-tests/automation/specs/viewer-current-table.spec.js
-docs/viewer-ux.md
 tests/TESTING_POLICY.md
 ~~~
 
-## Testing
-
-Use the cheapest layer that proves behavior:
-
-~~~text
-pure deterministic behavior
-→ Fast unit tests
-
-IndexedDB / DOM / BroadcastChannel / same-origin behavior
-→ exact changed/new Chromium test first
-→ widen only when justified
-→ full Browser CI before every numbered Stage closure
-
-provider/session behavior
-→ live verification only when mocks cannot prove it
-~~~
-
-Hard verification invariant:
-
-~~~text
-any added/modified test
-→ run the smallest sufficient target in its real layer
-
-intentional TDD red
-→ exact target fails for intended reason
-→ implement/fix
-→ exact target green
-~~~
-
-For browser tests, targeted Chromium is the default red/green loop. Do not spend a full Browser-suite run merely to prove an expected red.
-
-After implementation code changes, Chromium proof is mandatory on the final changed state even when no Playwright file changed. A small localized change may use a targeted test/spec; shared runtime/harness/storage/messaging/viewer integration, cross-component, or multi-area changes require the full Browser suite.
-
-Browser checkpoints are additional integration milestones only. They never permit changed code or a changed Playwright/browser test, fixture, harness, or helper to remain unverified. An unexpected red, or red remaining after the intended fix, blocks progression and must be reflected in `STATUS.json`.
-
-Every numbered Stage also has a mandatory closure gate:
-
-~~~text
-Fast CI green
-+ full Browser CI green on final Stage state
-→ Stage may become complete
-~~~
-
-For code quality, refactoring, and safe changes in existing/legacy code, follow:
-
-~~~text
-docs/project/engineering-practices.md
-~~~
-
-For sorting and other pure behavior, prefer unit tests for comparison/state logic. Browser DOM/accessibility behavior belongs in Chromium.
-
-## Durable docs — read only when needed
-
-~~~text
-docs/architecture.md
-docs/data-model.md
-docs/viewer-ux.md
-docs/test-plan.md
-docs/project/decisions.md
-docs/leumi-api/
-~~~
-
-Do not copy live completion state or the next pointer into this file; link back to `STATUS.json` instead.
+Do not copy live CI snapshots or current progress into this file.
