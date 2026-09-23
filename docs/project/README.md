@@ -13,6 +13,7 @@ AGENTS.md
 ## Files
 
 - workstreams.md — routing table: מה קיים, מה פעיל ולאן נכנסים.
+- context-loading.md — HOT/WARM/COLD context policy for efficient fresh-chat continuation with preserved history.
 - current-state.md — milestone snapshot רוחבי; לא pointer לכל micro-step.
 - system-scope.md — scope ארוך טווח ללא קיבוע architecture.
 - decisions.md — compact decision index.
