@@ -28,9 +28,9 @@
   "activeMiniProject": {
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
-    "phase": "C",
-    "phaseStatus": "in-progress",
-    "title": "Controlled suite parallelism",
+    "phase": "D",
+    "phaseStatus": "planned",
+    "title": "Expensive-test review",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
     "baseline": {
@@ -55,6 +55,18 @@
       "warmResult": "56/56 passed; cache hit; browser-tests job about 48s; full workflow about 67s.",
       "result": "Pinned ubuntu-24.04 plus versioned Playwright Chromium cache reduced warm browser-test job latency by about 28% and full workflow latency by about 26%, with no coverage, worker-count, storage-growth, or production/runtime behavior reduction.",
       "rca": "The first experiment exposed a pre-existing viewer-live-refresh synchronization race; the test now waits for semantic refresh completion instead of assuming an updated table means the whole refresh finished."
+    },
+    "phaseC": {
+      "status": "complete-browser-ci-verified",
+      "browserCiRunIds": [
+        35865811136,
+        35866009146
+      ],
+      "workers": 2,
+      "run1": "56/56 passed; Playwright 25.2s; browser-tests job about 40s.",
+      "run2": "56/56 passed; Playwright 24.1s; browser-tests job about 39s.",
+      "result": "Two workers reduced the warm full-suite Playwright time by about one third and browser-job time by about 19% versus the accepted workers=1 Phase B baseline, with all 56 tests and storage-growth coverage unchanged.",
+      "specImpact": "No spec impact."
     }
   },
   "verification": {
@@ -97,13 +109,12 @@
     }
   },
   "next": {
-    "action": "Benchmark workers=2 in two full Chromium runs before accepting or rejecting parallelism.",
+    "action": "Execute Phase D expensive-test review only.",
     "steps": [
-      "keep all 56 browser tests and storage-growth coverage unchanged",
-      "change only the Playwright worker count for the experiment",
-      "run the full Chromium suite twice with workers=2",
-      "compare Playwright and browser-job elapsed time against the accepted workers=1 warm-cache baseline",
-      "if failures appear, perform RCA before any rerun or workaround"
+      "characterize the remaining storage-growth cost under the accepted workers=2 configuration",
+      "separate meaningful IndexedDB volume work from avoidable setup or waiting",
+      "do not reduce the benchmark sample unless measurement validity is preserved by evidence",
+      "evaluate checkpoint placement only if it can be changed explicitly without weakening numbered-Stage Browser CI requirements"
     ]
   },
   "history": {
