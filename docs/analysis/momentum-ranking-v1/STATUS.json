@@ -14,7 +14,7 @@
     "issue": 14,
     "title": "Objective alignment audit and first-principles short-horizon hypotheses",
     "status": "in-progress",
-    "subfocus": "Audit pass 1 completed for the currently registered Price/Wave, Activity/Flow, Book/Directional Flow, Tradability and Freshness/Data Quality families."
+    "subfocus": "Audit passes 1–2 completed. Pass 2 covered Path/WaveHealth, Pullback/Retest, Levels/Breakout and Sequence/Lead-Lag."
   },
   "completedWorkUnits": [
     {
@@ -44,6 +44,6 @@
   },
   "next": {
     "issue": 14,
-    "action": "Continue the objective-alignment audit over the remaining research checkpoint topics: Path/WaveHealth, pullback/retest, levels/breakout, sequence/lead-lag, remaining opportunity, cross-sectional ranking, recent-wave memory, multi-horizon context and local regime."
+    "action": "Continue the objective-alignment audit over RemainingOpportunity, cross-sectional ranking/leader hysteresis, recent-wave memory/capacity, multi-horizon context and local regime."
   }
 }

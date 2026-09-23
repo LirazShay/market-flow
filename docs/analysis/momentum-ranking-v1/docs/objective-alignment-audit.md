@@ -312,3 +312,345 @@ For every candidate feature, ask:
 A conventional indicator has no privileged status.
 
 If it does not add out-of-sample value to the direct target, remove or demote it.
+
+
+---
+
+# Audit pass 2 — path, retest, levels and sequence
+
+## Path Quality / Wave Health — KEEP + REFRAME
+
+Past path cleanliness is descriptive. It deserves scoring influence only if it helps predict the **remaining path from now**.
+
+A stock that rose smoothly for the last minute may be:
+- genuinely still efficient;
+- already mature and mostly consumed;
+- about to exhaust after an unusually clean run.
+
+Therefore do not reward “smooth past path” mechanically.
+
+### Keep / investigate
+
+- recent directional efficiency;
+- reversal density/depth;
+- giveback;
+- MID-vs-LAST path agreement;
+- time since meaningful progress;
+- effort-to-progress efficiency.
+
+### Reframe around usable future path
+
+Candidate objective-aligned concepts:
+
+~~~text
+ProgressPerAdverseExcursion
+RecentDirectionalEfficiency
+ReversalDensityRecent
+GiveBackToTargetRatio
+ProgressStallClock
+EffortToProgressEfficiency
+EffortToProgressDeterioration
+~~~
+
+The important question is not whether the past looked clean, but whether the current state historically leads to:
+- low MAE before target;
+- quick next progress;
+- target-before-adverse;
+- short recovery after minor adverse movement.
+
+### Important asymmetry
+
+A “messy” past path can still be acceptable if the current state has just transitioned from noise to ordered upward movement.
+
+Conversely, an extremely smooth old move can be dangerous if almost all recent wave capacity has already been consumed.
+
+Verdict:
+
+~~~text
+PathQuality = protective/quality evidence
+not independent bullish alpha
+~~~
+
+Its strongest role may be to distinguish two equally bullish candidates by expected adverse path and remaining usability.
+
+---
+
+## Pullback / Retest — KEEP, but only as a short-horizon reset/reacceleration hypothesis
+
+Do not encode:
+
+~~~text
+pullback = healthy = good
+~~~
+
+A pullback is useful only if it creates a **new capturable leg from now**.
+
+The objective-aligned sequence is closer to:
+
+~~~text
+prior upward progress
+→ limited adverse excursion
+→ selling/counter-pressure fails to expand
+→ price/book reclaims quickly
+→ fresh activity/book/price acceleration
+→ new leg
+~~~
+
+### New first-principles interpretation: opportunity reset
+
+A successful short pullback may matter because it can:
+- reduce current extension;
+- create a clearer new reference point;
+- expose whether counter-pressure can actually break the structure;
+- create a fresh leg whose age is much lower than the age of the broad wave.
+
+This can make:
+
+~~~text
+old WaveAge
++ young LegAge
+~~~
+
+a potentially attractive combination.
+
+### Candidate concepts
+
+~~~text
+PullbackDepthPct
+PullbackDuration
+ReclaimLatency
+ReclaimStrength
+PostRetestAcceleration
+PostRetestBookConfirmation
+RetestFailureClock
+LegResetStrength
+~~~
+
+A particularly objective-aligned question:
+
+> After a small pullback completes, how quickly does the stock historically reach the next positive target before revisiting the pullback low?
+
+### Guardrail
+
+A pullback that takes too long relative to the two-minute objective may be irrelevant even if it looks “healthy” on a chart.
+
+Verdict:
+
+~~~text
+KEEP as a state transition
+not as a classical chart-pattern rule
+~~~
+
+---
+
+## Levels / Breakout — DEMOTE broad levels; KEEP only path-relevant micro barriers
+
+A daily high/low or distant historical level is not automatically useful to this engine.
+
+The key question is:
+
+> Does a currently relevant level sit **inside the path to the short target from now**, and does crossing/rejecting it change the target-before-adverse outcome?
+
+This creates a new concept:
+
+~~~text
+TargetPathObstacle
+~~~
+
+Example:
+
+- target from now = +0.20%;
+- recent micro high = +0.07% above current price.
+
+That level may matter because the move must clear it before the desired target.
+
+But if the daily high is +4% away, it is irrelevant to a +0.20% / 30-second opportunity.
+
+### Demote
+
+- daily high proximity by itself;
+- “breakout” as an automatic positive label;
+- number of old tests without recency/context.
+
+### Keep / reframe
+
+- recent micro high / leg high when it lies inside the candidate target path;
+- time from level cross to continued progress;
+- whether BID/MID remain above the crossed level;
+- immediate giveback/rejection after crossing.
+
+Candidate concepts:
+
+~~~text
+DistanceToNearestRelevantMicroBarrier
+BarrierDistanceToTargetRatio
+LevelCrossToAcceptanceLatency
+PostBreakProgressPct
+PostBreakGiveBackPct
+FailedBreakLatency
+BarrierClearanceState
+~~~
+
+### New conclusion
+
+For this objective, “breakout” is not the feature.
+
+The useful feature may be:
+
+~~~text
+how quickly the market converts a barrier cross
+into additional executable progress
+before rejection
+~~~
+
+A recent 2026 SSRN study of QQQ opening-range retests explicitly treats retest/breakout outcomes as conditional descriptive associations rather than universal causal rules; that is consistent with our decision to validate precise operational states rather than adopt “breakout = bullish” folklore.
+
+Research lead:
+- https://ssrn.com/abstract=6745958
+
+Broader literature also documents that short-run continuation and reversal can both occur depending on market conditions/liquidity, reinforcing that prior movement or a break alone is not sufficient evidence.
+
+Research leads:
+- https://www.sciencedirect.com/science/article/pii/S014829631830420X
+- https://www.sciencedirect.com/science/article/pii/S1042957385710066
+
+---
+
+## Sequence / Lead-Lag — KEEP STRONGLY; make usable lead time the core quantity
+
+This topic is unusually aligned with the project because the engine needs to detect the opportunity **before most of the useful move has occurred**.
+
+Candidate sequences remain useful:
+
+~~~text
+Activity → Book → Price
+Book → Activity/Trades → Price
+Price → rapid cross-family confirmation
+Pullback → reclaim → reacceleration
+Pressure → level cross → acceptance
+Effort ↑ → progress stalls → exhaustion
+~~~
+
+But sequence quality should not be scored because it “looks logical”.
+
+It must be validated by:
+
+~~~text
+how much usable lead time exists
+before target/adverse outcome?
+~~~
+
+### New candidate concepts
+
+~~~text
+EarliestQualifiedPrecursorTime
+FirstPriceProgressTime
+UsableLeadTime
+UsableLeadTimeAfterSystemLatency
+SequenceStage
+SequenceCompression
+DetectionLateness
+CrossFamilyConfirmationLatency
+~~~
+
+Candidate definition:
+
+~~~text
+UsableLeadTimeAfterSystemLatency
+=
+time from first qualified precursor
+to useful target/progress
+- observation/decision/execution latency
+~~~
+
+If the result is near zero or negative, the precursor may be statistically predictive but operationally useless.
+
+### SequenceCompression
+
+With ~5-second collection cadence, activity/book/price may all change inside one unseen interval.
+
+In that case:
+
+~~~text
+SIMULTANEOUS_CLUSTER
+~~~
+
+may be the honest state.
+
+Do not invent:
+
+~~~text
+Activity definitely led Book by 2 seconds
+~~~
+
+when the data cannot observe it.
+
+### Important new distinction
+
+~~~text
+Predictive sequence
+!=
+Tradable sequence
+~~~
+
+A sequence can correctly precede price movement but still be too late after system latency.
+
+This connects directly to Issues #15/#16.
+
+Verdict:
+
+~~~text
+Sequence / Lead-Lag = KEEP STRONGLY
+because early detection is part of the objective itself
+~~~
+
+but validate by usable lead time and target-before-adverse, not narrative plausibility.
+
+---
+
+# New hypotheses from audit pass 2
+
+## K. TargetPathObstacle
+
+Only levels/barriers that lie inside or near the desired short target path should receive meaningful attention.
+
+## L. BarrierClearanceLatency
+
+Time from crossing a relevant micro barrier to additional confirmed progress.
+
+Slow/no conversion after a break may be protective evidence.
+
+## M. PullbackResetValue
+
+A short pullback may increase opportunity quality if it creates a fresh low-extension leg and rapidly reclaims upward structure.
+
+This must be compared against:
+- no-pullback continuation;
+- failed pullback/retest;
+- long/stale pullbacks.
+
+## N. EffortToProgressEfficiency
+
+Instead of activity alone:
+
+~~~text
+executed effort / useful price progress
+~~~
+
+and especially its deterioration over time may identify when active trading stops producing upward movement.
+
+## O. UsableLeadTimeAfterSystemLatency
+
+The key sequence quantity is not raw lead-lag, but how much actionable lead remains after the system has observed, ranked and acted.
+
+## P. ProgressStallRelativeToNormalConversion
+
+“No new high for 20 seconds” has no universal meaning.
+
+It becomes informative relative to:
+- current target horizon;
+- recent stock/regime conversion latency;
+- ongoing effort/pressure.
+
+This links Path/WaveHealth directly to Issue #16.
+
