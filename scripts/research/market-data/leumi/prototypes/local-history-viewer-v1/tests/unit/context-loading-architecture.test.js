@@ -26,6 +26,14 @@ const workstreamRoot =
         "local-history-viewer-v1"
     );
 
+const routerFile =
+    path.join(
+        repositoryRoot,
+        "docs",
+        "project",
+        "workstreams.md"
+    );
+
 const hotFiles = [
     path.join(
         repositoryRoot,
@@ -55,7 +63,11 @@ const limits = {
     "AI_CONTEXT.md":
         5000,
     total:
-        24000
+        24000,
+    router:
+        3000,
+    worstCaseWithRouter:
+        27000
 };
 
 function read(
@@ -116,6 +128,33 @@ test(
                 total +
                 " > " +
                 limits.total
+        );
+
+        const routerContent =
+            read(
+                routerFile
+            );
+
+        assert.ok(
+            routerContent.length <=
+                limits.router,
+            "Workstream router exceeds context budget: " +
+                routerContent.length +
+                " > " +
+                limits.router
+        );
+
+        assert.ok(
+            total +
+                routerContent.length <=
+                limits.worstCaseWithRouter,
+            "Worst-case fresh-chat context with workstream routing exceeds budget: " +
+                (
+                    total +
+                    routerContent.length
+                ) +
+                " > " +
+                limits.worstCaseWithRouter
         );
     }
 );
