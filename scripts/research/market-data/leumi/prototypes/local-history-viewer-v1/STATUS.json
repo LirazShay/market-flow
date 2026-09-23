@@ -25,71 +25,7 @@
     "title": "V1 freeze",
     "status": "in-progress"
   },
-  "activeMiniProject": {
-    "id": "stage20-test-runtime-optimization",
-    "status": "in-progress",
-    "phase": "F",
-    "phaseStatus": "in-progress",
-    "title": "Final optimization verification",
-    "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
-    "baselineBrowserCiRunId": 35862723542,
-    "baseline": {
-      "tests": 56,
-      "passed": 56,
-      "playwrightSeconds": 39,
-      "workflowSecondsApprox": 90,
-      "browserTestsJobSecondsApprox": 67,
-      "chromiumSetupSecondsApprox": 20.6,
-      "slowestKnownTest": "storage-growth.spec.js (~12.2s)"
-    },
-    "phaseA": {
-      "status": "complete",
-      "fastCiRunId": 35864269535,
-      "result": "Fast CI restored; timing breakdown and isolation audit recorded. No browser coverage removed or skipped."
-    },
-    "phaseB": {
-      "status": "complete-browser-ci-verified",
-      "coldBrowserCiRunId": 35865004148,
-      "warmBrowserCiRunId": 35865194288,
-      "coldResult": "56/56 passed; browser-tests job about 57s.",
-      "warmResult": "56/56 passed; cache hit; browser-tests job about 48s; full workflow about 67s.",
-      "result": "Pinned ubuntu-24.04 plus versioned Playwright Chromium cache reduced warm browser-test job latency by about 28% and full workflow latency by about 26%, with no coverage, worker-count, storage-growth, or production/runtime behavior reduction.",
-      "rca": "The first experiment exposed a pre-existing viewer-live-refresh synchronization race; the test now waits for semantic refresh completion instead of assuming an updated table means the whole refresh finished."
-    },
-    "phaseC": {
-      "status": "complete-browser-ci-verified",
-      "browserCiRunIds": [
-        35865811136,
-        35866009146
-      ],
-      "workers": 2,
-      "run1": "56/56 passed; Playwright 25.2s; browser-tests job about 40s.",
-      "run2": "56/56 passed; Playwright 24.1s; browser-tests job about 39s.",
-      "result": "Two workers reduced the warm full-suite Playwright time by about one third and browser-job time by about 19% versus the accepted workers=1 Phase B baseline, with all 56 tests and storage-growth coverage unchanged.",
-      "specImpact": "No spec impact."
-    },
-    "phaseD": {
-      "status": "complete-analysis-verified",
-      "result": "Storage-growth remained unchanged because it was not on the workers=2 suite critical path in either accepted run; preserving the 20-cycle/11,220-row sample avoids weakening an already noisy Chromium storage estimate.",
-      "evidence": {
-        "run35865811136": "storage-growth ~11.18s; suite continued ~6.13s after it completed",
-        "run35866009146": "storage-growth ~6.29s; suite continued ~9.35s after it completed",
-        "bytesPerHistoryRow": "about 537.9 vs 462.8 across the two runs (~15% spread)"
-      },
-      "decision": "No test, sample-size, checkpoint, or policy change.",
-      "specImpact": "No spec impact."
-    },
-    "phaseE": {
-      "status": "complete-browser-ci-verified",
-      "browserCiRunId": 35867930699,
-      "result": "Ordinary full Browser CI now defaults to publish_runtime=false and completed in about 46s with 56/56 Chromium tests passing; rolling release publication is explicit and remains downstream of successful Browser CI.",
-      "browserJob": "about 41s",
-      "playwright": "26.1s",
-      "priorPublishLatency": "about 10-15s after browser verification",
-      "publicationModel": "same workflow; explicit publish_runtime boolean input; default false",
-      "specImpact": "No spec impact."
-    }
-  },
+  "activeMiniProject": null,
   "verification": {
     "codeBaseline": {
       "fastCi": {
@@ -127,15 +63,39 @@
         "docs/project/decisions/D-023.md",
         "docs/project/decisions/D-024.md"
       ]
+    },
+    "testRuntimeOptimization": {
+      "status": "complete-browser-ci-verified",
+      "finalBrowserCiRunId": 35868415694,
+      "finalResult": "56/56 Chromium tests passed with workers=2, cache hit and publication skipped.",
+      "finalTiming": {
+        "playwrightSeconds": 27.8,
+        "browserTestsJobSecondsApprox": 47,
+        "workflowSecondsApprox": 51
+      },
+      "baseline": {
+        "playwrightSeconds": 39,
+        "browserTestsJobSecondsApprox": 67,
+        "workflowSecondsApprox": 90
+      },
+      "durableChanges": [
+        "Playwright Chromium cache on ubuntu-24.04",
+        "workers=2",
+        "publish_runtime=false by default with explicit opt-in publication",
+        "semantic completion wait for the viewer live-refresh regression"
+      ],
+      "coverage": "All 56 Browser tests retained; storage-growth sample unchanged; retries remain 0.",
+      "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
+      "specImpact": "No spec impact."
     }
   },
   "next": {
-    "action": "Finish Phase F verification and hand back to Stage 20 freeze.",
+    "action": "Resume the remaining Stage 20 V1-freeze closure work.",
     "steps": [
-      "run one full optimized Chromium suite with publication disabled",
-      "remove the temporary push trigger immediately after the run",
-      "run Fast CI on the final durable no-push state",
-      "record final timing comparison and close the optimization mini-project only if both gates are green"
+      "perform the final freeze cleanup/review of README, version marker, durable docs and known limitations without duplicating live status",
+      "archive or compact temporary optimization planning material if appropriate",
+      "run the mandatory final Fast CI and full Browser CI for Stage 20 closure",
+      "only then mark Stage 20 and the planned V1 process complete"
     ]
   },
   "history": {
