@@ -77,7 +77,20 @@ exact failing test
 
 Do not spend the full-suite cost on every experiment unless the failure only reproduces in the suite.
 
-After a fix, the exact changed/failing test must pass first. Then run the broader regression required by TESTING_POLICY.md. Full Browser CI is still mandatory at every numbered Stage closure.
+For tests-first browser work, this same rule applies to the intentional red phase:
+
+~~~text
+new regression/behavior test
+→ run exact test only
+→ confirm intended red
+→ implement/fix
+→ run exact test only
+→ targeted green
+~~~
+
+Do not run the full Browser suite merely to demonstrate a failure that is deliberately expected.
+
+After a fix, the exact changed/failing test must pass first. Widen to the spec/related cluster only when useful, then run the broader regression required by TESTING_POLICY.md at the actual checkpoint. Full Browser CI is still mandatory at every numbered Stage closure.
 
 ---
 
@@ -275,8 +288,8 @@ Once RCA is strong enough:
 2. keep/improve the regression test;
 3. run the exact failing test;
 4. if red, continue RCA rather than stacking speculative fixes;
-5. once targeted green, run the relevant spec/cluster;
-6. run full Browser CI when required by policy;
+5. once targeted green, run the relevant spec/cluster only when coupling/risk/evidence justifies it;
+6. run full Browser CI only when required by policy/checkpoint or when suite-level reproduction is necessary;
 7. restore temporary diagnostics and CI triggers;
 8. update STATUS.json with root cause, fix commit and verification evidence.
 
