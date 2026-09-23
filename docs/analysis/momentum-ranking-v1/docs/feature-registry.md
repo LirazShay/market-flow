@@ -1681,6 +1681,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PV
 - **Meaning:** prevents ranking on a cycle that is partial, duplicated or structurally invalid
+- **Plain-language intuition:** before trusting any ranking cycle, this checks that the collector actually received the complete intended universe once, with no missing IDs, duplicate IDs or malformed response structure.
+- **Market mechanism / why it can matter:** cross-sectional ranking is only meaningful if the compared set is structurally complete enough to represent the intended market snapshot. Missing or duplicated securities can distort percentiles, leaders and family coverage.
+- **Objective connection:** we are trying to choose the best immediate opportunity among many stocks. If the cycle itself is incomplete, the apparent winner may only be “best among what happened to arrive,” which is not the same decision problem.
+- **Favorable / unfavorable interpretation:** PASS only says the cycle passed structural integrity checks. FAIL means dependent ranking should stop or be explicitly degraded; neither state says anything about direction.
+- **Failure modes / counterexamples:** a complete cycle can still contain stale quotes, semantically invalid fields or poor per-security coverage. Structural completeness is necessary but not sufficient.
+- **Relationship to other evidence:** FQ-001 guards the cycle boundary. FQ-002..FQ-010 then evaluate age, semantics, alignment and consistency inside that otherwise complete cycle.
+- **Worked example:** requested 561 securities, received 560 unique and one missing → FAIL even if all 560 received rows look valid. The missing name might have been the real leader.
 - **Known overlaps:** none; this is foundational
 - **Confidence limits:** a structurally complete cycle can still contain stale or semantically invalid individual fields
 - **Validation targets:** ranking-input eligibility, integrity regressions
@@ -1697,6 +1704,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PV(time semantics) + PI
 - **Meaning:** exact age of the market observation used for this security when it is compared/ranked
+- **Plain-language intuition:** this asks how many seconds passed between when this specific stock was collected and when the ranking decision is being made.
+- **Market mechanism / why it can matter:** because the collector processes securities sequentially, one stock may be several seconds older than another at the same ranking moment. In a fast market, that age difference can materially change which quote or signal is actually current.
+- **Objective connection:** the project targets seconds-to-~2-minute opportunities. If one stock's data is already old relative to that horizon, ranking it against fresher competitors can be unfair or operationally too late.
+- **Favorable / unfavorable interpretation:** lower observation age means more timely evidence. Higher age reduces trust/usable lead. Old age is not bearish; it only makes the signal less actionable.
+- **Failure modes / counterexamples:** using cycle completion time for every stock hides sequential skew; clock mismatch can corrupt age; a quiet stock may not have changed even if old, but we cannot assume that.
+- **Relationship to other evidence:** FQ-002 is the primary owner of observation age. TE-009 consumes it for execution feasibility; FQ-003 summarizes cycle-wide skew.
+- **Worked example:** Stock A collected 1s before ranking, Stock B collected 7s before ranking. On a 20s target horizon, B has already lost much more usable time.
 - **Known overlaps:** TE-009 consumer alias; FQ-003/FQ-008
 - **Confidence limits:** must use per-security timestamp; cycle completion time alone hides sequential-chunk skew
 - **Validation targets:** ranking stability under skew, missed opportunity, executable opportunity
@@ -1713,6 +1727,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PV(sequential collection) + PI
 - **Meaning:** quantifies how non-simultaneous the full-universe comparison is
+- **Plain-language intuition:** this measures the time gap between the earliest-collected and latest-collected securities inside the same cycle.
+- **Market mechanism / why it can matter:** a ranking cycle can look like one snapshot even though the universe was actually observed over several seconds. During fast moves, early names and late names may belong to different market moments.
+- **Objective connection:** if we compare all stocks to choose one immediate leader, large cycle skew can create artificial winners/losers simply because they were observed at different times.
+- **Favorable / unfavorable interpretation:** smaller skew makes cross-sectional comparison more coherent; larger skew reduces fairness/trust. It does not indicate market direction.
+- **Failure modes / counterexamples:** low global skew does not guarantee each stock is fresh enough; high skew may be harmless in a quiet market but dangerous during bursts.
+- **Relationship to other evidence:** FQ-003 is cycle-level; FQ-002 remains the security-specific age used for actual decision timing.
+- **Worked example:** earliest row collected at 10:00:00, latest at 10:00:06 → 6s skew. On a 30s strategy horizon, that is a substantial portion of the opportunity window.
 - **Known overlaps:** FQ-002
 - **Confidence limits:** skew is cycle-level; individual securities still need their own observation age
 - **Validation targets:** cross-sectional rank fairness, horizon feasibility
@@ -1729,6 +1750,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PI
 - **Meaning:** records how much of a feature's intended evidence was actually available instead of silently substituting zero/neutral
+- **Plain-language intuition:** every feature depends on certain inputs. This records which required/optional inputs were actually valid instead of pretending missing data means zero.
+- **Market mechanism / why it can matter:** a computed score can look precise even when half of its evidence is absent. Missing BID, stale LAST or unavailable depth changes what the feature really knows.
+- **Objective connection:** the system must compare candidates based on what is truly observed now. A seemingly strong feature built from partial dependencies should carry lower trust than the same feature with full evidence.
+- **Favorable / unfavorable interpretation:** high coverage improves confidence that the intended feature was actually computed. Low/critical-missing coverage may invalidate it. Coverage itself is not bullish.
+- **Failure modes / counterexamples:** 90% numeric coverage can still be unusable if the missing 10% is the one critical input; optional vs required dependencies must be distinguished.
+- **Relationship to other evidence:** FQ-004 is feature-level. FQ-011 aggregates coverage to the family level; FQ-013 folds it into overall technical trust.
+- **Worked example:** a feature needs LAST, BID, ASK and timestamps. Three of four valid but ASK missing → numeric coverage 75%, yet any MID/spread-based interpretation may be invalid entirely.
 - **Known overlaps:** family coverage, confidence
 - **Confidence limits:** critical missing inputs may invalidate a feature even when numeric coverage looks high
 - **Validation targets:** feature eligibility, confidence calibration
@@ -1745,6 +1773,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PV + PI
 - **Meaning:** enforces `null != 0 != "" != undefined` and prevents invalid executable-like values from entering features
+- **Plain-language intuition:** this checks whether a field value actually means what the code thinks it means. Missing, empty, zero and unknown are treated as different states instead of one generic “falsy” bucket.
+- **Market mechanism / why it can matter:** market APIs often use null/empty/zero differently. Treating an invalid BID of 0 as a real price can create absurd spread/return calculations; treating a legitimate zero delta as missing destroys valid inactivity information.
+- **Objective connection:** short-horizon ranking is sensitive to small numeric differences. Semantic mistakes can create fake high-priority opportunities much larger than the real signal.
+- **Favorable / unfavorable interpretation:** VALID means the field is usable under verified semantics; INVALID blocks dependent calculations; UNKNOWN means semantics are not proven yet. None of these imply direction.
+- **Failure modes / counterexamples:** generic validation rules can be wrong across fields/phases; provider semantics may change; “unusual” is not automatically invalid.
+- **Relationship to other evidence:** FQ-005 validates individual fields. FQ-010 checks relationships between fields; TE-008 uses validated BID/ASK presence for execution gating.
+- **Worked example:** `BuyLimit1 = 0` might mean no valid bid, while a price-change field of `0` can legitimately mean no change. They must not be treated the same.
 - **Known overlaps:** TE-008 for two-sided L1
 - **Confidence limits:** provider semantics not yet verified remain UNKNOWN rather than guessed
 - **Validation targets:** data-integrity regressions, feature correctness
@@ -1761,6 +1796,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** HISTORY
 - **Evidence:** PI + H
 - **Meaning:** distinguishes “the current snapshot is fresh” from “the bullish evidence itself happened long ago”
+- **Plain-language intuition:** a stock can have a brand-new snapshot containing a signal that actually began 40 seconds ago. This metric measures the age of the evidence event itself, not the age of the row.
+- **Market mechanism / why it can matter:** old signals can persist in current state even after their useful lead is mostly gone. Fresh data does not automatically mean fresh opportunity.
+- **Objective connection:** we care whether enough move remains after entering now. Signal age helps detect cases where the system is seeing a valid but already-mature setup.
+- **Favorable / unfavorable interpretation:** younger evidence is generally more relevant to a short objective; older evidence needs reconfirmation or strong remaining-opportunity support. Old is not necessarily bad if a new leg/reset renewed the opportunity.
+- **Failure modes / counterexamples:** not every family has a clean event timestamp; using cycle age as a substitute would be wrong; repeated values are not automatically new evidence.
+- **Relationship to other evidence:** FQ-002 measures snapshot age; FQ-006 measures signal-event age; FQ-007 asks whether the signal has been reconfirmed since.
+- **Worked example:** row collected 1s ago but breakout/reacceleration event happened 35s ago. Observation is fresh; evidence may already be aging.
 - **Known overlaps:** FQ-002, PW-007/PW-008, RemainingOpportunity
 - **Confidence limits:** requires explicit event/state timestamps; do not approximate every signal's age from cycle age
 - **Validation targets:** TimeToTarget, continuation, remaining opportunity
@@ -1777,6 +1819,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** HISTORY
 - **Evidence:** PI + H
 - **Meaning:** allows fresh confirming evidence to renew a signal without pretending the original event happened again
+- **Plain-language intuition:** this asks whether a previous signal has received new supporting evidence recently, is merely still present, is weakening, or has been invalidated.
+- **Market mechanism / why it can matter:** markets evolve continuously. A signal that keeps getting fresh confirmation can remain relevant longer than one that simply persists unchanged.
+- **Objective connection:** reconfirmation helps distinguish “old signal still on screen” from “old signal whose thesis is being renewed now,” which matters for whether useful opportunity may still remain.
+- **Favorable / unfavorable interpretation:** `RECONFIRMED` can refresh trust; `PERSISTING` means no new evidence; `AGING_UNCONFIRMED` lowers confidence; `WEAKENING/INVALIDATED` is protective.
+- **Failure modes / counterexamples:** seeing the same value twice is not necessarily confirmation; reconfirmation criteria differ by family; correlated evidence should not be counted as independent renewal.
+- **Relationship to other evidence:** FQ-007 modifies how FQ-006 age is interpreted and feeds FQ-008 FreshnessState. SQ sequence logic also consumes confirmation timing.
+- **Worked example:** a bid-chasing signal from 20s ago is reconfirmed by another upward BID step now → fresher trust than if BID simply stayed unchanged for 20s.
 - **Known overlaps:** FQ-006, sequence/lifecycle states
 - **Confidence limits:** reconfirmation criteria are family-specific; no universal “same value again = confirmation” rule
 - **Validation targets:** continuation, false-positive reduction, TimeToTarget
@@ -1793,6 +1842,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW + HISTORY
 - **Evidence:** PI + H
 - **Meaning:** family-level answer to whether this evidence is still timely for the short objective
+- **Plain-language intuition:** this combines how old the data is, how old the actual signal is and whether anything recently reconfirmed it.
+- **Market mechanism / why it can matter:** timing relevance depends on more than one clock. A fresh row with stale evidence is different from a slightly older row containing a newly reconfirmed signal.
+- **Objective connection:** the strategy lives on short horizons, so stale evidence can consume the entire opportunity even when the underlying directional idea was once correct.
+- **Favorable / unfavorable interpretation:** `FRESH/RECONFIRMED` supports trust; `AGING` warns; `STALE/INVALID` can gate the evidence. None of these are bullish/bearish.
+- **Failure modes / counterexamples:** one universal freshness threshold is wrong—5s may be fine for a 120s context feature and fatal for a 5s precursor.
+- **Relationship to other evidence:** FQ-008 is the family timing synthesis; TE-011 translates latency/freshness into feasibility relative to horizon; MR-014 later adds evidence-specific decay/regime effects.
+- **Worked example:** observation age 2s, signal age 25s, no reconfirmation → `AGING`; observation age 3s, signal age 10s, strong new confirmation now → possibly `RECONFIRMED`.
 - **Known overlaps:** TE-011 latency-to-horizon, RemainingOpportunity
 - **Confidence limits:** thresholds must be horizon-aware; five seconds can be trivial for one signal and fatal for another
 - **Validation targets:** target-before-adverse, TimeToTarget, false-positive reduction
@@ -1809,6 +1865,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PI
 - **Meaning:** prevents LAST-vs-BID/ASK or cross-family sequences from pretending asynchronous observations were simultaneous
+- **Plain-language intuition:** this checks whether the pieces used in one derived feature were observed close enough in time to be meaningfully combined.
+- **Market mechanism / why it can matter:** LAST, BID, ASK and activity values can each represent slightly different moments. Combining them as if they were simultaneous can invent geometry or event order that never actually existed.
+- **Objective connection:** many of our strongest ideas depend on precise relationships—e.g. LAST vs current BID, Activity then Book then Price. Temporal misalignment can create fake signals exactly where timing matters most.
+- **Favorable / unfavorable interpretation:** ALIGNED/ACCEPTABLE_SKEW means the combination is plausible; MATERIAL_SKEW reduces trust or invalidates sequence claims. Alignment itself is not direction.
+- **Failure modes / counterexamples:** acceptable skew depends on horizon; 2s may be trivial for a 2-minute context and huge for a 5s signal. Timestamp semantics must be known.
+- **Relationship to other evidence:** FQ-009 is multi-source alignment; FQ-002/003 are age/skew measurements. SQ-003 SequenceCompressionState builds on this uncertainty.
+- **Worked example:** LAST from t=0 and BID/ASK from t=5s should not be treated as an exact same-moment spread-position snapshot in a 10s strategy.
 - **Known overlaps:** FQ-002/FQ-003
 - **Confidence limits:** acceptable skew depends on target horizon and feature semantics
 - **Validation targets:** feature correctness, next-direction labels, rank stability
@@ -1825,6 +1888,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PI
 - **Meaning:** catches impossible/semantically contradictory inputs while preserving genuine extreme events
+- **Plain-language intuition:** this checks whether related fields can logically coexist under verified rules, without declaring unusual market behavior “bad data” just because it looks strange.
+- **Market mechanism / why it can matter:** inconsistent inputs can create impossible derived signals. But real markets can also produce extreme/out-of-spread-looking states because quotes moved after a trade, so validation must be semantics-aware.
+- **Objective connection:** ranking should reject corrupted contradictions but preserve rare real states that may contain valuable information.
+- **Favorable / unfavorable interpretation:** CONSISTENT means no proven contradiction found; SUSPICIOUS invites caution; INVALID blocks dependent logic; UNKNOWN means no verified rule applies.
+- **Failure modes / counterexamples:** over-aggressive invariants can erase genuine market events; cross-endpoint fields may not be atomic, so apparent contradiction can be timing rather than corruption.
+- **Relationship to other evidence:** FQ-005 validates each field alone; FQ-010 validates proven relationships among fields.
+- **Worked example:** LAST outside current BID/ASK is not automatically invalid because quotes may have moved after the trade. But a negative trade count delta across a same-session monotonic counter is a stronger integrity problem.
 - **Known overlaps:** FQ-005
 - **Confidence limits:** do not assert invariants between non-atomic fields/endpoints unless verified; unusual is not bad data
 - **Validation targets:** data-integrity regressions, outlier handling
@@ -1841,6 +1911,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PI
 - **Meaning:** allows Price/Activity/Book/etc. to expose how complete their evidence actually is
+- **Plain-language intuition:** this summarizes how much of an entire evidence family is currently usable, while still naming any critical missing pieces.
+- **Market mechanism / why it can matter:** one stock might have full Price and Activity evidence but almost no valid Book data. Treating both families as equally informed would overstate confidence.
+- **Objective connection:** the ranking should know not only each family's score/state but also how much real evidence supports that state before comparing candidates.
+- **Favorable / unfavorable interpretation:** high family coverage raises trust in that family's interpretation; low/critical-missing coverage lowers it. Full coverage does not make a weak signal strong.
+- **Failure modes / counterexamples:** raw percent coverage can hide missing high-value dependencies; optional noisy features should not dominate the ratio.
+- **Relationship to other evidence:** FQ-011 aggregates FQ-004 feature coverage and feeds FQ-014 PredictiveConfidenceInputs.
+- **Worked example:** Price family 100% covered, Book family 40% because ASK depth and several L1 fields missing → overall model should preserve strong Price confidence but weak Book confidence.
 - **Known overlaps:** family Confidence
 - **Confidence limits:** coverage is not predictive strength; 100% complete weak evidence remains weak
 - **Validation targets:** confidence calibration, family eligibility
@@ -1857,6 +1934,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PI
 - **Meaning:** qualifies percentile/rank evidence; 99th percentile among 20 valid securities is weaker context than 99th among 500
+- **Plain-language intuition:** this asks how much of the eligible universe actually participated in a cross-sectional comparison.
+- **Market mechanism / why it can matter:** percentiles/ranks depend on the comparison set. A top percentile from a tiny valid subset can look impressive while being statistically and operationally fragile.
+- **Objective connection:** central ranking chooses among many stocks. Relative-edge claims are only trustworthy if enough eligible securities were validly comparable at that moment.
+- **Favorable / unfavorable interpretation:** broader valid coverage strengthens rank context; low coverage weakens it. High coverage does not improve the stock's absolute opportunity.
+- **Failure modes / counterexamples:** a large comparison set can still be stale or heterogeneous; eligible-universe definition itself must be valid.
+- **Relationship to other evidence:** FQ-012 qualifies future cross-sectional/percentile features; it should never replace absolute eligibility checks.
+- **Worked example:** rank #1 of 20 valid names is not equivalent to rank #1 of 520 valid names, even though both are technically “top ranked.”
 - **Known overlaps:** cross-sectional normalization
 - **Confidence limits:** high coverage does not mean high-quality values; universe eligibility must also be valid
 - **Validation targets:** rank robustness, confidence calibration
@@ -1873,6 +1957,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW
 - **Evidence:** PV + PI
 - **Meaning:** technical answer to whether downstream interpretation can be trusted enough to participate in ranking
+- **Plain-language intuition:** this is the overall technical trust state: are the cycle, fields, timestamps, alignment and coverage good enough that downstream signal interpretation is worth using?
+- **Market mechanism / why it can matter:** sophisticated signal logic cannot rescue corrupt, stale or internally inconsistent inputs. Data quality acts as a gate on interpretation.
+- **Objective connection:** the system should prefer “unknown” over confidently ranking a stock from bad evidence, because false precision can send capital toward a fake short-lived opportunity.
+- **Favorable / unfavorable interpretation:** `GOOD` means technically trustworthy enough to interpret; `DEGRADED` means usable with reduced confidence; `POOR/INVALID` can gate; `UNKNOWN` preserves uncertainty.
+- **Failure modes / counterexamples:** perfect data quality does not imply predictive power; a technically clean but weak signal remains weak.
+- **Relationship to other evidence:** FQ-013 synthesizes FQ-001..012 and feeds family confidence/gating across the entire model.
+- **Worked example:** all rows present, timestamps fresh, but BID/ASK semantics invalid for one stock → its DataQuality may be DEGRADED/INVALID despite cycle integrity PASS.
 - **Known overlaps:** all downstream family confidence calculations
 - **Confidence limits:** DataQuality is not predictive Confidence; perfect data can support a weak hypothesis
 - **Validation targets:** ranking-input eligibility, integrity regressions
@@ -1889,6 +1980,13 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Availability:** NOW + FUTURE
 - **Evidence:** PI + H
 - **Meaning:** provides ingredients for later confidence composition without confusing confidence with signal strength
+- **Plain-language intuition:** this bundles the reasons we may trust or distrust a signal—data quality, freshness, coverage, diversity and agreement—without collapsing them prematurely into one magic number.
+- **Market mechanism / why it can matter:** a strong-looking signal with stale/partial evidence should not be treated the same as an equally strong signal supported by fresh, diverse, complete evidence.
+- **Objective connection:** ranking needs to distinguish “strong evidence” from “strong-looking but poorly supported evidence,” especially when choosing one stock under time pressure.
+- **Favorable / unfavorable interpretation:** high-quality/fresh/covered/diverse agreement can support higher confidence; disagreement or missing coverage reduces it. Confidence is still not expected return or probability.
+- **Failure modes / counterexamples:** multiplying all confidence factors can create false calibration; correlated evidence can inflate diversity; final mapping requires validation.
+- **Relationship to other evidence:** FQ-014 provides ingredients to Issues #10/#11 for later confidence composition while keeping Strength, Confidence, Coverage and EvidenceDiversity separate.
+- **Worked example:** two stocks both have Price Strength 80. Stock A has fresh, complete Price+Book+Activity evidence; Stock B has stale Price-only evidence. Same strength, very different confidence.
 - **Known overlaps:** CentralRanker composition
 - **Confidence limits:** final confidence mapping is deferred to Issues #10/#11; this is not probability
 - **Validation targets:** confidence calibration, top-K reliability

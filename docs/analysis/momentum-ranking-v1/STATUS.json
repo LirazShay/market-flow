@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Tradability/Execution Preconditions TE-001..TE-014. Spread, tick granularity, displayed depth, latency and explicit costs are documented as feasibility/friction dimensions, never directional alpha."
+    "subfocus": "Deep-rationale retrofit completed for Freshness/Data Quality FQ-001..FQ-014. Technical trust, timeliness, alignment, semantic validity, consistency and coverage are documented as confidence/gating dimensions rather than directional evidence."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Freshness/Data Quality FQ-001..FQ-014 to the deep-rationale documentation contract, explaining why freshness, temporal alignment, semantic validity, coverage and consistency control trust rather than direction."
+    "action": "Retrofit Path Quality/Wave Health PH-001..PH-013 to the deep-rationale documentation contract, explaining why efficiency, reversals, giveback, stalls and effort-to-progress deterioration affect path risk and remaining opportunity without becoming standalone bullish signals."
   }
 }
