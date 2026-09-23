@@ -44,6 +44,22 @@ The Viewer header exposes the normal user-facing action:
 
 Use that button for ordinary live debugging; the runtime API remains available for automated/testing use.
 
+For a one-step manual health/evidence report against an already-running runtime, use:
+
+~~~text
+live-verification-check.js
+~~~
+
+The helper is observational and reuses the existing Debug Bundle API.
+
+Recorder health checks must use the semantic lifecycle flag:
+
+~~~text
+recorder.isRunning
+~~~
+
+Do not require one exact `recorder.status` string as proof of health. Status is a transient phase; a healthy active recorder may be `waiting` between cycles or `running-cycle` while a cycle is in flight.
+
 ## What the file contains
 
 - recorder lifecycle/config/counters without raw latest-cycle securities;
