@@ -48,6 +48,16 @@ Full historical snapshot of the former large `STATUS.json`, including accumulate
 
 Use it only when a past Stage/run/verification detail is actually needed.
 
+## Live verification
+
+### 2026-09-23 — Stage 19 live verification and long-run report
+
+~~~text
+live-verification/2026-09-23-stage-19-live-report.md
+~~~
+
+Sanitized Stage 19.3/19.4 evidence covering the real Leumi browser run, long-run recorder/persistence results, Verified/Inferred/Unknown classification, repeated-launch contract clarification and automated closure verification.
+
 ## Completed mini-projects
 
 ### Testing refactor
