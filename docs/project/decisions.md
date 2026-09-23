@@ -35,7 +35,7 @@ decisions.md
 | [D-017](decisions/D-017.md) | Separate research, production code and production tests | Accepted | repository-structure, testing |
 | [D-018](decisions/D-018.md) | Documentation follows code ownership | Accepted | documentation, repository-structure |
 | [D-019](decisions/D-019.md) | Local History Viewer V1 is a browser-only prototype | Accepted for V1 planning | local-history-viewer-v1, architecture |
-| [D-020](decisions/D-020.md) | Tests-first pyramid: fast unit default, sparse browser checkpoints | Accepted / evolved | testing, ci, playwright |
+| [D-020](decisions/D-020.md) | Tests-first pyramid with mandatory Chromium verification after code changes | Accepted / evolved | testing, ci, playwright |
 | [D-021](decisions/D-021.md) | KISS: simplest sufficient design, complexity only when proven necessary | Accepted | architecture, simplicity, kiss, yagni |
 | [D-022](decisions/D-022.md) | Failure-to-learning loop and continuous improvement | Accepted | quality, learning, rca, process, testing |
 
