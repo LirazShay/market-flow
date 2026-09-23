@@ -31,7 +31,13 @@
       "19.4": "planned — long-run live report"
     }
   },
-  "activeMiniProject": null,
+  "activeMiniProject": {
+    "id": "repository-self-maintenance",
+    "title": "Self-maintaining repository workflow",
+    "status": "in-progress",
+    "goal": "Make every future development unit preserve context/documentation/status structure as part of the change itself, with Fast CI guardrails and no separate cleanup phase.",
+    "currentStep": "Implement change-local maintenance policy and machine guards."
+  },
   "verification": {
     "codeBaseline": {
       "fastCi": {
@@ -70,14 +76,7 @@
     }
   },
   "next": {
-    "action": "Resume Stage 19.3 live Leumi verification.",
-    "steps": [
-      "refresh authenticated Leumi page",
-      "run latest verified Bookmarklet",
-      "allow several cycles",
-      "Export Debug",
-      "diagnose after-market behavior from recorder/provider evidence"
-    ]
+    "action": "Complete repository self-maintenance policy/guards, then resume Stage 19.3 live Leumi verification."
   },
   "history": {
     "index": "docs/history/README.md",
