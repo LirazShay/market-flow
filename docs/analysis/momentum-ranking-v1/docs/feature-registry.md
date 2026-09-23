@@ -1433,12 +1433,316 @@ TE-009 consumes it for execution feasibility.
 
 Do not maintain two competing calculations.
 
+# Family PH — Path Quality / Wave Health
+
+Purpose:
+
+> Describe whether the **recent path leading into the decision point** is orderly, adverse, stalling or deteriorating in a way that changes the usability of the remaining seconds-to-~2-minute opportunity.
+
+This family is primarily **PathRisk / quality / protective evidence**. It is not an independent bullish-alpha family.
+
+Critical objective-alignment rule:
+
+~~~text
+clean past path
+!=
+future opportunity
+~~~
+
+A smooth old move can be mostly consumed. A previously noisy stock can still become attractive after a fresh noise-to-trend transition.
+
+This family therefore asks whether recent path behavior improves or degrades the **remaining path from now**.
+
+## Ownership boundary
+
+Primary ownership here includes:
+
+- directional/path efficiency;
+- reversal density/depth;
+- giveback;
+- time since meaningful upward progress;
+- effort-to-progress efficiency/deterioration;
+- path-health / exhaustion state.
+
+It does **not** own:
+
+- raw return/speed/acceleration → Price/Wave;
+- trade/volume/money effort itself → Activity/Flow;
+- displayed book direction → Book/Directional Flow;
+- freshness/data validity → Freshness/Data Quality;
+- future MFE/MAE labels → validation/outcome layer.
+
+### PH-001 — RecentDirectionalEfficiency
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** validated LAST and/or MID history with timestamps
+- **Derivation:** candidate path-efficiency form = absolute net directional progress divided by cumulative absolute path movement over a recent window; preserve direction separately
+- **Unit / shape:** bounded ratio [0,1] when defined + direction
+- **Role:** PROTECTIVE, CONTEXT, CONFIRMING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk
+- **Meaning:** distinguishes direct recent progress from equally large net movement reached through heavy oscillation
+- **Known overlaps:** PH-002/PH-003; PW return profile
+- **Confidence limits:** unstable with too few samples or near-zero movement; a high value after a mature consumed move is not bullish by itself
+- **Validation targets:** target-before-adverse, MAE-before-target, TimeToTarget, RecoveryTime
+- **Research state:** Candidate
+
+### PH-002 — ReversalDensityRecent
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** validated LAST/MID path
+- **Derivation:** count meaningful direction reversals over a recent elapsed-time/path interval using a noise-aware threshold; exact threshold TBD
+- **Unit / shape:** reversals per time/path window
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk
+- **Meaning:** measures how fragmented/choppy the recent path is
+- **Known overlaps:** PH-001, PH-003
+- **Confidence limits:** must not count bid-ask bounce/tiny jitter as structural reversals; threshold sensitivity must be validated
+- **Validation targets:** MAE-before-target, TimeUnderWater, target-before-adverse
+- **Research state:** Candidate
+
+### PH-003 — ReversalDepthProfile
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** validated LAST/MID path
+- **Derivation:** magnitude distribution/profile of recent adverse reversals inside the current path/leg
+- **Unit / shape:** percent/ticks profile
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk
+- **Meaning:** separates frequent tiny oscillations from fewer materially adverse reversals
+- **Known overlaps:** PH-002, PH-004
+- **Confidence limits:** requires explicit path/leg semantics; current broad wave segmentation is deferred to Issue #6
+- **Validation targets:** MAE-before-target, RecoveryTime, target-before-adverse
+- **Research state:** Candidate / partial until segmentation semantics mature
+
+### PH-004 — GiveBackPct
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** recent local peak/reference + current valid LAST/MID
+- **Derivation:** percent surrendered from the relevant recent peak/reference; exact reference hierarchy TBD
+- **Unit / shape:** percent
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** measures how much of recent upward progress has already been surrendered
+- **Known overlaps:** PH-005; pullback/retest; future wave segmentation
+- **Confidence limits:** daily high is not the default reference; relevant micro/leg peak must be defined without future leakage
+- **Validation targets:** continuation vs breakdown, target-before-adverse, MAE
+- **Research state:** Candidate
+
+### PH-005 — GiveBackToTargetRatio
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** PH-004 + candidate positive target/target frontier
+- **Derivation:** `GiveBackPct / positiveTargetPct` when target semantics are valid
+- **Unit / shape:** ratio
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** makes adverse giveback economically relative to the short move being pursued
+- **Known overlaps:** RemainingOpportunity / TargetFeasibilityFrontier
+- **Confidence limits:** blocked until target/frontier semantics are explicit; must not invent a target merely to compute the ratio
+- **Validation targets:** target-before-adverse, net useful excursion
+- **Research state:** Candidate / blocked pending target semantics
+
+### PH-006 — ProgressSinceRecentLowPct
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** recent local low/reference + current LAST/MID
+- **Derivation:** upward progress from the most relevant recent reset/pullback low; exact reference selection TBD
+- **Unit / shape:** percent
+- **Role:** CONTEXT, CONFIRMING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, PathRisk
+- **Meaning:** supports distinguishing a fresh post-pullback leg from an old broad wave
+- **Known overlaps:** PW-009 CurrentLegObservedMovePct; pullback/retest research
+- **Confidence limits:** should converge to one owner after Issue #6 defines leg semantics; avoid duplicate scoring with PW-009
+- **Validation targets:** detection lateness, target-before-adverse, TimeToTarget
+- **Research state:** Candidate / ownership reconciliation pending Issue #6
+
+### PH-007 — TimeSinceMeaningfulProgressSeconds
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** timestamped LAST/MID path + defined meaningful-progress rule
+- **Derivation:** elapsed time since the most recent material upward progress event
+- **Unit / shape:** seconds
+- **Role:** PROTECTIVE, LEADING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** exposes stalls that raw cumulative momentum can hide
+- **Known overlaps:** FQ signal age, PH-008/PH-011, Issue #16 conversion latency
+- **Confidence limits:** “meaningful” must be relative to tick/noise/target context; no universal seconds threshold
+- **Validation targets:** TimeToTarget, target-before-adverse, continuation vs exhaustion
+- **Research state:** Candidate
+
+### PH-008 — ProgressStallState
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** STATE
+- **Raw sources:** PH-007 + current Price/Activity/Book evidence + later conversion-latency baseline
+- **Derivation:** classify whether progress delay is normal, concerning or beyond the current state's expected conversion window
+- **Unit / shape:** PROGRESSING / PAUSING / STALLING / STALLED_BEYOND_EXPECTED / UNKNOWN
+- **Role:** PROTECTIVE, LEADING
+- **Availability:** HISTORY + FUTURE
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** distinguishes a normal brief pause from pressure/effort that is no longer converting to useful upward movement
+- **Known overlaps:** Issue #16 ProgressStallRelativeToNormalConversion
+- **Confidence limits:** current version cannot claim “beyond expected” until conversion-latency research exists
+- **Validation targets:** target-before-adverse, TimeToTarget, exhaustion transition
+- **Research state:** Provisional / partially blocked by Issue #16
+
+### PH-009 — EffortToProgressEfficiency
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** Activity/Flow family effort profile + Price/Wave useful progress over aligned interval
+- **Derivation:** bounded/saturating relation between executed-activity effort and meaningful upward price/MID progress; exact formulation TBD
+- **Unit / shape:** efficiency score/state, not naive unbounded ratio
+- **Role:** PROTECTIVE, CONFIRMING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, Confirmation
+- **Meaning:** asks whether increasing market effort is producing useful upward movement
+- **Known overlaps:** AF activity measures; PW price response
+- **Confidence limits:** zero/near-zero progress makes naive division unstable; absolute activity differs by stock/regime; no causal intent inference
+- **Validation targets:** continuation vs exhaustion, target-before-adverse, MAE
+- **Research state:** Candidate
+
+### PH-010 — EffortToProgressDeteriorationState
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** STATE
+- **Raw sources:** PH-009 over successive comparable intervals
+- **Derivation:** detect whether more/similar effort is producing less useful progress over time
+- **Unit / shape:** IMPROVING / STABLE / DETERIORATING / SEVERE_DIVERGENCE / UNKNOWN
+- **Role:** LEADING, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** candidate early exhaustion evidence before an outright price reversal
+- **Known overlaps:** PH-008; AF participation expansion; PW deceleration
+- **Confidence limits:** divergence can occur transiently near barriers or during benign pauses; must be interpreted with Book/path/target context
+- **Validation targets:** target-before-adverse, exhaustion/reversal, TimeToTarget deterioration
+- **Research state:** Candidate
+
+### PH-011 — ProgressPerAdverseExcursion
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** DERIVED
+- **Raw sources:** recent upward progress + observed adverse excursions inside the path
+- **Derivation:** bounded relation of useful progress to adverse movement over the same aligned interval/path
+- **Unit / shape:** ratio/quality state
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk
+- **Meaning:** summarizes whether recent progress has required disproportionately large adverse travel
+- **Known overlaps:** PH-001/PH-003; future MFE/MAE outcome labels
+- **Confidence limits:** past realized path quality is not a prediction by itself; no future MAE leakage
+- **Validation targets:** MAE-before-target, TimeUnderWater, target-before-adverse
+- **Research state:** Candidate
+
+### PH-012 — PathTransitionState
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** STATE
+- **Raw sources:** PH-001..PH-011 + recent Price/Wave context
+- **Derivation:** characterize recent transition rather than only average path quality
+- **Unit / shape:** NOISE_TO_ORDERED_UP / ORDERED_UP / ORDERED_TO_CHOPPY / PULLBACK_RESET / STALLING / DETERIORATING / UNKNOWN
+- **Role:** LEADING, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** allows a previously noisy stock to become attractive when current path quality is improving, while penalizing deterioration after a formerly clean move
+- **Known overlaps:** pullback/retest; PW acceleration; sequence
+- **Confidence limits:** transition thresholds/stability requirements are not yet calibrated
+- **Validation targets:** target-before-adverse, TimeToTarget, detection lateness
+- **Research state:** Provisional state
+
+### PH-013 — WaveHealthState
+
+- **Family:** Path Quality / Wave Health
+- **Kind:** STATE
+- **Raw sources:** PH-001..PH-012 plus current Price/Activity/Book confirmation context
+- **Derivation:** family-level synthesis of path efficiency, giveback, stall and effort-to-progress deterioration
+- **Unit / shape:** HEALTHY_PATH / ACCEPTABLE / FRAGILE / STALLING / EXHAUSTING / FAILING / UNKNOWN + Strength/Confidence/Coverage
+- **Role:** PROTECTIVE, CONFIRMING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** compact path-health summary used by higher-level opportunity logic instead of independently summing correlated path diagnostics
+- **Known overlaps:** RemainingOpportunity, pullback/retest, Sequence, future exhaustion-specific research
+- **Confidence limits:** HEALTHY_PATH is not a buy signal; EXHAUSTING remains a hypothesis until validated; family must not double-count PW/AF/BD inputs as separate votes
+- **Validation targets:** target-before-adverse, MAE, continuation vs exhaustion, TimeToTarget
+- **Research state:** Provisional composite
+
+---
+
+## Path Quality / Wave Health objective-alignment boundary
+
+This family should answer:
+
+~~~text
+given that an opportunity may exist,
+how usable/fragile is the recent path leading into NOW,
+and is progress still converting efficiently?
+~~~
+
+It must **not** answer:
+
+~~~text
+this stock moved smoothly before,
+therefore buy it
+~~~
+
+Key architecture:
+
+~~~text
+Price/Wave      → direction / speed / acceleration
+Activity/Flow   → executed effort
+Book/Flow       → displayed directional process
+Path/WaveHealth → efficiency / adverse path / stall / deterioration
+~~~
+
+Then:
+
+~~~text
+PH-001..PH-012
+→ PH-013 WaveHealthState
+→ PathRisk / RemainingOpportunity context
+→ later target-before-adverse validation
+~~~
+
+Important no-leakage rule:
+
+~~~text
+future MFE/MAE are OUTCOMES/LABELS
+not inputs to PH at decision time
+~~~
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Path Quality / Wave Health
+Pullback / Retest / Micro-Barrier State
 ~~~
 
-It will own directional efficiency, reversals, giveback/path cleanliness and cross-family effort-vs-result deterioration used for exhaustion risk.
+It will own opportunity-reset/reclaim semantics and path-relevant micro levels, without turning classical chart-pattern labels into automatic bullish votes.
