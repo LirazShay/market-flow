@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Full-registry deep-rationale/ownership audit completed across 158 existing entries. Missing Decision role fields were repaired and cross-family primary ownership/double-counting rules were made explicit."
+    "subfocus": "Cross-Sectional/Relative Edge Context CS-001..CS-018 added. Relative comparison is explicitly downstream of absolute opportunity/trust/feasibility, rank-rise is decomposed into self vs peer effects, and sequential-observation comparability is first-class."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Cross-Sectional/Relative Edge Context: absolute eligibility before percentile, self-vs-peer abnormality, rank-rise cause, eligible-universe coverage and asynchronous decision-time comparability."
+    "action": "Run the final Issue #5 coverage audit against research-checkpoint.md and objective-alignment-audit.md: verify every material concept has one registry owner or explicit downstream issue owner, fix any remaining gaps, then decide whether Issue #5 can close."
   }
 }

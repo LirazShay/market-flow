@@ -4867,12 +4867,513 @@ current micro evidence
 
 Fresh current evidence should be able to dominate weak, stale or poorly matched historical context.
 
-## Next registry boundary
+# Family CS — Cross-Sectional / Relative Edge Context
 
-Next planned family:
+Purpose:
+
+> Compare already-valid short-horizon opportunities across securities **without allowing relative rank to manufacture an opportunity that is absent in absolute terms**.
+
+Critical order:
 
 ~~~text
-Cross-Sectional / Relative Edge Context
+absolute per-stock opportunity
+→ trust / freshness / feasibility eligibility
+→ eligible candidate set
+→ relative comparison
+→ leader or NO_OPPORTUNITY
 ~~~
 
-It will own market percentile, self-vs-peer abnormality, rank-rise cause, absolute-eligibility-aware comparison and asynchronous decision-time comparability — while keeping absolute opportunity primary.
+Critical rule:
+
+~~~text
+high percentile
+!=
+high absolute opportunity
+~~~
+
+A rank always has a winner. The market does not always have a usable trade.
+
+This family therefore owns **comparison context**, not primary alpha.
+
+### CS-001 — AbsoluteEligibilityState
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** GATE
+- **Raw sources:** RO RemainingOpportunityState/OpportunityBudget + TE ExecutionFeasibilityState + FQ DataQuality/Freshness/Coverage
+- **Derivation:** classify whether the candidate satisfies the minimum absolute opportunity, trust and feasibility requirements needed to enter the relative-comparison set
+- **Unit / shape:** ELIGIBLE / MARGINAL / INELIGIBLE / UNKNOWN + reasons
+- **Role:** GATE, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** RemainingOpportunity, Feasibility, Freshness/Trust
+- **Meaning:** blocks relative ranking from promoting a stock that lacks a usable absolute opportunity
+- **Plain-language intuition:** before asking whether a stock is better than its peers, ask whether it is good enough **on its own** to be considered at all.
+- **Market mechanism / why it can matter:** ranking always orders candidates, even when every candidate is weak. Absolute eligibility prevents “least bad” from becoming “best trade”.
+- **Objective connection:** the project needs a stock that can still deliver a useful upward move from now, not merely the highest score in a dead market.
+- **Favorable / unfavorable interpretation:** ELIGIBLE means relative comparison is allowed; MARGINAL may remain visible but should not win without policy; INELIGIBLE is excluded; UNKNOWN preserves uncertainty.
+- **Failure modes / counterexamples:** overly strict floors can discard rare but real opportunities; overly loose floors recreate the dead-market winner problem; thresholds require Issue #10/#11 validation.
+- **Relationship to other evidence:** RO/TE/FQ own the underlying opportunity, execution and trust evidence. CS-001 only owns the cross-sectional admission decision.
+- **Worked example:** every stock has weak RemainingOpportunity and wide spread. One is still rank #1 numerically, but CS-001 marks all INELIGIBLE, so the correct result is NO_OPPORTUNITY.
+- **Known overlaps:** RO-014, TE-014, FQ-013
+- **Confidence limits:** absolute floor semantics are not calibrated yet; must be target/horizon aware
+- **Validation targets:** false leader rate in dead markets, target-before-adverse among admitted vs rejected candidates
+- **Research state:** Candidate gate
+
+### CS-002 — AbsoluteOpportunityFloor
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** target/horizon policy + empirically validated RO/TE/FQ requirements
+- **Derivation:** explicit minimum absolute conditions required before relative ranking can affect selection
+- **Unit / shape:** structured policy, not one scalar threshold
+- **Role:** GATE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** RemainingOpportunity, Feasibility, Freshness/Trust
+- **Meaning:** makes the minimum “good enough to compare” standard explicit and auditable
+- **Plain-language intuition:** this is the admission rule for the race. It says what minimum opportunity must exist before “first place” has any meaning.
+- **Market mechanism / why it can matter:** absolute opportunity is multi-dimensional; a stock can have strong direction but insufficient time, depth or net target room.
+- **Objective connection:** protects the system from returning a leader when no candidate can plausibly satisfy the short buy-now/sell-soon objective.
+- **Favorable / unfavorable interpretation:** clearing the floor allows comparison; failing any hard critical requirement can remove the candidate. Clearing the floor is not itself a bullish bonus.
+- **Failure modes / counterexamples:** one monolithic score threshold would hide why the stock failed; policy can overfit if tuned on the same sample used for evaluation.
+- **Relationship to other evidence:** consumes OpportunityBudget rather than replacing it; Issue #10 owns final ranking policy.
+- **Worked example:** require usable target support, positive remaining time budget, acceptable execution feasibility and non-stale evidence. A stock failing freshness is not rescued by high percentile.
+- **Known overlaps:** CS-001, RO-012, TE-014, FQ-008
+- **Confidence limits:** exact floor remains uncalibrated; should vary by target/horizon where validated
+- **Validation targets:** NO_OPPORTUNITY precision, opportunity capture vs false admission
+- **Research state:** Policy candidate
+
+### CS-003 — NoOpportunityMargin
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** DERIVED
+- **Raw sources:** best eligible candidate OpportunityBudget + AbsoluteOpportunityFloor
+- **Derivation:** preserve how far the best current candidate sits above, near or below the absolute admission boundary across relevant dimensions
+- **Unit / shape:** structured margin + ABOVE / NEAR / BELOW / UNKNOWN
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, Freshness/Trust
+- **Meaning:** distinguishes a robust leader from a barely-admissible leader and a true no-opportunity market
+- **Plain-language intuition:** being barely above the minimum is different from being comfortably above it, even if both candidates technically rank first.
+- **Market mechanism / why it can matter:** marginal leaders are more vulnerable to small data-age, spread or path changes; robust margins are less likely to disappear from one tiny fluctuation.
+- **Objective connection:** helps the ranker decide when NO_OPPORTUNITY is more honest than forcing a fragile leader.
+- **Favorable / unfavorable interpretation:** ABOVE with material margin is stronger eligibility; NEAR means fragile; BELOW means no eligible candidate.
+- **Failure modes / counterexamples:** margin depends on a still-uncalibrated floor; dimensions should not be collapsed arbitrarily.
+- **Relationship to other evidence:** CS-003 is relative to CS-002 but remains absolute-opportunity context, not peer rank.
+- **Worked example:** best candidate barely clears time budget by 1s and spread burden threshold by 0.01% → NEAR floor despite ranking #1.
+- **Known overlaps:** CS-001/002, RO OpportunityBudget
+- **Confidence limits:** structured margin semantics pending Issue #10
+- **Validation targets:** leader stability, false-entry reduction, NO_OPPORTUNITY calibration
+- **Research state:** Candidate
+
+### CS-004 — EligibleCandidateCount
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** CS-001 across the valid comparable universe
+- **Derivation:** count ELIGIBLE candidates at the current decision time
+- **Unit / shape:** integer
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Context/Prior
+- **Meaning:** tells whether the current market offers zero, one, a few or many absolutely usable candidates
+- **Plain-language intuition:** the decision problem is different when exactly one stock qualifies versus when 40 stocks qualify.
+- **Market mechanism / why it can matter:** many eligible candidates can indicate broad opportunity conditions; a single eligible candidate can be either special or fragile depending on coverage.
+- **Objective connection:** helps interpret how selective the current leader is without changing its absolute opportunity.
+- **Favorable / unfavorable interpretation:** higher count means more available opportunities, not that any individual stock is better.
+- **Failure modes / counterexamples:** count is meaningless if universe coverage is poor; many marginal candidates can inflate the number.
+- **Relationship to other evidence:** CS-005 normalizes the count; FQ-012 owns canonical cross-sectional coverage.
+- **Worked example:** 8 eligible names out of 500 valid peers is a different environment from 8 out of 20.
+- **Known overlaps:** CS-005, FQ-012
+- **Confidence limits:** requires a valid comparable peer set
+- **Validation targets:** market opportunity-density context, leader competition
+- **Research state:** Candidate
+
+### CS-005 — OpportunityDensity
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** CS-004 + valid eligible-universe count from FQ/comparability filter
+- **Derivation:** `EligibleCandidateCount / ComparableEligibleUniverseCount`
+- **Unit / shape:** ratio [0,1] when defined
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Context/Prior
+- **Meaning:** measures how dense usable short-horizon opportunities are across the currently comparable universe
+- **Plain-language intuition:** this answers “is opportunity rare right now, or are many stocks simultaneously meeting the absolute standard?”
+- **Market mechanism / why it can matter:** broad opportunity density can change the meaning of relative rank and leader competition, but it does not improve a stock's own target path.
+- **Objective connection:** helps the ranker understand whether a leader is exceptional or one of many usable candidates while preserving absolute eligibility first.
+- **Favorable / unfavorable interpretation:** high density means broad opportunity environment; low density means scarcity. Neither is automatically bullish for a specific stock.
+- **Failure modes / counterexamples:** poor universe coverage biases density; correlated market-wide moves can make density high while execution worsens everywhere.
+- **Relationship to other evidence:** CS-004 supplies numerator; FQ-012/comparability supplies denominator.
+- **Worked example:** 25 eligible out of 500 comparable = 5%; 25 out of 50 = 50%. Same count, very different opportunity environment.
+- **Known overlaps:** market breadth, FQ-012
+- **Confidence limits:** context only; not a selection score
+- **Validation targets:** leader churn, NO_OPPORTUNITY frequency, market-state stratification
+- **Research state:** Candidate
+
+### CS-006 — RelativeOpportunityPercentileProfile
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** comparable eligible candidates' objective dimensions
+- **Derivation:** percentile ranks separately for dimensions such as CapturableRemaining, target frontier, time budget/speed, adverse path, feasibility and confidence
+- **Unit / shape:** dimension-indexed percentile profile
+- **Role:** CONTEXT, CONFIRMING
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Context/Prior, Confirmation
+- **Meaning:** shows where a candidate stands versus peers without collapsing the comparison to one percentile
+- **Plain-language intuition:** a stock can be top-5% for speed but only middle-of-pack for path quality. Keeping separate percentiles preserves that story.
+- **Market mechanism / why it can matter:** peers provide a live reference for what is unusually strong/fast/clean right now, but relative superiority does not create absolute opportunity.
+- **Objective connection:** useful for choosing among multiple already-good candidates, especially when their absolute OpportunityBudgets are similar.
+- **Favorable / unfavorable interpretation:** high percentile on a relevant dimension means relatively strong there; low percentile is comparative weakness. No percentile can rescue an ineligible stock.
+- **Failure modes / counterexamples:** small peer sets make percentiles unstable; stale peers distort ranking; correlated dimensions can look like several independent advantages.
+- **Relationship to other evidence:** RO/TE/FQ own the absolute dimensions; CS-006 only normalizes them cross-sectionally.
+- **Worked example:** Stock A: capturable 90th percentile, speed 95th, path 40th. Stock B: capturable 80th, speed 70th, path 95th. There is a tradeoff, not an obvious scalar winner.
+- **Known overlaps:** RO-013 OpportunityDominance, future Issue #10 CandidateFrontier
+- **Confidence limits:** percentile set must satisfy CS-016/017 comparability
+- **Validation targets:** tie resolution, incremental ranking lift beyond absolute OpportunityBudget
+- **Research state:** Candidate
+
+### CS-007 — SelfRelativeOpportunityAbnormality
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** current absolute opportunity dimensions + same-stock recent comparable baseline
+- **Derivation:** compare current opportunity state to the stock's own recent comparable distribution, preserving dimensions separately
+- **Unit / shape:** dimension-indexed self-relative abnormality profile
+- **Role:** CONTEXT, CONFIRMING
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Confirmation
+- **Meaning:** distinguishes a stock that is unusually strong versus its own normal behavior from one that is merely typical for itself
+- **Plain-language intuition:** “top 10% versus peers” and “unusually strong for this stock” are different questions. This metric answers the second at the opportunity level.
+- **Market mechanism / why it can matter:** a stock-specific regime change may appear first as an unusual deviation from its own baseline even before it becomes top-ranked market-wide.
+- **Objective connection:** can help identify fresh self-improvement while avoiding raw-feature duplication, but only if it adds value beyond current absolute state and MR/WM context.
+- **Favorable / unfavorable interpretation:** unusually strong current opportunity versus self-history can support context; ordinary/weak self-relative state is not an automatic rejection.
+- **Failure modes / counterexamples:** own-history baseline can be stale or regime-mismatched; small samples can exaggerate abnormality; MR-017 already owns time-of-day normalization for raw features.
+- **Relationship to other evidence:** unlike MR-017 raw-feature time-of-day abnormality, CS-007 operates on the **opportunity-level representation** after RO/TE/FQ.
+- **Worked example:** a normally slow stock currently has much faster target frontier and better exitability than its own recent baseline even if it ranks only 60th percentile versus peers.
+- **Known overlaps:** WM/MR priors, MR-017
+- **Confidence limits:** must demonstrate incremental value beyond own-history context already present in WM/MR
+- **Validation targets:** early candidate discovery, incremental target-before-adverse/rank lift
+- **Research state:** Candidate / validate-only until incremental value shown
+
+### CS-008 — MarketOpportunityBreadthContext
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** valid universe-level micro opportunity states before/after absolute eligibility
+- **Derivation:** preserve counts/fractions of positive, negative, conflicted and eligible short-horizon states
+- **Unit / shape:** structured breadth profile
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** describes whether short-horizon opportunity is isolated or market-wide without turning market breadth into a directional gate
+- **Plain-language intuition:** one stock waking up alone is different from 200 stocks waking up together, even if the stock's own absolute opportunity is identical.
+- **Market mechanism / why it can matter:** broad synchronized activity can change relative-rank meaning, competition among candidates and the usefulness of market-relative residuals.
+- **Objective connection:** breadth can help interpret relative edge, but the stock remains selectable if its own target path is good even when the whole market is moving.
+- **Favorable / unfavorable interpretation:** broad positive breadth means common opportunity environment; isolated strength can mean stock-specific edge. Neither is automatically preferable.
+- **Failure modes / counterexamples:** universe composition and stale observations can distort breadth; market-wide rallies can produce useful trades without positive residual strength.
+- **Relationship to other evidence:** CS-005 measures absolute eligibility density; CS-008 is broader micro-state context.
+- **Worked example:** Stock A is +0.2%/30s while 70% of valid peers show similar micro-up states. It may still be a good trade even if not market-relative exceptional.
+- **Known overlaps:** CS-005, MR broad-market context
+- **Confidence limits:** current project lacks a separate canonical market index feed; breadth is built only from validated universe observations
+- **Validation targets:** context incremental value, residual-vs-absolute opportunity comparison
+- **Research state:** Candidate
+
+### CS-009 — CrossSectionalOpportunityMedian
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** comparable universe opportunity dimensions
+- **Derivation:** robust median/central tendency for selected absolute opportunity dimensions at the common decision time
+- **Unit / shape:** structured median profile
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Context/Prior
+- **Meaning:** provides a robust live market reference for what “ordinary opportunity” looks like right now
+- **Plain-language intuition:** instead of only knowing a stock's percentile, this tells what the middle of the market actually looks like in absolute terms.
+- **Market mechanism / why it can matter:** percentile can stay high even while the whole market weakens. Tracking the median shows whether the reference distribution itself moved.
+- **Objective connection:** helps distinguish “this stock improved” from “everyone else deteriorated,” which is central to rank-rise decomposition.
+- **Favorable / unfavorable interpretation:** rising median means the market opportunity baseline strengthened; falling median means peers weakened broadly. This is context, not an individual-stock signal.
+- **Failure modes / counterexamples:** mixed regimes/universe heterogeneity can make one median too crude; stale candidates distort the baseline.
+- **Relationship to other evidence:** feeds CS-014 PeerDeteriorationContribution and CS-015 RankRiseCauseState.
+- **Worked example:** Stock's absolute opportunity unchanged, but market median collapses. Its percentile/rank rises even though nothing improved in the stock itself.
+- **Known overlaps:** CS-006, CS-010
+- **Confidence limits:** median dimensions must be comparable and valid
+- **Validation targets:** rank-cause attribution, cross-sectional regime context
+- **Research state:** Candidate
+
+### CS-010 — CrossSectionalDispersionState
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** STATE
+- **Raw sources:** comparable distribution of opportunity dimensions across peers
+- **Derivation:** classify whether candidates are tightly clustered or widely separated on objective dimensions
+- **Unit / shape:** COMPRESSED / NORMAL / DISPERSED / EXTREME / UNKNOWN
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Freshness/Trust
+- **Meaning:** tells whether small rank differences represent meaningful separation or merely noise inside a compressed field
+- **Plain-language intuition:** rank #1 and rank #5 can be almost identical when everyone is tightly clustered, or very different when the distribution is wide.
+- **Market mechanism / why it can matter:** dispersion determines how much information rank position carries and how likely noisy observation differences are to flip leaders.
+- **Objective connection:** helps identify effective ties and avoid overreacting to tiny relative differences when opportunities are nearly indistinguishable.
+- **Favorable / unfavorable interpretation:** high dispersion can make relative separation clearer; compressed dispersion means ranks are fragile. Neither implies better market direction.
+- **Failure modes / counterexamples:** one outlier can inflate naive dispersion; multidimensional opportunity requires dimension-aware robust summaries.
+- **Relationship to other evidence:** future Issue #10 tie/hysteresis logic consumes this context.
+- **Worked example:** candidates' capturable opportunity estimates all lie 0.18–0.20% → compressed; ranks 1–10 may be practically equivalent.
+- **Known overlaps:** Issue #10 EffectiveTie, CandidateFrontier
+- **Confidence limits:** exact robust dispersion measure TBD
+- **Validation targets:** leader flip rate, effective-tie quality
+- **Research state:** Candidate
+
+### CS-011 — RelativeRankPosition
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** eligible comparable candidate ordering under the future ranker policy
+- **Derivation:** current ordinal rank with eligible-set size and comparison timestamp
+- **Unit / shape:** rank + N + timestamp
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Context/Prior
+- **Meaning:** records current relative position without pretending ordinal rank contains absolute opportunity magnitude
+- **Plain-language intuition:** “rank 1 of 5” tells order, not how good rank 1 is or how far ahead it is.
+- **Market mechanism / why it can matter:** ordinal rank is useful for presentation and leader selection but discards magnitude and tradeoffs.
+- **Objective connection:** the engine may need one leader externally, but internal logic must retain the OpportunityBudget and margin that produced the rank.
+- **Favorable / unfavorable interpretation:** lower rank number means comparatively preferred among eligible candidates only; rank cannot override CS-001.
+- **Failure modes / counterexamples:** rank always exists when set non-empty; tiny differences can cause large ordinal jumps; N changes over time.
+- **Relationship to other evidence:** CS-006 percentiles and RO-013 dominance retain more magnitude/context than rank alone.
+- **Worked example:** rank #1 with 0.01% advantage over #2 is not equivalent to rank #1 with a large multi-dimensional advantage.
+- **Known overlaps:** Issue #10 leader selection
+- **Confidence limits:** final ordering policy not yet defined
+- **Validation targets:** presentation/leader consistency, rank stability
+- **Research state:** Candidate output context
+
+### CS-012 — RankVelocityProfile
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** CS-011 over decision times + self/peer decomposition
+- **Derivation:** change in relative rank/percentile over actual elapsed time, retained only with CS-013..015 cause context
+- **Unit / shape:** rank/percentile change per elapsed time + cause metadata
+- **Role:** LEADING, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Confirmation
+- **Meaning:** records rapid relative climbing/falling while explicitly refusing to treat rank movement as self-improvement by default
+- **Plain-language intuition:** jumping from rank 180→75→22→5 looks exciting, but it matters **why** the rank changed.
+- **Market mechanism / why it can matter:** rank can move because this stock strengthened, peers weakened, the eligible set changed, or stale observations altered comparison.
+- **Objective connection:** genuinely self-driven rapid rise may help find emerging leaders early; peer-driven rise alone does not mean the stock's own buy-now/sell-soon opportunity improved.
+- **Favorable / unfavorable interpretation:** rising rank is only supportive when CS-015 says SELF_DRIVEN/MIXED with material self-improvement; peer-driven rise is context only.
+- **Failure modes / counterexamples:** changing universe size, stale data and compressed distributions can create dramatic rank velocity with tiny underlying changes.
+- **Relationship to other evidence:** CS-012 must always be interpreted with CS-013 SelfImprovementDelta, CS-014 PeerDeteriorationContribution and CS-016 comparability.
+- **Worked example:** stock stays unchanged while 30 peers deteriorate; rank jumps 40→5. RankVelocity is high, but cause is PEER_DRIVEN—not new evidence about the stock.
+- **Known overlaps:** Issue #10 leader/challenger logic
+- **Confidence limits:** not independently scorable without cause decomposition
+- **Validation targets:** early leader discovery, false precursor rate
+- **Research state:** Candidate / cause-dependent only
+
+### CS-013 — SelfImprovementDelta
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** DERIVED
+- **Raw sources:** candidate's own OpportunityBudget/current absolute dimensions across comparable decision times
+- **Derivation:** preserve the candidate's own improvement/deterioration per objective dimension before considering peer movement
+- **Unit / shape:** structured delta profile
+- **Role:** LEADING, CONFIRMING, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Potential, Confirmation, RemainingOpportunity
+- **Meaning:** isolates whether the stock's own opportunity actually improved
+- **Plain-language intuition:** before celebrating a rank rise, ask: did this stock itself get better—more capturable room, faster target path, better BID exitability, cleaner path—or did only the competition worsen?
+- **Market mechanism / why it can matter:** genuine improvement in the stock's own absolute state is direct evidence that its opportunity is strengthening.
+- **Objective connection:** self-improvement is much closer to the target than rank movement because it tracks the stock's own usable opportunity from now.
+- **Favorable / unfavorable interpretation:** broad positive self-delta can support emerging opportunity; negative self-delta is cautionary even if rank rises.
+- **Failure modes / counterexamples:** asynchronous/stale own observations can fake improvement; dimensions can conflict; no premature scalar delta.
+- **Relationship to other evidence:** consumes RO/TE/FQ current state; CS-015 uses it to classify rank-rise cause.
+- **Worked example:** rank 20→8 while CapturableRemaining, time budget and BID exitability all improve → meaningful self-driven component.
+- **Known overlaps:** RO OpportunityBudget evolution
+- **Confidence limits:** common decision-time comparability required
+- **Validation targets:** precursor value, future target-before-adverse improvement
+- **Research state:** Candidate
+
+### CS-014 — PeerDeteriorationContribution
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** peer opportunity distribution change while candidate own state is held conceptually fixed
+- **Derivation:** estimate how much relative-rank/percentile improvement is explained by peers weakening rather than candidate self-improvement; exact multidimensional method deferred to Issue #10
+- **Unit / shape:** structured contribution / LOW / MATERIAL / DOMINANT / UNKNOWN
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** prevents peer weakness from masquerading as fresh opportunity in the candidate
+- **Plain-language intuition:** your runner can move from 10th to 1st because nine runners slowed down—even if your runner did not speed up.
+- **Market mechanism / why it can matter:** relative distributions shift continuously. Ranking must distinguish distribution movement from candidate movement.
+- **Objective connection:** the stock's own entry→exit opportunity matters; peer deterioration is useful comparison context but not direct evidence that this stock will move upward.
+- **Favorable / unfavorable interpretation:** DOMINANT peer contribution means rank rise should not be treated as a precursor; LOW means rank gain is more plausibly self-driven.
+- **Failure modes / counterexamples:** exact attribution is hard without a final multidimensional rank policy; eligible-set entries/exits can change peer distribution mechanically.
+- **Relationship to other evidence:** CS-009 median/CS-010 dispersion help explain peer movement; CS-015 combines peer and self components.
+- **Worked example:** stock OpportunityBudget unchanged; market median falls sharply and rank rises 30→4 → peer deterioration contribution is dominant.
+- **Known overlaps:** CS-009/010/012
+- **Confidence limits:** exact decomposition blocked on Issue #10 comparison policy
+- **Validation targets:** rank-velocity false-signal reduction
+- **Research state:** Candidate / method deferred
+
+### CS-015 — RankRiseCauseState
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** STATE
+- **Raw sources:** CS-012/013/014 + eligible-set changes
+- **Derivation:** classify why relative position improved
+- **Unit / shape:** SELF_DRIVEN_RISE / PEER_DRIVEN_RISE / MIXED / SET_CHANGE_DRIVEN / UNKNOWN
+- **Role:** LEADING, CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, Context/Prior
+- **Meaning:** turns rank velocity from an ambiguous number into interpretable relative-motion evidence
+- **Plain-language intuition:** this is the answer to “did the stock climb the leaderboard because it got better, because others got worse, or because the comparison set changed?”
+- **Market mechanism / why it can matter:** only self-driven improvement is direct evidence of strengthening opportunity; peer/set effects explain relative motion without improving the stock itself.
+- **Objective connection:** prevents late/noisy leader promotion based on a leaderboard artifact rather than real stock improvement.
+- **Favorable / unfavorable interpretation:** SELF_DRIVEN can support early leader emergence; MIXED is weaker; PEER/SET-driven is comparison context only.
+- **Failure modes / counterexamples:** multidimensional attribution can remain uncertain; asynchronous observations can make self/peer timing incomparable.
+- **Relationship to other evidence:** CS-015 is required context for CS-012 and later Issue #10 hysteresis.
+- **Worked example:** rank 50→6; stock's CapturableRemaining rises materially while peer median falls modestly → MIXED, self-led rather than pure peer-driven.
+- **Known overlaps:** Issue #10 RankRiseCause/leader promotion
+- **Confidence limits:** requires CS-016 comparability and future rank policy
+- **Validation targets:** early leader discovery, false promotion reduction
+- **Research state:** Candidate
+
+### CS-016 — DecisionTimeComparabilityState
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** STATE
+- **Raw sources:** FQ-002 observation age, FQ-008 freshness, FQ-009 temporal alignment, RO-005 TimeBudgetAfterLatency
+- **Derivation:** classify whether two/all candidates are comparable at one decision time without inventing unobserved paths
+- **Unit / shape:** COMPARABLE / AGE_DISADVANTAGED / STALE_FOR_HORIZON / INCOMPARABLE / UNKNOWN
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PV(sequential collection constraint) + PI
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** prevents sequentially collected securities from being treated as if observed at exactly the same market instant
+- **Plain-language intuition:** “same cycle” does not mean “same timestamp.” One stock may be six seconds older than another when they are compared.
+- **Market mechanism / why it can matter:** in a fast move, stale candidate A may look better simply because its last observed state predates deterioration, while fresher candidate B reflects current reality.
+- **Objective connection:** fair leader selection requires comparing what is actually known at one decision time while accounting for how much opportunity time each observation has already lost.
+- **Favorable / unfavorable interpretation:** COMPARABLE supports normal relative ranking; AGE_DISADVANTAGED reduces confidence; STALE_FOR_HORIZON may gate; INCOMPARABLE prevents strong relative claims.
+- **Failure modes / counterexamples:** do not extrapolate an unobserved price path to “correct” old candidates; quiet stocks may remain unchanged but that cannot be assumed.
+- **Relationship to other evidence:** FQ owns the underlying ages/alignment; CS-016 owns only the cross-candidate comparability conclusion.
+- **Worked example:** candidate A observed 1s ago, B 8s ago, target horizon 15s. B is materially age-disadvantaged even if both belong to one valid collection cycle.
+- **Known overlaps:** FQ-002/003/008/009, RO-005
+- **Confidence limits:** exact state thresholds must be horizon-aware
+- **Validation targets:** rank stability under sequential collection, stale-leader false positives
+- **Research state:** Candidate / core cross-sectional guard
+
+### CS-017 — ComparablePeerSetCoverage
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** CONTEXT
+- **Raw sources:** FQ-012 CrossSectionalCoverage + CS-001 eligibility + CS-016 comparability
+- **Derivation:** preserve valid-universe count, comparable count, eligible count and exclusions/reasons for the peer set used in relative statistics
+- **Unit / shape:** structured coverage bundle
+- **Role:** GATE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** makes every percentile/rank auditable by showing exactly how many truly comparable peers supported it
+- **Plain-language intuition:** “99th percentile” means much less if only 20 peers were usable than if 500 comparable peers were available.
+- **Market mechanism / why it can matter:** relative statistics are conditional on the peer set; missing/stale/ineligible names can shift percentiles and ranks materially.
+- **Objective connection:** prevents false confidence in relative edge when the comparison universe is too small or temporally inconsistent.
+- **Favorable / unfavorable interpretation:** broad comparable coverage supports stronger relative context; narrow coverage reduces it. It does not affect absolute opportunity directly.
+- **Failure modes / counterexamples:** large coverage can still contain heterogeneous securities; eligibility filtering can shrink the set sharply during market stress.
+- **Relationship to other evidence:** FQ-012 remains primary owner of generic cross-sectional coverage; CS-017 records the **actual peer set used by this family** and must not recompute FQ semantics.
+- **Worked example:** 520 valid securities, 470 time-comparable, 18 absolutely eligible → relative eligible ranking is based on 18, while market percentiles may use a broader explicitly named set.
+- **Known overlaps:** FQ-012, CS-004/005/006
+- **Confidence limits:** peer-set definition must accompany every relative statistic
+- **Validation targets:** percentile/rank robustness to coverage changes
+- **Research state:** Candidate consumer/context
+
+### CS-018 — RelativeEdgeContextState
+
+- **Family:** Cross-Sectional / Relative Edge Context
+- **Kind:** STATE
+- **Raw sources:** CS-001..CS-017 where valid
+- **Derivation:** structured family synthesis preserving absolute eligibility, peer context, self-improvement, rank-rise cause, dispersion and comparability
+- **Unit / shape:** structured context + Confidence/Coverage; optional state such as ABSOLUTE_LEADER / RELATIVE_EDGE / EFFECTIVE_TIE / PEER_DRIVEN_RISE / NO_ELIGIBLE_CANDIDATE / UNKNOWN
+- **Role:** CONTEXT, GATE, PROTECTIVE, CONFIRMING
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Confirmation, Freshness/Trust
+- **Meaning:** compact handoff to CentralRanker that explains relative edge without replacing the underlying OpportunityBudget
+- **Plain-language intuition:** this says whether the candidate is genuinely strong in absolute terms and relatively distinguished, merely rank-high because peers weakened, effectively tied, or part of a no-opportunity market.
+- **Market mechanism / why it can matter:** relative context is useful for choosing among valid candidates, but only after the market opportunity itself has been established.
+- **Objective connection:** lets the future CentralRanker use relative information while preserving the project's real objective: best capturable short upward opportunity from now.
+- **Favorable / unfavorable interpretation:** ABSOLUTE_LEADER/RELATIVE_EDGE can support leader choice; EFFECTIVE_TIE calls for tie policy; PEER_DRIVEN_RISE should not be promoted as fresh alpha; NO_ELIGIBLE_CANDIDATE maps naturally to NO_OPPORTUNITY.
+- **Failure modes / counterexamples:** synthesis can become another opaque score if dimensions are collapsed too early; final leader/hysteresis policy belongs to Issue #10.
+- **Relationship to other evidence:** CS-018 is family synthesis only. RO OpportunityBudget remains the absolute core; Issue #10 owns leader/challenger/hysteresis composition.
+- **Worked example:** Stock A is eligible, self-improving, top percentile and time-comparable → ABSOLUTE_LEADER candidate. Stock B is rank #2 only because peers weakened and its own opportunity is flat → PEER_DRIVEN_RISE context.
+- **Known overlaps:** RO-013, Issue #10 CandidateFrontier/EffectiveTie
+- **Confidence limits:** no calibrated scalar or probability; leader policy deferred to Issue #10
+- **Validation targets:** leader selection quality, effective-tie correctness, NO_OPPORTUNITY behavior
+- **Research state:** Provisional composite
+
+---
+
+## Cross-Sectional / Relative Edge objective-alignment boundary
+
+This family should answer:
+
+~~~text
+among candidates that are already good enough in absolute terms,
+which ones are relatively distinguished,
+and is that relative improvement real in the stock itself?
+~~~
+
+It must never answer:
+
+~~~text
+rank #1
+therefore good trade
+~~~
+
+Core hierarchy:
+
+~~~text
+OpportunityBudget
+→ AbsoluteEligibilityState
+→ decision-time comparable peer set
+→ relative percentiles / breadth / dispersion
+→ self-improvement vs peer-deterioration decomposition
+→ RelativeEdgeContextState
+→ later CentralRanker
+~~~
+
+Important invariants:
+
+~~~text
+relative rank cannot rescue absolute ineligibility
+peer deterioration is not self improvement
+same cycle is not same instant
+high percentile is context, not probability
+NO_OPPORTUNITY remains valid
+~~~
+
+## Next registry boundary
+
+Next planned work:
+
+~~~text
+Final Issue #5 coverage audit against research-checkpoint.md
+~~~
+
+The audit should verify that every material checkpoint concept now has one explicit owner/family or an explicit downstream issue owner, and then decide whether Issue #5 can close before moving into Issues #6/#7/#8/#9/#15/#16 research.
