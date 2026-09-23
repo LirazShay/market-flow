@@ -189,7 +189,8 @@ pure deterministic behavior
 → Fast unit tests
 
 IndexedDB / DOM / BroadcastChannel / same-origin behavior
-→ Chromium immediately when browser behavior/tests change
+→ exact changed/new Chromium test first
+→ widen only when justified
 → full Browser CI before every numbered Stage closure
 
 provider/session behavior
@@ -200,11 +201,17 @@ Hard verification invariant:
 
 ~~~text
 any added/modified test
-→ run it in its real layer after the final edit
-→ green before continuing
+→ run the smallest sufficient target in its real layer
+
+intentional TDD red
+→ exact target fails for intended reason
+→ implement/fix
+→ exact target green
 ~~~
 
-Browser checkpoints are additional integration milestones only. They never permit a changed Playwright/browser test, fixture, harness, or helper to remain unexecuted. A red or unexecuted changed test blocks progression and must be reflected in `STATUS.json`.
+For browser tests, targeted Chromium is the default red/green loop. Do not spend a full Browser-suite run merely to prove an expected red. Widen only for coupling/risk/evidence or a required checkpoint.
+
+Browser checkpoints are additional integration milestones only. They never permit a changed Playwright/browser test, fixture, harness, or helper to remain unexecuted. An unexpected red, or red remaining after the intended fix, blocks progression and must be reflected in `STATUS.json`.
 
 Every numbered Stage also has a mandatory closure gate:
 
