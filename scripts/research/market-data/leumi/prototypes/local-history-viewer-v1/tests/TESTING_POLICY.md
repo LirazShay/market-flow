@@ -193,6 +193,20 @@ or
 workflow_call from an explicit checkpoint workflow
 ~~~
 
+Ordinary verification uses:
+
+~~~text
+publish_runtime = false
+~~~
+
+When the stable rolling runtime download must be updated, invoke the same full Browser CI with:
+
+~~~text
+publish_runtime = true
+~~~
+
+The publish job remains downstream of successful Chromium verification; publication is not part of the ordinary verification critical path.
+
 ### Live provider verification
 
 Use only for behavior that cannot be proven with deterministic mocks.
