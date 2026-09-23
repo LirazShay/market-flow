@@ -2007,7 +2007,12 @@
         }
       ],
       "verification": "documentation/policy-only change; no production code or test implementation changed, so Browser CI is not required and no temporary CI trigger was created",
-      "specImpact": "No product SPEC impact; this is repository engineering/process policy."
+      "specImpact": "No product SPEC impact; this is repository engineering/process policy.",
+      "consistencyRepair": {
+        "issue": "D-020 still described sparse browser checkpoints after the testing policy had evolved to mandatory Chromium verification after code changes.",
+        "resolution": "Updated D-020 and the decision index to match the current testing policy.",
+        "lesson": "Continuous-improvement review must include instruction/decision consistency, not only code/test fixes."
+      }
     }
   },
   "fastContext": {
