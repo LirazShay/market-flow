@@ -92,10 +92,10 @@ Launching it:
 embedded assembled runtime
 → MarketFlowRuntime
 → recorder starts if not already running
-→ same-origin viewer opens/focuses
+→ same-origin Viewer opens
 ~~~
 
-Launching the same Bookmarklet again while the recorder is already running reuses the existing recorder instance and named viewer window.
+Launching the same Bookmarklet again while the recorder is already running reuses the existing recorder instance. The browser may focus/reuse an existing Viewer or open another same-origin Viewer; multiple Viewers are valid because IndexedDB remains the data authority.
 
 Public runtime API:
 
