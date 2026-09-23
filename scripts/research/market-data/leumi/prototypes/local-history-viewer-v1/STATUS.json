@@ -28,8 +28,9 @@
   "activeMiniProject": {
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
-    "phase": "B",
-    "title": "Setup optimization",
+    "phase": "C",
+    "phaseStatus": "planned",
+    "title": "Controlled suite parallelism",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
     "baseline": {
@@ -45,6 +46,15 @@
       "status": "complete",
       "fastCiRunId": 35864269535,
       "result": "Fast CI restored; timing breakdown and isolation audit recorded. No browser coverage removed or skipped."
+    },
+    "phaseB": {
+      "status": "complete-browser-ci-verified",
+      "coldBrowserCiRunId": 35865004148,
+      "warmBrowserCiRunId": 35865194288,
+      "coldResult": "56/56 passed; browser-tests job about 57s.",
+      "warmResult": "56/56 passed; cache hit; browser-tests job about 48s; full workflow about 67s.",
+      "result": "Pinned ubuntu-24.04 plus versioned Playwright Chromium cache reduced warm browser-test job latency by about 28% and full workflow latency by about 26%, with no coverage, worker-count, storage-growth, or production/runtime behavior reduction.",
+      "rca": "The first experiment exposed a pre-existing viewer-live-refresh synchronization race; the test now waits for semantic refresh completion instead of assuming an updated table means the whole refresh finished."
     }
   },
   "verification": {
@@ -87,12 +97,12 @@
     }
   },
   "next": {
-    "action": "Execute Phase B setup optimization only.",
+    "action": "Execute Phase C controlled suite parallelism only.",
     "steps": [
-      "evaluate a versioned Playwright Chromium cache and deterministic dependency install path",
-      "keep cold-run reliability and required browser dependencies intact",
-      "measure warm-run setup time before moving to worker parallelism",
-      "do not change storage-growth coverage or worker count in this phase"
+      "benchmark workers=2 against the accepted workers=1 setup baseline",
+      "keep all 56 browser tests and storage-growth coverage unchanged",
+      "run at least two full Chromium passes before accepting parallelism",
+      "if concurrency exposes shared-state coupling, diagnose it rather than masking failures or increasing retries"
     ]
   },
   "history": {
