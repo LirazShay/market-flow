@@ -78,6 +78,8 @@ docs/history/live-verification/2026-09-23-stage-19-live-report.md
 | historical evidence | `docs/history/README.md` |
 | runtime usage/download | `runtime/README.md` |
 | testing policy | `tests/TESTING_POLICY.md` |
+| optional human fresh-chat helper | `HANDOFF.md` |
+| optional copy/paste continuation prompt | `NEXT_CHAT_PROMPT.md` |
 
 ## Source-of-truth ownership
 
