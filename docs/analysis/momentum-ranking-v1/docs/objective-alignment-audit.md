@@ -1072,3 +1072,407 @@ momentum score
 
 without direct validation against the project's actual first-passage / target-before-adverse outcomes.
 
+
+
+---
+
+# Audit pass 4 — Cross-sectional ranking and leader hysteresis
+
+## Cross-sectional ranking — KEEP, but only after absolute eligibility
+
+The CentralRanker must not answer:
+
+~~~text
+who is best among all stocks?
+~~~
+
+before answering:
+
+~~~text
+does any stock currently satisfy a minimum absolute short-horizon opportunity standard?
+~~~
+
+Correct conceptual order:
+
+~~~text
+per-stock absolute opportunity assessment
+→ trust/feasibility gates
+→ eligible candidate set
+→ cross-sectional comparison
+→ leader or NO_OPPORTUNITY
+~~~
+
+This avoids a dead-market failure mode where the least-bad stock becomes rank #1 despite having no usable excursion.
+
+### New candidate concepts
+
+~~~text
+AbsoluteEligibilityState
+AbsoluteOpportunityFloor
+NoOpportunityMargin
+EligibleCandidateCount
+OpportunityDensity
+~~~
+
+`OpportunityDensity` is context only: eligible candidates / eligible universe.
+
+---
+
+## Relative percentile — DEMOTE to comparison/context
+
+Percentiles remain useful for normalization, unusual-activity context and resolving similar candidates.
+
+But:
+
+~~~text
+high percentile != high absolute opportunity
+~~~
+
+and:
+
+~~~text
+low market-relative residual != no short-term upward excursion
+~~~
+
+A stock can move usefully upward because the whole market moves upward. Market-relative residual strength must not become a mandatory gate without validation.
+
+---
+
+## Rank velocity — REFRAME
+
+Old idea:
+
+~~~text
+rank #180 → #75 → #22 → #5
+~~~
+
+can look like powerful early evidence.
+
+But rank can improve for two very different reasons:
+
+~~~text
+A. this stock improved
+B. peers deteriorated
+~~~
+
+Only A is direct evidence that this stock's opportunity strengthened.
+
+Therefore add:
+
+~~~text
+SelfImprovementDelta
+PeerDeteriorationContribution
+RankRiseCauseState
+~~~
+
+Candidate states:
+
+~~~text
+SELF_DRIVEN_RISE
+PEER_DRIVEN_RISE
+MIXED
+UNKNOWN
+~~~
+
+Rank velocity may remain useful only after this decomposition.
+
+---
+
+## Cross-sectional comparison must preserve objective dimensions
+
+Do not immediately compress every candidate into one scalar.
+
+Preserve at least:
+
+~~~text
+RemainingCapturableExcursion
+TimeToTarget / target frontier
+AdversePath
+Tradability
+Freshness
+Confidence
+~~~
+
+Then ask whether one candidate dominates another across the dimensions that matter.
+
+Candidate structures:
+
+~~~text
+CandidateFrontier
+ParetoLikeCandidateSet
+DominanceState
+~~~
+
+The external engine may still emit one leader; internal comparison should preserve the dimensions that created it.
+
+---
+
+## Asynchronous universe observations — cross-sectional ranking risk
+
+Because securities are collected sequentially, two candidates can enter ranking with different observation ages.
+
+Therefore:
+
+~~~text
+same ranking cycle != same market instant
+~~~
+
+The ranker should consume:
+
+~~~text
+PerSecurityObservationAge
+FreshnessState
+TemporalAlignmentState
+TimeBudgetAfterLatency
+~~~
+
+and compare candidates at one decision time while preserving uncertainty about what happened after each observation.
+
+Candidate:
+
+~~~text
+DecisionTimeComparabilityState
+~~~
+
+Possible states:
+
+~~~text
+COMPARABLE
+AGE_DISADVANTAGED
+STALE_FOR_HORIZON
+UNKNOWN
+~~~
+
+Do not invent an unobserved price path to 'correct' stale data.
+
+---
+
+# Leader / challenger hysteresis — KEEP, but make it opportunity-aware and time-bounded
+
+The purpose of hysteresis is valid: prevent noisy leader flips.
+
+But fixed hysteresis can directly conflict with a seconds-level objective.
+
+A leader can remain rank #1 by inertia after:
+- its opportunity is mostly consumed;
+- its signal becomes stale;
+- book pressure disappears;
+- a challenger now has much more remaining opportunity.
+
+Therefore:
+
+~~~text
+leader persistence != entitlement to stay leader
+~~~
+
+## Leader can expire without a challenger
+
+A leader should be able to transition to:
+
+~~~text
+NONE / NO_OPPORTUNITY
+~~~
+
+because its own opportunity degraded.
+
+Candidate:
+
+~~~text
+LeaderExpiryState
+~~~
+
+Possible expiry reasons:
+- freshness expired;
+- remaining opportunity below floor;
+- adverse-path risk worsened;
+- execution feasibility failed;
+- data quality failed;
+- signal invalidated.
+
+## Hysteresis should consume a time budget
+
+Candidate:
+
+~~~text
+HysteresisTimeBudget
+~~~
+
+The system may tolerate a small challenger advantage briefly to avoid noise, but the delay itself consumes opportunity.
+
+Conceptually:
+
+~~~text
+maximum hysteresis delay
+<
+remaining opportunity half-life / usable time budget
+~~~
+
+Exact mapping requires validation.
+
+If the incumbent's remaining opportunity decays quickly, hysteresis should shrink.
+
+## Challenger promotion should compare current remaining opportunity
+
+A challenger should not need to exceed the incumbent's old peak score.
+
+Compare:
+
+~~~text
+Leader current OpportunityBudget
+vs
+Challenger current OpportunityBudget
+~~~
+
+Candidate concepts:
+
+~~~text
+ChallengerDominance
+ChallengerAdvantageAfterUncertainty
+LeaderRemainingBudget
+LeaderDecayRate
+~~~
+
+Fast promotion may be appropriate when the challenger is materially better on capturable excursion, speed, adverse path, freshness, evidence diversity and feasibility.
+
+## New concept: SwitchValue
+
+Generic online-decision research shows that switching costs can materially change optimal policies and motivate threshold-style decisions. This is conceptual support only; those are not TASE stock-selection models.
+
+Research leads:
+- https://arxiv.org/abs/2310.20598
+- https://arxiv.org/abs/1911.12595
+
+Candidate abstraction:
+
+~~~text
+SwitchValue
+=
+ChallengerObjectiveAdvantage
+- switching/decision delay cost
+- additional uncertainty
+- execution-policy cost if any
+~~~
+
+Important separation:
+
+### Pre-entry leader switching
+
+Before any order/position exists, switching cost is mainly decision churn, extra waiting, stale-signal risk and possible execution delay.
+
+### Post-entry position switching
+
+Once a position exists, changing to another stock is a separate execution/risk-management problem.
+
+The CentralRanker must not silently turn pre-entry leader hysteresis into post-entry trading behavior.
+
+## New concept: LeaderDominanceMargin
+
+Do not store only:
+
+~~~text
+leader score - challenger score
+~~~
+
+Preserve:
+- absolute opportunity difference;
+- time-to-target difference;
+- adverse-path difference;
+- confidence/coverage difference;
+- feasibility difference.
+
+Candidate:
+
+~~~text
+LeaderDominanceMargin {
+  excursionAdvantage
+  speedAdvantage
+  pathAdvantage
+  feasibilityAdvantage
+  confidenceAdvantage
+}
+~~~
+
+## New concept: uncertainty-aware ties
+
+Two candidates can be numerically different but indistinguishable given stale/asynchronous data, low coverage, noisy features or uncalibrated mappings.
+
+Candidate state:
+
+~~~text
+CLEAR_LEADER
+SOFT_LEADER
+EFFECTIVE_TIE
+NO_ELIGIBLE_CANDIDATE
+~~~
+
+When effectively tied, fresher evidence, lower friction and lower switching cost may be legitimate tie-breakers. A tiny raw score difference should not be treated as meaningful.
+
+## Internal candidate set
+
+Externally the engine may expose one leader.
+
+Internally retain a threshold/frontier-based candidate set with absolute opportunity, freshness, confidence and dominance relationships.
+
+This improves challenger detection, leader expiry, rank-cause decomposition and later execution-profile selection.
+
+Do not hardcode a fixed K unless implementation needs one.
+
+---
+
+# New hypotheses from audit pass 4
+
+## X. AbsoluteEligibilityState
+
+A candidate must pass an absolute short-horizon opportunity/trust/feasibility floor before relative ranking.
+
+## Y. RankRiseCauseState
+
+Separate self-improvement from peer deterioration.
+
+## Z. DecisionTimeComparabilityState
+
+Qualify asynchronous observation age instead of pretending simultaneous data.
+
+## AA. LeaderExpiryState
+
+The incumbent can expire into NO_OPPORTUNITY without waiting for a challenger.
+
+## AB. HysteresisTimeBudget
+
+Any stability delay must fit inside the remaining opportunity time budget.
+
+## AC. ChallengerAdvantageAfterUncertainty
+
+Promote based on meaningful current objective advantage, not a trivial raw score edge.
+
+## AD. SwitchValue
+
+Compare challenger advantage with delay, uncertainty and execution switching costs.
+
+## AE. LeaderDominanceMargin
+
+Preserve multidimensional dominance rather than only scalar score difference.
+
+## AF. EffectiveTieState
+
+Treat differences smaller than current evidence precision as ties.
+
+---
+
+## Audit verdict
+
+~~~text
+Cross-sectional ranking = SECONDARY SELECTION LAYER
+Absolute opportunity eligibility = PRIMARY GATE
+Hysteresis = noise-control tool with a strict opportunity-time budget
+~~~
+
+Correct behavior:
+
+~~~text
+is there any eligible opportunity?
+→ if no: NO_OPPORTUNITY
+→ if yes: compare eligible opportunity budgets
+→ maintain leader only while its current opportunity remains valid
+→ switch only when challenger advantage is meaningful enough to justify delay/uncertainty
+~~~

@@ -14,7 +14,7 @@
     "issue": 14,
     "title": "Objective alignment audit and first-principles short-horizon hypotheses",
     "status": "in-progress",
-    "subfocus": "Audit passes 1–3 completed. Pass 3 redefined RemainingOpportunity as a structured conditional future-excursion budget rather than a generic momentum heuristic."
+    "subfocus": "Audit passes 1–4 completed. Pass 4 redefined cross-sectional ranking as secondary selection after absolute eligibility and made hysteresis opportunity-aware and time-bounded."
   },
   "completedWorkUnits": [
     {
@@ -44,6 +44,6 @@
   },
   "next": {
     "issue": 14,
-    "action": "Audit cross-sectional ranking and leader/challenger hysteresis against the absolute short-horizon opportunity objective."
+    "action": "Audit Recent Wave Memory / realized wave capacity against the direct short-horizon opportunity objective."
   }
 }
