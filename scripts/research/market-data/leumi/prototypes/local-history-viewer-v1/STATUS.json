@@ -1856,7 +1856,7 @@
       "nextLiveQuestion": "After market hours, do successive complete cycles contain unchanged market fingerprints and/or unchanged provider-time fingerprints while Leumi still returns complete HTTP 200 data?"
     },
     "loaderProbe": {
-      "status": "verification-pending-live-leumi",
+      "status": "release-asset-transport-rejected-live",
       "spec": "specs/loader-probe.spec.md",
       "stableReleaseTag": "local-history-viewer-v1-runtime-latest",
       "tagVerifiedCommit": "b152e38c717cf18884e99dc2d0335f01d6391585",
@@ -1892,7 +1892,15 @@
           "duration": "34.4s"
         }
       },
-      "liveQuestion": "Can the real authenticated Leumi origin fetch the stable manifest/runtime and compile the verified runtime under its actual CSP/network policy?"
+      "liveQuestion": "Can the real authenticated Leumi origin fetch the stable manifest/runtime and compile the verified runtime under its actual CSP/network policy?",
+      "liveResult": {
+        "verified": "Direct GitHub Release download URL is not fetchable cross-origin from the Leumi origin because its response does not expose Access-Control-Allow-Origin.",
+        "implication": "Do not build the permanent loader on direct release-asset fetch.",
+        "notTested": [
+          "remote runtime SHA-256 on Leumi origin",
+          "remote runtime compilation on Leumi origin"
+        ]
+      }
     }
   },
   "fastContext": {
@@ -1907,7 +1915,7 @@
   "activeMiniProject": {
     "id": "deployment-loader-probe",
     "title": "Permanent loader feasibility probe",
-    "status": "verification-pending",
+    "status": "in-progress",
     "reason": "Automated manifest/probe build and Chromium behavior are verified. The remaining decision depends on a one-time live compatibility probe from the real Leumi origin.",
     "scope": [
       "deterministic runtime manifest with SHA-256 build identity",
@@ -1976,10 +1984,29 @@
       },
       "L4": {
         "title": "Live Leumi CSP/network probe",
-        "status": "verification-pending-user-live-evidence"
+        "status": "complete-live-verified-failure",
+        "result": "Direct GitHub Release asset fetch is blocked by CORS from https://hb2.bankleumi.co.il before manifest parsing/runtime fetch/hash/compile.",
+        "evidence": {
+          "pageOrigin": "https://hb2.bankleumi.co.il",
+          "manifestFetch": "failed",
+          "browserError": "No Access-Control-Allow-Origin on GitHub Release download response",
+          "cspViolations": 0,
+          "runtimeFetch": "not-run",
+          "runtimeHash": "not-run",
+          "runtimeCompile": "not-run"
+        }
       },
       "L5": {
-        "title": "Decide permanent loader architecture from live evidence",
+        "title": "Test CORS-friendly transport alternatives",
+        "status": "in-progress",
+        "candidates": [
+          "raw.githubusercontent.com",
+          "api.github.com"
+        ],
+        "goal": "Identify a supported cross-origin source before designing the permanent loader."
+      },
+      "L6": {
+        "title": "Decide permanent loader architecture from transport evidence",
         "status": "planned"
       }
     }
@@ -2001,11 +2028,11 @@
     "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
-    "reached": true,
-    "reason": "Loader compatibility probe is built, published, documented and automated-browser verified. Permanent loader/hot-upgrade work must wait for the real Leumi-origin probe result.",
+    "reached": false,
+    "reason": "Live probe rejected GitHub Release assets as a fetch transport because of CORS. A CORS-friendly transport must now be verified.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Save the stable loader-probe Bookmarklet once, click it on the authenticated Leumi page while the current runtime may remain running, and report the four visible results or upload the probe JSON if any check fails."
+    "nextAction": "Build and run a small transport probe for raw.githubusercontent.com and api.github.com from the authenticated Leumi origin."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
