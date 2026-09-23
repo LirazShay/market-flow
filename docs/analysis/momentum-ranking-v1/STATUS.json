@@ -14,7 +14,7 @@
     "issue": 17,
     "title": "Core predictive signal prioritization and feature reduction",
     "status": "in-progress",
-    "subfocus": "Stage 17.A completed. Fresh Price Impulse and BID/Quote Migration Strength are too overlapping for two core slots and are merged into one provisional parent: Fresh Market Repricing. The provisional parent-concept count is reduced from eight to seven."
+    "subfocus": "Stage 17.B completed. Activity-to-Price Conversion and Stall/Effort-to-Progress Deterioration are merged into Progress Conversion Efficiency; Clean Path/Adverse Efficiency remains a separate path-risk core candidate. Provisional parent count reduced from seven to six."
   },
   "completedWorkUnits": [
     {
@@ -56,6 +56,6 @@
   },
   "next": {
     "issue": 17,
-    "action": "Stage 17.B only: compare Activity-to-Price Conversion, Clean Path/Adverse Efficiency, and Stall/Effort-to-Progress Deterioration. Determine which are independent information channels versus merge candidates; do not yet analyze concepts 6–8."
+    "action": "Stage 17.C only: compare Fresh Reset/Reclaim/Reacceleration, Move Consumption/Remaining Opportunity, and Usable Lead/Opportunity Stage. Determine which are independent predictors versus modifiers/syntheses of the retained parents; do not yet run cross-group final elimination."
   }
 }
