@@ -286,3 +286,51 @@ test(
         );
     }
 );
+
+
+test(
+    "fresh-chat helper documents remain optional instead of re-entering the HOT path",
+    () => {
+        const readme =
+            read(
+                path.join(
+                    workstreamRoot,
+                    "README.md"
+                )
+            );
+
+        assert.match(
+            readme,
+            /optional human fresh-chat helper/i
+        );
+
+        assert.match(
+            readme,
+            /optional copy\/paste continuation prompt/i
+        );
+
+        const agents =
+            read(
+                path.join(
+                    repositoryRoot,
+                    "AGENTS.md"
+                )
+            );
+
+        assert.equal(
+            agents.includes(
+                "HANDOFF.md"
+            ),
+            false,
+            "AGENTS.md must not make HANDOFF.md part of the default HOT path."
+        );
+
+        assert.equal(
+            agents.includes(
+                "NEXT_CHAT_PROMPT.md"
+            ),
+            false,
+            "AGENTS.md must not make NEXT_CHAT_PROMPT.md part of the default HOT path."
+        );
+    }
+);
