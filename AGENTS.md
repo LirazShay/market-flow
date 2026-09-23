@@ -300,7 +300,51 @@ Workstream-specific testing policy may further refine browser checkpoints.
 
 ---
 
-## 6. Data correctness rules
+## 6. Continuous improvement after unexpected failures
+
+Do not treat an unexpected failure as complete at:
+
+~~~text
+fix
+→ green
+~~~
+
+For a meaningful unexpected bug/test/CI/live-verification/rework failure, perform the lightweight Failure Review defined in:
+
+~~~text
+docs/project/continuous-improvement.md
+~~~
+
+At minimum ask:
+
+~~~text
+What technically failed?
+What assumption/process choice led us there?
+Why did existing safeguards not catch it earlier?
+What would we do differently if starting again?
+What is the smallest prevention?
+Is the lesson local, workstream-wide, or repository-wide?
+~~~
+
+Expected TDD red is not itself a learning incident.
+
+If a lesson is generalizable, actionable, evidence-based and KISS-compatible, promote it to the **narrowest correct durable owner** (test, code invariant, SPEC, test guide, engineering practice, AGENTS rule or decision).
+
+Do not add global rules for one-off failures merely to appear thorough.
+
+A meaningful unexpected failure is not fully resolved until the learning disposition is clear:
+
+~~~text
+promoted lesson
+or
+local prevention only
+or
+no generalizable lesson — with reason
+~~~
+
+---
+
+## 7. Data correctness rules
 
 Never silently accept partial/corrupt data.
 
@@ -333,7 +377,7 @@ for material factual claims/evidence.
 
 ---
 
-## 7. Preserve proven behavior and change safely
+## 8. Preserve proven behavior and change safely
 
 Before modifying something already verified:
 
@@ -356,7 +400,7 @@ docs/project/engineering-practices.md
 
 ---
 
-## 8. Documentation cadence
+## 9. Documentation cadence
 
 ### Mandatory SPEC impact review
 
@@ -444,7 +488,7 @@ Cross-cutting/domain knowledge stays under `docs/`.
 
 ---
 
-## 9. Security
+## 10. Security
 
 Never commit:
 
@@ -460,7 +504,7 @@ Use sanitized fixtures/examples.
 
 ---
 
-## 10. Completion standard
+## 11. Completion standard
 
 A work batch is done when the relevant items are true:
 
@@ -475,7 +519,8 @@ A work batch is done when the relevant items are true:
 - integrity validations are present where needed;
 - status/documentation is updated at the correct cadence;
 - SPEC impact review is complete and affected specs are synchronized;
-- repository remains in a clear state.
+- repository remains in a clear state;
+- if a meaningful unexpected failure occurred, its Failure Review / learning disposition is complete.
 
 At the end, report briefly:
 
@@ -486,7 +531,7 @@ At the end, report briefly:
 
 ---
 
-## 11. Priority order
+## 12. Priority order
 
 ~~~text
 Correctness / data integrity / security
