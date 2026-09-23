@@ -113,7 +113,8 @@ Repeated Bookmarklet execution while already loaded must reuse the same exposed 
 While recorder is running:
 
 - do not start a second recorder;
-- reuse/focus the named viewer.
+- an existing Viewer may be focused/reused or another same-origin Viewer may open;
+- every Viewer remains a read-only consumer of the same IndexedDB authority.
 
 After a clean stop:
 
@@ -141,10 +142,11 @@ The stable download should represent browser-verified generated output, not an a
 6. Bookmarklet body is single-line compact JavaScript.
 7. Bookmarklet contains no whole-runtime percent encoding / `%20` packaging transformation.
 8. There is no arbitrary absolute size rejection.
-9. Repeated launch is idempotent with respect to recorder/viewer instance creation.
-10. Restart is blocked while prior stop persistence is pending.
-11. Generated artifacts contain no credentials, cookies, authorization headers, account identifiers, or private session state.
-12. Stable release publication follows full Browser CI success.
+9. Repeated launch is idempotent with respect to recorder ownership; it must not create a second recorder.
+10. Multiple same-origin Viewer windows are allowed and do not become independent data authorities.
+11. Restart is blocked while prior stop persistence is pending.
+12. Generated artifacts contain no credentials, cookies, authorization headers, account identifiers, or private session state.
+13. Stable release publication follows full Browser CI success.
 
 ## Failure semantics
 
