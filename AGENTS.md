@@ -304,7 +304,41 @@ Archive historical evidence under explicit `docs/history/` locations rather than
 
 ---
 
-## 9. Security
+## 9. Repository self-maintenance
+
+Repository order is maintained **during the change**, not by a later cleanup pass.
+
+For every meaningful work unit:
+
+~~~text
+change implementation/tests/docs
+→ update affected owner documents in the same coherent batch
+→ archive historical detail instead of growing HOT/live context
+→ remove temporary diagnostics/triggers/artifacts
+→ run the relevant guards
+→ leave no-cleanup debt
+~~~
+
+Do not finish work while knowingly leaving:
+
+- stale duplicated status/context;
+- abandoned experiment files/assets;
+- temporary CI/debug scaffolding;
+- historical dumps in HOT context;
+- a changed contract without its owning SPEC/docs;
+- an instruction that conflicts with current policy.
+
+If new structure is truly required, update the owning guard/policy deliberately rather than bypassing it.
+
+Detailed decision:
+
+~~~text
+docs/project/decisions/D-024.md
+~~~
+
+---
+
+## 10. Security
 
 The repository is public.
 
@@ -324,7 +358,7 @@ Do not bypass WAF/access controls.
 
 ---
 
-## 10. Completion standard
+## 11. Completion standard
 
 A work unit is complete only when relevant items are true:
 
@@ -339,7 +373,8 @@ A work unit is complete only when relevant items are true:
 - SPEC impact review is complete;
 - unexpected-failure learning disposition is complete when applicable;
 - `STATUS.json` is current;
-- repository is left in a clear resumable state.
+- repository is left in a clear resumable state;
+- no-cleanup debt remains from the work unit.
 
 End report briefly:
 
@@ -353,7 +388,7 @@ End report briefly:
 
 ---
 
-## 11. Priority order
+## 12. Priority order
 
 ~~~text
 Correctness / data integrity / security
