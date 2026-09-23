@@ -264,12 +264,6 @@
 
         setText(
             documentRef,
-            "[data-role='last-update']",
-            "—"
-        );
-
-        setText(
-            documentRef,
             "[data-role='viewer-footer']",
             "0 ניירות"
         );
@@ -866,16 +860,6 @@
                     model.summary
                         .lastCycleId
                 )
-        );
-
-        setText(
-            documentRef,
-            "[data-role='last-update']",
-            logic.formatCellValue(
-                model.summary
-                    .lastCollectedAtMs,
-                "timestamp"
-            )
         );
 
         setText(
