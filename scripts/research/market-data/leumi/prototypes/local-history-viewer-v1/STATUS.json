@@ -10,70 +10,46 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "19",
-    "substep": "19.3",
-    "title": "Integrated V1 validation — live Leumi browser verification",
-    "status": "verification-pending"
+    "stage": "20",
+    "substep": null,
+    "title": "V1 freeze",
+    "status": "planned"
   },
   "stageSummary": {
-    "completed": "1-18",
-    "inProgress": "19",
+    "completed": "1-19",
+    "inProgress": null,
     "planned": "20"
   },
   "currentStage": {
-    "stage": "19",
-    "title": "Integrated V1 validation",
-    "status": "in-progress",
-    "substeps": {
-      "19.1": "complete-browser-ci-verified — full mocked Recorder → IndexedDB → BroadcastChannel → Viewer → sorting → history E2E",
-      "19.2": "complete-browser-ci-verified — self-contained runtime/Bookmarklet packaging and rolling release",
-      "19.3": "verification-pending — real authenticated Leumi browser verification",
-      "19.4": "planned — long-run live report"
-    }
+    "stage": "20",
+    "title": "V1 freeze",
+    "status": "planned"
   },
   "activeMiniProject": null,
   "verification": {
     "codeBaseline": {
       "fastCi": {
-        "runId": 35854881699,
+        "runId": 35863145121,
         "conclusion": "success"
       },
       "browserCi": {
-        "runId": 35855002713,
+        "runId": 35862723542,
         "conclusion": "success",
+        "verifiedCommit": "362fe0278f93ba9b4417522355ab4f7ae4494519",
         "tests": 56,
         "passed": 56,
         "failed": 0
       },
       "rollingReleaseTag": "local-history-viewer-v1-runtime-latest",
-      "note": "Assembled production runtime remains at the browser-verified baseline; later changes are documentation/context/manual diagnostic tooling only unless STATUS says otherwise."
+      "note": "Stage 19 final browser/test state is fully Chromium-verified. The one-time push trigger used to start Browser CI was removed immediately afterward; no temporary CI scaffolding remains."
     },
-    "live19_3": {
-      "status": "verification-pending",
+    "stage19": {
+      "status": "complete",
       "liveEvidenceDate": "2026-09-23",
-      "verified": [
-        "Real Leumi-origin runtime is running with successful complete cycles, zero recorder failures and no latest recorder error.",
-        "Recent complete cycles each collected the full dynamic 561-security universe with requested=received=unique=561, missing=0 and duplicates=0.",
-        "GetSecuritiesData completed as three 187-security chunks with HTTP 200 and complete 187/187 responses.",
-        "Adjacent live cycles show changing market-data and provider-time fingerprints/change counts, proving the collected snapshot is not frozen.",
-        "IndexedDB contains universe=561, latest=561 and populated history; the Viewer is open against the persisted data.",
-        "Evidence across recorder sessions shows persisted history survives a new session boundary.",
-        "Repeated live Bookmarklet launch kept the recorder running and opened another Viewer; multiple Viewer windows are now an accepted contract because IndexedDB remains authoritative."
-      ],
-      "inferred": [
-        "A fresh successful recorder session necessarily completed the configured universe-loading path, but the Debug Bundle does not directly record the MapHeat2 HTTP status."
-      ],
-      "remaining": [
-        "record the exact verified runtime artifact/commit used for the live run",
-        "perform an explicit MarketFlowRuntime.stop() then restart and verify graceful stop persistence plus retained history",
-        "classify any endpoint/UI checks not directly observed as Verified/Inferred/Unknown"
-      ],
-      "diagnosticHelper": {
-        "status": "fixed-fast-ci-verified",
-        "issue": "Manual helper falsely required recorder.status === \"running\" even though a healthy active recorder can be waiting or running-cycle.",
-        "regressionTest": "tests/unit/live-verification-check.test.js",
-        "fastCiRunId": 35861680307
-      }
+      "longRun": "about 52m 48s, 596 completed cycles, 0 failed cycles",
+      "result": "Real Leumi provider collection, persistence, Viewer behavior and long-run stability were evidenced; repeated launch may open another Viewer but must not duplicate the Recorder.",
+      "runtimeArtifactIdentityForOriginalLiveRun": "Unknown",
+      "historyReport": "docs/history/live-verification/2026-09-23-stage-19-live-report.md"
     },
     "contextArchitecture": {
       "status": "complete-fast-ci-verified",
@@ -90,17 +66,17 @@
     }
   },
   "next": {
-    "action": "Finish Stage 19.3 with automated lifecycle verification only; no further manual user checks.",
+    "action": "Start Stage 20 V1 freeze.",
     "steps": [
-      "run targeted Chromium for the updated repeated-launch tests",
-      "run Fast CI and full Browser CI on the final Stage 19.3 contract state",
-      "record the runtime artifact identity as Verified if available, otherwise Unknown without blocking provider evidence",
-      "close Stage 19.3 only after required automated verification is green"
+      "review Stage 20 freeze scope and owning specs/docs",
+      "finalize README verified behavior and known limitations without duplicating live status",
+      "perform final cleanup/version-marker work required by the roadmap",
+      "run Fast CI and full Browser CI before marking Stage 20 complete"
     ]
   },
   "history": {
     "index": "docs/history/README.md",
-    "latestArchive": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json",
+    "latestArchive": "docs/history/live-verification/2026-09-23-stage-19-live-report.md",
     "rule": "Historical Stage/CI/mini-project evidence is preserved in cold history and read only when needed."
   }
 }
