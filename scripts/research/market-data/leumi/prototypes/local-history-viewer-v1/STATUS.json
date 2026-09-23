@@ -85,17 +85,17 @@
         "semantic completion wait for the viewer live-refresh regression"
       ],
       "coverage": "All 56 Browser tests retained; storage-growth sample unchanged; retries remain 0.",
-      "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
-      "specImpact": "No spec impact."
+      "specImpact": "No spec impact.",
+      "historyReport": "docs/history/test-runtime-optimization/2026-09-23-browser-ci-optimization.md"
     }
   },
   "next": {
-    "action": "Resume the remaining Stage 20 V1-freeze closure work.",
+    "action": "Finish Stage 20 V1 freeze closure.",
     "steps": [
-      "perform the final freeze cleanup/review of README, version marker, durable docs and known limitations without duplicating live status",
-      "archive or compact temporary optimization planning material if appropriate",
-      "run the mandatory final Fast CI and full Browser CI for Stage 20 closure",
-      "only then mark Stage 20 and the planned V1 process complete"
+      "verify final README, VERSION, durable docs/spec/test-policy consistency and absence of temporary Stage 20 artifacts",
+      "run Fast CI on the cleaned freeze state",
+      "run the mandatory full Browser CI closure gate and remove its temporary trigger afterward",
+      "record final closure evidence and mark the V1 process complete only if all gates are green"
     ]
   },
   "history": {
