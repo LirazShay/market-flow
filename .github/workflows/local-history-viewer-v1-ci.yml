@@ -1,6 +1,9 @@
 name: Local History Viewer V1 Browser CI
 
 on:
+  push:
+    paths:
+      - ".github/workflows/local-history-viewer-v1-ci.yml"
   workflow_dispatch:
   workflow_call:
 
@@ -96,6 +99,21 @@ jobs:
           if gh release view "$RUNTIME_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             git tag -f "$RUNTIME_TAG" "$GITHUB_SHA"
             git push origin "refs/tags/$RUNTIME_TAG" --force
+
+            # Keep the rolling release aligned with the currently supported
+            # delivery surface. These assets belonged to the abandoned loader
+            # experiment and must not survive future publications.
+            gh release delete-asset "$RUNTIME_TAG" \
+              "market-flow-loader-probe.bookmarklet.txt" \
+              --yes \
+              --repo "$GITHUB_REPOSITORY" \
+              >/dev/null 2>&1 || true
+
+            gh release delete-asset "$RUNTIME_TAG" \
+              "market-flow-v1.manifest.json" \
+              --yes \
+              --repo "$GITHUB_REPOSITORY" \
+              >/dev/null 2>&1 || true
 
             gh release upload "$RUNTIME_TAG" \
               "$BOOKMARKLET" \
