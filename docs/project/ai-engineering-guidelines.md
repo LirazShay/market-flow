@@ -87,7 +87,41 @@ Do not promote a research script directly into production without an explicit pr
 
 ---
 
-# 3. Testing philosophy
+# 3. KISS / YAGNI operating rule
+
+Default to the simplest solution that satisfies the **current** verified requirement and repository invariants.
+
+Do not proactively build infrastructure for hypothetical future use.
+
+Before introducing extra abstraction, generalized lifecycle, loader/updater, cache, concurrency, retry machinery, compatibility path, extension point, or additional state owner, require a concrete present-day reason.
+
+Decision test:
+
+~~~text
+Can the current contract be met safely with a simpler design?
+yes → use the simpler design
+no  → add only the complexity needed to close the proven gap
+~~~
+
+Future possibility alone is not evidence.
+
+If complexity is justified, record the reason in the relevant code/spec/decision context so a later engineer can understand why the simpler option was insufficient.
+
+This principle never overrides:
+
+- correctness;
+- data integrity;
+- security;
+- atomicity;
+- required observability;
+- required testing/verification;
+- recoverability that is part of the current contract.
+
+The goal is not "less code at any cost". The goal is fewer moving parts while still meeting the real contract.
+
+---
+
+# 4. Testing philosophy
 
 Tests should protect meaningful observable behavior.
 
@@ -119,7 +153,7 @@ For a reproducible bug, when practical:
 
 ---
 
-# 4. Tests-first layered testing
+# 5. Tests-first layered testing
 
 For new behavior, define externally meaningful tests before implementation whenever practical.
 
@@ -219,7 +253,7 @@ Live verification pending
 
 ---
 
-# 5. Error handling
+# 6. Error handling
 
 Do not hide failures.
 
@@ -237,7 +271,7 @@ Prefer stopping with a clear error over continuing with partial/corrupt state.
 
 ---
 
-# 6. Data-integrity assertions
+# 7. Data-integrity assertions
 
 For collection/ingestion flows, validate when applicable:
 
@@ -256,7 +290,7 @@ For full-cycle market snapshots, completeness checks belong before persistence.
 
 ---
 
-# 7. Null/empty/value semantics
+# 8. Null/empty/value semantics
 
 Never use a generic falsy fallback for market data when values may legitimately be zero.
 
@@ -273,7 +307,7 @@ unless a documented normalization rule explicitly maps them.
 
 ---
 
-# 8. Schema discipline
+# 9. Schema discipline
 
 Do not infer a field type or meaning solely from its name.
 
@@ -288,7 +322,7 @@ Do not silently invent defaults.
 
 ---
 
-# 9. Preserve proven flows / safe change
+# 10. Preserve proven flows / safe change
 
 Before changing a flow that already works:
 
@@ -311,7 +345,7 @@ docs/project/engineering-practices.md
 
 ---
 
-# 10. Logging
+# 11. Logging
 
 Long-running components should emit enough information to reconstruct what happened.
 
@@ -334,7 +368,7 @@ traceability, not volume
 
 ---
 
-# 11. Documentation ownership
+# 12. Documentation ownership
 
 Default:
 
@@ -390,7 +424,7 @@ A Fast unit guard enforces this rule for the Market Flow routing/context and Loc
 
 ---
 
-# 12. Project navigation
+# 13. Project navigation
 
 Global project documents include:
 
@@ -409,7 +443,7 @@ Use them when the task actually crosses project/workstream boundaries or changes
 
 ---
 
-# 13. Leumi documentation map
+# 14. Leumi documentation map
 
 Durable Leumi API knowledge:
 
@@ -437,7 +471,7 @@ scripts/research/market-data/leumi/
 
 ---
 
-# 14. Security and secrets
+# 15. Security and secrets
 
 Never commit:
 
@@ -453,7 +487,7 @@ Examples/fixtures should be minimized and sanitized.
 
 ---
 
-# 15. Natural implementation sizing
+# 16. Natural implementation sizing
 
 The project uses incremental development, but chat-message boundaries must not dictate engineering boundaries.
 
@@ -477,7 +511,7 @@ Do not combine unrelated architecture, storage, polling, and UI work merely to r
 
 ---
 
-# 16. Status/documentation update cadence
+# 17. Status/documentation update cadence
 
 ## Every normal implementation batch
 
@@ -517,11 +551,13 @@ This rule exists to prevent documentation churn and unnecessary Git/tool round-t
 
 ---
 
-# 17. Definition of Done
+# 18. Definition of Done
 
 Apply only the checklist items relevant to the current natural work unit.
 
 - [ ] code/change is syntactically/executably valid;
+- [ ] the design is the simplest coherent solution for the current verified requirement;
+- [ ] added complexity has a concrete present-day justification;
 - [ ] automated tests pass where available;
 - [ ] every production/runtime/browser code change received Chromium verification on its final state;
 - [ ] every added/modified test was executed in its native layer after its final edit;
@@ -537,7 +573,7 @@ Apply only the checklist items relevant to the current natural work unit.
 
 ---
 
-# 18. Completion reporting
+# 19. Completion reporting
 
 At the end of a work batch, report briefly:
 
@@ -550,14 +586,14 @@ Do not automatically execute the next unrelated work batch unless the user reque
 
 ---
 
-# 19. Priority order
+# 20. Priority order
 
 ~~~text
-Correctness
+Correctness / data integrity / security
+→ Simplicity
 → Observability
 → Testability
 → Documentation
-→ Simplicity
 → Speed
 ~~~
 
