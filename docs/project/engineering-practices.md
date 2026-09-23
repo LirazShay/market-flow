@@ -200,7 +200,9 @@ unexpected red
 
 Do not spend a full Browser-suite run merely to prove that a newly written TDD test is red when that failure is expected.
 
-Checkpoint scheduling controls broad-suite frequency. It never authorizes leaving changed tests unexecuted, but it also does not require broad regression on every red/green micro-step.
+Once implementation code changes, however, the final changed code state must receive browser verification in Chromium for browser-based workstreams. A localized change may use a targeted browser test; shared runtime/harness/storage/messaging/viewer integration or multi-area changes require the full Browser suite.
+
+Checkpoint scheduling controls broad-suite frequency during the red/green loop. It never authorizes carrying changed code forward without browser proof.
 
 Every numbered Stage also has a full-browser closure gate:
 
