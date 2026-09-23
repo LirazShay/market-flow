@@ -24,7 +24,66 @@ Speed is valuable only while the repository remains healthy.
 
 ---
 
-# 2. Safe-change protocol
+# 2. KISS and complexity budget
+
+The default design rule is:
+
+~~~text
+solve today's verified problem
+with the smallest coherent mechanism
+that preserves correctness and required guarantees
+~~~
+
+Complexity is a cost and must be justified by a current need.
+
+Before adding an abstraction, framework, generalized lifecycle, extra state layer, loader/updater, cache, concurrency, retry orchestration, compatibility layer, or future-facing extension point, ask:
+
+1. What current requirement or observed failure needs this?
+2. Why is the simpler design insufficient right now?
+3. Can the same contract be satisfied with fewer moving parts?
+4. Is the complexity reversible if the assumption proves wrong?
+
+Prefer:
+
+~~~text
+direct code
+→ clear contract
+→ focused test
+→ verified behavior
+~~~
+
+over:
+
+~~~text
+hypothetical future requirement
+→ generalized mechanism
+→ more state/lifecycle
+→ more failure modes
+~~~
+
+Good reasons for additional complexity include:
+
+- demonstrated correctness or data-integrity need;
+- current security or recovery requirement;
+- measured performance bottleneck;
+- observed operational failure;
+- repeated stable concept whose duplication now causes concrete maintenance risk;
+- testability constraint that cannot be handled cleanly with the simpler design.
+
+Weak reasons that are not sufficient alone:
+
+- "we might need it later";
+- "it is more flexible";
+- "it is more enterprise";
+- "it makes future features easier" without a current feature requiring it.
+
+KISS is not permission for hacks, duplicated sources of truth, silent failure, weak tests, or skipped validation. Simplicity means **minimum necessary machinery**, not minimum rigor.
+
+If a more complex solution is selected, the code/review should make the present-day justification clear.
+
+---
+
+# 3. Safe-change protocol
 
 For non-trivial changes, especially existing/legacy code:
 
@@ -43,7 +102,7 @@ Keep a nearby known-green state so regressions can be localized.
 
 ---
 
-# 3. Characterization before modification
+# 4. Characterization before modification
 
 When behavior exists but is unclear:
 
@@ -59,7 +118,7 @@ Do not freeze accidental private details unless temporarily necessary to create 
 
 ---
 
-# 4. Refactoring discipline
+# 5. Refactoring discipline
 
 - prefer small, reversible refactorings;
 - keep tests green between refactoring steps;
@@ -74,7 +133,7 @@ A refactor that makes the next change safer is more valuable than one that merel
 
 ---
 
-# 5. Clean Code rules
+# 6. Clean Code rules
 
 ## Naming
 
@@ -110,7 +169,7 @@ Remove duplication when it represents one stable concept. Do not abstract merely
 
 ---
 
-# 6. Design principles
+# 7. Design principles
 
 Prefer:
 
@@ -137,7 +196,7 @@ Never introduce a second competing state authority.
 
 ---
 
-# 7. Error handling and invariants
+# 8. Error handling and invariants
 
 Prefer:
 
@@ -159,7 +218,7 @@ null != 0 != "" != undefined
 
 ---
 
-# 8. Test design
+# 9. Test design
 
 Tests protect behavior, not implementation trivia.
 
@@ -171,7 +230,7 @@ A test suite should enable refactoring, not punish it.
 
 ---
 
-# 9. Non-negotiable verification rule
+# 10. Non-negotiable verification rule
 
 Any added or modified test must run after its final edit before work advances, but verification should use the **smallest sufficient target first**.
 
@@ -226,7 +285,7 @@ Verification evidence must be traceable to the code/test state being claimed as 
 
 For browser/E2E work, the workstream's dedicated RCA method is `scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md`. Diagnose and verify narrowly before broad reruns. Full Browser CI is reserved for required closure/checkpoints or evidence that demands suite-level reproduction; do not use retries, sleeps, weakened assertions, or routine full-suite runs as substitutes for root-cause analysis.
 
-# 10. Legacy-code strategy
+# 11. Legacy-code strategy
 
 When touching fragile or tightly coupled code:
 
@@ -251,7 +310,7 @@ characterize
 
 ---
 
-# 11. Commit hygiene
+# 12. Commit hygiene
 
 Prefer small reviewable commits with one coherent reason for change.
 
@@ -268,7 +327,7 @@ Temporary verification mechanisms must be restored before closing the work unit.
 
 ---
 
-# 12. Specification impact discipline
+# 13. Specification impact discipline
 
 Every meaningful change must perform a SPEC impact review using:
 
@@ -286,14 +345,15 @@ Specs describe intended durable contracts; tests describe executable evidence; c
 
 ---
 
-# 13. Healthy-system Definition of Done
+# 14. Healthy-system Definition of Done
 
 Relevant items must be true:
 
 - [ ] behavior/contract is clear;
 - [ ] risky existing behavior is characterized where needed;
 - [ ] implementation is cohesive and understandable;
-- [ ] no unnecessary abstraction/framework was added;
+- [ ] the solution is the simplest coherent design that satisfies the current verified requirement;
+- [ ] no speculative abstraction/framework/lifecycle/extensibility was added without a concrete present-day need;
 - [ ] error/integrity paths are explicit;
 - [ ] changed tests were executed after their final edits;
 - [ ] required unit/integration/browser layers are green;
