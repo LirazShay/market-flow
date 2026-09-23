@@ -24,16 +24,22 @@ Operational source of truth:
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
 ~~~
 
+Stable orientation:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/README.md
+~~~
+
 Fast technical context:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/AI_CONTEXT.md
 ~~~
 
-Fresh-chat handoff:
+Cold historical context:
 
 ~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/HANDOFF.md
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/docs/history/README.md
 ~~~
 
 אין לשכפל כאן stage number, completion state, next pointer או latest CI checkpoint. יש לקרוא אותם ישירות מ-`STATUS.json`.
@@ -88,9 +94,10 @@ scripts/research/market-data/leumi/
 ~~~text
 AGENTS.md
 → this routing table
-→ target workstream AI_CONTEXT.md
+→ target workstream README.md
 → target workstream STATUS.json
-→ relevant files/tests
+→ target workstream AI_CONTEXT.md
+→ relevant files/tests/specs as needed
 ~~~
 
 ה-`STATUS.json` המקומי הוא היחיד שקובע מה עושים עכשיו.
