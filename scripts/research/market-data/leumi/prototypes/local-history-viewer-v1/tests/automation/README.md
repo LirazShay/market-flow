@@ -6,14 +6,28 @@ Playwright/Chromium integration layer for Local History Viewer V1.
 
 Any change under this browser-test layer — spec, fixture, harness, helper, or browser-test infrastructure — must be executed in Chromium after its final edit.
 
+Use the smallest sufficient target first:
+
 ~~~text
-edit browser test/infrastructure
-→ run affected Playwright test (or full Browser suite)
-→ green
-→ continue
+edit/add browser test
+→ run exact affected Playwright test
+
+intentional TDD/regression red
+→ confirm exact test fails for intended reason
+→ implement/fix
+→ rerun exact test until green
+
+shared fixture/harness/infrastructure change
+→ exact affected test(s) first
+→ related cluster if warranted
+
+full Browser suite
+→ Stage closure / explicit checkpoint / broad shared-infrastructure risk / suite-only reproduction
 ~~~
 
-A later checkpoint never substitutes for this immediate verification. A red or unexecuted changed browser test blocks the next implementation unit.
+Do not run the full Browser suite merely to prove an expected red.
+
+A later checkpoint never substitutes for immediate execution of the changed browser test. An **unexpected** red, or a red that remains after the intended fix, blocks the next implementation unit.
 
 Additionally, the **full browser suite is mandatory before every numbered Stage is marked complete**, even if that Stage did not add a browser test in its final substep.
 
