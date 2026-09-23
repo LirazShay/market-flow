@@ -3127,12 +3127,428 @@ Issue #15 all-observation baseline
 
 The prior should be able to have near-zero influence when coverage or transferability is weak.
 
+# Family MR — Multi-Horizon / Local Regime / Session Context
+
+Purpose:
+
+> Describe the broader cross-scale and local-market environment in which the seconds-to-~2-minute opportunity is forming, and determine how much historical/contextual evidence is transferable to **now**.
+
+Critical rules:
+
+~~~text
+micro horizon = primary opportunity process
+longer horizons = context by default
+~~~
+
+and:
+
+~~~text
+Regime
+!=
+bullish/bearish vote
+~~~
+
+Regime primarily answers:
+
+> How comparable is the current environment to the environment in which prior evidence was observed, and how quickly should that evidence decay?
+
+## Horizon authority rule
+
+Candidate conceptual hierarchy:
+
+~~~text
+PRIMARY opportunity:
+  ~5s / 10s / 20s / 30s / 60s / 120s
+
+NEAR context:
+  ~2m / 5m
+
+BROAD context:
+  ~10m / 30m / 60m / session
+~~~
+
+Exact windows remain research parameters.
+
+Do not use majority-vote logic across overlapping returns.
+
+### MR-001 — MultiHorizonReturnContext
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** CONTEXT
+- **Raw sources:** validated LAST/MID history over configured near/broad windows
+- **Derivation:** preserve horizon-specific return/profile inputs without summing them as independent votes
+- **Unit / shape:** horizon-indexed percent profile
+- **Role:** LAGGING_CONTEXT, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** provides broad geometry around the current micro opportunity
+- **Known overlaps:** PW return profiles; overlapping windows are highly redundant
+- **Confidence limits:** broad negative returns are not automatic vetoes; windows overlap and must not be treated as independent evidence
+- **Validation targets:** incremental target-before-adverse value after micro state is known
+- **Research state:** Candidate context
+
+### MR-002 — MultiHorizonTrendState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** MR-001 + micro PW state
+- **Derivation:** compress overlapping horizon profiles into interpretable cross-scale geometry rather than additive votes
+- **Unit / shape:** ALIGNED_UP_CONTEXT / MICRO_ACCELERATION_WITH_UP_CONTEXT / MICRO_UP_INSIDE_BROAD_DOWN / REVERSAL_ATTEMPT / MICRO_UP_AFTER_BROAD_STALL / BROAD_UP_BUT_MICRO_DECELERATING / MIXED / UNKNOWN
+- **Role:** CONTEXT, LAGGING_CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** describes how the immediate move sits inside broader intraday movement
+- **Known overlaps:** MR-003; PW state
+- **Confidence limits:** state is descriptive context, not a buy/reject rule
+- **Validation targets:** target-before-adverse, MAE-before-target, target frontier by state
+- **Research state:** Provisional state
+
+### MR-003 — HorizonConflictState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** micro/near/broad direction, acceleration and age
+- **Derivation:** preserve disagreement rather than forcing one direction
+- **Unit / shape:** structured state including microDirection / nearDirection / broadDirection / microAcceleration / conflictAge / resolutionEvidence
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** distinguishes aligned movement from fresh counter-trend micro opportunities and unresolved cross-scale conflict
+- **Known overlaps:** MR-002
+- **Confidence limits:** conflict is not automatically bad; only subsequent short-horizon outcomes can determine its value
+- **Validation targets:** target-before-adverse, MAE, TimeToTarget
+- **Research state:** Candidate
+
+### MR-004 — CounterTrendMicroOpportunityState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** MR-002/MR-003 + current micro PW/AF/BD/PH/SQ state
+- **Derivation:** classify whether a current positive micro process is aligned with or counter to broader context
+- **Unit / shape:** ALIGNED / COUNTER_TREND_FRESH / COUNTER_TREND_CONFIRMED / COUNTER_TREND_WEAK / REVERSAL_ATTEMPT / UNKNOWN
+- **Role:** CONTEXT, CONFIRMING, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Confirmation, PathRisk
+- **Meaning:** makes counter-trend opportunities first-class instead of silently filtering them out
+- **Known overlaps:** PR reset/reclaim; SQ opportunity stage
+- **Confidence limits:** broader downtrend cannot be assumed to reduce immediate upside unless validated
+- **Validation targets:** target-before-adverse, MAE, target-size frontier
+- **Research state:** Candidate
+
+### MR-005 — ContextIncrementalValue
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** LABEL
+- **Raw sources:** validation results comparing current micro-state baseline vs baseline + context
+- **Derivation:** out-of-sample marginal improvement attributable to near/broad context
+- **Unit / shape:** metric bundle / ablation result
+- **Role:** OUTCOME
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Outcome
+- **Meaning:** decides whether longer-horizon context deserves any influence after immediate micro evidence is already known
+- **Known overlaps:** Issue #11 group ablation
+- **Confidence limits:** validation artifact only, never an online feature
+- **Validation targets:** target-before-adverse discrimination, TimeToTarget/MAE improvement, ranking lift
+- **Research state:** Future validation label
+
+### MR-006 — BroadContextAdversePathState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** broad trend context + later empirical target/adverse distributions
+- **Derivation:** characterize whether broad context changes adverse path / target-size support more than immediate direction
+- **Unit / shape:** BENIGN / NEUTRAL / ELEVATED_ADVERSE / UNKNOWN
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, Context/Prior
+- **Meaning:** allows broad context to matter through MAE/rejection/target frontier without becoming a blunt directional veto
+- **Known overlaps:** RO AdversePathBudget
+- **Confidence limits:** blocked until target/adverse validation exists; no direct sign rule
+- **Validation targets:** MAE-before-target, WhichBarrierFirst, target frontier
+- **Research state:** Candidate / blocked pending Issue #11/#15
+
+### MR-007 — LiquidityRegime
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** TE spread/depth/availability history + activity context
+- **Derivation:** classify current local liquidity environment relative to comparable same-phase history
+- **Unit / shape:** DEEPER / NORMAL / THINNER / UNSTABLE / UNKNOWN
+- **Role:** CONTEXT, GATE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Feasibility, Freshness/Trust
+- **Meaning:** one transferability dimension for deciding whether recent evidence remains comparable
+- **Known overlaps:** TE family
+- **Confidence limits:** regime owns comparison/context, not duplicate spread/depth scoring
+- **Validation targets:** prior transferability, execution feasibility stability
+- **Research state:** Candidate
+
+### MR-008 — ActivityRegime
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** AF trade-rate/turnover history normalized to same session phase
+- **Derivation:** classify local activity environment relative to comparable history
+- **Unit / shape:** QUIET / NORMAL / ACTIVE / SURGING / UNKNOWN
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** distinguishes raw activity intensity from whether that intensity is normal for the current environment
+- **Known overlaps:** AF ActivityBurst; MR-015 TimeOfDayAbnormality
+- **Confidence limits:** ACTIVE is not bullish; it can accompany both upward and adverse moves
+- **Validation targets:** prior transferability, target frontier, conversion latency
+- **Research state:** Candidate
+
+### MR-009 — MovementVolatilityRegime
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** recent LAST/MID path variation and excursion distributions
+- **Derivation:** classify current local movement environment relative to comparable phase/history
+- **Unit / shape:** COMPRESSED / NORMAL / EXPANDED / EXTREME / UNKNOWN
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** describes the movement scale in which current evidence is operating
+- **Known overlaps:** WM CapacityTrend; PH path quality
+- **Confidence limits:** expanded movement is not directionally positive and may raise downside risk
+- **Validation targets:** target frontier, MAE, opportunity arrival
+- **Research state:** Candidate
+
+### MR-010 — PathNoiseRegime
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** PH directional efficiency/reversal history
+- **Derivation:** classify recent path-noise environment relative to comparable same-phase history
+- **Unit / shape:** ORDERLY / NORMAL / CHOPPY / UNSTABLE / UNKNOWN
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** qualifies whether historical path-quality priors transfer to the current environment
+- **Known overlaps:** PH family
+- **Confidence limits:** does not replace live PH path state
+- **Validation targets:** MAE, TimeUnderWater, prior transferability
+- **Research state:** Candidate
+
+### MR-011 — BookBehaviorRegime
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** BD L1 dynamics over recent comparable history
+- **Derivation:** characterize whether quote migration/depth persistence behavior is currently typical or structurally changed
+- **Unit / shape:** STABLE / FAST_CHANGING / THIN_VOLATILE / ATYPICAL / UNKNOWN
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Freshness/Trust
+- **Meaning:** transferability qualifier for L1-based priors/signals
+- **Known overlaps:** BD family; TE liquidity
+- **Confidence limits:** displayed-book changes do not imply intent
+- **Validation targets:** BD signal stability, conversion-latency transferability
+- **Research state:** Candidate
+
+### MR-012 — BroadMarketRegimeContext
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** CONTEXT
+- **Raw sources:** future broad-market/reference inputs if available
+- **Derivation:** preserve broad-market movement/activity context separately from same-stock state
+- **Unit / shape:** structured context / UNKNOWN when unavailable
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** H + U
+- **Decision role:** Context/Prior
+- **Meaning:** optional qualifier for whether same-stock recent evidence occurred under similar market-wide conditions
+- **Known overlaps:** cross-sectional normalization
+- **Confidence limits:** current project does not yet establish a canonical broad-market feed; must remain UNKNOWN rather than inferred
+- **Validation targets:** incremental prior transferability
+- **Research state:** Candidate / blocked pending data source
+
+### MR-013 — EvidenceTransferability
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** current-vs-prior state similarity, MR-007..MR-012, time-of-day/session match, WM coverage, horizon match
+- **Derivation:** preserve dimensions that determine whether historical evidence should influence current reasoning
+- **Unit / shape:** HIGH / MODERATE / LOW / BROKEN / UNKNOWN + dimension bundle
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Freshness/Trust
+- **Meaning:** central answer to “how much can recent evidence transfer to now?”
+- **Known overlaps:** WM ComparableMemoryCoverage/HierarchicalFallback
+- **Confidence limits:** no validated weighting formula; poor transferability should reduce prior influence, not fabricate an opposite signal
+- **Validation targets:** prior usefulness, confidence calibration, target-support robustness
+- **Research state:** Provisional composite
+
+Candidate dimensions:
+
+~~~text
+stateSimilarity
+regimeSimilarity
+timeOfDaySimilarity
+sessionCompatibility
+recency
+sampleCoverage
+horizonMatch
+~~~
+
+### MR-014 — EvidenceSpecificDecayState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** evidence timestamp + family identity + current transferability/regime state
+- **Derivation:** family/evidence-specific decay based on elapsed time and state/regime divergence
+- **Unit / shape:** FRESH / DECAYING / WEAK / EXPIRED / INVALIDATED_BY_REGIME / UNKNOWN
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** avoids one universal half-life for all evidence
+- **Known overlaps:** FQ FreshnessState; Issue #16 OpportunityHalfLife
+- **Confidence limits:** exact decay curves/lifetimes require Issues #9/#16; elapsed time alone is insufficient
+- **Validation targets:** target-before-adverse, confidence calibration, stale-signal reduction
+- **Research state:** Candidate / detailed policy deferred
+
+### MR-015 — RegimeBreakState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** changes in MR-007..MR-012 dimensions
+- **Derivation:** detect material environment discontinuity that can invalidate recent priors faster than wall-clock recency
+- **Unit / shape:** STABLE / DRIFTING / BROKEN / UNKNOWN
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** marks when recent same-session memory may no longer describe current conditions
+- **Known overlaps:** FQ freshness; WM recency
+- **Confidence limits:** no thresholds fixed yet; a large market move is not automatically a regime break unless relevant dimensions changed
+- **Validation targets:** prior degradation, target-frontier stability
+- **Research state:** Candidate
+
+### MR-016 — SessionEpochCompatibility
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** authoritative current session phase + timestamps of prior/current evidence
+- **Derivation:** determine whether evidence/window stays within compatible market mechanics
+- **Unit / shape:** COMPATIBLE / PHASE_CHANGED / INCOMPATIBLE / UNKNOWN
+- **Role:** GATE, CONTEXT
+- **Availability:** NOW + HISTORY
+- **Evidence:** PI + U until TASE phase semantics are re-verified
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** prevents short windows or priors from silently crossing materially different trading mechanisms
+- **Known overlaps:** session-phase research
+- **Confidence limits:** current TASE phase/timing rules must be verified from authoritative source before implementation
+- **Validation targets:** feature correctness, prior transferability
+- **Research state:** Candidate / semantics verification required
+
+### MR-017 — TimeOfDayAbnormality
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** CONTEXT
+- **Raw sources:** same-phase historical distributions for activity/volatility/spread/etc.
+- **Derivation:** compare current raw feature intensity against its same-phase/time-of-day baseline
+- **Unit / shape:** percentile/z-like abnormality bundle, exact normalization TBD
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** GL + PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** distinguishes “high in absolute terms” from “unusually high for this time/phase”
+- **Known overlaps:** cross-sectional/self-relative normalization
+- **Confidence limits:** requires sufficient same-phase history; not a directional signal
+- **Validation targets:** incremental context value, target frontier, conversion latency
+- **Research state:** Candidate / blocked pending history
+
+### MR-018 — RegimeConditionedTargetFeasibilityContext
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** CONTEXT
+- **Raw sources:** RO TargetFeasibilityFrontier + MR regime/transferability dimensions
+- **Derivation:** preserve how target/time/adverse support changes across empirically comparable regimes
+- **Unit / shape:** regime-indexed frontier context
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, RemainingOpportunity, PathRisk
+- **Meaning:** allows the same live micro state to have different supported target frontiers under different local environments
+- **Known overlaps:** RO-008; Issue #15
+- **Confidence limits:** must be learned from project data; no assumed liquid-regime rule
+- **Validation targets:** target-specific barrier-first outcomes, MAE, TimeToTarget
+- **Research state:** Candidate / blocked pending empirical outcomes
+
+### MR-019 — LocalContextState
+
+- **Family:** Multi-Horizon / Local Regime / Session Context
+- **Kind:** STATE
+- **Raw sources:** MR-001..MR-018 where valid
+- **Derivation:** family-level synthesis that preserves context geometry and transferability separately from directional micro evidence
+- **Unit / shape:** structured state + Confidence/Coverage
+- **Role:** CONTEXT, GATE, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Freshness/Trust, PathRisk
+- **Meaning:** compact context object consumed by RecentWavePrior/RemainingOpportunity/CentralRanker without turning long-horizon context into a separate alpha family
+- **Known overlaps:** WM RecentWavePrior; FQ confidence; Issue #10
+- **Confidence limits:** should never override strong fresh micro evidence merely because broad context disagrees unless validation proves incremental value
+- **Validation targets:** incremental target-before-adverse value, confidence calibration, prior robustness
+- **Research state:** Provisional composite
+
+---
+
+## Multi-Horizon / Local Regime objective-alignment boundary
+
+This family should answer:
+
+~~~text
+what broader context surrounds the micro opportunity,
+and how transferable is prior evidence to NOW?
+~~~
+
+It must not answer:
+
+~~~text
+30m/60m trend is down
+therefore reject the stock
+~~~
+
+or:
+
+~~~text
+regime is bullish
+therefore add alpha
+~~~
+
+Core hierarchy:
+
+~~~text
+current micro evidence
+→ cross-scale context
+→ regime/session comparability
+→ EvidenceTransferability / Decay
+→ qualify priors and target frontier
+~~~
+
+Fresh current evidence should be able to dominate weak, stale or poorly matched historical context.
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Multi-Horizon / Local Regime / Session Context
+Cross-Sectional / Relative Edge Context
 ~~~
 
-It will own cross-scale context, horizon conflict, evidence transferability, evidence-specific decay, session compatibility and time-of-day abnormality without turning longer-horizon trend into an automatic veto.
+It will own market percentile, self-vs-peer abnormality, rank-rise cause, absolute-eligibility-aware comparison and asynchronous decision-time comparability — while keeping absolute opportunity primary.

@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Recent Wave Memory/Capacity Prior added with explicit denominator, failure-memory, comparability and no-directional-trigger semantics."
+    "subfocus": "Multi-Horizon/Local Regime/Session Context added with longer horizons demoted to context and regime focused on evidence transferability/decay."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Multi-Horizon/Local Regime/Session Context: cross-scale trend state, horizon conflict, context incremental value, evidence transferability, evidence-specific decay, regime-break/session compatibility and time-of-day abnormality."
+    "action": "Populate Cross-Sectional/Relative Edge Context: absolute eligibility vs percentile, self-vs-peer abnormality, rank-rise cause, eligible-universe coverage and asynchronous decision-time comparability."
   }
 }
