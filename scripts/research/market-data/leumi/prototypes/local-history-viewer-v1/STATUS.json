@@ -28,6 +28,8 @@
   "activeMiniProject": {
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
+    "phase": "B",
+    "title": "Setup optimization",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
     "baseline": {
@@ -35,8 +37,14 @@
       "passed": 56,
       "playwrightSeconds": 39,
       "workflowSecondsApprox": 90,
-      "chromiumSetupSecondsApprox": 20,
-      "slowestKnownTest": "storage-growth.spec.js (~12s)"
+      "browserTestsJobSecondsApprox": 67,
+      "chromiumSetupSecondsApprox": 20.6,
+      "slowestKnownTest": "storage-growth.spec.js (~12.2s)"
+    },
+    "phaseA": {
+      "status": "complete",
+      "fastCiRunId": 35864269535,
+      "result": "Fast CI restored; timing breakdown and isolation audit recorded. No browser coverage removed or skipped."
     }
   },
   "verification": {
@@ -79,12 +87,12 @@
     }
   },
   "next": {
-    "action": "Execute Phase A of the Stage 20 test-runtime optimization plan.",
+    "action": "Execute Phase B setup optimization only.",
     "steps": [
-      "restore Fast CI green after the freeze README guard regressions",
-      "record precise Browser CI cost classification from the baseline logs",
-      "audit browser-test isolation and expensive-test structure before changing workers or skipping any coverage",
-      "do not resume V1 freeze closure until the optimization mini-project is verified"
+      "evaluate a versioned Playwright Chromium cache and deterministic dependency install path",
+      "keep cold-run reliability and required browser dependencies intact",
+      "measure warm-run setup time before moving to worker parallelism",
+      "do not change storage-growth coverage or worker count in this phase"
     ]
   },
   "history": {
