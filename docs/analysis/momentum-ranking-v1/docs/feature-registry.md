@@ -817,12 +817,295 @@ L1 prices/volumes + LAST geometry
 → cross-family sequence/confirmation logic
 ~~~
 
+# Family TE — Tradability / Execution Preconditions
+
+Purpose:
+
+> Determine whether an otherwise attractive market opportunity is observable and practically usable enough to remain eligible for ranking/execution evaluation.
+
+This family is intentionally separated from directional Book evidence. A narrow spread or deep L1 does **not** mean price will rise; it only affects feasibility and friction.
+
+It also remains parameterizable. Security-level opportunity research should not hardcode one account size, broker fee schedule or execution policy.
+
+## Core separation
+
+~~~text
+MarketOpportunity
+!=
+ExecutionFeasibility
+!=
+NetExecutableOpportunity
+~~~
+
+This family primarily owns the second term.
+
+### TE-001 — SpreadPct
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** valid BID1, ASK1
+- **Derivation:** candidate canonical form `(ASK1 - BID1) / MID * 100` when MID is valid and positive
+- **Unit / shape:** percent
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PV(L1 semantics/coverage) + PI
+- **Meaning:** economic width of the currently displayed best spread relative to market-center price
+- **Known overlaps:** BD-003 compression/expansion; TE-005/TE-006
+- **Confidence limits:** displayed spread is not full realized execution cost; no L1 side means UNKNOWN rather than infinite/zero spread
+- **Validation targets:** executable opportunity after friction, fill/slippage outcomes, target-before-adverse after execution
+- **Research state:** Candidate
+
+### TE-002 — SpreadStabilityState
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** STATE
+- **Raw sources:** TE-001 + BID1/ASK1 history
+- **Derivation:** characterize whether spread remains stable, widens, narrows or oscillates materially across recent observations
+- **Unit / shape:** STABLE / NARROWING / WIDENING / UNSTABLE / UNKNOWN
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** NOW
+- **Evidence:** PI + H
+- **Meaning:** distinguishes a currently narrow spread that is persistent from one that is flickering or rapidly deteriorating
+- **Known overlaps:** BD-003 QuoteMigrationState
+- **Confidence limits:** must preserve the cause of spread change in Book family; this feature owns feasibility impact, not directional meaning
+- **Validation targets:** execution slippage, fill quality, executable target-before-adverse
+- **Research state:** Candidate
+
+### TE-003 — TickSize
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** CONTEXT
+- **Raw sources:** authoritative TASE/security tick-size schedule or another verified market-structure source
+- **Derivation:** lookup by security/price regime according to the authoritative rule in force
+- **Unit / shape:** price units
+- **Role:** CONTEXT, GATE
+- **Availability:** FUTURE
+- **Evidence:** U(current project source)
+- **Meaning:** minimum legal price increment needed to interpret one-tick movement and spread granularity
+- **Known overlaps:** TE-004, TE-005
+- **Confidence limits:** no verified tick-size source currently exists in the repository; do not infer canonical tick size from a few observed quote differences
+- **Validation targets:** spread burden, one-tick jump artifacts, executable opportunity
+- **Research state:** Blocked pending authoritative tick-size source
+
+### TE-004 — TickPct
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** TE-003 + valid reference price
+- **Derivation:** `TickSize / referencePrice * 100`
+- **Unit / shape:** percent
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + U(source dependency)
+- **Meaning:** economic size of one legal tick for this security at the current price
+- **Known overlaps:** TE-005, PW-003 one-tick speed artifacts
+- **Confidence limits:** blocked until TE-003 is verified; reference-price convention must be explicit
+- **Validation targets:** price-noise interpretation, executable opportunity
+- **Research state:** Blocked by TE-003
+
+### TE-005 — SpreadTicks
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** valid BID1/ASK1 + TE-003
+- **Derivation:** `(ASK1 - BID1) / TickSize` with validity/tolerance rules
+- **Unit / shape:** ticks
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + U(source dependency)
+- **Meaning:** describes spread granularity in market-structure terms, complementary to SpreadPct
+- **Known overlaps:** TE-001, TE-004
+- **Confidence limits:** blocked until tick size is verified; should not replace SpreadPct because economic and tick burdens answer different questions
+- **Validation targets:** executable opportunity, slippage/fill quality
+- **Research state:** Blocked by TE-003
+
+### TE-006 — EntrySizeToAskDepthRatio
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** intended execution quantity + valid `SellVolume1`
+- **Derivation:** `intendedQty / SellVolume1`
+- **Unit / shape:** ratio
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** EXEC
+- **Evidence:** PV(ASK1 displayed quantity semantics) + PI + H
+- **Meaning:** how large a contemplated aggressive entry is relative to currently displayed best-ask quantity
+- **Known overlaps:** Book displayed-depth features; future L2 execution analysis
+- **Confidence limits:** displayed depth can cancel/change; ratio <= 1 does not guarantee fill; ratio > 1 gives no information about prices beyond ASK1 without L2
+- **Validation targets:** fill ratio, entry slippage, implementation shortfall
+- **Research state:** Candidate for ExecutionEvaluator
+
+### TE-007 — ExitSizeToBidDepthRatio
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** intended execution quantity + valid `BuyVolume1`
+- **Derivation:** `intendedQty / BuyVolume1`
+- **Unit / shape:** ratio
+- **Role:** GATE, CONTEXT, PROTECTIVE
+- **Availability:** EXEC
+- **Evidence:** PV(BID1 displayed quantity semantics) + PI + H
+- **Meaning:** how large a contemplated aggressive exit is relative to currently displayed best-bid quantity
+- **Known overlaps:** Book displayed-depth features; future L2 execution analysis
+- **Confidence limits:** displayed L1 is not guaranteed liquidity and does not reveal deeper exit prices
+- **Validation targets:** exit slippage, fill ratio, adverse execution
+- **Research state:** Candidate for ExecutionEvaluator
+
+### TE-008 — TwoSidedL1Availability
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** GATE
+- **Raw sources:** validated BID1/ASK1 availability
+- **Derivation:** TRUE only when both required sides are currently valid executable-like quotes under domain validation; otherwise FALSE/UNKNOWN with reason
+- **Unit / shape:** gate + reason
+- **Role:** GATE
+- **Availability:** NOW
+- **Evidence:** PV
+- **Meaning:** prevents spread/depth/execution assumptions when one or both L1 sides are unavailable/invalid
+- **Known overlaps:** DataQuality coverage
+- **Confidence limits:** presence of two quotes does not itself imply sufficient liquidity
+- **Validation targets:** data/execution eligibility
+- **Research state:** Candidate
+
+### TE-009 — ObservationLatencySeconds
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** CONTEXT
+- **Raw sources:** per-security observation timestamp + decision/current timestamp
+- **Derivation:** elapsed time since the security's relevant market observation
+- **Unit / shape:** seconds
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** NOW
+- **Evidence:** PV(sequential collection constraint) + PI
+- **Meaning:** accounts for the fact that a validated full cycle is not a simultaneous market instant and different securities have different observation ages
+- **Known overlaps:** Freshness/DataQuality
+- **Confidence limits:** must use the actual per-security observation time rather than only full-cycle completion time
+- **Validation targets:** ranking correctness under cycle skew, executable opportunity
+- **Research state:** Candidate; ownership may later move to Freshness/DataQuality while TE consumes it
+
+### TE-010 — DecisionLatencySeconds
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** CONTEXT
+- **Raw sources:** signal/observation time, rank-decision time and later order-submit time where available
+- **Derivation:** elapsed latency along the system decision path
+- **Unit / shape:** seconds
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** NOW for observation→ranking; EXEC for order-submit/fill phases
+- **Evidence:** PI
+- **Meaning:** measures how much time is consumed before an opportunity can be acted on
+- **Known overlaps:** TE-009, Freshness
+- **Confidence limits:** future end-to-end values require real execution telemetry
+- **Validation targets:** observable horizon feasibility, implementation shortfall
+- **Research state:** Candidate
+
+### TE-011 — LatencyToHorizonRatio
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** TE-009/TE-010 + candidate opportunity horizon
+- **Derivation:** `effectiveLatency / targetHorizon`
+- **Unit / shape:** ratio
+- **Role:** GATE, PROTECTIVE
+- **Availability:** NOW/FUTURE depending horizon model
+- **Evidence:** PI + H
+- **Meaning:** expresses whether system latency is small relative to the opportunity horizon or consumes a material fraction of it
+- **Known overlaps:** Freshness, RemainingOpportunity
+- **Confidence limits:** horizon itself is provisional before adaptive-horizon research/calibration
+- **Validation targets:** TimeToTarget, executable opportunity, missed-opportunity rate
+- **Research state:** Candidate
+
+### TE-012 — SpreadBurdenToTarget
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** DERIVED
+- **Raw sources:** TE-001 + candidate target/remaining-move estimate
+- **Derivation:** `SpreadPct / positiveTargetPct` or equivalent burden relative to a defined remaining-move quantity
+- **Unit / shape:** ratio
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Meaning:** asks whether the displayed spread is small or large relative to the useful move being pursued
+- **Known overlaps:** RemainingOpportunity, execution cost floor
+- **Confidence limits:** target must not be invented merely to compute this ratio; displayed spread is not the complete round-trip cost
+- **Validation targets:** net executable opportunity, target-before-adverse after friction
+- **Research state:** Candidate / blocked pending target semantics
+
+### TE-013 — ExplicitCostFloorPct
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** CONTEXT
+- **Raw sources:** parameterized broker/account/exchange cost profile + contemplated order notional
+- **Derivation:** convert explicit round-trip monetary costs into percent of contemplated notional under a documented execution profile
+- **Unit / shape:** percent
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** EXEC
+- **Evidence:** PI
+- **Meaning:** keeps account-specific explicit costs separate from market-microstructure friction
+- **Known overlaps:** TE-012, future NetExecutableOpportunity
+- **Confidence limits:** must never hardcode one user's historical capital/commission assumptions into the general ranking model
+- **Validation targets:** net executable opportunity
+- **Research state:** Candidate for parameterized ExecutionEvaluator
+
+### TE-014 — ExecutionFeasibilityState
+
+- **Family:** Tradability / Execution Preconditions
+- **Kind:** STATE
+- **Raw sources:** TE-001..TE-013 as available
+- **Derivation:** synthesize spread quality, L1 availability/stability, size/depth compatibility and latency/horizon compatibility without predicting direction
+- **Unit / shape:** GOOD / MARGINAL / POOR / UNKNOWN + Strength/Confidence/Coverage
+- **Role:** GATE, PROTECTIVE
+- **Availability:** NOW for market-only subset; EXEC for size/cost-aware form
+- **Evidence:** PI + H
+- **Meaning:** final feasibility summary used to reject or discount market opportunities that cannot realistically survive friction/latency
+- **Known overlaps:** DataQuality, Freshness, future ExecutionEvaluator
+- **Confidence limits:** GOOD does not guarantee a fill; without L2 and execution telemetry the state is necessarily partial
+- **Validation targets:** implementation shortfall, fill ratio, net executable opportunity
+- **Research state:** Provisional composite
+
+---
+
+## Tradability / Execution Preconditions ownership boundary
+
+This family owns **friction and feasibility**, not directional alpha.
+
+Examples:
+
+~~~text
+narrow spread
+!= bullish signal
+
+large ASK depth
+!= bearish signal by itself
+~~~
+
+Directional interpretation of L1 remains in Book/Directional Flow.
+
+The ranking architecture should eventually support two forms:
+
+~~~text
+market-only feasibility
+→ user/account agnostic
+
+execution-profile feasibility
+→ parameterized by intended size, costs and execution policy
+~~~
+
+Do not hardcode a single account profile into the market score.
+
+Critical gate concept:
+
+~~~text
+predicted/target horizon <= effective system latency
+→ opportunity may be structurally unobservable/unusable
+~~~
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Tradability / Execution Preconditions
+Freshness / Data Quality
 ~~~
 
-It will own spread burden, tick burden, L1 depth/size feasibility, spread stability and observability/latency constraints, without duplicating directional Book evidence.
+It will own evidence age, coverage, cycle integrity and technical trust, while Tradability consumes the relevant latency/availability consequences.

@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Price/Wave, Activity/Flow and Book/Directional Flow families established; next populate Tradability/Execution Preconditions."
+    "subfocus": "Price/Wave, Activity/Flow, Book/Directional Flow and Tradability/Execution Preconditions established; next populate Freshness/Data Quality."
   },
   "completedWorkUnits": [
     {
@@ -41,6 +41,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate the Tradability/Execution Preconditions family: spread/tick burden, L1 depth/size feasibility, spread stability and latency/observability gates."
+    "action": "Populate the Freshness/Data Quality family: evidence age/reconfirmation, per-security observation age, cycle integrity, coverage and confidence/trust gates."
   }
 }
