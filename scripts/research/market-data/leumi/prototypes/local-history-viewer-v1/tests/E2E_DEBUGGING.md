@@ -90,7 +90,7 @@ new regression/behavior test
 
 Do not run the full Browser suite merely to demonstrate a failure that is deliberately expected.
 
-After a fix, the exact changed/failing test must pass first. Widen to the spec/related cluster only when useful, then run the broader regression required by TESTING_POLICY.md at the actual checkpoint. Full Browser CI is still mandatory at every numbered Stage closure.
+After a fix, the exact changed/failing test must pass first. Because implementation code changed, the final code state must then receive the Chromium coverage required by TESTING_POLICY.md: targeted for a localized change, full Browser suite for shared runtime/harness/storage/messaging/viewer integration, cross-component, or multi-area changes. Full Browser CI is still mandatory at every numbered Stage closure.
 
 ---
 
