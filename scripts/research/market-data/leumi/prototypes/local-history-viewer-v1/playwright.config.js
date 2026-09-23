@@ -3,7 +3,7 @@ const { defineConfig } = require("@playwright/test");
 module.exports = defineConfig({
     testDir: "./tests/automation/specs",
     fullyParallel: false,
-    workers: 1,
+    workers: 2,
     retries: 0,
     timeout: 30000,
     expect: {
