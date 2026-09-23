@@ -29,6 +29,13 @@ const ARTIFACT_SHA =
 function manifest(
     overrides = {}
 ) {
+    const {
+        runtime:
+            runtimeOverrides = {},
+        ...topLevelOverrides
+    } =
+        overrides;
+
     return {
         formatVersion:
             2,
@@ -41,9 +48,9 @@ function manifest(
                 ARTIFACT_SHA,
             bytes:
                 123456,
-            ...overrides.runtime
+            ...runtimeOverrides
         },
-        ...overrides
+        ...topLevelOverrides
     };
 }
 
