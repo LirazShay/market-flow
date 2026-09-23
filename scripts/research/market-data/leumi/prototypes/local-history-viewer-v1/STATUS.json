@@ -29,7 +29,7 @@
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
     "phase": "E",
-    "phaseStatus": "planned",
+    "phaseStatus": "in-progress",
     "title": "Release-path latency",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
@@ -120,12 +120,12 @@
     }
   },
   "next": {
-    "action": "Execute Phase E release-path latency review only.",
+    "action": "Benchmark verification-only Browser CI and make rolling release publication explicit.",
     "steps": [
-      "separate browser verification completion from rolling-release publication latency",
-      "measure how much publish-runtime adds after browser-tests are already green",
-      "prefer the simplest model that preserves the invariant that published runtime artifacts come only from successful full Browser CI",
-      "avoid adding a second workflow unless the measured latency benefit justifies the extra lifecycle complexity"
+      "add a boolean publish_runtime input to workflow_dispatch/workflow_call with default false",
+      "keep publish-runtime dependent on successful browser-tests and main branch",
+      "benchmark a full verification run with publication skipped",
+      "retain explicit publication for release-worthy verified runs without creating a second workflow"
     ]
   },
   "history": {
