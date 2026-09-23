@@ -728,7 +728,7 @@ Purpose:
 
 > Describe how the best displayed bid/ask are moving, where the latest trade sits relative to them, and whether persistent L1 behavior leans upward, downward or remains conflicted.
 
-This family works with **displayed L1 evidence**. It does not claim true signed order flow from the current snapshot feed.
+This family works with **displayed Level 1 (L1) evidence**: the current best bid, best ask and their displayed quantities. It does not claim true signed order flow from the current snapshot feed.
 
 ## Provider-source semantics
 
@@ -764,6 +764,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + GL + H
 - **Meaning:** detects whether the best displayed buyer price is rising, holding or retreating across short horizons — i.e. whether the market's current best displayed willingness-to-pay has migrated upward or downward
+- **Plain-language intuition:** this compares the current best bid (`BID1`) with the best bid from 10/20/30/40/50/60/90 seconds ago. It asks: “are the most aggressive displayed buyers willing to pay more now than they were a short time ago?”
+- **Market mechanism / why it can matter:** if BID1 keeps stepping upward, the exit side that matters to a future seller is improving. That can reflect buyers competing at progressively higher prices. If BID1 retreats, the market is offering less for an immediate sale even if the latest trade is still high.
+- **Objective connection:** our strategy ultimately needs a higher future bid after entry. BID migration is therefore directly connected to the price at which we may later be able to sell, not merely to where the last transaction printed.
+- **Favorable / unfavorable interpretation:** rising BID across several short horizons can support upward pressure, especially if ASK/MID and executed prices also rise. Flat BID with rising LAST can mean the exit side is not following. Falling BID is cautionary, but can occur during a temporary pullback before a fresh reclaim.
+- **Failure modes / counterexamples:** a single small displayed order can lift BID briefly; BID can disappear or move because of cancellation/replacement; a higher BID with tiny depth may not support our position size; a wide spread can make BID improvement insufficient economically.
+- **Relationship to other evidence:** BD-001 tells us how the buyer-side price moved. BD-002 tells how the seller-side price moved, BD-003 combines both, and BD-017/018 ask whether the current BID is high enough relative to historical entry references.
+- **Worked example:** BID1 moves 100.00→100.10→100.20 over 40 seconds while ASK1 moves similarly. That is a cleaner upward migration than LAST rising to 100.20 while BID remains stuck at 100.00.
 - **Known overlaps:** BD-003, PW-002 MID movement
 - **Confidence limits:** BID1 can disappear or jump because displayed liquidity changes; invalid/zero quote must not be treated as a real price
 - **Validation targets:** next MID direction, target-before-adverse, continuation
@@ -780,6 +787,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + GL + H
 - **Meaning:** detects whether the best displayed seller price is moving upward, holding or retreating across short horizons — observable seller-side quote migration, without claiming participant identity or intent
+- **Plain-language intuition:** this compares the current best ask (`ASK1`) with the ask from recent horizons. It asks whether the cheapest displayed seller is demanding a higher, lower or unchanged price.
+- **Market mechanism / why it can matter:** when ASK1 rises, the cheapest displayed offer has moved upward; when it falls, sellers are willing to offer lower. But ASK movement alone is ambiguous because it can reflect genuine upward repricing or simply a widening/narrowing spread.
+- **Objective connection:** ASK matters on entry and as part of the future price structure. If both BID and ASK migrate upward, the market center is moving in our desired direction. If ASK rises while BID does not, the entry cost may worsen without improving our exit side.
+- **Favorable / unfavorable interpretation:** ASK rising together with BID/MID can support whole-book upward migration. ASK falling toward a stable BID may improve entry cost rather than signal weakness. ASK collapsing while BID also falls is more clearly adverse.
+- **Failure modes / counterexamples:** one seller cancelling can cause ASK to jump upward without any trade or real buying pressure; ASK can fall because a new seller undercuts even during a broader uptrend; low displayed depth can make quote levels unstable.
+- **Relationship to other evidence:** BD-002 is seller-side quote movement. BD-001 is buyer-side movement. The same ASK change has different meaning depending on BID, spread, LAST and persistence, which BD-003/014 preserve.
+- **Worked example:** ASK1 rises 100.20→100.40 while BID stays 100.00: spread widens, not necessarily bullish. If BID also rises 100.00→100.20, the whole top of book shifted upward.
 - **Known overlaps:** BD-003, PW-002 MID movement
 - **Confidence limits:** quote movement is observable behavior, not proof of seller intention
 - **Validation targets:** next MID direction, target-before-adverse, continuation/exhaustion
@@ -796,6 +810,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** preserves **who moved** rather than reducing every change to a spread change
+- **Plain-language intuition:** two markets can end with the same spread but arrive there for opposite reasons. This state records whether BID chased upward, ASK retreated downward, both sides moved up/down, or the spread merely compressed/expanded.
+- **Market mechanism / why it can matter:** the cause of spread change matters. BID rising toward ASK can reflect stronger willingness to pay; ASK falling toward BID can reflect sellers accepting less. Both reduce spread, but the directional story is different.
+- **Objective connection:** we care whether the market is repricing upward in a way that improves future exitability, not merely whether the spread got smaller. QuoteMigrationState keeps that directional information.
+- **Favorable / unfavorable interpretation:** `WHOLE_BOOK_UP` or persistent `BID_CHASING` can support upward pressure. `WHOLE_BOOK_DOWN` is adverse. `COMPRESSION` and `EXPANSION` are ambiguous until we know which side caused them.
+- **Failure modes / counterexamples:** snapshot polling can miss intermediate quote moves; one-side cancellation can create a jump; labels describe observable quote behavior, not participant motive.
+- **Relationship to other evidence:** BD-003 synthesizes BD-001/002. TE family later evaluates whether the resulting spread is tradable, while PW/MID confirms whether price actually follows.
+- **Worked example:** Case A: 100.00/100.20 → 100.10/100.20 = BID chasing. Case B: 100.00/100.20 → 100.00/100.10 = ASK retreating. Both end with 0.10 spread, but only A improved the exit-side bid.
 - **Known overlaps:** PW-002 MID movement; future Tradability spread-state features
 - **Confidence limits:** compression is ambiguous unless its cause is retained; same final spread can result from opposite market behaviors
 - **Validation targets:** next MID direction, target-before-adverse, TimeToTarget
@@ -812,6 +833,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PV(input availability) + GL + H
 - **Meaning:** summarizes displayed top-of-book quantity asymmetry
+- **Plain-language intuition:** this compares displayed quantity at the best bid with displayed quantity at the best ask. If much more size is shown on the bid, the top of book looks buyer-heavy; if more is shown on the ask, it looks seller-heavy.
+- **Market mechanism / why it can matter:** displayed imbalance can affect how easily the best quote moves. A relatively thick bid and thin ask may make upward movement easier at the top of book, while the reverse can create more immediate resistance. But displayed size is only what is visible now.
+- **Objective connection:** for a quick buy→sell opportunity, a stronger displayed bid side may support exitability and reduce immediate downside, while a thin ask can lower the visible quantity that must trade before the quote steps higher.
+- **Favorable / unfavorable interpretation:** positive imbalance can support upward context when it persists and quote prices also migrate upward. Negative imbalance can be cautionary. Either can be meaningless if displayed size cancels quickly or price moves against it.
+- **Failure modes / counterexamples:** large displayed orders can be cancelled, replaced or partially executed; quantity does not equal number of participants; one snapshot can be misleading; imbalance can be high simply because spread/tick regime makes queues accumulate differently.
+- **Relationship to other evidence:** BD-004 is a static quantity ratio. BD-006/007 ask whether displayed depth persists. BD-005 converts the same information into a microprice tilt, so the two must not receive independent full weight.
+- **Worked example:** BID size 10,000 and ASK size 2,000 gives strong positive imbalance. If the 10,000 bid disappears next snapshot, the initial reading was weak; persistence matters.
 - **Known overlaps:** BD-005, BD-008
 - **Confidence limits:** displayed quantity is not participant count, commitment or guaranteed executable liquidity; one snapshot can be spoofed/cancelled/temporary; predictive value may depend on tick regime
 - **Validation targets:** next MID direction, target-before-adverse, continuation
@@ -828,6 +856,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** expresses how displayed L1 quantity imbalance shifts a queue-weighted reference inside the spread
+- **Plain-language intuition:** `Microprice` takes BID/ASK prices and their displayed quantities and shifts a reference toward the side that appears harder to consume. If bid size dominates ask size, the reference moves closer to ASK; if ask size dominates, it moves closer to BID.
+- **Market mechanism / why it can matter:** unequal visible depth can make one side of the spread easier to clear than the other. The microprice is a compact way to express that top-of-book asymmetry in price units.
+- **Objective connection:** a microprice tilted upward can support the idea that the next market-center movement may favor higher prices, which is useful for a short entry only when combined with real quote migration and price confirmation.
+- **Favorable / unfavorable interpretation:** upward tilt can support upward pressure; downward tilt can warn of seller-side weight. A strong tilt with no subsequent price progress may actually become evidence of failed pressure or absorption.
+- **Failure modes / counterexamples:** it is mathematically derived from queue imbalance, so it can double-count the same information; displayed quantities can vanish; wide spreads can exaggerate the absolute tilt; it is not a fair-value estimate or guaranteed next price.
+- **Relationship to other evidence:** BD-005 is largely a transformed version of BD-004 and should be treated as an alternate representation/diagnostic unless validation proves extra value.
+- **Worked example:** BID/ASK 100/101 with bid size 9,000 and ask size 1,000 yields a microprice close to 100.9, near the ask. That shows displayed buyer-side weight, not proof that the next trade will be 101.
 - **Known overlaps:** BD-004 by construction; PW-002
 - **Confidence limits:** highly redundant with queue imbalance; should not receive an independent full vote; invalid when required L1 fields are unavailable or spread is not valid
 - **Validation targets:** next MID direction, target-before-adverse
@@ -844,6 +879,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** distinguishes a one-frame large bid from displayed support that survives/reappears across observations
+- **Plain-language intuition:** instead of asking “is the bid big now?”, this asks whether meaningful bid quantity remains present, rebuilds after being reduced, or disappears over several observations.
+- **Market mechanism / why it can matter:** persistent displayed demand can make the current bid level more credible than a one-frame spike. Rebuilding after executions/cancellations can indicate continued displayed interest, though we cannot know whether it is the same participant.
+- **Objective connection:** persistent bid depth can support the ability to exit and can reduce immediate adverse movement while we wait for a short target, especially when BID itself is also moving upward.
+- **Favorable / unfavorable interpretation:** `PERSISTENT/REBUILDING` can strengthen buyer-side support; `WEAKENING` can warn that the visible floor is losing support. Persistence without price progress can also mean heavy selling is being absorbed at the bid.
+- **Failure modes / counterexamples:** snapshots cannot identify order identity; apparent rebuilding may be entirely new orders; a persistent large bid can still vanish suddenly; displayed size may be insufficient for our full position.
+- **Relationship to other evidence:** BD-006 adds time/persistence to static BD-004 imbalance. TE depth ratios later ask whether the quantity is enough for our intended size.
+- **Worked example:** bid size remains around 8k–10k shares across four observations while BID rises one tick: more supportive than a single 10k snapshot that vanishes immediately.
 - **Known overlaps:** BD-004, BD-008
 - **Confidence limits:** persistence across ~snapshot intervals is not order identity; cancellations/replacements cannot be reconstructed
 - **Validation targets:** target-before-adverse, low-MAE continuation, breakdown
@@ -860,6 +902,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** distinguishes a one-frame ask quantity from a repeatedly displayed seller-side quantity pattern
+- **Plain-language intuition:** this asks whether visible selling quantity at the best ask stays present, keeps replenishing, weakens, or disappears across observations.
+- **Market mechanism / why it can matter:** persistent/replenishing ask depth can act as a visible obstacle to upward progress; weakening ask depth can make it easier for price to step higher. But snapshots cannot prove iceberg behavior or seller identity.
+- **Objective connection:** our short upward target is harder to reach if the best ask repeatedly presents substantial visible supply and price fails to progress. Conversely, ask depth that thins while BID rises can support continuation.
+- **Favorable / unfavorable interpretation:** `WEAKENING` ask depth with upward quote migration can be favorable. `PERSISTENT/REPLENISHING` ask with stalled price can be cautionary. Replenishment during strong upward progress may simply reflect healthy two-sided liquidity rather than resistance.
+- **Failure modes / counterexamples:** quote replacement can mimic replenishment; a large ask can be cancelled instantly; a small ask can hide deeper selling unavailable in L1.
+- **Relationship to other evidence:** BD-007 complements BD-006 and static imbalance. PH effort-to-progress later determines whether persistent displayed supply is actually preventing upward movement.
+- **Worked example:** ASK size 2k gets reduced, then returns to 2k on several snapshots while price fails to advance: possible persistent visible obstacle, but not proof of an iceberg.
 - **Known overlaps:** BD-004, BD-008, future Exhaustion
 - **Confidence limits:** apparent replenishment between snapshots is only a pattern, not proof of iceberg/absorption or seller identity
 - **Validation targets:** continuation/exhaustion, target-before-adverse, breakout acceptance
@@ -876,6 +925,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** family-level displayed-pressure evidence that requires persistence rather than a single queue snapshot
+- **Plain-language intuition:** this summarizes whether displayed top-of-book quantities consistently lean upward, downward, balanced or unstable over time.
+- **Market mechanism / why it can matter:** persistent asymmetry is more informative than one snapshot because temporary orders/cancellations are common. Combining imbalance with persistence can reveal whether visible pressure has continuity.
+- **Objective connection:** a sustained upward lean can support the idea that current BID/ASK structure is favorable enough for a short upward move and exit, while downward/unstable pressure can reduce confidence.
+- **Favorable / unfavorable interpretation:** `UP_LEAN` is supportive only when price/quote migration confirms it. `DOWN_LEAN` is protective/adverse. `CONFLICTED/UNSTABLE` means displayed liquidity is not giving a reliable directional clue.
+- **Failure modes / counterexamples:** persistent displayed pressure can still fail to move price; the same large bid can absorb selling without causing a rise; snapshots remain vulnerable to hidden/deeper liquidity not seen in L1.
+- **Relationship to other evidence:** BD-008 synthesizes BD-004/006/007 so they should not be summed independently. BD-016 later combines this with quote migration and trade-location evidence.
+- **Worked example:** bid-heavy imbalance persists for 40s while BID/ASK step upward → stronger upward context. Same imbalance with flat/falling quotes → weak or misleading pressure.
 - **Known overlaps:** BD-004..BD-007
 - **Confidence limits:** still displayed liquidity only; does not equal signed executed flow
 - **Validation targets:** next MID direction, target-before-adverse, continuation
@@ -892,6 +948,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** measures the economic distance between the latest trade and current best displayed ask
+- **Plain-language intuition:** this tells how far the current best seller price sits above the latest traded price. It is the immediate gap from the last transaction reference to what a buyer would currently have to pay at the ask.
+- **Market mechanism / why it can matter:** a shrinking gap can occur because LAST rises toward ASK or because ASK falls toward LAST—two very different situations. The raw gap shows distance; dynamics tell the cause.
+- **Objective connection:** if we enter aggressively at ASK, this gap helps describe how far current transaction price is from the entry-side quote and how much upward price movement may be needed for trade prices to catch up.
+- **Favorable / unfavorable interpretation:** a small gap can mean tight alignment, but may simply reflect a narrow spread. A large gap can mean poor immediate entry economics rather than “room to rise.” Direction depends on why the gap changed.
+- **Failure modes / counterexamples:** stale LAST can make ASK-LAST look large; ASK can jump after a cancellation; comparing unsynchronized trade/quote snapshots can create misleading geometry.
+- **Relationship to other evidence:** BD-009 is one side of the LAST/quote geometry. BD-010 gives LAST-to-BID distance, BD-012 normalizes LAST position inside the spread, BD-014 explains the dynamics.
+- **Worked example:** LAST=100, ASK=100.30 gives +0.30%. If ASK fell from 100.50 while LAST stayed 100, the smaller gap reflects sellers retreating downward—not buyer-driven upward movement.
 - **Known overlaps:** BD-012, spread/tradability
 - **Confidence limits:** gap size alone is ambiguous; a wide gap may mean poor spread rather than “room to rise”; interpretation requires cause/dynamics
 - **Validation targets:** TimeToTarget, target-before-adverse, continuation
@@ -908,6 +971,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** measures the economic distance between the latest trade and current best displayed bid
+- **Plain-language intuition:** this tells how far the current best buyer price is below the latest trade. It approximates how much price concession someone referencing the latest trade would face if they had to sell immediately at BID1.
+- **Market mechanism / why it can matter:** a small LAST-to-BID gap means the exit side is close to the latest traded price; a widening gap can signal weakening buyer-side support or simply a wider spread.
+- **Objective connection:** our future sale occurs on the buyer side. A smaller gap can make a recent trade price more economically realizable; a large gap can mean headline LAST strength is not currently available as an exit price.
+- **Favorable / unfavorable interpretation:** shrinking gap due to BID rising toward LAST is favorable exit-side improvement. Shrinking gap because LAST falls toward BID is not favorable. Cause must be retained.
+- **Failure modes / counterexamples:** stale LAST, wide spread, quote jumps and unsynchronized snapshots can distort the reading; a close BID with tiny depth may still be unusable.
+- **Relationship to other evidence:** BD-010 complements BD-009 and directly motivates BD-017 historical-LAST→current-BID return. BD-014 distinguishes whether BID moved or LAST moved.
+- **Worked example:** LAST=100.30, BID=100.20 → gap≈0.10%. If BID rises to 100.28 while LAST holds, exitability improves; if LAST falls to 100.22 while BID stays, the same smaller gap has a different story.
 - **Known overlaps:** BD-012, spread/tradability
 - **Confidence limits:** value alone is not directional proof; stale trade price can sit outside the current spread
 - **Validation targets:** target-before-adverse, breakdown/continuation
@@ -924,6 +994,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** describes whether the latest trade lies above or below the current quote midpoint and by how much
+- **Plain-language intuition:** this compares the last traded price with the center between current BID and ASK. If LAST is above MID, the latest trade sits toward the seller side; if below, toward the buyer side.
+- **Market mechanism / why it can matter:** repeated trades occurring nearer the ask than the bid can accompany upward pressure; nearer the bid can accompany downward pressure. But because quotes may move after the trade, this is only snapshot geometry.
+- **Objective connection:** trade location can help confirm whether recent executions are occurring on the side consistent with upward repricing, which may improve the chance of a higher future BID.
+- **Favorable / unfavorable interpretation:** LAST persistently above MID plus upward quote migration is supportive. LAST below MID can be cautionary. A single reading is weak because quote movement can reposition MID after the trade.
+- **Failure modes / counterexamples:** unsynchronized timestamps can place LAST outside the current spread; MID can move because only ASK changes; this is not exact aggressor-side classification.
+- **Relationship to other evidence:** BD-011 is a signed distance; BD-012 expresses the same geometry normalized by spread. BD-015 looks at persistence/trend across observations.
+- **Worked example:** BID/ASK=100/100.20, MID=100.10, LAST=100.18 → trade sits near ask side. If quotes later move to 100.20/100.40 while LAST stays 100.18, the geometry flips without a new trade.
 - **Known overlaps:** BD-012; PW-006 PriceMidAgreement
 - **Confidence limits:** current snapshot is not transaction-level synchronized trade/quote data; do not treat this as exact aggressor classification
 - **Validation targets:** next MID direction, target-before-adverse
@@ -940,6 +1017,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** compact representation of where the latest trade lies relative to the current displayed spread
+- **Plain-language intuition:** this maps LAST's location inside the current BID–ASK interval: near 0 means close to BID, near 0.5 means near the middle, near 1 means close to ASK.
+- **Market mechanism / why it can matter:** persistent trade location near ASK can indicate trades occurring toward the upper edge of the quoted market; persistent location near BID can indicate the opposite. It compresses absolute gap sizes into a spread-relative position.
+- **Objective connection:** spread-relative trade location can confirm whether executions are happening on the side that supports an upward move, which matters before expecting a better future exit bid.
+- **Favorable / unfavorable interpretation:** repeated values near the ASK side plus upward quotes can support upward flow. Values near BID can warn of downward pressure. Values outside [0,1] are not errors by definition; they may indicate quotes moved after the last trade.
+- **Failure modes / counterexamples:** wide/narrow spread changes alter the normalized position; stale LAST can produce extreme values; clamping outside values would destroy potentially useful timing information.
+- **Relationship to other evidence:** BD-012 unifies BD-009/010/011 into one normalized geometry; BD-013 measures how that position changes through time.
+- **Worked example:** BID=100, ASK=101, LAST=100.8 → position=0.8, near ask. If current quotes jump to 101/102 without a new trade, position becomes -0.2; that signals timing mismatch/quote migration, not an impossible price.
 - **Known overlaps:** BD-009, BD-010, BD-011
 - **Confidence limits:** values may fall outside [0,1] when the quote moved after the latest trade; that is informative timing/context, not something to clamp silently; no exact trade-sign claim
 - **Validation targets:** next MID direction, continuation, target-before-adverse
@@ -956,6 +1040,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** detects whether recent trades are migrating toward ASK or toward BID rather than using one static location
+- **Plain-language intuition:** instead of one spread-position snapshot, this asks whether LAST's relative location is moving upward toward ASK, downward toward BID, or oscillating.
+- **Market mechanism / why it can matter:** a persistent migration toward ASK can show that executed prices are increasingly occupying the upper part of the quoted market; migration toward BID can show weakening. But the movement can be caused by LAST, quotes, or both.
+- **Objective connection:** a short upward opportunity is more convincing when trade location increasingly supports the upper side while BID/ASK themselves also move upward.
+- **Favorable / unfavorable interpretation:** upward migration with whole-book-up movement is supportive. Upward normalized position caused only by ASK collapsing can mean something different. Downward migration is cautionary.
+- **Failure modes / counterexamples:** quote changes alone can move the normalized position; sparse observations can skip intermediate states; noisy spread changes can create artificial velocity.
+- **Relationship to other evidence:** BD-013 is the dynamic version of BD-012. BD-014 decomposes the cause, preventing us from treating all position changes as the same story.
+- **Worked example:** spread position 0.3→0.6→0.9 while BID/ASK both rise suggests trades migrating upward. The same 0.3→0.9 with ASK falling sharply may not indicate buyer-driven progress.
 - **Known overlaps:** BD-014, PW-001 trade-price movement
 - **Confidence limits:** must retain concurrent quote movement; position can change because LAST moved, quotes moved, or both
 - **Validation targets:** next MID direction, target-before-adverse, continuation/exhaustion
@@ -972,6 +1063,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** distinguishes buyer-side advance from seller-side ask retreat even when both numerically shrink `ASK-LAST`
+- **Plain-language intuition:** this is the “why did the geometry change?” state. It distinguishes LAST rising toward ASK, ASK falling toward LAST, BID rising toward LAST, LAST falling toward BID, or the whole structure moving together.
+- **Market mechanism / why it can matter:** identical gap changes can result from opposite forces. The market story matters because buyer-driven upward repricing is more aligned with our objective than sellers simply lowering their asks.
+- **Objective connection:** we need evidence that can plausibly produce a higher future BID after entry. Knowing whether BID/LAST/ASK are moving together upward versus merely compressing toward each other helps judge that.
+- **Favorable / unfavorable interpretation:** `WHOLE_STRUCTURE_UP`, `BID_CHASING_LAST`, or LAST rising toward a stable/rising ASK can support upward progress. `ASK_RETREATING_TO_LAST` may improve entry cost but is not the same directional signal. `WHOLE_STRUCTURE_DOWN` is adverse.
+- **Failure modes / counterexamples:** labels rely on snapshot differences, not participant intent; multiple changes may occur between observations; short-lived quote jumps can produce unstable classification.
+- **Relationship to other evidence:** BD-014 is the causal-structure guard around BD-009..013 and BD-001/002. It prevents simple gap contraction from being blindly scored.
+- **Worked example:** ASK-LAST goes from 0.30% to 0.10%. Scenario A: LAST rises 100→100.20, ASK stays 100.30. Scenario B: LAST stays 100, ASK falls 100.30→100.10. Same final gap, very different implication.
 - **Known overlaps:** BD-003, BD-013, PW-004 acceleration
 - **Confidence limits:** observable price-path interpretation only; labels must not be phrased as participant intention
 - **Validation targets:** next MID direction, TimeToTarget, target-before-adverse, continuation
@@ -988,6 +1086,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** a safer snapshot-based directional-pressure proxy than pretending to classify every unseen trade
+- **Plain-language intuition:** this looks across several observations and asks whether recent trade locations persistently lean toward ASK, BID, the center, or move directionally through the spread.
+- **Market mechanism / why it can matter:** repeated upper-spread trade location can be consistent with stronger buying pressure; repeated lower-spread location can be consistent with selling pressure. Persistence matters more than one print.
+- **Objective connection:** if executions repeatedly occur near the upper side while the book migrates upward, that can strengthen confidence that the market is repricing in a way favorable to a future exit.
+- **Favorable / unfavorable interpretation:** `ASK_LEAN/MIGRATING_UP` can confirm upward context; `BID_LEAN/MIGRATING_DOWN` is cautionary; `CONFLICTED` means trade locations are not giving stable directional evidence.
+- **Failure modes / counterexamples:** sparse snapshots miss many trades; quote moves can alter apparent locations; we cannot label hidden individual trades as buyer- or seller-initiated with certainty.
+- **Relationship to other evidence:** BD-015 summarizes BD-011/012/013 over time and feeds BD-016; it should not be treated as independent signed order flow.
+- **Worked example:** four successive observations place LAST at 0.75, 0.82, 0.90, 0.88 of the spread while quotes rise: persistent ask-side lean. One isolated 0.95 reading would be much weaker.
 - **Known overlaps:** BD-012..BD-014
 - **Confidence limits:** sparse observations miss individual prints; cannot reconstruct true signed trade flow
 - **Validation targets:** next MID direction, target-before-adverse, continuation
@@ -1004,6 +1109,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** best available L1 directional-pressure summary from current data without mislabeling it true signed order flow
+- **Plain-language intuition:** this is the family summary: are quote prices migrating upward, displayed quantities leaning supportively, and trade locations behaving consistently—or are those pieces disagreeing?
+- **Market mechanism / why it can matter:** no single L1 metric is reliable enough alone. Combining price migration, persistent displayed pressure and trade-location trend gives a more robust picture of current top-of-book directional structure.
+- **Objective connection:** for buy-now/sell-soon, we want the current top of book to support a path toward a higher future BID. BD-016 is the compact directional-book evidence higher-level logic can combine with price, activity, path quality and remaining opportunity.
+- **Favorable / unfavorable interpretation:** `UPWARD_FLOW` can strengthen an opportunity when Price/Activity/Path agree. `DOWNWARD_FLOW` is protective/adverse. `CONFLICTED` is valuable information and should reduce confidence rather than being forced to neutral.
+- **Failure modes / counterexamples:** L1 is only the visible top level; deeper liquidity is unknown; displayed orders can cancel; snapshot data cannot recover true order flow; one dominant subtype must not overwhelm conflicts from others.
+- **Relationship to other evidence:** BD-016 is the intended synthesis of BD-003/008/014/015. BD-019 separately summarizes historical buyer exitability, because backward-looking exitability and current directional pressure are related but not identical.
+- **Worked example:** BID/ASK both rising, bid depth persistent, trade locations near ASK → likely `UPWARD_FLOW`. If quotes rise but displayed pressure is unstable and trades sit near BID, state should be `CONFLICTED`, not automatically bullish.
 - **Known overlaps:** Sequence, Price/Wave confirmation, future trade-tape flow
 - **Confidence limits:** low confidence when only one evidence subtype is available; quote generation can be large relative to executed activity; disagreement across price/activity/book should remain visible
 - **Validation targets:** next MID direction, target-before-adverse, TimeToTarget, future cross-sectional rank

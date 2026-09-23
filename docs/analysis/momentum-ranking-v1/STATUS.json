@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Activity/Flow AF-001..AF-011. Activity is documented as executed effort/participation, explicitly direction-agnostic, with clear distinctions among trade count, rate, quantity, monetary turnover, trade size and participation expansion."
+    "subfocus": "Deep-rationale retrofit completed for Book/Directional Flow BD-001..BD-019. Quote-price migration, displayed quantity/persistence, LAST-to-quote geometry, family directional state and historical buyer exitability are now explained as distinct mechanisms with explicit failure modes."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Book/Directional Flow BD-001..BD-019 to the deep-rationale documentation contract, including BID/ASK migration, displayed depth/imbalance, LAST-to-quote geometry and recent-buyer exitability."
+    "action": "Retrofit Tradability/Execution Preconditions TE-001..TE-014 to the deep-rationale documentation contract, explaining spread/tick/depth/latency/cost as feasibility constraints rather than bullish signals."
   }
 }
