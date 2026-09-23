@@ -2,6 +2,13 @@
 
 Describe the coherent behavior/design change.
 
+## KISS / complexity review
+
+- [ ] This is the simplest coherent solution that satisfies the current verified requirement.
+- [ ] I did not add speculative abstraction, lifecycle, framework, loader/updater, cache, concurrency, retry machinery, compatibility layer, or extension points only for hypothetical future use.
+- [ ] If I added meaningful complexity, there is a concrete present-day requirement/evidence showing why the simpler approach is insufficient.
+- [ ] Simplicity did not remove required correctness, data-integrity, security, observability, recovery, or verification guarantees.
+
 ## Verification
 
 - [ ] Relevant tests were run after their final edit.
