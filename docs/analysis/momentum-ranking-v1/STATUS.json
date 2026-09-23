@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale documentation standard established. Existing registry families must be retrofitted so every material metric explains market intuition, mechanism, objective connection, ambiguity/counterexamples and worked examples—not only formulas."
+    "subfocus": "Deep-rationale retrofit completed for Price/Wave PW-001..PW-010. Each metric now explains market intuition, plausible mechanism, objective connection, favorable/ambiguous interpretation, failure modes, relationship to neighboring evidence and a worked example."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit the existing feature registry family-by-family to the deep-rationale documentation contract, starting with Price/Wave and Activity/Flow, before adding further families."
+    "action": "Retrofit Activity/Flow AF-001..AF-011 to the deep-rationale documentation contract, keeping activity direction-agnostic and explaining exactly how effort/participation can support or mislead the short-horizon objective."
   }
 }

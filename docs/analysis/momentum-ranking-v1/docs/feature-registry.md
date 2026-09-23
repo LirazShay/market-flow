@@ -173,6 +173,13 @@ MID = (BID1 + ASK1) / 2
 - **Availability:** NOW
 - **Evidence:** PV(input/history availability) + PI(derivation) + H(predictive value)
 - **Meaning:** magnitude and direction of recent observed trade-price movement across several scales
+- **Plain-language intuition:** this asks a very basic question at several recent horizons: “where is the latest traded price now compared with where trades were occurring 10/20/30/60/etc. seconds ago?” A positive profile means trades have migrated upward; a negative profile means they have migrated downward.
+- **Market mechanism / why it can matter:** repeated higher transaction prices show that buyers and sellers have actually completed trades at progressively higher levels. That is stronger than a static quote alone because money has changed hands there. However, executed prices describe what already happened; they do not prove the next buyer will pay even more.
+- **Objective connection:** for our buy-now/sell-soon objective, recent upward trade-price movement can confirm that the stock is already capable of moving in the desired direction within the relevant horizon. The useful question is whether that movement is still fresh enough that additional upward excursion remains after entry.
+- **Favorable / unfavorable interpretation:** a modest positive move that is strengthening in the newest windows may be more attractive than a very large move that happened mostly earlier. Flat/negative returns can be cautionary, but can also precede a fresh reversal; the profile must be interpreted together with acceleration, recency concentration, BID/ASK movement and remaining-opportunity state.
+- **Failure modes / counterexamples:** one isolated trade at the ASK can lift LAST without the whole market moving; stale LAST can make the return appear frozen; bid-ask bounce can create false short-window up/down moves; a huge positive return can indicate the move is already consumed rather than attractive.
+- **Relationship to other evidence:** PW-001 says how far traded price moved. PW-003 says how fast, PW-004 whether that speed is changing, PW-005 whether the move is fresh or front-loaded, and PW-002 checks whether the quote midpoint moved with it.
+- **Worked example:** if LAST was 100.00 sixty seconds ago, 100.10 thirty seconds ago and 100.30 now, the 60s return is +0.30% and the 30s return is about +0.20%. That shape suggests recent upward movement, but by itself does not tell us whether the current BID is high enough to exit profitably or whether the move has already exhausted.
 - **Known overlaps:** PW-003, PW-004, PW-005; broader Multi-Horizon Trend family at longer horizons
 - **Confidence limits:** bid-ask bounce; stale LAST; irregular elapsed time; sequential-cycle timing skew; provider `LAST` mapping must be explicit
 - **Validation targets:** target-before-adverse, TimeToTarget, continuation, cross-sectional future rank
@@ -191,6 +198,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** NOW
 - **Evidence:** PV(BID/ASK availability where present) + PI + GL + H
 - **Meaning:** movement of the market center, reducing dependence on LAST prints alone
+- **Plain-language intuition:** `MID` is the midpoint between the best displayed buyer price (`BID1`) and best displayed seller price (`ASK1`). This metric asks whether the **center of the quoted market** has moved up or down over recent windows.
+- **Market mechanism / why it can matter:** LAST can move because of one trade, while BID and ASK remain where they were. If MID rises too, the entire top-of-book pricing environment has shifted upward. That makes the move less dependent on a single print and more reflective of current quoted willingness to buy/sell.
+- **Objective connection:** we want to enter now and later have a better exit bid. Upward MID migration suggests that both sides of the immediate market have, on average, shifted upward, which can make later BID improvement more plausible than a LAST-only spike.
+- **Favorable / unfavorable interpretation:** LAST up + MID up is stronger confirmation than LAST up alone. LAST up while MID is flat/down can mean the trade price moved without broad quote support. MID up while LAST is stale may indicate quotes are moving before the next trade print, which could be early information but also merely a spread shift.
+- **Failure modes / counterexamples:** MID can rise simply because ASK jumps while BID stays unchanged, creating a wider spread with no improvement in the exit side. Wide or unstable spreads can make MID economically misleading. Missing either BID1 or ASK1 makes MID unknown, not zero.
+- **Relationship to other evidence:** PW-002 compresses BID/ASK into one center value; BD-001/BD-002 preserve which side actually moved. Therefore MID confirms structure, while Book/Directional Flow explains the cause.
+- **Worked example:** BID/ASK move from 99.90/100.10 to 100.10/100.30. MID rises from 100.00 to 100.20, showing the quoted market moved upward. But if quotes instead change from 99.90/100.10 to 99.90/100.50, MID also rises to 100.20 even though BID did not improve—so BD quote-migration context is necessary.
 - **Known overlaps:** PW-001, Book family BID/ASK migration features
 - **Confidence limits:** UNKNOWN whenever either side required for MID is invalid; wide/unstable spreads can make MID behavior less economically useful
 - **Validation targets:** next MID direction, target-before-adverse, continuation
@@ -207,6 +221,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** how quickly the current observed movement is occurring
+- **Plain-language intuition:** two stocks can both rise 0.30%, but one may do it in 20 seconds and the other in 10 minutes. This metric distinguishes the **rate of movement**, not just the distance travelled.
+- **Market mechanism / why it can matter:** our holding horizon is short. A move that is converting price rapidly can reach a small target before latency, spread burden or reversal consumes the opportunity. Slow movement may still be bullish but operationally useless for a seconds-to-minutes strategy.
+- **Objective connection:** speed connects directly to `TimeToTarget`. We need enough movement quickly enough that after detection and entry there is still time to reach an exit-worthy BID.
+- **Favorable / unfavorable interpretation:** positive and sufficiently fast movement can support a short target; slowing speed can indicate deceleration or a mature move. Extremely high raw speed is not automatically better because it can be a one-tick jump or a move that is already mostly over.
+- **Failure modes / counterexamples:** illiquid securities can jump one tick after a long pause and create absurd `%/sec`; irregular sampling can distort naive speed; extrapolating 0.05% per second into future repeated gains is invalid.
+- **Relationship to other evidence:** PW-001 gives movement magnitude; PW-003 divides that movement by actual elapsed time. PW-004 then asks whether this speed is increasing or decreasing. RemainingOpportunity decides whether fast past movement still leaves anything useful.
+- **Worked example:** +0.20% in 20 seconds is very different from +0.20% in 120 seconds for a 30-second target horizon. The first demonstrates recent fast conversion; the second may be too slow even though both returns are identical.
 - **Known overlaps:** PW-001; RemainingOpportunity/OpportunityVelocity
 - **Confidence limits:** one-tick/illiquid jumps can create absurd raw speed; never extrapolate `%/sec × repeated cycles`
 - **Validation targets:** TimeToTarget, short-horizon target hit, future rank
@@ -223,6 +244,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** whether the force of the current move appears to be strengthening or weakening now
+- **Plain-language intuition:** acceleration asks whether the most recent slice is moving faster than the slice just before it. It is the difference between “still going up” and “going up faster now than a moment ago.”
+- **Market mechanism / why it can matter:** a fresh opportunity often matters most when movement is becoming more forceful, while a mature move may still be positive but losing speed. Acceleration can therefore distinguish onset/building behavior from simple historical strength.
+- **Objective connection:** if upward progress is accelerating near the decision point, there may be more useful lead left for a short entry. If progress is decelerating sharply, the headline return can remain positive while the remaining opportunity is shrinking.
+- **Favorable / unfavorable interpretation:** `ACCELERATING` may support an early/building opportunity when accompanied by healthy path and BID/ASK confirmation. `DECELERATING` is cautionary but can also be a harmless pause or pullback before a fresh leg.
+- **Failure modes / counterexamples:** two noisy observations can create fake acceleration; a single jump can make the newest slice look explosive; acceleration into a nearby barrier can immediately reverse. Therefore it needs persistence and path/barrier context.
+- **Relationship to other evidence:** speed is the current rate; acceleration is the change in that rate. Recency concentration tells whether most of the move happened recently, while PH/PR families tell whether acceleration is clean or already deteriorating.
+- **Worked example:** first 20s: +0.05%; next 20s: +0.15%. The second slice progressed three times as much, so the move is accelerating. If the next 20s adds only +0.01%, the same broader uptrend has shifted into deceleration.
 - **Known overlaps:** PW-003; future Exhaustion family
 - **Confidence limits:** requires enough temporally aligned observations; should not infer acceleration from two noisy prints
 - **Validation targets:** continuation vs exhaustion, TimeToTarget, target-before-adverse
@@ -239,6 +267,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** distinguishes a fresh acceleration from a move that mostly happened earlier
+- **Plain-language intuition:** this asks “how much of the move happened **recently**, close to now?” A stock can be +1% over five minutes but have done almost all of that four minutes ago, or it can have produced most of the rise in the last 30 seconds.
+- **Market mechanism / why it can matter:** recent concentration helps identify whether current movement is still active or whether the large longer-window return is stale baggage from an earlier burst.
+- **Objective connection:** we care about what can happen after entry now. A move concentrated in the newest slice is generally more relevant to remaining short-horizon opportunity than an equally large move that was front-loaded long before the decision.
+- **Favorable / unfavorable interpretation:** `RECENTLY_CONCENTRATED` can indicate a fresh onset or reacceleration; `FRONT_LOADED` warns that the visible large return may mostly describe history. `EVENLY_DISTRIBUTED` can indicate steadier movement but may be slower.
+- **Failure modes / counterexamples:** a sudden newest-slice spike can be the very end of the move rather than the beginning; ratios become unstable when the longer-window net move is near zero; reversals inside the window can hide large path movement behind small net return.
+- **Relationship to other evidence:** PW-001 says total move; PW-005 says where in time that move occurred. PW-004 asks whether speed is changing, while SQ/RO determine whether the detection point is early enough and whether useful excursion remains.
+- **Worked example:** Stock A is +0.40% over 120s, but only +0.02% in the last 30s. Stock B is also +0.40% over 120s but +0.25% in the last 30s. Same 120s return, very different freshness.
 - **Known overlaps:** PW-004, Freshness, RemainingOpportunity
 - **Confidence limits:** no naive ratio near zero denominator; direction changes inside the window require explicit handling
 - **Validation targets:** remaining opportunity, TimeToTarget, continuation
@@ -255,6 +290,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
 - **Meaning:** distinguishes trade-price movement confirmed by market-center migration from potentially noisy LAST-only movement
+- **Plain-language intuition:** this compares what actual recent trades (`LAST`) are doing with what the current quoted market center (`MID`) is doing. Are both moving up together, or is only one of them moving?
+- **Market mechanism / why it can matter:** when trades and the quoted market center rise together, the movement is supported by both executed prices and current quotes. When they disagree, the signal may be stale, noisy or in transition.
+- **Objective connection:** for a later profitable exit we ultimately need current quotes—especially BID—to follow the trade-price move. LAST-only strength without MID movement is less directly useful to our exit objective.
+- **Favorable / unfavorable interpretation:** `CONFIRMED_UP` is stronger structural confirmation. `LAST_ONLY_UP` can mean a temporary/high print without book migration. `MID_ONLY_UP` can mean quotes moved before another trade occurred, potentially early but uncertain. `CONFLICTED` requires caution.
+- **Failure modes / counterexamples:** MID can rise because ASK widens upward while BID stays flat; LAST can be stale; neither alignment nor disagreement proves future direction. Therefore Book/Directional Flow must explain which quote side moved.
+- **Relationship to other evidence:** this is a bridge between Price/Wave and Book. It deliberately avoids duplicating full quote-migration analysis, which belongs to BD-001..BD-003.
+- **Worked example:** LAST rises 100.00→100.20 and MID rises 100.00→100.18: broadly confirmed upward movement. If LAST rises to 100.20 while MID remains 100.00, the trade move lacks current quote-center confirmation.
 - **Known overlaps:** Book Direction family
 - **Confidence limits:** MID unavailable without valid L1; agreement is not causal proof
 - **Validation targets:** target-before-adverse, low-MAE continuation, next MID direction
@@ -271,6 +313,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** HISTORY
 - **Evidence:** PI + H
 - **Meaning:** age of the broader currently identified wave
+- **Plain-language intuition:** once Issue #6 defines a wave, this simply asks how long the broader upward/downward episode has already been running.
+- **Market mechanism / why it can matter:** older waves have had more time to consume available movement, attract late entrants and encounter exhaustion, but age alone does not determine whether opportunity remains. A long wave can generate a fresh sub-leg.
+- **Objective connection:** wave age is useful mainly as a lateness/context variable: entering near the beginning of a still-valid move can be different from entering after a long mature episode. It helps prevent “strong because it has risen for a long time” from being mistaken for “good to enter now.”
+- **Favorable / unfavorable interpretation:** younger can mean fresher, but also less confirmed. Older can mean mature, but can still be healthy if a reset/reclaim created renewed opportunity. Therefore there is no universal “younger = better” rule.
+- **Failure modes / counterexamples:** poor segmentation can make one wave look artificially old or split one wave into several young waves. A fresh pullback/retest can reset the current leg while the broad wave remains old.
+- **Relationship to other evidence:** PW-007 is broad episode age; PW-008 is current-leg age. RO MoveConsumptionState and PR LegResetStrength are more directly tied to remaining opportunity.
+- **Worked example:** a broad rise began 8 minutes ago, but after a pullback a new leg started 25 seconds ago. `WaveAgeSeconds` is old, while `LegAgeSeconds` is young—exactly why both are needed.
 - **Known overlaps:** Freshness, RemainingOpportunity
 - **Confidence limits:** blocked until Issue #6 defines wave segmentation unambiguously
 - **Validation targets:** remaining opportunity, exhaustion, TimeToTarget
@@ -287,6 +336,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** HISTORY
 - **Evidence:** PI + H
 - **Meaning:** distinguishes an old broad wave from a fresh post-pullback leg
+- **Plain-language intuition:** a `leg` is the current directional segment inside a broader wave. This metric asks how long the **current segment** has been running since the latest meaningful reset/pullback.
+- **Market mechanism / why it can matter:** short opportunities can renew inside an old wave. A fresh leg after a successful pullback can have more remaining room than the broad wave's age would suggest.
+- **Objective connection:** this helps answer whether the actionable move we are considering started recently enough that useful excursion may still remain after entry.
+- **Favorable / unfavorable interpretation:** a young leg with reclaim/reacceleration can support renewed opportunity. A very old leg may be more consumed. But an extremely young leg can be unconfirmed and fail immediately.
+- **Failure modes / counterexamples:** bad leg segmentation can reset the clock on noise; frequent tiny pullbacks can create many false “young legs.” The metric must be combined with PR reset strength and direct outcome validation.
+- **Relationship to other evidence:** WaveAge gives broad context; LegAge focuses on the active segment. PW-009 measures how far that leg has already moved.
+- **Worked example:** broad wave age 6 minutes, leg age 20 seconds, leg move +0.08%. This could represent a fresh reacceleration inside an older move rather than a stale six-minute opportunity.
 - **Known overlaps:** PW-007, Pullback/Retest family, Freshness
 - **Confidence limits:** blocked until leg/wave segmentation semantics are defined
 - **Validation targets:** remaining opportunity, continuation after retest
@@ -303,6 +359,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** HISTORY
 - **Evidence:** PI + H
 - **Meaning:** how much of the current leg has already been observed/consumed
+- **Plain-language intuition:** after the current leg begins, this asks how far price has already travelled before we consider entering.
+- **Market mechanism / why it can matter:** a fresh leg that has moved only a little may still have room, while a leg that already delivered a large rapid move may have less remaining opportunity—even if it still looks strong.
+- **Objective connection:** this is directly related to lateness. We do not want to reward a detector merely because it finds the strongest-looking stock after most of the tradable leg is already behind us.
+- **Favorable / unfavorable interpretation:** a modest observed move combined with fresh acceleration can indicate early-stage potential. A large observed move can be cautionary if no reset occurred. But large movement after a valid reset can still continue, so no fixed consumed-percentage rule is assumed.
+- **Failure modes / counterexamples:** the true capacity of a leg varies by stock/regime; “0.3% already moved” can be huge for one security and ordinary for another. Mechanical subtraction from recent-wave averages is explicitly forbidden.
+- **Relationship to other evidence:** RO MoveConsumptionState uses this as one input but also needs recent conditional excursion evidence, timing and reset state. PW-009 remains descriptive past movement, not the remaining-opportunity estimate itself.
+- **Worked example:** if the current leg started at 100.00 and is now 100.25, observed leg move is +0.25%. That fact alone cannot tell us whether +0.05% or +0.50% remains; it only tells us how much has already happened.
 - **Known overlaps:** RemainingOpportunity, recent realized wave capacity
 - **Confidence limits:** depends on Issue #6 segmentation and canonical reference-price choice
 - **Validation targets:** remaining opportunity, target feasibility, exhaustion
@@ -319,6 +382,13 @@ Important: the horizons are a **profile**, not independent votes.
 - **Availability:** NOW + HISTORY for full semantics
 - **Evidence:** PI + H
 - **Meaning:** family-level summary consumed by higher-level opportunity logic rather than summing overlapping price features independently
+- **Plain-language intuition:** instead of showing ten separate price numbers, this summarizes the current **price process** into an interpretable lifecycle such as quiet, waking, building, accelerating, slowing or reversing.
+- **Market mechanism / why it can matter:** the same positive return can occur in very different phases. A move that is just waking up is different from one that is already strong but slowing. The state captures the shape of price evolution, not just its current sign.
+- **Objective connection:** higher-level logic needs to know whether price evidence suggests an opportunity is forming, strengthening, mature or deteriorating so it can combine that with activity, book, path quality and remaining opportunity.
+- **Favorable / unfavorable interpretation:** `AWAKENING/BUILDING/ACCELERATING` may support potential when confirmed elsewhere. `STRONG` is ambiguous because it can be healthy or already mature. `SLOWING/REVERSING` is protective evidence. `UNDETERMINED` means data does not justify a confident lifecycle label.
+- **Failure modes / counterexamples:** a neat state label can create false confidence if thresholds are arbitrary or source inputs are stale. Missing data must lower coverage rather than silently forcing a neutral state.
+- **Relationship to other evidence:** PW-010 is the **family synthesis** designed to prevent double counting of overlapping returns, speed and acceleration. It is not the final stock score and does not replace Path/Book/Activity/RemainingOpportunity families.
+- **Worked example:** a stock with +0.30%/60s, +0.18%/20s, rising MID and increasing speed might map to `ACCELERATING`; the same +0.30%/60s with only +0.01% in the newest 20s and falling MID could map to `SLOWING`.
 - **Known overlaps:** Sequence, Exhaustion, Pullback/Retest
 - **Confidence limits:** state thresholds/mapping are provisional until validation; unavailable dependencies must reduce coverage rather than become zero
 - **Validation targets:** continuation/exhaustion, target-before-adverse, cross-sectional future rank
