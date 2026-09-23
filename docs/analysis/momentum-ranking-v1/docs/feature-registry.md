@@ -2491,6 +2491,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, PathRisk
 - **Meaning:** measures how much extension has been reset and how much structure has been surrendered
+- **Plain-language intuition:** this measures how far price retreats from the relevant recent peak before trying to continue. A shallow retreat resets little; a deeper retreat resets more extension but also gives back more structure.
+- **Market mechanism / why it can matter:** a prior move can become crowded or stretched. A controlled pullback can reduce extension and create room for a fresh leg, but an overly deep pullback can signal that the prior upward process is failing.
+- **Objective connection:** we care whether entering after the retreat gives us a fresher, less-consumed move than chasing the old peak. Pullback depth is useful only insofar as it helps distinguish renewed opportunity from structural damage.
+- **Favorable / unfavorable interpretation:** moderate controlled depth can be constructive when followed by fast reclaim and reacceleration; tiny depth may leave the move still overextended; very deep depth can imply failure. There is no universal “ideal” percent without context.
+- **Failure modes / counterexamples:** a deep pullback can still produce a strong reversal; a shallow pullback can precede exhaustion; wrong peak reference makes the metric meaningless.
+- **Relationship to other evidence:** PH-004 measures generic giveback; PR-001 interprets that retreat as a potential reset episode. Reclaim and post-retest behavior decide whether the retreat was useful.
+- **Worked example:** peak 100.50, pullback low 100.35 = -0.15%. If price quickly reclaims 100.45 and accelerates, that 0.15% may have acted as a reset; if it continues to 100.10, it was structural weakness instead.
 - **Known overlaps:** PH-004 GiveBackPct
 - **Confidence limits:** depth alone does not classify pullback as healthy; must not duplicate PH-004 as a second penalty
 - **Validation targets:** post-retest target-before-adverse, MAE, TimeToTarget
@@ -2508,6 +2515,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** quantifies whether the reset is fast enough to remain relevant to the short objective
+- **Plain-language intuition:** this measures how long the retreat/retest lasts before a low/reclaim phase forms.
+- **Market mechanism / why it can matter:** a pullback that consumes most of the short opportunity horizon can leave little time for the next leg even if it eventually succeeds.
+- **Objective connection:** we need renewed movement quickly enough to buy and later exit within seconds-to-~2-minutes. Duration converts the pullback from a chart shape into a timing constraint.
+- **Favorable / unfavorable interpretation:** shorter duration can preserve more time budget; longer duration can indicate loss of momentum. But very short can be noisy and long can still be valid if the target horizon is longer.
+- **Failure modes / counterexamples:** phase boundaries are provisional; quiet stocks naturally take longer; one sharp two-tick retreat may look “fast” but not be structurally meaningful.
+- **Relationship to other evidence:** PR-002 measures retreat time; PR-004 measures reclaim time; SQ/RO later decide whether usable lead remains.
+- **Worked example:** a 12s pullback followed by reclaim may be relevant to a 60s opportunity; a 90s pullback probably consumes most of a 120s horizon.
 - **Known overlaps:** PW WaveAge/LegAge; FQ freshness
 - **Confidence limits:** exact phase boundaries depend on pullback/retest state semantics; long duration is not automatically failure without target/horizon context
 - **Validation targets:** post-retest TimeToTarget, detection lateness, target-before-adverse
@@ -2525,6 +2539,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, Confirmation
 - **Meaning:** distinguishes a modest reset from a retreat accompanied by growing adverse process
+- **Plain-language intuition:** this asks whether the pullback looks contained and fading, or whether adverse price/activity/book behavior is expanding while the retreat develops.
+- **Market mechanism / why it can matter:** a healthy reset is different from sellers gaining control. If adverse movement, trade activity and downward book migration intensify together, the probability that the pullback is actually a breakdown may be higher.
+- **Objective connection:** the engine wants to enter after a reset only when the retreat is not still strengthening against us.
+- **Favorable / unfavorable interpretation:** `CONTAINED/FADING` can support a constructive reset; `EXPANDING` is cautionary; `CONFLICTED` means evidence disagrees.
+- **Failure modes / counterexamples:** high activity on a retreat can be capitulation before reversal; displayed book pressure can vanish; this state cannot infer participant intent.
+- **Relationship to other evidence:** PR-003 interprets PW/AF/BD specifically during the pullback and should not re-count their raw scores independently.
+- **Worked example:** price pulls back -0.10% while trade rate falls and BID stabilizes → contained/fading. Same -0.10% with accelerating trade rate and BID stepping down → expanding adverse process.
 - **Known overlaps:** PH WaveHealthState; BD directional flow
 - **Confidence limits:** cross-family inputs must not be re-added as independent votes; state owns only pullback interpretation
 - **Validation targets:** retest success/failure, target-before-adverse, breakdown
@@ -2542,6 +2563,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, Confirmation
 - **Meaning:** measures how quickly upward process reasserts itself after a reset
+- **Plain-language intuition:** after the pullback low, this measures how long it takes price to recover a meaningful reference level.
+- **Market mechanism / why it can matter:** a fast reclaim suggests the retreat did not suppress upward demand for long; a slow reclaim consumes time and may indicate weak recovery.
+- **Objective connection:** fast reclaim preserves usable lead for entry→target. Slow reclaim can make a setup directionally correct but operationally too late.
+- **Favorable / unfavorable interpretation:** lower latency can support a strong reset; high latency is cautionary. Reclaim speed alone is not enough if the reclaim immediately fails.
+- **Failure modes / counterexamples:** reclaim reference can be arbitrary; a one-tick touch is not true recovery; sampling cadence limits precision.
+- **Relationship to other evidence:** PR-004 is timing; PR-005 is reclaim quality/persistence; PR-006 asks whether the new leg accelerates afterward.
+- **Worked example:** pullback low at t=0, prior micro level reclaimed at t=8s vs t=45s. The first preserves much more opportunity time.
 - **Known overlaps:** Issue #16 conversion latency; PR-006
 - **Confidence limits:** reclaim reference must be explicit; slow reclaim can consume most of the opportunity horizon
 - **Validation targets:** target-before-adverse, TimeToTarget, usable lead time
@@ -2559,6 +2587,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Confirmation, PathRisk
 - **Meaning:** separates touching/recovering a level from actually re-establishing upward progress
+- **Plain-language intuition:** this asks whether price merely touched back above a reference or stayed/progressed above it convincingly.
+- **Market mechanism / why it can matter:** failed reclaims are common. A meaningful reclaim should show persistence and preferably supportive BID/MID/activity behavior.
+- **Objective connection:** we want evidence that a fresh leg is really re-forming before spending limited opportunity time on it.
+- **Favorable / unfavorable interpretation:** `CONFIRMED_RECLAIM` supports renewal; `WEAK_RECLAIM` is tentative; `FAILED_RECLAIM` warns that the reset did not restore upward structure.
+- **Failure modes / counterexamples:** persistence threshold can be arbitrary; a valid fast move may not linger long enough to look persistent; quote noise can fake a touch.
+- **Relationship to other evidence:** PR-005 consumes Book/Price confirmation without duplicating their votes and feeds LegResetStrength.
+- **Worked example:** price reclaims 100.20, BID rises to 100.18 and holds while price advances to 100.28 → confirmed. Touch 100.20 then immediate fall to 100.05 → failed.
 - **Known overlaps:** BD book confirmation; PH path transition
 - **Confidence limits:** no single quote/print proves reclaim acceptance; persistence must be defined without future leakage
 - **Validation targets:** target-before-adverse, post-retest continuation, MAE
@@ -2576,6 +2611,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Potential, Confirmation, RemainingOpportunity
 - **Meaning:** tests whether the pullback actually reset into a new fast leg rather than merely stopping the decline
+- **Plain-language intuition:** after reclaim, does the market actually start moving upward faster again, or did it only stop falling?
+- **Market mechanism / why it can matter:** renewed acceleration is stronger evidence of a fresh leg than mere stabilization.
+- **Objective connection:** our short objective needs a new leg that can reach a target quickly enough after entry.
+- **Favorable / unfavorable interpretation:** `REACCELERATING` supports fresh opportunity; `STEADY` may still be usable; `WEAK/DETERIORATING` suggests the reset has not produced enough new propulsion.
+- **Failure modes / counterexamples:** one jump can fake reacceleration; acceleration into a nearby barrier can fail immediately.
+- **Relationship to other evidence:** PW-004 owns raw acceleration; PR-006 owns the specific *post-retest* interpretation.
+- **Worked example:** before pullback speed +0.02%/10s, after reclaim +0.08%/10s → reacceleration candidate.
 - **Known overlaps:** PW-004; Sequence
 - **Confidence limits:** family owns the post-retest interpretation, not a duplicate acceleration vote
 - **Validation targets:** TimeToTarget, target-before-adverse, detection lateness
@@ -2593,6 +2635,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** explicit representation of renewed opportunity inside an older broad wave
+- **Plain-language intuition:** this summarizes whether the pullback meaningfully refreshed the current leg or whether the old move remains mostly consumed.
+- **Market mechanism / why it can matter:** a valid reset can create a younger local leg even when the broad wave is old.
+- **Objective connection:** this helps avoid rejecting an old wave that has just generated a new capturable leg, while also avoiding chasing a pullback that never truly reset anything.
+- **Favorable / unfavorable interpretation:** `FRESH_LEG/STRONG_FRESH_LEG` can support renewed remaining opportunity; `PARTIAL_RESET` is weaker; `FAILED` is protective.
+- **Failure modes / counterexamples:** fresh-leg state does not tell how large the remaining move will be; segmentation errors can manufacture resets.
+- **Relationship to other evidence:** combines PR-001..006 and PH path state; RO later decides actual remaining-opportunity magnitude.
+- **Worked example:** 6-minute wave, 20s pullback, fast reclaim and reacceleration → broad wave old, local leg fresh.
 - **Known overlaps:** PW LegAge; MoveConsumptionState
 - **Confidence limits:** should not infer large remaining opportunity solely from reset state; direct outcome validation required
 - **Validation targets:** target-before-adverse, remaining excursion at detection, TimeToTarget
@@ -2610,6 +2659,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** detects a retest that looked promising but is failing to convert quickly enough
+- **Plain-language intuition:** this is a clock that starts after a reclaim/retest and asks how long we have waited without the expected next progress.
+- **Market mechanism / why it can matter:** a setup can look valid initially but lose value as time passes without continuation.
+- **Objective connection:** waiting itself consumes the opportunity horizon. A retest that does not convert fast enough may no longer be worth entering.
+- **Favorable / unfavorable interpretation:** short clock is neutral; growing clock becomes cautionary; explicit failure invalidates the setup.
+- **Failure modes / counterexamples:** normal conversion time is not yet calibrated; a brief consolidation can be healthy.
+- **Relationship to other evidence:** overlaps PH stall clock and Issue #16 conversion latency; PR-008 is specifically anchored to retest/reclaim lifecycle.
+- **Worked example:** confirmed reclaim at t=0, no new progress by t=25s on a 30s target horizon → most usable time has been consumed.
 - **Known overlaps:** PH-007/PH-008; Issue #16
 - **Confidence limits:** “too long” depends on conversion-latency/target context; exact failure threshold not yet known
 - **Validation targets:** failure-before-target, TimeToTarget deterioration, false-start reduction
@@ -2627,6 +2683,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, PathRisk
 - **Meaning:** identifies whether the desired move must first clear a nearby local obstacle
+- **Plain-language intuition:** this measures how far above current price the nearest relevant micro-level sits—such as a recent local high that the move must cross.
+- **Market mechanism / why it can matter:** nearby price levels can concentrate displayed supply or prior rejection behavior and delay the path to the target.
+- **Objective connection:** a short target is less attractive if most of the required move first runs directly into a nearby obstacle.
+- **Favorable / unfavorable interpretation:** no relevant nearby barrier can simplify the path; a very close barrier raises uncertainty. But a close barrier can become positive if crossed and accepted quickly.
+- **Failure modes / counterexamples:** not every historical high is meaningful; distant daily levels should not contaminate a 20s target; barrier relevance must be observable at decision time.
+- **Relationship to other evidence:** PR-009 gives absolute distance; PR-010 scales it to target; PR-011/012 measure what happens when the level is crossed.
+- **Worked example:** current 100.00, micro-high 100.08, target 100.15. The barrier sits over halfway toward the target and is operationally relevant.
 - **Known overlaps:** PR-010; daily/recent high context
 - **Confidence limits:** broad/distant daily highs are not automatically relevant; barrier definition must be causal/observable at decision time
 - **Validation targets:** TimeToTarget, barrier-first/rejection outcomes
@@ -2644,6 +2707,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** distinguishes a barrier that consumes a large share of the desired move from one that is economically irrelevant to that target
+- **Plain-language intuition:** this asks where the barrier sits relative to the target distance.
+- **Market mechanism / why it can matter:** a barrier 0.05% away matters much more for a +0.10% target than for a +1.00% target.
+- **Objective connection:** short-horizon target feasibility depends on whether the path is obstructed before most of the desired gain can be captured.
+- **Favorable / unfavorable interpretation:** ratio near/under 1 means barrier lies inside the target path; very small ratio means obstacle is immediate. Ratio >1 means barrier lies beyond that target and may be irrelevant.
+- **Failure modes / counterexamples:** target must be valid; barrier can be crossed instantly and become irrelevant; a “barrier” based on bad segmentation creates false concern.
+- **Relationship to other evidence:** PR-009 provides distance, RO provides target, PR-010 connects them.
+- **Worked example:** barrier distance 0.08%, target 0.20% → ratio 0.40. Barrier lies 40% of the way to target.
 - **Known overlaps:** TargetFeasibilityFrontier
 - **Confidence limits:** blocked until target semantics exist; a near barrier can be positive if rapidly accepted
 - **Validation targets:** target-before-adverse, TimeToTarget
@@ -2661,6 +2731,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Confirmation, RemainingOpportunity
 - **Meaning:** measures whether the cross converts quickly into useful continuation
+- **Plain-language intuition:** after price crosses a relevant barrier, this measures how long it takes to make meaningful progress beyond it.
+- **Market mechanism / why it can matter:** a true useful breakout should often convert crossing into acceptance/progress; lingering at the level can indicate uncertainty or rejection.
+- **Objective connection:** our horizon is short, so a slow barrier clearance can consume the target's time budget even if the breakout eventually works.
+- **Favorable / unfavorable interpretation:** short clearance latency supports continuation; long latency raises rejection/stall risk.
+- **Failure modes / counterexamples:** one snapshot can miss exact crossing time; temporary pauses above a level can still be healthy.
+- **Relationship to other evidence:** PR-011 is timing; PR-012 classifies acceptance/rejection quality.
+- **Worked example:** barrier 100.20 crossed at t=0, meaningful progress to 100.28 at t=6s vs t=40s—same direction, very different usability.
 - **Known overlaps:** Issue #16 conversion latency; PR-012
 - **Confidence limits:** crossing alone is not acceptance; current cadence may create interval uncertainty
 - **Validation targets:** target-before-adverse, TimeToTarget, breakout continuation/rejection
@@ -2678,6 +2755,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Confirmation, PathRisk
 - **Meaning:** differentiates a mere print above a level from sustained market-center/progress above it
+- **Plain-language intuition:** this asks whether the market actually *accepted* prices above the barrier rather than briefly touching them.
+- **Market mechanism / why it can matter:** a single print above resistance can immediately fail. Sustained BID/MID/LAST progress above the level is stronger evidence that the market has repriced.
+- **Objective connection:** accepted clearance removes an obstacle from the path to the target; rejection can rapidly turn an apparent breakout into adverse movement.
+- **Favorable / unfavorable interpretation:** `ACCEPTED` supports continuation; `TENTATIVE` remains uncertain; `REJECTED/FAILED_BREAK` is protective.
+- **Failure modes / counterexamples:** persistence rules are uncalibrated; fast legitimate breakouts may not spend long above the level before continuing.
+- **Relationship to other evidence:** PR-012 consumes BD/PW/AF after the crossing; it should not duplicate them as extra votes.
+- **Worked example:** cross 100.20, then BID/MID remain above 100.20 and advance → accepted. Cross 100.20, then immediate return to 100.10 → rejected.
 - **Known overlaps:** BD flow state; PH path state
 - **Confidence limits:** exact persistence requirement uncalibrated; must not peek beyond the decision timestamp when used online
 - **Validation targets:** post-break target-before-adverse, MAE, TimeToTarget
@@ -2695,6 +2779,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk
 - **Meaning:** identifies rejection/failure developing after a cross
+- **Plain-language intuition:** this measures how much of the post-break progress has already been surrendered after crossing the barrier.
+- **Market mechanism / why it can matter:** large giveback after a breakout can indicate that the market did not truly accept the new level.
+- **Objective connection:** if newly gained ground is rapidly surrendered, the remaining path to the target becomes less reliable and adverse risk rises.
+- **Favorable / unfavorable interpretation:** small giveback supports acceptance; large giveback warns of rejection/failure.
+- **Failure modes / counterexamples:** healthy retest of the broken level can create temporary giveback; generic path giveback must not be double-counted.
+- **Relationship to other evidence:** PH-004 owns general giveback; PR-013 is barrier-specific context used only around the break.
+- **Worked example:** break above 100.20 reaches 100.35 then falls to 100.22 → most post-break progress was surrendered, warning of weak acceptance.
 - **Known overlaps:** PH-004 GiveBackPct
 - **Confidence limits:** should be consumed as barrier-specific context, not a second generic GiveBack penalty
 - **Validation targets:** failed break, target-before-adverse, MAE
@@ -2712,6 +2803,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** Potential, Confirmation, RemainingOpportunity, PathRisk
 - **Meaning:** compact state that tells higher-level logic whether a recent retreat/barrier event has created, preserved or invalidated a fresh short-horizon opportunity
+- **Plain-language intuition:** this is the family summary: are we resetting, reclaiming, in a fresh leg, waiting at a barrier, accepted above it, or failing?
+- **Market mechanism / why it can matter:** the sequence from retreat→reclaim→reacceleration→barrier interaction captures whether an old move has genuinely refreshed or broken down.
+- **Objective connection:** higher-level ranking needs one compact answer about whether the current local structure creates a fresh capturable path from NOW.
+- **Favorable / unfavorable interpretation:** `FRESH_LEG/BARRIER_ACCEPTED` can support remaining opportunity; `RESETTING/RETESTING/BARRIER_PENDING` are transitional; `REJECTED/FAILED` are protective.
+- **Failure modes / counterexamples:** state names can look authoritative before thresholds are validated; a fresh leg can still be too small/late/expensive to trade.
+- **Relationship to other evidence:** PR-014 synthesizes PR metrics and feeds SQ/RO; it does not replace PathHealth, BookFlow or ExecutionFeasibility.
+- **Worked example:** controlled pullback → confirmed reclaim → reacceleration → quick acceptance above nearby high = `BARRIER_ACCEPTED` candidate. Same setup with immediate rejection = `REJECTED`.
 - **Known overlaps:** PH WaveHealthState; Sequence; RemainingOpportunity
 - **Confidence limits:** this is not a classical-pattern buy signal; each state must be validated against direct target/adverse outcomes
 - **Validation targets:** target-before-adverse, TimeToTarget, detection lateness, MAE

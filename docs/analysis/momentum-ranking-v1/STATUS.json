@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Path Quality/Wave Health PH-001..PH-013. Path efficiency, reversal structure, giveback, stalls and effort-to-progress deterioration are documented as path-risk/remaining-opportunity evidence rather than standalone bullish alpha."
+    "subfocus": "Deep-rationale retrofit completed for Pullback/Retest/Micro-Barrier PR-001..PR-014. Pullbacks are documented as potential reset/reclaim processes, while barriers matter only when they materially intersect the short target path and their clearance/rejection timing is observable."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Pullback/Retest/Micro-Barrier PR-001..PR-014 to the deep-rationale documentation contract, explaining when a retreat creates a useful reset/reclaim and when a micro-barrier blocks or invalidates the short target path."
+    "action": "Retrofit Sequence/Lead-Lag/Opportunity Stage SQ-001..SQ-013 to the deep-rationale documentation contract, explaining observable ordering, simultaneous-cluster uncertainty, precursor lead, confirmation delay, detection lateness and opportunity-stage timing."
   }
 }
