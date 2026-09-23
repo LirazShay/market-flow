@@ -7,7 +7,10 @@ Master backlog: GitHub Issue #3.
 | Issue | Research unit | Durable output |
 |---:|---|---|
 | #4 | Consolidate chat research | workstream shell + checkpoint |
+| #14 | Objective alignment audit and first-principles hypotheses | objective-audit + new research directions |
 | #5 | Feature registry and evidence taxonomy | feature/evidence registry |
+| #15 | Direct short-horizon outcome surfaces / fast-excursion propensity | observation-based target/time/adverse outcome surface |
+| #16 | Precursor-to-price conversion latency / opportunity half-life | conversion-latency + signal-decay design |
 | #6 | Wave segmentation and recent realized wave capacity | wave semantics/capacity design |
 | #7 | Recent-wave recurrence and pattern similarity | recurrence/prior design |
 | #8 | Multi-horizon trend context | trend-context design |

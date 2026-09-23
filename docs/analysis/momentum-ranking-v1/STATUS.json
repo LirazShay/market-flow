@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 5,
-    "title": "Build feature registry and evidence taxonomy",
+    "issue": 14,
+    "title": "Objective alignment audit and first-principles short-horizon hypotheses",
     "status": "in-progress",
-    "subfocus": "Price/Wave, Activity/Flow, Book/Directional Flow, Tradability and Freshness/Data Quality established; next populate Path Quality/Wave Health."
+    "subfocus": "Audit pass 1 completed for the currently registered Price/Wave, Activity/Flow, Book/Directional Flow, Tradability and Freshness/Data Quality families."
   },
   "completedWorkUnits": [
     {
@@ -24,6 +24,7 @@
     }
   ],
   "plannedIssues": [
+    14,
     5,
     6,
     7,
@@ -32,7 +33,9 @@
     10,
     11,
     12,
-    13
+    13,
+    15,
+    16
   ],
   "researchState": {
     "empiricalCalibrationAvailable": false,
@@ -40,7 +43,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 5,
-    "action": "Populate the Path Quality/Wave Health family: directional efficiency, reversals, giveback, path cleanliness and effort-vs-result deterioration/exhaustion evidence."
+    "issue": 14,
+    "action": "Continue the objective-alignment audit over the remaining research checkpoint topics: Path/WaveHealth, pullback/retest, levels/breakout, sequence/lead-lag, remaining opportunity, cross-sectional ranking, recent-wave memory, multi-horizon context and local regime."
   }
 }
