@@ -46,7 +46,7 @@ market-flow-leumi-v1-viewer
 
 It must share the origin needed to access the same IndexedDB.
 
-Repeated open focuses/reuses the named viewer rather than creating uncontrolled duplicates.
+Repeated open may focus/reuse an existing viewer or open another same-origin viewer. Multiple viewer windows are acceptable because each rereads authoritative state from IndexedDB; repeated runtime launch must not start a duplicate recorder.
 
 Reload/reopen must rebuild from persisted DB state.
 
@@ -171,16 +171,17 @@ It:
 2. BroadcastChannel never supplies authoritative market rows.
 3. Viewer startup works from existing DB state even without a currently running recorder.
 4. Viewer reload/close/reopen does not require an in-memory opener snapshot.
-5. Missing universe metadata cannot silently drop valid latest rows.
-6. `0` is displayed as zero, not as missing.
-7. Sorting is deterministic and does not mutate persisted data.
-8. Detail history is security-specific.
-9. Paging/load-older produces no duplicate/skip at continuation boundaries.
-10. Manual refresh is DB-only.
-11. UI error states are explicit; failed reads are not rendered as successful emptiness.
-12. Keyboard-visible focus and real interactive controls are preserved where defined.
-13. The viewer is a research display, not a trading recommendation engine.
-14. Debug export is observational and must not trigger provider collection or mutate persisted market state.
+5. Multiple viewer windows are allowed; they remain read-only views over the same IndexedDB authority and must not create additional recorders.
+6. Missing universe metadata cannot silently drop valid latest rows.
+7. `0` is displayed as zero, not as missing.
+8. Sorting is deterministic and does not mutate persisted data.
+9. Detail history is security-specific.
+10. Paging/load-older produces no duplicate/skip at continuation boundaries.
+11. Manual refresh is DB-only.
+12. UI error states are explicit; failed reads are not rendered as successful emptiness.
+13. Keyboard-visible focus and real interactive controls are preserved where defined.
+14. The viewer is a research display, not a trading recommendation engine.
+15. Debug export is observational and must not trigger provider collection or mutate persisted market state.
 
 ## Failure semantics
 
