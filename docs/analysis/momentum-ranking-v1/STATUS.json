@@ -14,7 +14,7 @@
     "issue": 14,
     "title": "Objective alignment audit and first-principles short-horizon hypotheses",
     "status": "in-progress",
-    "subfocus": "Audit passes 1–2 completed. Pass 2 covered Path/WaveHealth, Pullback/Retest, Levels/Breakout and Sequence/Lead-Lag."
+    "subfocus": "Audit passes 1–3 completed. Pass 3 redefined RemainingOpportunity as a structured conditional future-excursion budget rather than a generic momentum heuristic."
   },
   "completedWorkUnits": [
     {
@@ -44,6 +44,6 @@
   },
   "next": {
     "issue": 14,
-    "action": "Continue the objective-alignment audit over RemainingOpportunity, cross-sectional ranking/leader hysteresis, recent-wave memory/capacity, multi-horizon context and local regime."
+    "action": "Audit cross-sectional ranking and leader/challenger hysteresis against the absolute short-horizon opportunity objective."
   }
 }

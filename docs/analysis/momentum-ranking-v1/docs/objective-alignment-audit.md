@@ -654,3 +654,421 @@ It becomes informative relative to:
 
 This links Path/WaveHealth directly to Issue #16.
 
+
+
+---
+
+# Audit pass 3 — Remaining Opportunity
+
+## RemainingOpportunity — KEEP AS A CORE DIMENSION, but redefine it more strictly
+
+This concept is more central to the project than generic momentum strength.
+
+The engine does not primarily care:
+
+~~~text
+how strong was the move?
+~~~
+
+It cares:
+
+~~~text
+from the current decision point,
+how much useful upward excursion is still plausibly available,
+how quickly,
+before how much adverse movement,
+and after how much friction/latency?
+~~~
+
+This means RemainingOpportunity should not be a single heuristic score derived from “young wave + strong momentum”.
+
+It should eventually be grounded in direct conditional future-outcome surfaces.
+
+## Key decomposition
+
+Separate at least:
+
+~~~text
+ObservedMove
+CurrentPotential
+RemainingCapturableExcursion
+TimeBudget
+AdversePathBudget
+ExecutionBudget
+Confidence
+~~~
+
+### ObservedMove
+
+What already happened before the decision.
+
+This is descriptive and can create **lateness risk**.
+
+### CurrentPotential
+
+Evidence that upward force/process currently exists.
+
+Examples:
+- fresh acceleration;
+- activity expansion;
+- upward L1 dynamics;
+- successful reclaim/retest;
+- favorable sequence.
+
+Potential is not the same as remaining magnitude.
+
+### RemainingCapturableExcursion
+
+The future upward movement that remains potentially usable **from the current reference point**.
+
+This is the quantity most aligned with the user objective.
+
+### TimeBudget
+
+How much of the allowed horizon remains after:
+- data age;
+- ranking latency;
+- decision latency;
+- entry latency.
+
+### AdversePathBudget
+
+How much adverse movement can occur before the opportunity ceases to be attractive/usable for the selected target definition.
+
+### ExecutionBudget
+
+How much expected movement remains after:
+- spread;
+- tick granularity;
+- slippage/impact;
+- explicit costs;
+- fill delay/uncertainty.
+
+---
+
+## Important correction: do not estimate RemainingOpportunity as "typical wave size minus current move" mechanically
+
+A tempting formula is:
+
+~~~text
+recent median wave amplitude
+- current wave amplitude
+~~~
+
+This can be useful as context but is not a valid final estimator by itself.
+
+Why:
+
+1. Current wave may belong to a different regime.
+2. Previous wave amplitudes are a distribution, not a fixed capacity.
+3. A wave can terminate early.
+4. A new leg can reset opportunity after a pullback.
+5. Current state may already be deteriorating despite low consumed amplitude.
+6. A stock can exceed its recent median/max during a new regime.
+7. Segmentation errors can distort both numerator and denominator.
+
+Therefore recent realized wave capacity should provide a **conditional prior/reference**, not a deterministic budget.
+
+---
+
+## New core concept: Conditional Future Excursion Surface
+
+For each eligible decision observation and state, future research should estimate/measure:
+
+~~~text
+P(+0.05% before -0.05% within 5s | state)
+P(+0.10% before -0.05% within 10s | state)
+P(+0.20% before -0.10% within 30s | state)
+...
+~~~
+
+plus empirical:
+
+~~~text
+MFE
+MAE
+TimeToTarget
+TimeToAdverse
+WhichBarrierFirst
+~~~
+
+No calibrated probability should be claimed until enough project history exists.
+
+Issue #15 owns the detailed research of this direct outcome surface.
+
+Recent first-passage work in high-frequency FX explicitly separates imminent move occurrence, direction and monetisation using excursions within 120 seconds. This is external methodological support only, not TASE evidence:
+
+- https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6919443
+
+---
+
+## New distinction: PotentialRemaining vs CapturableRemaining
+
+A move may still have raw upside potential but no useful capturable opportunity.
+
+Example:
+
+~~~text
+estimated raw remaining excursion: +0.20%
+spread + slippage + latency consume much of it
+→ capturable remaining excursion may be near zero
+~~~
+
+Therefore:
+
+~~~text
+PotentialRemaining
+!=
+CapturableRemaining
+~~~
+
+This supports the existing separation:
+
+~~~text
+MarketOpportunity
+→ ExecutionFeasibility
+→ NetExecutableOpportunity
+~~~
+
+---
+
+## New concept: OpportunityBudget
+
+Represent the opportunity as a structured budget rather than one score:
+
+~~~text
+OpportunityBudget {
+  positiveExcursionCandidates
+  timeRemaining
+  adverseTolerance
+  frictionEstimate
+  confidence
+}
+~~~
+
+The final CentralRanker may later compress this into a ranking score, but the internal representation should preserve these dimensions.
+
+---
+
+## New concept: MoveConsumptionState
+
+Do not ask only:
+
+~~~text
+how much did the stock already move?
+~~~
+
+Ask:
+
+~~~text
+relative to comparable current-state future excursions,
+how much of the likely usable move appears already consumed?
+~~~
+
+Candidate concepts:
+
+~~~text
+ConsumedFraction
+RemainingFraction
+DetectionLateness
+CurrentVsRecentCapacity
+CurrentVsConditionalExcursion
+~~~
+
+But these should remain separate until empirical history proves how they relate.
+
+Candidate state:
+
+~~~text
+EARLY
+PARTIALLY_CONSUMED
+MATURE
+MOSTLY_CONSUMED
+RENEWED_AFTER_RESET
+UNKNOWN
+~~~
+
+The important state is not necessarily the age of the broad wave.
+
+A pullback/reclaim can create:
+
+~~~text
+broad wave = old
+current leg = fresh
+remaining opportunity = renewed
+~~~
+
+---
+
+## New concept: TimeBudgetAfterLatency
+
+The outer horizon is not fully available at decision time.
+
+Candidate:
+
+~~~text
+TimeBudgetAfterLatency
+=
+targetHorizon
+- observationAge
+- rankingDelay
+- decisionDelay
+- expectedEntryDelay
+~~~
+
+This is more objective-aligned than comparing signal age to two minutes in isolation.
+
+If the remaining time budget is too small for the target's empirically observed TimeToTarget distribution, the candidate should be downgraded/rejected even when the signal looks strong.
+
+---
+
+## New concept: TargetFeasibilityFrontier
+
+Instead of selecting one universal target, maintain a frontier:
+
+~~~text
+target size
+× timeout
+× adverse barrier
+× friction
+× confidence
+~~~
+
+Example conceptual output:
+
+~~~text
++0.10% / 10s : plausible
++0.20% / 30s : plausible
++0.30% / 60s : weak
++0.50% / 120s: unsupported
+~~~
+
+This is not a probability table until calibrated.
+
+It is a structured representation of which opportunities the evidence supports.
+
+---
+
+## New concept: OpportunityDominance
+
+When comparing two stocks, avoid forcing all dimensions immediately into one weighted sum.
+
+Candidate A may offer:
+- smaller move;
+- much faster target;
+- cleaner path.
+
+Candidate B may offer:
+- larger possible move;
+- slower target;
+- more adverse path.
+
+Before final weighting, preserve a multi-objective comparison:
+
+~~~text
+ExpectedUsefulMove
+TimeToTarget
+AdversePath
+Tradability
+Confidence
+~~~
+
+This allows future research to study Pareto-like dominance before inventing arbitrary weights.
+
+For this project, speed has high utility, but its exact nonlinear utility should be validated rather than assumed.
+
+---
+
+## New conclusion: no “momentum strength bonus” without a remaining-opportunity bridge
+
+A feature can be strongly bullish yet useless because the move is already consumed.
+
+Therefore every bullish family should eventually connect to RemainingOpportunity through one of:
+
+~~~text
+early precursor
+fresh transition
+remaining target feasibility
+low detection lateness
+renewed leg/reset
+fast conversion
+~~~
+
+Otherwise it is descriptive confirmation only.
+
+---
+
+## New conclusion: RemainingOpportunity is conditional on reference price
+
+Future evaluation must explicitly distinguish:
+
+~~~text
+signalReferencePrice
+decisionReferencePrice
+executableEntryReference
+actualFillPrice
+~~~
+
+A target measured from the historical signal price can overstate what remains available by the time the engine acts.
+
+The most relevant future label is therefore increasingly:
+
+~~~text
+ExecutableTargetBeforeAdverse
+from decision/entry reference
+~~~
+
+while raw market labels remain useful for separating prediction from execution.
+
+---
+
+# New hypotheses from audit pass 3
+
+## Q. ConditionalFutureExcursionSurface
+
+Direct state-conditioned future MFE/MAE/target/barrier outcomes from every eligible observation.
+
+## R. PotentialRemainingVsCapturableRemaining
+
+Separate raw remaining market movement from movement that survives latency and friction.
+
+## S. OpportunityBudget
+
+Preserve target/time/adverse/friction/confidence dimensions before final compression.
+
+## T. MoveConsumptionState
+
+Estimate how much of the state-conditioned useful excursion appears already consumed.
+
+## U. TimeBudgetAfterLatency
+
+Subtract observation/decision/entry delays from the relevant opportunity horizon.
+
+## V. TargetFeasibilityFrontier
+
+Maintain several candidate target/time/adverse combinations rather than one fixed target.
+
+## W. OpportunityDominance
+
+Compare candidates multi-dimensionally before imposing final scalar weights.
+
+---
+
+## Audit verdict
+
+~~~text
+RemainingOpportunity = CORE
+~~~
+
+but it should be treated as a structured, conditional, forward-looking quantity.
+
+It must not collapse into:
+
+~~~text
+momentum score
++ wave youth
+- exhaustion
+~~~
+
+without direct validation against the project's actual first-passage / target-before-adverse outcomes.
+
