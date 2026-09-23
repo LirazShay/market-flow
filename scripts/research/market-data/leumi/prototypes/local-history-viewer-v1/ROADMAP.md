@@ -509,12 +509,6 @@ baseline
 → repeated full verification
 ~~~
 
-Detailed optimization plan:
-
-~~~text
-tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md
-~~~
-
 Then finalize:
 
 - README;
