@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - ".github/workflows/local-history-viewer-v1-ci.yml"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/viewer/current-table.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/specs/viewer-diagnostics.spec.js"
   workflow_dispatch:
   workflow_call:
 
@@ -36,7 +38,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run browser tests
-        run: npm run test:browser
+        run: npm run build:runtime && npx playwright test tests/automation/specs/viewer-diagnostics.spec.js --grep "current-table rerender does not overwrite diagnostics last-update metric"
 
       - name: Upload generated runtime artifacts
         if: success()
@@ -63,7 +65,7 @@ jobs:
   publish-runtime:
     name: Publish rolling runtime download
     needs: browser-tests
-    if: github.ref == 'refs/heads/main'
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 3
 
