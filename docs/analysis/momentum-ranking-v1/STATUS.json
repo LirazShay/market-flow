@@ -14,7 +14,7 @@
     "issue": 17,
     "title": "Core predictive signal prioritization and feature reduction",
     "status": "in-progress",
-    "subfocus": "Stage 17.B completed. Activity-to-Price Conversion and Stall/Effort-to-Progress Deterioration are merged into Progress Conversion Efficiency; Clean Path/Adverse Efficiency remains a separate path-risk core candidate. Provisional parent count reduced from seven to six."
+    "subfocus": "Stage 17.C completed. Move Consumption/Remaining Opportunity and Usable Lead/Opportunity Stage are merged into Remaining Opportunity Lifecycle; Fresh Reset/Renewal remains a separate conditional core candidate. Provisional parent count reduced from six to five."
   },
   "completedWorkUnits": [
     {
@@ -56,6 +56,6 @@
   },
   "next": {
     "issue": 17,
-    "action": "Stage 17.C only: compare Fresh Reset/Reclaim/Reacceleration, Move Consumption/Remaining Opportunity, and Usable Lead/Opportunity Stage. Determine which are independent predictors versus modifiers/syntheses of the retained parents; do not yet run cross-group final elimination."
+    "action": "Stage 17.D only: perform cross-group elimination across the five provisional concepts, classify raw predictors vs conditional/protective/synthesis roles, remove remaining double counting, and produce the provisional sparse core plus reserve/demoted concepts. Do not yet define the Stage 17.E empirical protocol."
   }
 }
