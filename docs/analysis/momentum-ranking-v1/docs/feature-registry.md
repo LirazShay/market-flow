@@ -118,6 +118,33 @@ A formula without the reasoning behind it is incomplete documentation.
 
 ---
 
+## Cross-family ownership guard
+
+The full-registry consistency audit established these primary-owner rules:
+
+- **Current leg observed move:** PW-009 owns the measurement. PH-006 may interpret the shared leg/reset reference for path context but is not independently scored.
+- **Raw price acceleration:** PW-004 owns it. PR-006 owns only the specific post-retest interpretation.
+- **Generic giveback:** PH-004 owns it. PR-013 owns only post-barrier giveback context.
+- **Executed activity/effort:** AF owns raw count/rate/quantity/money evidence. PH-009/010 own only effort-to-progress conversion/deterioration.
+- **Displayed L1 depth/pressure:** BD owns market-state evidence. TE-006/007 own intended-size-specific entry/exit feasibility.
+- **Per-security observation age:** FQ-002 owns the canonical calculation. TE-009 is a consumer alias.
+- **Coverage/freshness/data validity:** FQ owns technical trust. Other families consume those outputs and must not recompute competing definitions.
+- **Current target feasibility frontier:** RO-008 owns it. MR-018 owns only regime-conditioned context around that frontier.
+- **Future excursion/adverse/timing outcomes:** Issue #15/#11 owns realized labels. Online families may consume historical aggregates but must not use future values at decision time.
+- **Recent-wave capacity/history:** WM owns the conditional prior. It must not be added as a second directional vote on top of current-state families.
+
+General rule:
+
+~~~text
+shared raw input
+!=
+shared score ownership
+~~~
+
+A downstream contextual interpretation may reuse an upstream measurement, but the same underlying evidence must not receive multiple independent additive votes unless incremental value is empirically demonstrated.
+
+---
+
 ## Ownership rule
 
 A raw observation may support several concepts, but each scored concept must have one primary family owner.
@@ -172,6 +199,7 @@ MID = (BID1 + ASK1) / 2
 - **Role:** CONFIRMING, LAGGING_CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(input/history availability) + PI(derivation) + H(predictive value)
+- **Decision role:** Potential, Confirmation
 - **Meaning:** magnitude and direction of recent observed trade-price movement across several scales
 - **Plain-language intuition:** this asks a very basic question at several recent horizons: “where is the latest traded price now compared with where trades were occurring 10/20/30/60/etc. seconds ago?” A positive profile means trades have migrated upward; a negative profile means they have migrated downward.
 - **Market mechanism / why it can matter:** repeated higher transaction prices show that buyers and sellers have actually completed trades at progressively higher levels. That is stronger than a static quote alone because money has changed hands there. However, executed prices describe what already happened; they do not prove the next buyer will pay even more.
@@ -197,6 +225,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(BID/ASK availability where present) + PI + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** movement of the market center, reducing dependence on LAST prints alone
 - **Plain-language intuition:** `MID` is the midpoint between the best displayed buyer price (`BID1`) and best displayed seller price (`ASK1`). This metric asks whether the **center of the quoted market** has moved up or down over recent windows.
 - **Market mechanism / why it can matter:** LAST can move because of one trade, while BID and ASK remain where they were. If MID rises too, the entire top-of-book pricing environment has shifted upward. That makes the move less dependent on a single print and more reflective of current quoted willingness to buy/sell.
@@ -220,6 +249,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** CONFIRMING
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, RemainingOpportunity
 - **Meaning:** how quickly the current observed movement is occurring
 - **Plain-language intuition:** two stocks can both rise 0.30%, but one may do it in 20 seconds and the other in 10 minutes. This metric distinguishes the **rate of movement**, not just the distance travelled.
 - **Market mechanism / why it can matter:** our holding horizon is short. A move that is converting price rapidly can reach a small target before latency, spread burden or reversal consumes the opportunity. Slow movement may still be bullish but operationally useless for a seconds-to-minutes strategy.
@@ -243,6 +273,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity
 - **Meaning:** whether the force of the current move appears to be strengthening or weakening now
 - **Plain-language intuition:** acceleration asks whether the most recent slice is moving faster than the slice just before it. It is the difference between “still going up” and “going up faster now than a moment ago.”
 - **Market mechanism / why it can matter:** a fresh opportunity often matters most when movement is becoming more forceful, while a mature move may still be positive but losing speed. Acceleration can therefore distinguish onset/building behavior from simple historical strength.
@@ -266,6 +297,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** LEADING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, Freshness/Trust
 - **Meaning:** distinguishes a fresh acceleration from a move that mostly happened earlier
 - **Plain-language intuition:** this asks “how much of the move happened **recently**, close to now?” A stock can be +1% over five minutes but have done almost all of that four minutes ago, or it can have produced most of the rise in the last 30 seconds.
 - **Market mechanism / why it can matter:** recent concentration helps identify whether current movement is still active or whether the large longer-window return is stale baggage from an earlier burst.
@@ -289,6 +321,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** distinguishes trade-price movement confirmed by market-center migration from potentially noisy LAST-only movement
 - **Plain-language intuition:** this compares what actual recent trades (`LAST`) are doing with what the current quoted market center (`MID`) is doing. Are both moving up together, or is only one of them moving?
 - **Market mechanism / why it can matter:** when trades and the quoted market center rise together, the movement is supported by both executed prices and current quotes. When they disagree, the signal may be stale, noisy or in transition.
@@ -312,6 +345,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** LAGGING_CONTEXT, PROTECTIVE, CONTEXT
 - **Availability:** HISTORY
 - **Evidence:** PI + H
+- **Decision role:** Context/Prior, RemainingOpportunity
 - **Meaning:** age of the broader currently identified wave
 - **Plain-language intuition:** once Issue #6 defines a wave, this simply asks how long the broader upward/downward episode has already been running.
 - **Market mechanism / why it can matter:** older waves have had more time to consume available movement, attract late entrants and encounter exhaustion, but age alone does not determine whether opportunity remains. A long wave can generate a fresh sub-leg.
@@ -335,6 +369,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** CONTEXT, PROTECTIVE
 - **Availability:** HISTORY
 - **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, Context/Prior
 - **Meaning:** distinguishes an old broad wave from a fresh post-pullback leg
 - **Plain-language intuition:** a `leg` is the current directional segment inside a broader wave. This metric asks how long the **current segment** has been running since the latest meaningful reset/pullback.
 - **Market mechanism / why it can matter:** short opportunities can renew inside an old wave. A fresh leg after a successful pullback can have more remaining room than the broad wave's age would suggest.
@@ -358,6 +393,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** CONFIRMING, LAGGING_CONTEXT
 - **Availability:** HISTORY
 - **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
 - **Meaning:** how much of the current leg has already been observed/consumed
 - **Plain-language intuition:** after the current leg begins, this asks how far price has already travelled before we consider entering.
 - **Market mechanism / why it can matter:** a fresh leg that has moved only a little may still have room, while a leg that already delivered a large rapid move may have less remaining opportunity—even if it still looks strong.
@@ -381,6 +417,7 @@ Important: the horizons are a **profile**, not independent votes.
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW + HISTORY for full semantics
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity
 - **Meaning:** family-level summary consumed by higher-level opportunity logic rather than summing overlapping price features independently
 - **Plain-language intuition:** instead of showing ten separate price numbers, this summarizes the current **price process** into an interpretable lifecycle such as quiet, waking, building, accelerating, slowing or reversing.
 - **Market mechanism / why it can matter:** the same positive return can occur in very different phases. A move that is just waking up is different from one that is already strong but slowing. The state captures the shape of price evolution, not just its current sign.
@@ -452,6 +489,7 @@ A negative cumulative delta is **not** valid negative activity; it indicates res
 - **Role:** LEADING, CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI(derivation) + H(predictive value)
+- **Decision role:** Potential, Confirmation
 - **Meaning:** how many executions occurred during recent windows
 - **Plain-language intuition:** this counts how many separate trades were completed during each recent window. Twenty trades in 20 seconds describes a very different market pulse from two trades in the same period, even if total traded quantity happens to be similar.
 - **Market mechanism / why it can matter:** frequent executions mean buyers and sellers are actively meeting, so price can update more often and a short-lived opportunity has more chances to convert. But trade count alone says nothing about which side is stronger or whether those trades are tiny.
@@ -477,6 +515,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONFIRMING
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** converts recent trade count into an elapsed-time-aware activity rate
 - **Plain-language intuition:** trade count tells how many trades occurred; trade rate tells how densely they occurred in time. Ten trades in 10 seconds is much more active than ten trades in 60 seconds.
 - **Market mechanism / why it can matter:** short-horizon opportunities depend on how quickly market participants are interacting. Higher trades-per-second means the market is updating its executed consensus more rapidly, which can help a move reach a target sooner—or can accelerate a reversal just as quickly.
@@ -500,6 +539,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** detects whether executed activity itself is waking up or cooling down
 - **Plain-language intuition:** this asks whether trades are arriving faster now than just before. It is the activity equivalent of price acceleration.
 - **Market mechanism / why it can matter:** a market can transition from quiet to active before or during a short move. Rising execution intensity may indicate more participants are becoming involved, while falling intensity can signal that the burst is losing energy.
@@ -523,6 +563,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** interpretable activity-regime state rather than a raw trade-count threshold
 - **Plain-language intuition:** instead of saying “37 trades = high”, this asks whether the stock is dormant, normal, waking up, bursting, already in sustained high activity, or cooling.
 - **Market mechanism / why it can matter:** absolute trade counts vary enormously by stock and time of day. What matters is often the transition from the stock's recent baseline into unusually intense activity, because regime changes can accompany opportunity onset.
@@ -546,6 +587,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + H
+- **Decision role:** Confirmation
 - **Meaning:** measures how much inventory/quantity actually changed hands recently
 - **Plain-language intuition:** this measures the total number of shares/units traded recently, regardless of how many separate trades were needed to do it.
 - **Market mechanism / why it can matter:** high traded quantity means more inventory changed owners. That can indicate materially larger participation than trade count alone suggests. A move supported by meaningful quantity can be harder to dismiss as a few tiny prints—but quantity still has no direction by itself.
@@ -569,6 +611,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + H
+- **Decision role:** Confirmation
 - **Meaning:** measures recent economic value of executed activity, complementing trade count and raw quantity
 - **Plain-language intuition:** this asks how much money changed hands recently, not merely how many trades or shares were involved.
 - **Market mechanism / why it can matter:** the same share quantity can represent very different economic participation in a ₪5 stock versus a ₪500 stock. Monetary turnover provides a more comparable sense of capital actually transacted, although it still depends strongly on security size/liquidity.
@@ -592,6 +635,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Confirmation, Context/Prior
 - **Meaning:** distinguishes many smaller executions from fewer larger executions within the sampled window
 - **Plain-language intuition:** this divides recent traded quantity by number of trades to estimate the average trade size in the sampled window.
 - **Market mechanism / why it can matter:** many tiny trades can create high activity count without much inventory transfer, while fewer larger trades can represent more concentrated size. The mix can help describe what kind of participation is occurring.
@@ -615,6 +659,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Confirmation
 - **Meaning:** asks whether the activity burst is broad-based across several executed-activity dimensions rather than visible in one counter only
 - **Plain-language intuition:** this checks whether trade frequency, traded quantity and monetary turnover are all expanding together, or whether only one dimension is responsible for the apparent burst.
 - **Market mechanism / why it can matter:** a broad expansion is harder to dismiss as a single artifact. For example, rising count + rising quantity + rising money turnover suggests participation is expanding in several ways. Count-only expansion may simply be many tiny trades; size-only expansion may be one block.
@@ -638,6 +683,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** CONTEXT, CONFIRMING
 - **Availability:** NOW
 - **Evidence:** PV(field meaning + partial availability) + PI + H
+- **Decision role:** Confirmation, Context/Prior
 - **Meaning:** captures whether the latest reported trade is small/typical/large relative to recent local activity
 - **Plain-language intuition:** this asks whether the most recent trade was unusually small or large compared with the recent trading pattern.
 - **Market mechanism / why it can matter:** a very large latest print can be evidence that a meaningful amount of inventory just changed hands, while a tiny print may be less informative. But one trade is always weak evidence because it may be isolated.
@@ -661,6 +707,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONTEXT
 - **Availability:** TAPE
 - **Evidence:** U(project availability) + GL + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** true event-time pulse of executions, distinct from snapshot-based trade-rate proxies
 - **Plain-language intuition:** this would measure the exact time gaps between individual trades—e.g. 800ms, 300ms, 120ms—rather than inferring activity from cumulative counters sampled every few seconds.
 - **Market mechanism / why it can matter:** shrinking gaps between trades can show a market rapidly speeding up in true event time. That can reveal onset earlier and more precisely than snapshot trade-count deltas.
@@ -684,6 +731,7 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Role:** LEADING, CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** single family-level representation used by higher-level opportunity logic instead of independently summing correlated activity measures
 - **Plain-language intuition:** this compresses the activity evidence into a readable lifecycle: dormant, normal, waking, accelerating, expanding, high-activity or cooling.
 - **Market mechanism / why it can matter:** activity is multi-dimensional. The family state summarizes whether the market is becoming more active, broadly expanding, already very active, or losing participation—without pretending activity alone gives direction.
@@ -763,6 +811,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + GL + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity
 - **Meaning:** detects whether the best displayed buyer price is rising, holding or retreating across short horizons — i.e. whether the market's current best displayed willingness-to-pay has migrated upward or downward
 - **Plain-language intuition:** this compares the current best bid (`BID1`) with the best bid from 10/20/30/40/50/60/90 seconds ago. It asks: “are the most aggressive displayed buyers willing to pay more now than they were a short time ago?”
 - **Market mechanism / why it can matter:** if BID1 keeps stepping upward, the exit side that matters to a future seller is improving. That can reflect buyers competing at progressively higher prices. If BID1 retreats, the market is offering less for an immediate sale even if the latest trade is still high.
@@ -786,6 +835,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + GL + H
+- **Decision role:** Confirmation, Feasibility
 - **Meaning:** detects whether the best displayed seller price is moving upward, holding or retreating across short horizons — observable seller-side quote migration, without claiming participant identity or intent
 - **Plain-language intuition:** this compares the current best ask (`ASK1`) with the ask from recent horizons. It asks whether the cheapest displayed seller is demanding a higher, lower or unchanged price.
 - **Market mechanism / why it can matter:** when ASK1 rises, the cheapest displayed offer has moved upward; when it falls, sellers are willing to offer lower. But ASK movement alone is ambiguous because it can reflect genuine upward repricing or simply a widening/narrowing spread.
@@ -809,6 +859,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** preserves **who moved** rather than reducing every change to a spread change
 - **Plain-language intuition:** two markets can end with the same spread but arrive there for opposite reasons. This state records whether BID chased upward, ASK retreated downward, both sides moved up/down, or the spread merely compressed/expanded.
 - **Market mechanism / why it can matter:** the cause of spread change matters. BID rising toward ASK can reflect stronger willingness to pay; ASK falling toward BID can reflect sellers accepting less. Both reduce spread, but the directional story is different.
@@ -832,6 +883,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(input availability) + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** summarizes displayed top-of-book quantity asymmetry
 - **Plain-language intuition:** this compares displayed quantity at the best bid with displayed quantity at the best ask. If much more size is shown on the bid, the top of book looks buyer-heavy; if more is shown on the ask, it looks seller-heavy.
 - **Market mechanism / why it can matter:** displayed imbalance can affect how easily the best quote moves. A relatively thick bid and thin ask may make upward movement easier at the top of book, while the reverse can create more immediate resistance. But displayed size is only what is visible now.
@@ -855,6 +907,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** expresses how displayed L1 quantity imbalance shifts a queue-weighted reference inside the spread
 - **Plain-language intuition:** `Microprice` takes BID/ASK prices and their displayed quantities and shifts a reference toward the side that appears harder to consume. If bid size dominates ask size, the reference moves closer to ASK; if ask size dominates, it moves closer to BID.
 - **Market mechanism / why it can matter:** unequal visible depth can make one side of the spread easier to clear than the other. The microprice is a compact way to express that top-of-book asymmetry in price units.
@@ -878,6 +931,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Confirmation, Feasibility, PathRisk
 - **Meaning:** distinguishes a one-frame large bid from displayed support that survives/reappears across observations
 - **Plain-language intuition:** instead of asking “is the bid big now?”, this asks whether meaningful bid quantity remains present, rebuilds after being reduced, or disappears over several observations.
 - **Market mechanism / why it can matter:** persistent displayed demand can make the current bid level more credible than a one-frame spike. Rebuilding after executions/cancellations can indicate continued displayed interest, though we cannot know whether it is the same participant.
@@ -901,6 +955,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Confirmation, PathRisk
 - **Meaning:** distinguishes a one-frame ask quantity from a repeatedly displayed seller-side quantity pattern
 - **Plain-language intuition:** this asks whether visible selling quantity at the best ask stays present, keeps replenishing, weakens, or disappears across observations.
 - **Market mechanism / why it can matter:** persistent/replenishing ask depth can act as a visible obstacle to upward progress; weakening ask depth can make it easier for price to step higher. But snapshots cannot prove iceberg behavior or seller identity.
@@ -924,6 +979,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Confirmation, PathRisk
 - **Meaning:** family-level displayed-pressure evidence that requires persistence rather than a single queue snapshot
 - **Plain-language intuition:** this summarizes whether displayed top-of-book quantities consistently lean upward, downward, balanced or unstable over time.
 - **Market mechanism / why it can matter:** persistent asymmetry is more informative than one snapshot because temporary orders/cancellations are common. Combining imbalance with persistence can reveal whether visible pressure has continuity.
@@ -947,6 +1003,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** CONTEXT, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation, Feasibility
 - **Meaning:** measures the economic distance between the latest trade and current best displayed ask
 - **Plain-language intuition:** this tells how far the current best seller price sits above the latest traded price. It is the immediate gap from the last transaction reference to what a buyer would currently have to pay at the ask.
 - **Market mechanism / why it can matter:** a shrinking gap can occur because LAST rises toward ASK or because ASK falls toward LAST—two very different situations. The raw gap shows distance; dynamics tell the cause.
@@ -970,6 +1027,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** CONTEXT, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation, Feasibility, RemainingOpportunity
 - **Meaning:** measures the economic distance between the latest trade and current best displayed bid
 - **Plain-language intuition:** this tells how far the current best buyer price is below the latest trade. It approximates how much price concession someone referencing the latest trade would face if they had to sell immediately at BID1.
 - **Market mechanism / why it can matter:** a small LAST-to-BID gap means the exit side is close to the latest traded price; a widening gap can signal weakening buyer-side support or simply a wider spread.
@@ -993,6 +1051,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** CONTEXT, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** describes whether the latest trade lies above or below the current quote midpoint and by how much
 - **Plain-language intuition:** this compares the last traded price with the center between current BID and ASK. If LAST is above MID, the latest trade sits toward the seller side; if below, toward the buyer side.
 - **Market mechanism / why it can matter:** repeated trades occurring nearer the ask than the bid can accompany upward pressure; nearer the bid can accompany downward pressure. But because quotes may move after the trade, this is only snapshot geometry.
@@ -1016,6 +1075,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** CONFIRMING, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** compact representation of where the latest trade lies relative to the current displayed spread
 - **Plain-language intuition:** this maps LAST's location inside the current BID–ASK interval: near 0 means close to BID, near 0.5 means near the middle, near 1 means close to ASK.
 - **Market mechanism / why it can matter:** persistent trade location near ASK can indicate trades occurring toward the upper edge of the quoted market; persistent location near BID can indicate the opposite. It compresses absolute gap sizes into a spread-relative position.
@@ -1039,6 +1099,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
 - **Meaning:** detects whether recent trades are migrating toward ASK or toward BID rather than using one static location
 - **Plain-language intuition:** instead of one spread-position snapshot, this asks whether LAST's relative location is moving upward toward ASK, downward toward BID, or oscillating.
 - **Market mechanism / why it can matter:** a persistent migration toward ASK can show that executed prices are increasingly occupying the upper part of the quoted market; migration toward BID can show weakening. But the movement can be caused by LAST, quotes, or both.
@@ -1062,6 +1123,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, PathRisk
 - **Meaning:** distinguishes buyer-side advance from seller-side ask retreat even when both numerically shrink `ASK-LAST`
 - **Plain-language intuition:** this is the “why did the geometry change?” state. It distinguishes LAST rising toward ASK, ASK falling toward LAST, BID rising toward LAST, LAST falling toward BID, or the whole structure moving together.
 - **Market mechanism / why it can matter:** identical gap changes can result from opposite forces. The market story matters because buyer-driven upward repricing is more aligned with our objective than sellers simply lowering their asks.
@@ -1085,6 +1147,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** CONFIRMING, CONTEXT, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Confirmation
 - **Meaning:** a safer snapshot-based directional-pressure proxy than pretending to classify every unseen trade
 - **Plain-language intuition:** this looks across several observations and asks whether recent trade locations persistently lean toward ASK, BID, the center, or move directionally through the spread.
 - **Market mechanism / why it can matter:** repeated upper-spread trade location can be consistent with stronger buying pressure; repeated lower-spread location can be consistent with selling pressure. Persistence matters more than one print.
@@ -1108,6 +1171,7 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + GL + H
+- **Decision role:** Potential, Confirmation, PathRisk
 - **Meaning:** best available L1 directional-pressure summary from current data without mislabeling it true signed order flow
 - **Plain-language intuition:** this is the family summary: are quote prices migrating upward, displayed quantities leaning supportively, and trade locations behaving consistently—or are those pieces disagreeing?
 - **Market mechanism / why it can matter:** no single L1 metric is reliable enough alone. Combining price migration, persistent displayed pressure and trade-location trend gives a more robust picture of current top-of-book directional structure.
@@ -1287,6 +1351,7 @@ This family primarily owns the second term.
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV(L1 semantics/coverage) + PI
+- **Decision role:** Feasibility
 - **Meaning:** economic width of the currently displayed best spread relative to market-center price
 - **Plain-language intuition:** this is the percentage gap between the best displayed seller (`ASK1`) and best displayed buyer (`BID1`). It tells us how much price distance separates an immediate aggressive buy from an immediate aggressive sell at the current touch.
 - **Market mechanism / why it can matter:** every short trade must overcome market friction. A wider spread means more of the desired move is consumed before an immediate buy→sell round trip can even break even at displayed prices. A narrow spread makes the market cheaper to cross, but says nothing about direction.
@@ -1310,6 +1375,7 @@ This family primarily owns the second term.
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI + H
+- **Decision role:** Feasibility
 - **Meaning:** distinguishes a currently narrow spread that is persistent from one that is flickering or rapidly deteriorating
 - **Plain-language intuition:** this asks whether the current spread stays similar across recent observations or keeps widening, narrowing or jumping around.
 - **Market mechanism / why it can matter:** a narrow spread visible for one snapshot may disappear before an order reaches the market. Stable spread makes the current friction estimate more credible; unstable spread means execution conditions can change faster than our decision path.
@@ -1333,6 +1399,7 @@ This family primarily owns the second term.
 - **Role:** CONTEXT, GATE
 - **Availability:** FUTURE
 - **Evidence:** U(current project source)
+- **Decision role:** Feasibility, Context/Prior
 - **Meaning:** minimum legal price increment needed to interpret one-tick movement and spread granularity
 - **Plain-language intuition:** tick size is the smallest allowed price step. If tick size is 0.10, prices may move 100.00→100.10, but not 100.00→100.03.
 - **Market mechanism / why it can matter:** when one tick is economically large, a single quote change can look like strong percentage momentum even though it is just the minimum legal move. Tick size also determines how coarse the spread and target grid can be.
@@ -1356,6 +1423,7 @@ This family primarily owns the second term.
 - **Role:** CONTEXT, PROTECTIVE
 - **Availability:** FUTURE
 - **Evidence:** PI + U(source dependency)
+- **Decision role:** Feasibility
 - **Meaning:** economic size of one legal tick for this security at the current price
 - **Plain-language intuition:** this converts one tick from price units into a percentage of the stock price, making it easier to compare tick burden across securities.
 - **Market mechanism / why it can matter:** the same absolute tick has different economic meaning at different prices. A 0.10 tick is huge for a 5.00 stock and tiny for a 500.00 stock.
@@ -1379,6 +1447,7 @@ This family primarily owns the second term.
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** FUTURE
 - **Evidence:** PI + U(source dependency)
+- **Decision role:** Feasibility
 - **Meaning:** describes spread granularity in market-structure terms, complementary to SpreadPct
 - **Plain-language intuition:** this asks how many legal price steps separate BID from ASK.
 - **Market mechanism / why it can matter:** one-tick spread may be structurally tight even if that one tick is economically large; several ticks may be structurally wide even if the percent gap is small. Both views matter.
@@ -1402,6 +1471,7 @@ This family primarily owns the second term.
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** EXEC
 - **Evidence:** PV(ASK1 displayed quantity semantics) + PI + H
+- **Decision role:** Feasibility
 - **Meaning:** how large a contemplated aggressive entry is relative to currently displayed best-ask quantity
 - **Plain-language intuition:** this compares our intended buy quantity with the quantity currently displayed for sale at ASK1.
 - **Market mechanism / why it can matter:** if our order is large relative to visible ask depth, we may consume the whole level and need higher prices for the remainder. That raises entry slippage risk.
@@ -1425,6 +1495,7 @@ This family primarily owns the second term.
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** EXEC
 - **Evidence:** PV(BID1 displayed quantity semantics) + PI + H
+- **Decision role:** Feasibility
 - **Meaning:** how large a contemplated aggressive exit is relative to currently displayed best-bid quantity
 - **Plain-language intuition:** this compares how much we want to sell with how much is currently displayed to buy at BID1.
 - **Market mechanism / why it can matter:** if our sell size exceeds visible bid depth, only part may exit at the best bid; the rest may require lower prices or waiting.
@@ -1448,6 +1519,7 @@ This family primarily owns the second term.
 - **Role:** GATE
 - **Availability:** NOW
 - **Evidence:** PV
+- **Decision role:** Feasibility, Freshness/Trust
 - **Meaning:** prevents spread/depth/execution assumptions when one or both L1 sides are unavailable/invalid
 - **Plain-language intuition:** before computing spread or execution feasibility, this simply checks that both a valid best bid and valid best ask actually exist.
 - **Market mechanism / why it can matter:** one-sided or invalid quotes make spread and round-trip touch economics undefined. Treating missing data as zero would create fake “great” execution conditions.
@@ -1471,6 +1543,7 @@ This family primarily owns the second term.
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(sequential collection constraint) + PI
+- **Decision role:** Feasibility, Freshness/Trust
 - **Meaning:** execution-feasibility view of per-security observation age
 - **Plain-language intuition:** this asks how old the market snapshot is for this specific stock when we are making the decision.
 - **Market mechanism / why it can matter:** in a fast market, a quote that is several seconds old may no longer exist. Sequential collection means different securities can have different effective ages at the same ranking moment.
@@ -1494,6 +1567,7 @@ This family primarily owns the second term.
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** NOW for observation→ranking; EXEC for order-submit/fill phases
 - **Evidence:** PI
+- **Decision role:** Feasibility
 - **Meaning:** measures how much time is consumed before an opportunity can be acted on
 - **Plain-language intuition:** this measures the delay from observing a possible signal until the system actually reaches the point where an order could be submitted/acted upon.
 - **Market mechanism / why it can matter:** fast opportunities decay while computation, ranking, UI/decision and order submission occur. A correct signal can become useless simply because action arrives late.
@@ -1517,6 +1591,7 @@ This family primarily owns the second term.
 - **Role:** GATE, PROTECTIVE
 - **Availability:** NOW/FUTURE depending horizon model
 - **Evidence:** PI + H
+- **Decision role:** Feasibility, RemainingOpportunity
 - **Meaning:** expresses whether system latency is small relative to the opportunity horizon or consumes a material fraction of it
 - **Plain-language intuition:** this asks “what fraction of the opportunity's expected lifetime are we spending just waiting/processing?”
 - **Market mechanism / why it can matter:** the same 3-second latency is trivial for a 5-minute move but huge for a 10-second move. Relative latency matters more than absolute latency.
@@ -1540,6 +1615,7 @@ This family primarily owns the second term.
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** FUTURE
 - **Evidence:** PI + H
+- **Decision role:** Feasibility, RemainingOpportunity
 - **Meaning:** asks whether the displayed spread is small or large relative to the useful move being pursued
 - **Plain-language intuition:** this compares friction with reward. A 0.20% spread is enormous if we only expect +0.25%, but modest if the realistic target is +1.0%.
 - **Market mechanism / why it can matter:** short trades fail economically when transaction friction consumes too much of the gross move. Absolute spread alone cannot tell that; burden must be relative to the target.
@@ -1563,6 +1639,7 @@ This family primarily owns the second term.
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** EXEC
 - **Evidence:** PI
+- **Decision role:** Feasibility
 - **Meaning:** keeps account-specific explicit costs separate from market-microstructure friction
 - **Plain-language intuition:** this converts known commissions/fees for a contemplated round trip into a percentage of the trade size.
 - **Market mechanism / why it can matter:** fixed/minimum fees hurt small trades disproportionately. Two identical market opportunities can have different net results for different order sizes or broker schedules.
@@ -1586,6 +1663,7 @@ This family primarily owns the second term.
 - **Role:** GATE, PROTECTIVE
 - **Availability:** NOW for market-only subset; EXEC for size/cost-aware form
 - **Evidence:** PI + H
+- **Decision role:** Feasibility
 - **Meaning:** final feasibility summary used to reject or discount market opportunities that cannot realistically survive friction/latency
 - **Plain-language intuition:** this is the final answer to “even if the market setup looks attractive, can we realistically trade it under current spread, depth, timing and cost conditions?”
 - **Market mechanism / why it can matter:** opportunity and feasibility are separate. A stock can be directionally excellent but impossible to capture because spread is too wide, depth too thin or latency too large.
@@ -1680,6 +1758,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE
 - **Availability:** NOW
 - **Evidence:** PV
+- **Decision role:** Freshness/Trust
 - **Meaning:** prevents ranking on a cycle that is partial, duplicated or structurally invalid
 - **Plain-language intuition:** before trusting any ranking cycle, this checks that the collector actually received the complete intended universe once, with no missing IDs, duplicate IDs or malformed response structure.
 - **Market mechanism / why it can matter:** cross-sectional ranking is only meaningful if the compared set is structurally complete enough to represent the intended market snapshot. Missing or duplicated securities can distort percentiles, leaders and family coverage.
@@ -1703,6 +1782,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PV(time semantics) + PI
+- **Decision role:** Freshness/Trust, Feasibility
 - **Meaning:** exact age of the market observation used for this security when it is compared/ranked
 - **Plain-language intuition:** this asks how many seconds passed between when this specific stock was collected and when the ranking decision is being made.
 - **Market mechanism / why it can matter:** because the collector processes securities sequentially, one stock may be several seconds older than another at the same ranking moment. In a fast market, that age difference can materially change which quote or signal is actually current.
@@ -1726,6 +1806,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV(sequential collection) + PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** quantifies how non-simultaneous the full-universe comparison is
 - **Plain-language intuition:** this measures the time gap between the earliest-collected and latest-collected securities inside the same cycle.
 - **Market mechanism / why it can matter:** a ranking cycle can look like one snapshot even though the universe was actually observed over several seconds. During fast moves, early names and late names may belong to different market moments.
@@ -1749,6 +1830,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** records how much of a feature's intended evidence was actually available instead of silently substituting zero/neutral
 - **Plain-language intuition:** every feature depends on certain inputs. This records which required/optional inputs were actually valid instead of pretending missing data means zero.
 - **Market mechanism / why it can matter:** a computed score can look precise even when half of its evidence is absent. Missing BID, stale LAST or unavailable depth changes what the feature really knows.
@@ -1772,6 +1854,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE
 - **Availability:** NOW
 - **Evidence:** PV + PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** enforces `null != 0 != "" != undefined` and prevents invalid executable-like values from entering features
 - **Plain-language intuition:** this checks whether a field value actually means what the code thinks it means. Missing, empty, zero and unknown are treated as different states instead of one generic “falsy” bucket.
 - **Market mechanism / why it can matter:** market APIs often use null/empty/zero differently. Treating an invalid BID of 0 as a real price can create absurd spread/return calculations; treating a legitimate zero delta as missing destroys valid inactivity information.
@@ -1795,6 +1878,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** HISTORY
 - **Evidence:** PI + H
+- **Decision role:** Freshness/Trust, RemainingOpportunity
 - **Meaning:** distinguishes “the current snapshot is fresh” from “the bullish evidence itself happened long ago”
 - **Plain-language intuition:** a stock can have a brand-new snapshot containing a signal that actually began 40 seconds ago. This metric measures the age of the evidence event itself, not the age of the row.
 - **Market mechanism / why it can matter:** old signals can persist in current state even after their useful lead is mostly gone. Fresh data does not automatically mean fresh opportunity.
@@ -1818,6 +1902,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** CONFIRMING, PROTECTIVE, GATE
 - **Availability:** HISTORY
 - **Evidence:** PI + H
+- **Decision role:** Freshness/Trust, Confirmation
 - **Meaning:** allows fresh confirming evidence to renew a signal without pretending the original event happened again
 - **Plain-language intuition:** this asks whether a previous signal has received new supporting evidence recently, is merely still present, is weakening, or has been invalidated.
 - **Market mechanism / why it can matter:** markets evolve continuously. A signal that keeps getting fresh confirmation can remain relevant longer than one that simply persists unchanged.
@@ -1841,6 +1926,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, PROTECTIVE, CONTEXT
 - **Availability:** NOW + HISTORY
 - **Evidence:** PI + H
+- **Decision role:** Freshness/Trust, RemainingOpportunity
 - **Meaning:** family-level answer to whether this evidence is still timely for the short objective
 - **Plain-language intuition:** this combines how old the data is, how old the actual signal is and whether anything recently reconfirmed it.
 - **Market mechanism / why it can matter:** timing relevance depends on more than one clock. A fresh row with stale evidence is different from a slightly older row containing a newly reconfirmed signal.
@@ -1864,6 +1950,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, CONTEXT, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** prevents LAST-vs-BID/ASK or cross-family sequences from pretending asynchronous observations were simultaneous
 - **Plain-language intuition:** this checks whether the pieces used in one derived feature were observed close enough in time to be meaningfully combined.
 - **Market mechanism / why it can matter:** LAST, BID, ASK and activity values can each represent slightly different moments. Combining them as if they were simultaneous can invent geometry or event order that never actually existed.
@@ -1887,6 +1974,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** catches impossible/semantically contradictory inputs while preserving genuine extreme events
 - **Plain-language intuition:** this checks whether related fields can logically coexist under verified rules, without declaring unusual market behavior “bad data” just because it looks strange.
 - **Market mechanism / why it can matter:** inconsistent inputs can create impossible derived signals. But real markets can also produce extreme/out-of-spread-looking states because quotes moved after a trade, so validation must be semantics-aware.
@@ -1910,6 +1998,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, CONTEXT
 - **Availability:** NOW
 - **Evidence:** PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** allows Price/Activity/Book/etc. to expose how complete their evidence actually is
 - **Plain-language intuition:** this summarizes how much of an entire evidence family is currently usable, while still naming any critical missing pieces.
 - **Market mechanism / why it can matter:** one stock might have full Price and Activity evidence but almost no valid Book data. Treating both families as equally informed would overstate confidence.
@@ -1933,6 +2022,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** CONTEXT, GATE
 - **Availability:** NOW
 - **Evidence:** PI
+- **Decision role:** Freshness/Trust, Context/Prior
 - **Meaning:** qualifies percentile/rank evidence; 99th percentile among 20 valid securities is weaker context than 99th among 500
 - **Plain-language intuition:** this asks how much of the eligible universe actually participated in a cross-sectional comparison.
 - **Market mechanism / why it can matter:** percentiles/ranks depend on the comparison set. A top percentile from a tiny valid subset can look impressive while being statistically and operationally fragile.
@@ -1956,6 +2046,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** GATE, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV + PI
+- **Decision role:** Freshness/Trust
 - **Meaning:** technical answer to whether downstream interpretation can be trusted enough to participate in ranking
 - **Plain-language intuition:** this is the overall technical trust state: are the cycle, fields, timestamps, alignment and coverage good enough that downstream signal interpretation is worth using?
 - **Market mechanism / why it can matter:** sophisticated signal logic cannot rescue corrupt, stale or internally inconsistent inputs. Data quality acts as a gate on interpretation.
@@ -1979,6 +2070,7 @@ Therefore this family consumes those validated semantics rather than inventing a
 - **Role:** CONTEXT
 - **Availability:** NOW + FUTURE
 - **Evidence:** PI + H
+- **Decision role:** Freshness/Trust
 - **Meaning:** provides ingredients for later confidence composition without confusing confidence with signal strength
 - **Plain-language intuition:** this bundles the reasons we may trust or distrust a signal—data quality, freshness, coverage, diversity and agreement—without collapsing them prematurely into one magic number.
 - **Market mechanism / why it can matter:** a strong-looking signal with stale/partial evidence should not be treated the same as an equally strong signal supported by fresh, diverse, complete evidence.
@@ -2211,12 +2303,12 @@ It does **not** own:
 - **Objective connection:** fresh local progress may leave more capturable room than the age of the broad wave suggests, which is important for entering now rather than judging the whole session move.
 - **Favorable / unfavorable interpretation:** modest fresh progress with acceleration/reclaim can indicate an early leg; very large progress from the reset can mean the new leg is already partly consumed.
 - **Failure modes / counterexamples:** choosing the wrong recent low can create arbitrary “fresh” legs; noisy micro-lows can reset the reference too often.
-- **Relationship to other evidence:** overlaps PW-009 and PR LegResetStrength; final ownership should be reconciled after Issue #6 segmentation.
+- **Relationship to other evidence:** PW-009 is the primary owner of current-leg observed move. PH-006 may consume the same shared leg/reset reference only as Path/Reset context; PR LegResetStrength adds reset-quality interpretation. PH-006 must not become an independent additive score.
 - **Worked example:** broad wave began at 99.00, recent pullback low 100.00, now 100.12. Broad move is +1.13%, but fresh-leg progress is only +0.12%.
 - **Known overlaps:** PW-009 CurrentLegObservedMovePct; pullback/retest research
-- **Confidence limits:** should converge to one owner after Issue #6 defines leg semantics; avoid duplicate scoring with PW-009
+- **Confidence limits:** Issue #6 must define the shared leg/reset reference, but metric ownership is already fixed: PW-009 owns the observed move; PH-006 is contextual interpretation only and must never be independently scored.
 - **Validation targets:** detection lateness, target-before-adverse, TimeToTarget
-- **Research state:** Candidate / ownership reconciliation pending Issue #6
+- **Research state:** Context consumer of PW-009 / shared reference semantics pending Issue #6
 
 ### PH-007 — TimeSinceMeaningfulProgressSeconds
 
