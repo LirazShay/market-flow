@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Sequence/Lead-Lag/Opportunity Stage SQ-001..SQ-013. Observable ordering, timing uncertainty, precursor lead, confirmation delay, system-latency consumption, detection lateness and lifecycle stage are documented without causal overclaiming."
+    "subfocus": "Deep-rationale retrofit completed for Remaining Opportunity/Target Frontier RO-001..RO-014. Observed move, market potential remaining and operationally capturable remaining are explicitly separated, with target/time/adverse/friction budgets preserved as a structured frontier rather than one momentum score."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Remaining Opportunity/Target Frontier RO-001..RO-014 to the deep-rationale documentation contract, explaining observed move vs potential remaining vs capturable remaining, move consumption, time/adverse/friction budgets and why target support is a structured frontier rather than one momentum score."
+    "action": "Retrofit Recent Wave Memory/Capacity Prior WM-001..WM-017 to the deep-rationale documentation contract, explaining why recent same-stock history is a conditional capacity prior with denominator/failure/coverage requirements rather than a prediction that the next wave will repeat."
   }
 }

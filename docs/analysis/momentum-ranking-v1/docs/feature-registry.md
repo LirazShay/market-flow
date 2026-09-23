@@ -3300,6 +3300,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI
 - **Decision role:** RemainingOpportunity
 - **Meaning:** records how much movement has already occurred before the engine is deciding
+- **Plain-language intuition:** this asks how much of the current move is already behind us when the ranking decision is made.
+- **Market mechanism / why it can matter:** large observed movement can mean strong momentum, but it can also mean most of the easy part has already happened and late entrants are chasing.
+- **Objective connection:** our goal is not to reward what already happened; we care how much useful upward path may still remain after entry now.
+- **Favorable / unfavorable interpretation:** small-to-moderate observed move plus fresh acceleration can indicate early opportunity; very large observed move without reset can raise consumption risk. Neither is conclusive by itself.
+- **Failure modes / counterexamples:** a large past move can still continue strongly; a tiny observed move can fail immediately. Reference selection (leg start/reset point) matters.
+- **Relationship to other evidence:** PW-009/PH-006 measure related observed progress; RO-001 exists only to anchor the remaining-opportunity question, not to become another momentum score.
+- **Worked example:** current leg began at 100.00 and decision happens at 100.35. RO-001 records +0.35% already completed; it does not claim anything about what remains.
 - **Known overlaps:** PW-009, PH-006, SQ-009
 - **Confidence limits:** should not become a duplicate momentum score; reference ownership must be reconciled with Issue #6
 - **Validation targets:** detection lateness, remaining excursion at decision time
@@ -3317,6 +3324,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** Potential
 - **Meaning:** separates evidence that upward process exists from the separate question of how much is left
+- **Plain-language intuition:** this asks “is there a live upward process right now?” without yet asking how large the remaining opportunity is.
+- **Market mechanism / why it can matter:** Price, Activity, Book, Path and Sequence can jointly show that a positive process is currently active. But a strong process can be young or nearly exhausted.
+- **Objective connection:** before estimating remaining opportunity, the system needs to know whether there is any credible upward process to begin with.
+- **Favorable / unfavorable interpretation:** `DEVELOPING/STRONG` means current evidence supports an active upward process; `CONFLICTED` means families disagree; `NONE` means no usable current process. Strong is not equivalent to much remaining upside.
+- **Failure modes / counterexamples:** mature moves can still look strong; early reversals can look weak just before acceleration; correlated family inputs can overstate support.
+- **Relationship to other evidence:** RO-002 consumes family states but intentionally stops before estimating remaining magnitude. RO-003 handles that next step.
+- **Worked example:** Price accelerating, BID rising, activity expanding, path healthy → CurrentPotential may be STRONG, while MoveConsumption may still be MOSTLY_CONSUMED.
 - **Known overlaps:** family scores; SQ OpportunityStage
 - **Confidence limits:** strong potential does not imply large remaining excursion or executable opportunity
 - **Validation targets:** target-before-adverse, TimeToTarget
@@ -3334,6 +3348,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** forward-looking market-only assessment of remaining upward excursion
+- **Plain-language intuition:** this is the estimate of how much **market-side upside may still remain**, before worrying about whether we can actually capture it after spread, latency or depth.
+- **Market mechanism / why it can matter:** recent state, reset quality, stage and historical outcome priors can suggest whether the move still has room to continue.
+- **Objective connection:** this is closer to the real question than raw momentum: “from now, is there still enough upward path left to justify considering entry?”
+- **Favorable / unfavorable interpretation:** `HIGH` means market evidence suggests meaningful room may remain; `LOW/NONE` means little apparent market-side upside remains; `RENEWED_AFTER_RESET` means a new leg may have recreated room inside an older wave.
+- **Failure modes / counterexamples:** no deterministic formula such as average-wave-minus-current-move is allowed; strong recent history can fail; conditional priors may be sparse.
+- **Relationship to other evidence:** RO-003 is market-only. RO-011 CapturableRemaining further subtracts time/path/friction constraints.
+- **Worked example:** a move already +0.4% may still have HIGH PotentialRemaining after a strong reset/reclaim, while another +0.2% move may have LOW PotentialRemaining if it is stalling near exhaustion.
 - **Known overlaps:** MoveConsumptionState; Recent Wave Memory
 - **Confidence limits:** cannot be reliably calibrated before Issue #15; must not use recent typical wave minus current move as a deterministic formula
 - **Validation targets:** future MFE, target-before-adverse, remaining excursion at decision time
@@ -3351,6 +3372,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** prevents a very strong but mostly completed move from outranking a fresher opportunity
+- **Plain-language intuition:** this classifies whether we are early in the useful move, halfway through, mature, almost finished, or freshly reset.
+- **Market mechanism / why it can matter:** momentum detectors often reward mature strength. Consumption state converts “strength” into “how much of the comparable move has likely already been used.”
+- **Objective connection:** late entry is one of the biggest risks for a seconds-to-minutes strategy. This state protects against choosing the strongest-looking but already-consumed candidate.
+- **Favorable / unfavorable interpretation:** `EARLY/PARTIALLY_CONSUMED` can preserve room; `MATURE/MOSTLY_CONSUMED` is cautionary; `RENEWED_AFTER_RESET` can restore opportunity despite an old broad move.
+- **Failure modes / counterexamples:** no future peak may be used online; broad wave age alone is insufficient; some mature-looking moves extend much farther than history suggests.
+- **Relationship to other evidence:** SQ DetectionLateness gives timing evidence, PR LegResetStrength handles renewal, RO-004 synthesizes them into move-consumption context.
+- **Worked example:** Stock A has moved +0.5% with no reset and is decelerating → MOSTLY_CONSUMED candidate. Stock B has moved +0.6% overall but just formed a fresh post-pullback leg → RENEWED_AFTER_RESET candidate.
 - **Known overlaps:** SQ-009 DetectionLatenessState; PW recency concentration
 - **Confidence limits:** broad WaveAge is insufficient; online state cannot use future final excursion
 - **Validation targets:** remaining excursion at detection, target-before-adverse
@@ -3368,6 +3396,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI
 - **Decision role:** RemainingOpportunity, Feasibility
 - **Meaning:** expresses how much of the target's time horizon remains available after the system consumes time
+- **Plain-language intuition:** this subtracts observation age, ranking delay, decision delay and expected entry delay from the target's allowed time.
+- **Market mechanism / why it can matter:** a 30-second target is not really a 30-second opportunity if 8 seconds are already gone before the order can act.
+- **Objective connection:** our strategy is explicitly time-bounded. The remaining time budget tells whether the target is still operationally reachable after system overhead.
+- **Favorable / unfavorable interpretation:** large positive budget preserves flexibility; small budget means little room remains; zero/negative means the timing is unusable even if direction is correct.
+- **Failure modes / counterexamples:** expected entry delay can vary; quiet markets may preserve state longer than horizon assumptions; average latency can hide spikes.
+- **Relationship to other evidence:** TE/SQ supply latency; RO-005 translates that into remaining target time.
+- **Worked example:** target timeout 30s, observation age 4s, ranking+decision 3s, expected entry 2s → 21s TimeBudgetAfterLatency.
 - **Known overlaps:** TE-011, SQ-008
 - **Confidence limits:** expected entry delay is execution-policy dependent; negative/near-zero budget does not imply bearish direction, only unusable timing
 - **Validation targets:** executable target-before-adverse, missed opportunity, implementation shortfall
@@ -3385,6 +3420,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI
 - **Decision role:** Outcome, RemainingOpportunity
 - **Meaning:** atomic research question against which opportunity evidence is evaluated
+- **Plain-language intuition:** a target candidate is not just “go up.” It defines a concrete question: how much upside, within how much time, while tolerating how much adverse movement?
+- **Market mechanism / why it can matter:** different target sizes and timeouts represent different trading opportunities. The same stock may support a small/fast target but not a larger/slower one.
+- **Objective connection:** this makes the project measurable and prevents vague claims like “good momentum.”
+- **Favorable / unfavorable interpretation:** the tuple itself is neutral; evidence later determines whether it is supported or not.
+- **Failure modes / counterexamples:** arbitrary target grids can bias research; target values are research parameters, not promises or recommendations.
+- **Relationship to other evidence:** RO-006 is the atomic unit used by RO-007/008 and Issue #15 outcome surfaces.
+- **Worked example:** `{+0.20%, 30s, -0.10%}` asks whether +0.20% is reached within 30s before -0.10% adverse move occurs.
 - **Known overlaps:** Issue #15 target-before-adverse surface
 - **Confidence limits:** grid values are research parameters, not promises or recommended execution thresholds
 - **Validation targets:** WhichBarrierFirst, TimeToTarget, MFE/MAE
@@ -3402,6 +3444,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** target-specific opportunity evidence without pretending to be calibrated probability
+- **Plain-language intuition:** this asks whether current evidence supports one exact target/time/adverse question strongly, weakly, or not at all.
+- **Market mechanism / why it can matter:** evidence can support different targets differently. A stock may plausibly deliver +0.10%/20s but not +0.50%/20s.
+- **Objective connection:** this moves us from generic momentum to concrete actionable outcomes that match the intended holding horizon.
+- **Favorable / unfavorable interpretation:** `SUPPORTED/PLAUSIBLE` means evidence aligns with that target tuple; `WEAK/UNSUPPORTED` means it does not; `UNKNOWN` means insufficient evidence, not failure.
+- **Failure modes / counterexamples:** without empirical calibration this remains semantic, not probability; sparse historical priors can make support unstable.
+- **Relationship to other evidence:** RO-007 operates per TargetCandidate; RO-008 preserves the set of supported targets rather than collapsing them.
+- **Worked example:** +0.10% within 20s may be SUPPORTED while +0.40% within 20s is UNSUPPORTED under the same current state.
 - **Known overlaps:** RO-003, Issue #15 outcome surface
 - **Confidence limits:** support mapping must be learned/validated; UNKNOWN must not become UNSUPPORTED
 - **Validation targets:** target-before-adverse, TimeToTarget
@@ -3419,6 +3468,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** allows the same stock to support a small-fast target while not supporting a larger/slower one
+- **Plain-language intuition:** this is the map of which target/time/adverse combinations currently look supportable.
+- **Market mechanism / why it can matter:** real opportunities are multi-dimensional. There is rarely one single “correct target”; feasibility changes as target size, timeout and adverse tolerance change.
+- **Objective connection:** a frontier preserves the actual choices available from now instead of pretending opportunity is one scalar momentum value.
+- **Favorable / unfavorable interpretation:** a broader frontier means more target choices appear supportable; a narrow frontier means only modest opportunities look plausible.
+- **Failure modes / counterexamples:** unsupported targets should not be interpolated casually; frontier shape depends on empirical data quality and target grid design.
+- **Relationship to other evidence:** RO-008 is built from RO-006/007 and later feeds OpportunityBudget and CentralRanker.
+- **Worked example:** supported: +0.10%/15s, +0.20%/45s; unsupported: +0.40%/30s. The stock has opportunity, but not at every scale.
 - **Known overlaps:** Issue #15 FastExcursionProfile/TargetBeforeAdverseSurface
 - **Confidence limits:** not a probability surface until calibrated; do not interpolate unsupported targets casually
 - **Validation targets:** target-specific barrier-first outcomes, TimeToTarget
@@ -3436,6 +3492,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** keeps a target that requires large adverse movement distinct from a clean target path
+- **Plain-language intuition:** this asks whether the path to a target is likely to require tolerating too much movement against us before success.
+- **Market mechanism / why it can matter:** two stocks can reach the same eventual target, but one may do so cleanly while the other first drops deeply and recovers. The latter is harder to trade and may violate stop/adverse limits.
+- **Objective connection:** our goal is target-before-adverse, not just eventual target attainment. Adverse-path budget makes that explicit.
+- **Favorable / unfavorable interpretation:** `COMFORTABLE` means path risk appears compatible with the target; `TIGHT` means little adverse room; `POOR` suggests the target requires too much unfavorable path.
+- **Failure modes / counterexamples:** future MAE is only a validation label; current estimate relies on priors/path context and can be wrong.
+- **Relationship to other evidence:** PH/PR supply current path risk; Issue #15 supplies future outcome distributions; RO-009 turns them into target-relative adverse budget.
+- **Worked example:** +0.20% target with typical -0.03% adverse path may be COMFORTABLE; the same target with frequent -0.18% adverse excursion is TIGHT/POOR.
 - **Known overlaps:** PH family; future MAE labels
 - **Confidence limits:** future MAE is label, not online input; semantic mapping awaits Issue #15/#11
 - **Validation targets:** MAE-before-target, WhichBarrierFirst, TimeUnderWater
@@ -3453,6 +3516,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI
 - **Decision role:** Feasibility, RemainingOpportunity
 - **Meaning:** prevents raw upside potential from being confused with usable post-friction opportunity
+- **Plain-language intuition:** this asks how much of the candidate gain would be eaten by spread, tick constraints, depth/slippage, latency and explicit costs.
+- **Market mechanism / why it can matter:** short targets can look attractive gross but disappear after real trading friction.
+- **Objective connection:** we only care about opportunity that survives execution mechanics, not theoretical price movement.
+- **Favorable / unfavorable interpretation:** `LOW_BURDEN` leaves most of the target intact; `MATERIAL` consumes a meaningful share; `DOMINANT` means friction overwhelms the opportunity.
+- **Failure modes / counterexamples:** actual slippage/depth beyond L1 may differ; passive execution can reduce spread cost but introduce fill risk.
+- **Relationship to other evidence:** TE owns the detailed friction metrics; RO-010 consumes them relative to the candidate opportunity.
+- **Worked example:** +0.25% target with ~0.20% total friction leaves almost no usable edge → DOMINANT burden.
 - **Known overlaps:** TE-012/TE-013/TE-014
 - **Confidence limits:** family consumes TE outputs; it does not recompute spread/depth/cost independently
 - **Validation targets:** implementation shortfall, net executable opportunity
@@ -3470,6 +3540,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, Feasibility
 - **Meaning:** closest online representation of “how much useful opportunity is still capturable from now”
+- **Plain-language intuition:** this is the market-side opportunity that remains **after** subtracting what time, path risk and execution friction make unusable.
+- **Market mechanism / why it can matter:** raw upside is only valuable if the system can enter in time, survive the path and exit economically.
+- **Objective connection:** this is the concept most directly aligned with the project's true goal: not “which stock is strongest?” but “which stock still offers the best usable short upward opportunity from now?”
+- **Favorable / unfavorable interpretation:** `HIGH` means a meaningful portion of remaining opportunity appears operationally capturable; `LOW/NONE` means most market potential is lost to timing/path/friction.
+- **Failure modes / counterexamples:** this is not expected return or probability; full form requires execution telemetry and empirical calibration.
+- **Relationship to other evidence:** RO-003 supplies PotentialRemaining; RO-005/009/010 apply timing/path/friction constraints; RO-011 is their usable synthesis.
+- **Worked example:** PotentialRemaining=HIGH, but only 5s time budget and dominant spread burden → CapturableRemaining may be LOW.
 - **Known overlaps:** NetExecutableOpportunity, CentralRanker
 - **Confidence limits:** not expected return; no calibrated magnitude/probability until Issues #15/#11 and execution research support it
 - **Validation targets:** executable target-before-adverse, net executable excursion, TimeToTarget
@@ -3487,6 +3564,13 @@ They may validate RO features but must not leak into decision-time inputs.
 - **Evidence:** PI + H
 - **Decision role:** Potential, RemainingOpportunity, PathRisk, Feasibility, Freshness/Trust
 - **Meaning:** canonical structured opportunity representation consumed later by CentralRanker
+- **Plain-language intuition:** instead of forcing everything into one number too early, this keeps the key dimensions side by side: potential, consumption, target frontier, time, adverse path, friction and confidence.
+- **Market mechanism / why it can matter:** different candidates can be strong for different reasons. Preserving dimensions prevents arbitrary weights from hiding important tradeoffs.
+- **Objective connection:** the ranking engine needs to compare *usable opportunities*, not opaque scores. OpportunityBudget keeps the reasoning inspectable and target-aware.
+- **Favorable / unfavorable interpretation:** there is no single favorable scalar yet; the object allows higher-level comparison and `NO_OPPORTUNITY` when all candidates are weak.
+- **Failure modes / counterexamples:** filling UNKNOWN with zero or neutral would distort ranking; premature scalarization can erase meaningful tradeoffs.
+- **Relationship to other evidence:** RO-012 is the handoff object to Issue #10 CentralRanker.
+- **Worked example:** Stock A: high potential, poor friction. Stock B: moderate potential, excellent time/path/friction. OpportunityBudget preserves why B may be more usable even with weaker raw momentum.
 - **Known overlaps:** Issue #10 family composition
 - **Confidence limits:** must retain UNKNOWN dimensions rather than filling defaults
 - **Validation targets:** target-before-adverse, TimeToTarget, MAE, detection lateness, executable opportunity
@@ -3522,6 +3606,13 @@ OpportunityBudget {
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, Feasibility
 - **Meaning:** supports later cross-sectional ranking while preserving speed/move/path/feasibility tradeoffs
+- **Plain-language intuition:** this asks whether one candidate is clearly better across the important opportunity dimensions, or whether the comparison is a genuine tradeoff/tie.
+- **Market mechanism / why it can matter:** forcing a scalar too early can declare a “winner” even when one stock has more upside but much worse path/friction.
+- **Objective connection:** we want the best **capturable** opportunity, not merely the largest raw move. Dominance preserves multi-dimensional comparison.
+- **Favorable / unfavorable interpretation:** `DOMINATES` means one candidate is no worse on key dimensions and materially better on some; `TRADEOFF/EFFECTIVE_TIE` means no clear objective winner yet.
+- **Failure modes / counterexamples:** exact dominance rules require policy/validation; missing dimensions can create false dominance.
+- **Relationship to other evidence:** RO-013 is a bridge to CentralRanker, not the final ranking algorithm.
+- **Worked example:** A has slightly larger target frontier but much worse adverse path and friction than B → likely TRADEOFF rather than automatic A winner.
 - **Known overlaps:** Issue #10 CentralRanker / LeaderDominanceMargin
 - **Confidence limits:** not a final ranking rule; utility tradeoffs and tie semantics require Issue #10/#11
 - **Validation targets:** top-K future opportunity quality, leader stability
@@ -3539,6 +3630,13 @@ OpportunityBudget {
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** compact family state for later ranking without losing the structured budget
+- **Plain-language intuition:** this is the short readable summary of whether useful remaining opportunity is absent, emerging, usable, strong, mostly consumed, renewed, or destroyed by friction.
+- **Market mechanism / why it can matter:** higher-level logic needs a compact state, but the detailed OpportunityBudget remains the source of explanation.
+- **Objective connection:** this state is the closest compact answer to “is there still something worthwhile to capture from here?”
+- **Favorable / unfavorable interpretation:** `USABLE/STRONG/RENEWED` can support ranking; `MOSTLY_CONSUMED/UNUSABLE_AFTER_FRICTION/NONE` are protective; `UNKNOWN` preserves uncertainty.
+- **Failure modes / counterexamples:** a compact state can hide why opportunity is weak unless the structured budget remains available; semantic states are not probabilities.
+- **Relationship to other evidence:** RO-014 summarizes RO-001..012 for downstream ranking while preserving the detailed frontier/budgets for auditability.
+- **Worked example:** strong live process + fresh reset + good target frontier + low friction → STRONG/RENEWED candidate. Strong momentum + late stage + dominant friction → UNUSABLE_AFTER_FRICTION.
 - **Known overlaps:** SQ OpportunityStage; CentralRanker
 - **Confidence limits:** semantic evidence strength only, not probability or expected return
 - **Validation targets:** target-before-adverse, remaining excursion, TimeToTarget, executable opportunity
