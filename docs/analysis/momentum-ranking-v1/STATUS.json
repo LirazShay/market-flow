@@ -14,7 +14,7 @@
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "Direct all-observation outcome-surface contract defined: label-family-specific denominators, timestamp-based horizon semantics, MID/LAST/touch-exit outcome separation, interval-censored timing, censoring, integrity reporting and no-leakage boundaries."
+    "subfocus": "Data-feasibility mapping completed against frozen Local History Viewer V1. MID and ASK(t0)->future BID touch-exit surfaces are derivable from existing IndexedDB history; canonical LAST and exchange-phase semantics remain blocked; true intra-gap ordering, trade tape, L2-L5 and actual fills are not collected."
   },
   "completedWorkUnits": [
     {
@@ -54,6 +54,6 @@
   },
   "next": {
     "issue": 15,
-    "action": "Map the outcome-surface contract against the actual Local History Viewer/storage schema and classify each required field/timestamp as AVAILABLE NOW, DERIVABLE NOW, SEMANTICS-BLOCKED or DATA-NOT-COLLECTED before implementing any label generator."
+    "action": "Measure actual per-security cadence/jitter and per-horizon evaluability from recorded history, then define endpointTolerance/maxAllowedPathGap/minimumPathCoverage from evidence before implementing the outcome label generator."
   }
 }
