@@ -233,7 +233,29 @@ Do not raise a budget merely to avoid organizing context.
 
 ---
 
-## 10. Anti-patterns
+## 10. Self-maintenance during normal development
+
+Context architecture is maintained **as part of each change**.
+
+When work affects status, documentation, specs, policies, history or routing:
+
+~~~text
+identify the owning surface
+→ update it in the same coherent batch
+→ archive old evidence when needed
+→ keep HOT context compact
+→ run Fast CI guards
+~~~
+
+Do not defer known context/documentation drift to a later cleanup task.
+
+A future change that legitimately needs a new HOT/live field may update the corresponding guard, but only after deciding that the information is required routinely rather than merely convenient.
+
+The goal is **no-cleanup debt**: a completed work unit should not make a later agent reorganize documentation just to restore repository order.
+
+---
+
+## 11. Anti-patterns
 
 Avoid:
 
@@ -259,7 +281,7 @@ A critical invariant exists only in an old chat or old commit and is not discove
 
 ---
 
-## 11. Desired outcome
+## 12. Desired outcome
 
 A fresh chat should be able to:
 
