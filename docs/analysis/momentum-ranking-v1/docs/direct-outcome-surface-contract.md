@@ -242,11 +242,35 @@ Otherwise:
 ENDPOINT_CENSORED
 ~~~
 
-### 7.2 Tolerance is not hardcoded by this research step
+### 7.2 Empirically calibrated endpoint tolerance
 
-`endpointTolerance` and any maximum allowed path gap must be chosen from observed cadence/jitter evidence before implementation.
+The first real same-origin V1 history measurement is recorded in:
 
-They are run configuration and must be persisted with research results.
+~~~text
+docs/analysis/momentum-ranking-v1/docs/issue-15-history-coverage-measurement.md
+~~~
+
+For the current V1 research dataset:
+
+~~~text
+endpointToleranceMs = 7229
+~~~
+
+This is the maximum observed p99 endpoint-timing error across the 10–120 second horizons. One global value is used to avoid horizon-specific post-hoc tuning.
+
+The rule remains:
+
+~~~text
+matchedEndpointTimestamp <= deadline
+~~~
+
+No after-deadline observation may be used.
+
+The 5-second horizon remains declared but is LOW_COVERAGE_DIAGNOSTIC under the current cadence; a tolerance cannot manufacture a missing pre-deadline observation.
+
+`maxAllowedPathGap` and `minimumPathCoverage` remain unresolved pending an exact timestamp-only gap-policy coverage sweep.
+
+All coverage parameters are run configuration and must be persisted with research results.
 
 ## 8. Path window
 

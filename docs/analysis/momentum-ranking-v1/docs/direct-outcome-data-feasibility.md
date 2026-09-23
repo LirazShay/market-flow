@@ -391,7 +391,7 @@ Classification:
 matched endpoint candidate: DERIVABLE_NOW
 deadline error: DERIVABLE_NOW
 ENDPOINT_TOLERANCE_MISS state: DERIVABLE_NOW
-actual endpointTolerance value: NOT YET CALIBRATED
+actual endpointTolerance value: 7229ms for the current V1 research dataset
 ~~~
 
 The storage schema itself does not block this work.
@@ -408,18 +408,30 @@ sequential chunks
 
 Each security's timestamp is its own chunk completion time.
 
+Real-history measurement result:
+
+~~~text
+inter-observation p50 = 5096ms
+inter-observation p95 = 6541ms
+inter-observation p99 = 8895ms
+inter-observation max = 15400ms
+~~~
+
 Consequences:
 
-- 10–120 second horizons are structurally feasible from existing history;
-- 5-second horizon is also contractually valid, but may have materially lower evaluability because the next sample can land just after the 5-second deadline;
-- actual horizon coverage must be **measured**, not inferred from the average cadence.
+- 5-second non-edge strict evaluability is only 37.1971%, so 5s remains LOW_COVERAGE_DIAGNOSTIC under the current cadence;
+- 10-second non-edge strict evaluability is 99.3017%;
+- 20–120 second non-edge strict evaluability is 100% in the measured dataset;
+- session-edge censoring still grows with horizon and must remain explicit.
 
 Classification:
 
 ~~~text
 horizon path data: AVAILABLE_NOW
-per-horizon evaluability statistics: DERIVABLE_NOW
-endpoint tolerance / maximum path-gap policy: NOT YET CALIBRATED
+per-horizon evaluability statistics: MEASURED
+endpointTolerance: 7229ms
+maximum path-gap policy: NOT YET CALIBRATED
+minimumPathCoverage: NOT YET SELECTED
 ~~~
 
 ## 14. Session boundaries
@@ -758,26 +770,46 @@ It reads only `securityId`, `sessionId` and `collectedAtMs`, scans `history.bySe
 
 It deliberately applies **no** endpoint tolerance, path-gap threshold or minimum-path-coverage threshold. Those remain outputs of the empirical measurement, not inputs chosen in advance.
 
-## 28. Next work unit
+## 28. Real-history coverage measurement
 
-Before implementing a label generator, measure the actual timestamp behavior in recorded history and define the **observation-coverage policy**:
-
-~~~text
-per-security inter-observation delta distribution
-per-horizon endpoint availability
-deadline-error distribution
-first-future-sample delay
-max-gap distribution
-session-edge censoring rate
-5s / 10s / 20s / ... / 120s evaluability
-~~~
-
-From those measurements, define research-run parameters such as:
+Durable result:
 
 ~~~text
-endpointTolerance
-maxAllowedPathGap
-minimumPathCoverage
+docs/analysis/momentum-ranking-v1/docs/issue-15-history-coverage-measurement.md
 ~~~
 
-No tolerance should be chosen merely from the nominal 5-second average cycle duration.
+Measured over the complete indexed report:
+
+~~~text
+rows = 1,639,803
+securities = 561
+security/session groups = 2,805
+index coverage exact = true
+~~~
+
+The measurement fixes:
+
+~~~text
+endpointToleranceMs = 7229
+5s = LOW_COVERAGE_DIAGNOSTIC under current cadence
+10s = high-coverage endpoint horizon
+20–120s = 100% non-edge strict endpoint availability in this dataset
+~~~
+
+It does **not** yet justify a path-gap threshold.
+
+## 29. Next work unit
+
+Extend the read-only timing analyzer with a timestamp-only policy sweep that reports exact per-horizon path retention under:
+
+~~~text
+maxAllowedPathGap = 6106ms
+maxAllowedPathGap = 6541ms
+maxAllowedPathGap = 8895ms
+~~~
+
+These are the observed global inter-observation p90/p95/p99 anchors.
+
+Do not select `minimumPathCoverage` until the retained-coverage tradeoff is measured.
+
+Do not change collection cadence here; Issue #18 owns collection/cadence design.

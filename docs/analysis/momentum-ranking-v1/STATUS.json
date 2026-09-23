@@ -13,8 +13,8 @@
   "currentFocus": {
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
-    "status": "verification-pending",
-    "subfocus": "The read-only analyzer, IndexedDB adapter, deterministic builder and self-contained one-click bookmarklet delivery are all verified. Fast CI is green and Browser CI is 59/59 green, including sanitized download/no-mutation behavior. Only execution against the real same-origin LHV V1 history remains pending before empirical cadence/jitter/coverage claims or tolerance choices."
+    "status": "in-progress",
+    "subfocus": "Real same-origin history coverage measurement captured and analyzed: 1,639,803 rows with exact index coverage; cadence p50=5096ms, p95=6541ms, p99=8895ms; 5s is low-coverage (37.1971% non-edge), 10s is 99.3017%, and 20–120s are 100% non-edge strict endpoint-evaluable. Global endpointTolerance is now fixed at 7229ms from the worst p99 endpoint timing error across 10–120s. Path-gap and minimum-path-coverage policy remain unresolved."
   },
   "completedWorkUnits": [
     {
@@ -72,6 +72,6 @@
   },
   "next": {
     "issue": 15,
-    "action": "Run the verified run-history-coverage.bookmarklet.txt while on the Leumi market page that owns market-flow-leumi-history-v1, then provide the downloaded market-flow-issue15-history-coverage-*.json report. Analyze that real report to choose or reject endpointTolerance/maxAllowedPathGap/minimumPathCoverage. Do not alter collection cadence; Issue #18 owns cadence design."
+    "action": "Extend the read-only history analyzer with an outcome-blind path-gap policy sweep and rerun on the real IndexedDB. Report exact per-horizon retained path coverage for maxAllowedPathGap candidates 6106ms, 6541ms and 8895ms (observed cadence p90/p95/p99). Then choose or reject maxAllowedPathGap and decide whether minimumPathCoverage belongs here or remains deferred to validation methodology. Do not change collection cadence."
   }
 }

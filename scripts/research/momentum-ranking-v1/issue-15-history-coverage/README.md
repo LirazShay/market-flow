@@ -87,3 +87,24 @@ The test covers exact endpoint semantics, non-edge cadence misses, session bound
 - Real local IndexedDB measurement remains pending; no empirical cadence/coverage numbers are claimed yet.
 - Fast CI run `35928987727`: success.
 - Browser CI run `35928987824`: success, `59/59` Chromium tests including the self-contained bookmarklet download path.
+
+## Real-history result
+
+The verified one-click runner was executed against the real same-origin V1 IndexedDB.
+
+Durable analysis:
+
+~~~text
+docs/analysis/momentum-ranking-v1/docs/issue-15-history-coverage-measurement.md
+~~~
+
+Key decisions:
+
+~~~text
+endpointToleranceMs = 7229
+5s = LOW_COVERAGE_DIAGNOSTIC
+maxAllowedPathGap = pending exact policy sweep
+minimumPathCoverage = pending
+~~~
+
+The source report contained 1,639,803 indexed history rows with exact store/index count agreement.

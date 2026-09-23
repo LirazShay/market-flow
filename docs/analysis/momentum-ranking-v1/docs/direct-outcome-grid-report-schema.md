@@ -288,9 +288,18 @@ pathGapPolicy
 phasePolicy
 ~~~
 
-The tolerance/gap fields may initially be unset/pending until Issue #18 or empirical cadence work defines them.
+Current empirical cadence work defines the initial V1 endpoint configuration:
 
-An unset configuration must be explicit, not silently defaulted.
+~~~text
+endpointToleranceConfig:
+  mode: GLOBAL_BEFORE_DEADLINE
+  toleranceMs: 7229
+  calibrationBasis: max p99 endpoint timing error across 10–120s
+~~~
+
+The 5-second horizon remains declared but LOW_COVERAGE_DIAGNOSTIC under the current cadence.
+
+`pathGapPolicy` remains unset/pending until the timestamp-only gap-policy sweep is measured. An unset configuration must be explicit, not silently defaulted.
 
 ## 12. Aggregate report — denominator integrity
 
