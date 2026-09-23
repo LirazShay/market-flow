@@ -1854,6 +1854,45 @@
         "runtimeBytes": 362761
       },
       "nextLiveQuestion": "After market hours, do successive complete cycles contain unchanged market fingerprints and/or unchanged provider-time fingerprints while Leumi still returns complete HTTP 200 data?"
+    },
+    "loaderProbe": {
+      "status": "verification-pending-live-leumi",
+      "spec": "specs/loader-probe.spec.md",
+      "stableReleaseTag": "local-history-viewer-v1-runtime-latest",
+      "tagVerifiedCommit": "b152e38c717cf18884e99dc2d0335f01d6391585",
+      "artifacts": {
+        "manifest": {
+          "name": "market-flow-v1.manifest.json",
+          "assetId": 583557454,
+          "sizeBytes": 418,
+          "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.manifest.json"
+        },
+        "probe": {
+          "name": "market-flow-loader-probe.bookmarklet.txt",
+          "assetId": 583557419,
+          "sizeBytes": 7415,
+          "url": "https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-loader-probe.bookmarklet.txt"
+        }
+      },
+      "automatedEvidence": {
+        "fastCi": {
+          "runId": 35850234923,
+          "jobId": 107145914552,
+          "tests": 166,
+          "passed": 166,
+          "failed": 0
+        },
+        "browserCi": {
+          "runId": 35849961303,
+          "jobId": 107145032621,
+          "publishJobId": 107145396886,
+          "tests": 57,
+          "passed": 57,
+          "failed": 0,
+          "duration": "34.4s"
+        }
+      },
+      "liveQuestion": "Can the real authenticated Leumi origin fetch the stable manifest/runtime and compile the verified runtime under its actual CSP/network policy?"
     }
   },
   "fastContext": {
@@ -1868,8 +1907,8 @@
   "activeMiniProject": {
     "id": "deployment-loader-probe",
     "title": "Permanent loader feasibility probe",
-    "status": "in-progress",
-    "reason": "Before replacing the large self-contained Bookmarklet with a permanent remote loader, verify from the real Leumi origin that the browser can fetch the verified GitHub Release manifest/runtime and compile the fetched runtime under the site's CSP.",
+    "status": "verification-pending",
+    "reason": "Automated manifest/probe build and Chromium behavior are verified. The remaining decision depends on a one-time live compatibility probe from the real Leumi origin.",
     "scope": [
       "deterministic runtime manifest with SHA-256 build identity",
       "small non-invasive loader probe Bookmarklet",
@@ -1884,19 +1923,60 @@
     "steps": {
       "L1": {
         "title": "Manifest + probe contract/tests",
-        "status": "in-progress"
+        "status": "complete-fast-ci-verified",
+        "testsFirstFailure": {
+          "runId": 35849386567,
+          "tests": 166,
+          "passed": 163,
+          "failed": 3,
+          "cause": "new manifest/probe build contract failed because builder methods/artifact paths did not yet exist"
+        },
+        "finalFastCi": {
+          "runId": 35850234923,
+          "jobId": 107145914552,
+          "tests": 166,
+          "passed": 166,
+          "failed": 0
+        }
       },
       "L2": {
         "title": "Build/release manifest and probe artifacts",
-        "status": "planned"
+        "status": "complete-browser-ci-verified",
+        "browserCiRunId": 35849961303,
+        "publishJobId": 107145396886
       },
       "L3": {
         "title": "Chromium probe verification with mocked remote assets",
-        "status": "planned"
+        "status": "complete-browser-ci-verified",
+        "firstBrowserRun": {
+          "runId": 35849659199,
+          "tests": 57,
+          "passed": 56,
+          "failed": 1,
+          "category": "test timing bug",
+          "rootCause": "waitForFunction used optional chaining with !== null, so undefined !== null passed before the probe result existed",
+          "fix": "wait for an actual result object with completedAtMs"
+        },
+        "finalBrowserRun": {
+          "runId": 35849961303,
+          "jobId": 107145032621,
+          "tests": 57,
+          "passed": 57,
+          "failed": 0,
+          "duration": "34.4s"
+        },
+        "verified": [
+          "probe fetches a manifest and referenced runtime under controlled browser conditions",
+          "runtime SHA-256 and byte length must match before compilation",
+          "full fetched runtime can be compiled without being executed",
+          "hash mismatch blocks compilation",
+          "probe result can be downloaded as sanitized JSON",
+          "probe does not stop or replace an existing Market Flow runtime"
+        ]
       },
       "L4": {
         "title": "Live Leumi CSP/network probe",
-        "status": "planned"
+        "status": "verification-pending-user-live-evidence"
       },
       "L5": {
         "title": "Decide permanent loader architecture from live evidence",
@@ -1921,11 +2001,11 @@
     "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Permanent-loader feasibility is being tested before changing the verified self-contained delivery path.",
+    "reached": true,
+    "reason": "Loader compatibility probe is built, published, documented and automated-browser verified. Permanent loader/hot-upgrade work must wait for the real Leumi-origin probe result.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Complete the non-invasive loader probe and publish it through verified Browser CI, then run it once on the authenticated Leumi origin."
+    "nextAction": "Save the stable loader-probe Bookmarklet once, click it on the authenticated Leumi page while the current runtime may remain running, and report the four visible results or upload the probe JSON if any check fails."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
