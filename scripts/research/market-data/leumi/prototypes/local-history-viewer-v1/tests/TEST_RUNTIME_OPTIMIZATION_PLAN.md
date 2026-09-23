@@ -372,3 +372,36 @@ Result:
 
 - setup optimization is accepted;
 - the next isolated experiment is Phase C controlled worker parallelism.
+
+
+## Phase C first parallel run
+
+The current suite was re-audited before enabling parallelism:
+
+- no `test.describe.serial`;
+- no `beforeAll` / `afterAll` ordering dependency;
+- no browser spec writes repository files;
+- the local test server is static/read-only;
+- browser contexts keep IndexedDB isolated per test;
+- the experiment changes only Playwright `workers: 1 → 2`;
+- all 56 tests and the full Stage 18 storage-growth benchmark remain enabled.
+
+First full Chromium benchmark:
+
+~~~text
+run: 35865811136
+workers: 2
+result: 56 / 56 passed
+cache: hit
+Playwright suite: 25.2s
+browser-tests job: about 40s
+~~~
+
+Compared with the accepted Phase B warm-cache workers=1 run:
+
+~~~text
+Playwright suite: 36.5s → 25.2s
+browser-tests job: ~48s → ~40s
+~~~
+
+This is promising but not yet accepted. A second full Chromium run is required before keeping `workers=2` as the default.
