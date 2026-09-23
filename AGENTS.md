@@ -79,7 +79,7 @@ AI_CONTEXT.md
 specs/
 = durable normative contracts/invariants
 
-docs/history/
+workstream/docs/history/
 = preserved cold history / past evidence
 
 docs/project/decisions/
@@ -193,13 +193,13 @@ Unexpected red or red remaining after the intended fix blocks progression.
 Detailed workstream policy:
 
 ~~~text
-tests/TESTING_POLICY.md
+target workstream/tests/TESTING_POLICY.md
 ~~~
 
 Browser failure methodology:
 
 ~~~text
-tests/E2E_DEBUGGING.md
+target workstream/tests/E2E_DEBUGGING.md
 ~~~
 
 ---
