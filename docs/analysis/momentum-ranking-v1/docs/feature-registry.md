@@ -2896,6 +2896,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential, Confirmation
 - **Meaning:** creates a common timing vocabulary for comparing when evidence families become active
+- **Plain-language intuition:** this records the first moment when each evidence family becomes observably active—for example when Activity starts waking, when BID/ASK structure turns upward, or when Price begins accelerating.
+- **Market mechanism / why it can matter:** different parts of the market can change at different times. If some evidence repeatedly becomes visible before useful price progress, it may provide earlier warning than waiting for price alone.
+- **Objective connection:** the project benefits only from evidence that becomes available early enough to act on before most of the move is consumed. A common timestamp lets us compare that timing honestly.
+- **Favorable / unfavorable interpretation:** earlier observable activation can be useful if it precedes later target-relevant progress. Late activation may be confirmation rather than precursor. Timing alone is not bullish.
+- **Failure modes / counterexamples:** this is observation time, not hidden exchange event time; the family transition rule itself may be noisy; sparse sampling can make two events look farther apart or simultaneous incorrectly.
+- **Relationship to other evidence:** FQ provides timestamp quality/alignment; SQ-001 provides the family activation clocks that SQ-002..007 compare.
+- **Worked example:** Activity becomes qualifying at 10:00:00, Book at 10:00:05, meaningful Price progress at 10:00:10. Those are observed activation times—not proof of causality.
 - **Known overlaps:** FQ signal age; Issue #16
 - **Confidence limits:** timestamp is observation-time, not hidden event-time; family transition criteria are not yet calibrated
 - **Validation targets:** usable lead time, detection lateness, TimeToTarget
@@ -2913,6 +2920,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential, Confirmation
 - **Meaning:** preserves process shape without pretending causal certainty
+- **Plain-language intuition:** this describes the observed order of family changes: perhaps activity appeared first, then book movement, then price; or price moved first and other families only confirmed afterward.
+- **Market mechanism / why it can matter:** if a certain observable sequence repeatedly precedes useful upward movement, that process shape may help the system distinguish early opportunity formation from late confirmation.
+- **Objective connection:** an `ACTIVITY_THEN_BOOK_THEN_PRICE` pattern could be valuable if Activity/Book become visible early enough to enter before price completes most of the useful move. A `PRICE_THEN_CONFIRMATION` pattern may be safer but later.
+- **Favorable / unfavorable interpretation:** no sequence is assumed favorable in advance. A sequence earns value only if it improves short-horizon target outcomes and leaves usable lead.
+- **Failure modes / counterexamples:** observed order is not causal order; many events can occur between snapshots; a sequence that looks predictive in one regime may be useless in another.
+- **Relationship to other evidence:** SQ-002 labels the process order; SQ-003 says whether that order is actually resolvable; SQ-006/008 determine whether the lead is operationally useful.
+- **Worked example:** if Activity at t=0 and Price progress at t=10s repeatedly precede +0.20% targets, that may be useful. If both are observed in the same 5s polling interval, the correct label is `SIMULTANEOUS_CLUSTER`, not “Activity led by 3s.”
 - **Known overlaps:** Issue #16 precursor-conversion research
 - **Confidence limits:** sequence label is observational, not causal; current sampling cadence may collapse many true event orders
 - **Validation targets:** target-before-adverse, TimeToTarget, usable lead time
@@ -2930,6 +2944,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PV(collection constraint) + PI
 - **Decision role:** Freshness/Trust, Confirmation
 - **Meaning:** prevents overconfident lead-lag interpretation when sampling cannot support it
+- **Plain-language intuition:** this asks whether the collector's timing resolution is good enough to tell which event happened first.
+- **Market mechanism / why it can matter:** multiple real market events can occur between two polling snapshots. If Activity, Book and Price all changed inside the same unresolved interval, any precise ordering is invented.
+- **Objective connection:** false lead-lag can make a feature look predictive when in reality the system only noticed everything together. That would overstate how early we can enter.
+- **Favorable / unfavorable interpretation:** `RESOLVED` allows cautious ordering analysis; `PARTIALLY_RESOLVED` means only some order is known; `SIMULTANEOUS_CLUSTER` means no reliable lead claim; `UNKNOWN` means timing evidence is insufficient.
+- **Failure modes / counterexamples:** even `RESOLVED` is only at snapshot granularity; exchange-event order may still differ. Collector jitter/skew can change classification.
+- **Relationship to other evidence:** FQ-009 TemporalAlignment supplies timing trust; SQ-003 is the sequence-specific uncertainty wrapper.
+- **Worked example:** Activity first appears in snapshot at t=0, Book and Price both first change at t=5s. We may say Activity was observed earlier, but Book-vs-Price order is unresolved.
 - **Known overlaps:** FQ temporal alignment
 - **Confidence limits:** RESOLVED still means resolved at snapshot granularity, not exchange-event granularity
 - **Validation targets:** sequence-confidence calibration, feature correctness
@@ -2947,6 +2968,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential
 - **Meaning:** anchors how early the system could possibly begin considering the opportunity
+- **Plain-language intuition:** this is the earliest moment when a candidate precursor met all validity rules strongly enough that the system could have noticed it in real time.
+- **Market mechanism / why it can matter:** research often cheats by looking backward and identifying an early-looking pattern only after the move is known. This metric forbids backdating to information unavailable at the time.
+- **Objective connection:** if the earliest valid precursor already occurs after most price progress, it is not useful for our buy-now/sell-soon goal even if statistically associated with the move.
+- **Favorable / unfavorable interpretation:** earlier precursor time can create more room for action; later time may still be valuable as confirmation. Earlier is only better if false positives remain controlled.
+- **Failure modes / counterexamples:** permissive precursor definitions can create many useless early alerts; strict definitions can move the timestamp too late.
+- **Relationship to other evidence:** SQ-004 starts the lead-time clock; SQ-005 marks first meaningful price progress; SQ-006 is the difference between them.
+- **Worked example:** a pattern becomes valid at 10:00:02 but researchers can only recognize it using data available at 10:00:08. The valid online precursor time is 10:00:08, not 10:00:02.
 - **Known overlaps:** Issue #16 conversion latency
 - **Confidence limits:** must not backdate to an event that was not observable from available data at that time
 - **Validation targets:** detection lateness, target-before-adverse, usable lead time
@@ -2964,6 +2992,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Confirmation
 - **Meaning:** provides the conversion endpoint for precursor-to-price timing
+- **Plain-language intuition:** this marks the first time the market makes enough upward progress that we consider the precursor to have actually converted into useful price movement.
+- **Market mechanism / why it can matter:** a precursor that appears early but never converts is not useful. This endpoint tells us whether and how quickly observable pre-price evidence becomes real price progress.
+- **Objective connection:** our aim is to buy before a useful move and later sell higher. The conversion endpoint links early evidence to the first meaningful step toward that goal.
+- **Favorable / unfavorable interpretation:** fast conversion after a precursor can support usefulness; slow/no conversion can indicate weak lead or false starts.
+- **Failure modes / counterexamples:** threshold choice matters; too small a threshold counts noise, too large a threshold makes all precursors look late; final wave peak must never be used to define the first progress retrospectively.
+- **Relationship to other evidence:** PH defines meaningful progress/stall ideas; SQ-005 turns that into the endpoint for lead-lag measurement.
+- **Worked example:** precursor at t=0, first tick up at t=2s, but meaningful threshold +0.08% reached at t=9s. SQ-005 is t=9s, not t=2s.
 - **Known overlaps:** PH-007; Issue #16
 - **Confidence limits:** meaningful-progress threshold must be tick/noise/target aware; cannot use future final-wave peak
 - **Validation targets:** precursor conversion latency, TimeToTarget
@@ -2981,6 +3016,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential
 - **Meaning:** measures observed lead between a precursor and initial useful price conversion
+- **Plain-language intuition:** this is the number of seconds between “we first had a valid early clue” and “price first made meaningful upward progress.”
+- **Market mechanism / why it can matter:** positive lead means the clue was observable before price conversion, creating theoretical room to act. But theoretical lead can disappear after system/execution latency.
+- **Objective connection:** this is one of the closest measures of whether an early feature can help us enter before the useful move rather than merely describe it afterward.
+- **Favorable / unfavorable interpretation:** more positive lead may be useful, provided false-positive rate is acceptable and the order is truly resolved. Zero/negative lead suggests confirmation rather than precursor.
+- **Failure modes / counterexamples:** positive lead does not prove causality; large lead can simply mean the precursor is vague and fires too early; unresolved order must not get a numeric lead.
+- **Relationship to other evidence:** SQ-006 is raw observed lead; SQ-008 subtracts the system's own latency to obtain actionable lead.
+- **Worked example:** precursor observed at t=0, meaningful progress at t=12s → observed lead 12s. If the system needs 9s to act, only about 3s may remain operationally useful.
 - **Known overlaps:** Issue #16 conversion-latency outputs
 - **Confidence limits:** positive lead is not proof of causality; unresolved ordering must remain UNKNOWN/SIMULTANEOUS
 - **Validation targets:** usable lead time, precursor usefulness
@@ -2998,6 +3040,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Confirmation, RemainingOpportunity
 - **Meaning:** quantifies how much opportunity time is consumed waiting for confirmation
+- **Plain-language intuition:** this measures how long we wait from the first interesting evidence until enough other independent-looking families confirm it.
+- **Market mechanism / why it can matter:** more confirmation can reduce false signals, but waiting for it costs time. In fast moves, safety can arrive only after most of the profit is gone.
+- **Objective connection:** we need the best tradeoff between early entry and reliable confirmation. This metric makes the cost of “waiting for more proof” explicit.
+- **Favorable / unfavorable interpretation:** short confirmation latency preserves lead; long latency may make a high-confidence signal too late. Sometimes slower confirmation is acceptable if it greatly reduces false positives.
+- **Failure modes / counterexamples:** families may share inputs and not be truly independent; arbitrary confirmation policy can manufacture delay; a move can complete before confirmation arrives.
+- **Relationship to other evidence:** SQ-007 complements SequenceEvidenceDiversity: diversity asks how many distinct evidence origins support the setup; SQ-007 asks how long obtaining that support took.
+- **Worked example:** Activity precursor at t=0, Book confirms t=4s, Price/path confirms t=11s. Requiring both confirmations costs 11s of opportunity time.
 - **Known overlaps:** FQ signal age; Issue #16
 - **Confidence limits:** “independent” families are not statistically independent by assumption; confirmation policy remains research
 - **Validation targets:** target-before-adverse, detection lateness, TimeToTarget
@@ -3015,6 +3064,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential, Feasibility, RemainingOpportunity
 - **Meaning:** asks whether predictive lead remains actionable after the system consumes its own time
+- **Plain-language intuition:** this subtracts observation/processing/decision/entry delay from the lead a precursor appeared to offer.
+- **Market mechanism / why it can matter:** a signal can be genuinely early in the data but still unusable if the system is too slow to act before price moves.
+- **Objective connection:** this metric directly answers whether an apparent edge survives the real workflow from detection to executable action.
+- **Favorable / unfavorable interpretation:** positive usable lead means some time remains after system latency; near-zero means little room; negative means the signal can be predictive in research but operationally too late.
+- **Failure modes / counterexamples:** full execution latency may be unavailable; useful-progress timing varies; average system latency can hide slow-tail cases.
+- **Relationship to other evidence:** TE supplies latency, SQ-006 supplies raw lead, RO TimeBudgetAfterLatency applies similar logic to target horizons.
+- **Worked example:** observed precursor lead 10s, observation+ranking+decision+entry delay 7s → usable lead ≈3s. With 12s latency, usable lead is negative.
 - **Known overlaps:** TE-011 LatencyToHorizonRatio; Issue #16 LeadTimeAfterSystemLatency
 - **Confidence limits:** full value requires explicit decision/entry timing and target semantics; negative value means the signal may be statistically interesting but operationally too late
 - **Validation targets:** executable target-before-adverse, detection lateness, implementation shortfall
@@ -3032,6 +3088,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity
 - **Meaning:** penalizes detectors that are directionally correct but discover the move after most of its value is gone
+- **Plain-language intuition:** this asks whether the system noticed the opportunity early, halfway through, late, or only after most of the useful move had already happened.
+- **Market mechanism / why it can matter:** many momentum detectors look excellent because they trigger after obvious price strength appears. That can improve directional accuracy while destroying tradability.
+- **Objective connection:** the project explicitly wants **remaining** capturable upside from now. Detection that occurs after the move is mostly consumed fails the real objective even if its directional call is correct.
+- **Favorable / unfavorable interpretation:** `EARLY/MODERATE` can preserve opportunity; `LATE/MOSTLY_CONSUMED` is protective. Early is not automatically good if false positives explode.
+- **Failure modes / counterexamples:** future excursion can be used only during validation; online state must rely on current consumption proxies, not future knowledge.
+- **Relationship to other evidence:** PW recency/leg move and PR reset provide online proxies; RO MoveConsumptionState is the broader remaining-opportunity consumer.
+- **Worked example:** detector fires after +0.45% of a move whose total eventual excursion is +0.50%. It was directionally right but economically almost useless.
 - **Known overlaps:** MoveConsumptionState; PW recency concentration; PR LegResetStrength
 - **Confidence limits:** future excursion can be used only as evaluation label, never as online input
 - **Validation targets:** remaining excursion at detection, target-before-adverse from decision time
@@ -3049,6 +3112,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential, Confirmation, RemainingOpportunity, PathRisk
 - **Meaning:** captures whether the opportunity is forming, validated, already mature, too late or breaking down
+- **Plain-language intuition:** this is the lifecycle label for the opportunity: just forming, confirmed, mature, late, or failing.
+- **Market mechanism / why it can matter:** identical current strength can mean very different things depending on lifecycle. A move can be strong because it is accelerating early or strong because it has already run far and is mature.
+- **Objective connection:** stage helps the system distinguish “good evidence at the right time” from “good evidence after the opportunity window is mostly gone.”
+- **Favorable / unfavorable interpretation:** `EARLY` offers lead but less confirmation; `CONFIRMED` may be a better balance; `MATURE/LATE` raises consumption risk; `FAILING` is protective. No stage is automatically optimal without validation.
+- **Failure modes / counterexamples:** lifecycle thresholds can become arbitrary; fresh resets can move an old broad wave back into an early local stage.
+- **Relationship to other evidence:** PW/PH/PR describe price/path/reset state; SQ-010 adds timing position. RO then determines whether enough opportunity remains.
+- **Worked example:** two stocks both have strong PW state. One triggered 5s ago after a fresh reset → CONFIRMED/EARLY candidate. The other has been strong for 90s with no new reset → MATURE/LATE candidate.
 - **Known overlaps:** PW wave state; PH wave health; PR reset state
 - **Confidence limits:** stage is not score; EARLY is not automatically better than CONFIRMED; LATE depends on remaining opportunity, not wall-clock age alone
 - **Validation targets:** target-before-adverse, TimeToTarget, detection lateness, remaining excursion at detection
@@ -3066,6 +3136,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Confirmation, Freshness/Trust
 - **Meaning:** distinguishes one-family persistence from a sequence supported by several different evidence origins
+- **Plain-language intuition:** this asks whether the sequence is supported by genuinely different kinds of evidence—price, activity, book, path—or mostly by several derivatives of the same underlying data.
+- **Market mechanism / why it can matter:** agreement across different evidence mechanisms can be more robust than five highly correlated versions of the same price move.
+- **Objective connection:** when choosing one short-lived opportunity, broader non-redundant support can justify greater confidence without mistaking duplicated metrics for independent confirmation.
+- **Favorable / unfavorable interpretation:** higher *true* diversity can support confidence; low diversity means the thesis rests on one evidence source. Diversity does not increase directional strength automatically.
+- **Failure modes / counterexamples:** raw feature counts wildly overstate diversity because many metrics share inputs; family ownership and redundancy rules are required.
+- **Relationship to other evidence:** FQ-014 carries EvidenceDiversity into confidence; SQ-011 gives the sequence-specific structural version.
+- **Worked example:** PriceReturn + PriceSpeed + PriceAcceleration are not three diverse sources. Price + Activity + Book + Path provide broader evidence origins.
 - **Known overlaps:** FQ PredictiveConfidenceInputs; future CentralRanker EvidenceDiversity
 - **Confidence limits:** raw count is insufficient because families share inputs; diversity must follow ownership/redundancy rules
 - **Validation targets:** confidence calibration, target-before-adverse
@@ -3083,6 +3160,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, PathRisk
 - **Meaning:** prevents a precursor from remaining “alive” indefinitely when conversion/confirmation never arrives
+- **Plain-language intuition:** this asks whether the expected next step in the sequence is still pending, has stalled for too long, or has been contradicted and invalidated.
+- **Market mechanism / why it can matter:** an early precursor that never converts should decay rather than remain permanently bullish on the screen.
+- **Objective connection:** stale unresolved precursors waste attention and can cause late entries after the original opportunity has disappeared.
+- **Favorable / unfavorable interpretation:** `ACTIVE/WAITING_FOR_CONFIRMATION` can remain viable within normal timing; `STALLED` is cautionary; `INVALIDATED` removes the sequence.
+- **Failure modes / counterexamples:** there is no universal timeout; different precursors/regimes convert at different speeds; temporary pauses can be valid.
+- **Relationship to other evidence:** Issue #16 will learn opportunity half-life and normal conversion timing; PH/PR provide stall/failure evidence.
+- **Worked example:** Book pressure precursor appears, but 30s later no price progress and BID begins retreating → sequence should become STALLED/INVALIDATED rather than remain active.
 - **Known overlaps:** PH ProgressStallState; PR RetestFailureClock; Issue #16 opportunity half-life
 - **Confidence limits:** timeout/invalidation must be evidence-specific and regime-aware; no universal fixed clock
 - **Validation targets:** false-positive reduction, target-before-adverse, TimeToTarget
@@ -3100,6 +3184,13 @@ rather than inventing a precise causal order.
 - **Evidence:** PI + H
 - **Decision role:** Potential, Confirmation, RemainingOpportunity, PathRisk
 - **Meaning:** compact sequence summary for higher-level opportunity logic without independently summing each timing derivative
+- **Plain-language intuition:** this is the family-level answer to “where are we in the observable sequence, how much confirmation do we have, and is there still time left to use it?”
+- **Market mechanism / why it can matter:** timing features are highly related. A synthesis state prevents double counting raw lead, confirmation delay, lateness and invalidation as separate votes.
+- **Objective connection:** this gives higher-level ranking a compact view of whether the process is still an actionable precursor/building opportunity, already mature/too late, or failing.
+- **Favorable / unfavorable interpretation:** `PRECURSOR/BUILDING/CONFIRMED_EARLY` can support usable lead; `CONFIRMED_MATURE` is more ambiguous; `TOO_LATE/FAILING` is protective; `CONFLICTED/UNKNOWN` preserves uncertainty.
+- **Failure modes / counterexamples:** state labels can hide unresolved timing uncertainty if `SIMULTANEOUS_CLUSTER` is discarded; the family cannot claim causality or calibrated probabilities.
+- **Relationship to other evidence:** SQ-013 is the intended sequence synthesis feeding RO/CentralRanker, while detailed SQ metrics remain available for explanation and validation.
+- **Worked example:** early Activity clue → Book confirmation 4s later → useful price progress 8s later → low system latency may yield `CONFIRMED_EARLY`; same sequence with detection only after price already moved 90% of its excursion should become `TOO_LATE`.
 - **Known overlaps:** OpportunityStage; RemainingOpportunity; CentralRanker
 - **Confidence limits:** must retain SIMULTANEOUS_CLUSTER/uncertainty; no causal claims; usable-lead semantics depend on Issues #15/#16
 - **Validation targets:** target-before-adverse, TimeToTarget, detection lateness, usable lead time

@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Pullback/Retest/Micro-Barrier PR-001..PR-014. Pullbacks are documented as potential reset/reclaim processes, while barriers matter only when they materially intersect the short target path and their clearance/rejection timing is observable."
+    "subfocus": "Deep-rationale retrofit completed for Sequence/Lead-Lag/Opportunity Stage SQ-001..SQ-013. Observable ordering, timing uncertainty, precursor lead, confirmation delay, system-latency consumption, detection lateness and lifecycle stage are documented without causal overclaiming."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Sequence/Lead-Lag/Opportunity Stage SQ-001..SQ-013 to the deep-rationale documentation contract, explaining observable ordering, simultaneous-cluster uncertainty, precursor lead, confirmation delay, detection lateness and opportunity-stage timing."
+    "action": "Retrofit Remaining Opportunity/Target Frontier RO-001..RO-014 to the deep-rationale documentation contract, explaining observed move vs potential remaining vs capturable remaining, move consumption, time/adverse/friction budgets and why target support is a structured frontier rather than one momentum score."
   }
 }
