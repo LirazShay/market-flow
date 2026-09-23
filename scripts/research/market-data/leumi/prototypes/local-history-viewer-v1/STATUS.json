@@ -1820,6 +1820,40 @@
       },
       "browserCi": "not-required — documentation/spec architecture plus Node unit guard only; no browser behavior changed",
       "sourceOfTruthGuard": "verified green in same Fast CI run"
+    },
+    "liveDebugBundle": {
+      "status": "verification-pending-live-evidence",
+      "pureFastCi": {
+        "runId": 35793299328,
+        "jobId": 106966644344,
+        "tests": 163,
+        "passed": 163,
+        "failed": 0
+      },
+      "collectorBrowserCi": {
+        "runId": 35793819458,
+        "tests": "55/55"
+      },
+      "runtimeExportBrowserCi": {
+        "runId": 35794162494,
+        "browserJobId": 106969430341,
+        "tests": "55/55"
+      },
+      "viewerExportBrowserCi": {
+        "runId": 35794638694,
+        "browserJobId": 106970970947,
+        "conclusion": "success",
+        "tests": 55,
+        "passed": 55,
+        "failed": 0
+      },
+      "latestVerifiedRelease": {
+        "tag": "local-history-viewer-v1-runtime-latest",
+        "tagCommit": "9159d503b14fdfab26ff5738b38323fa2340761b",
+        "bookmarkletBytes": 158054,
+        "runtimeBytes": 362761
+      },
+      "nextLiveQuestion": "After market hours, do successive complete cycles contain unchanged market fingerprints and/or unchanged provider-time fingerprints while Leumi still returns complete HTTP 200 data?"
     }
   },
   "fastContext": {
@@ -1872,11 +1906,22 @@
       },
       "D4": {
         "title": "Viewer Export Debug action + Chromium verification",
-        "status": "in-progress"
+        "status": "complete-browser-ci-verified",
+        "fastCiRunId": 35794583427,
+        "browserCiRunId": 35794638694,
+        "browserJobId": 106970970947,
+        "tests": "55/55",
+        "verified": [
+          "viewer exposes Export Debug action",
+          "action uses the normal running runtime; it does not start a second recorder",
+          "downloaded JSON is the sanitized bounded Debug Bundle",
+          "assembled Bookmarklet with Viewer action passes full Chromium suite"
+        ],
+        "workflowRestoreCommit": "5c788d9318e3a2f4d110a0757a68cf024df175af"
       },
       "D5": {
         "title": "Live after-market evidence collection and recorder-policy decision",
-        "status": "planned"
+        "status": "verification-pending-user-live-evidence"
       }
     }
   },
@@ -1897,11 +1942,11 @@
     "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Live verification found an after-market behavior ambiguity; diagnostic evidence tooling is being added before changing collection semantics.",
+    "reached": true,
+    "reason": "Sanitized Debug Bundle implementation is complete through Viewer one-click export and full Chromium verification. The remaining question is live provider behavior after market hours.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Complete and verify the sanitized Debug Bundle, then use it in the authenticated Leumi browser to determine provider freshness/market-state behavior before implementing the after-market policy."
+    "nextAction": "Use the latest verified Bookmarklet in the authenticated Leumi tab, let several cycles complete after market hours, click Export Debug in the Viewer, and upload the generated JSON. Use that evidence to decide the recorder after-market policy."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
