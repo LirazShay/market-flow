@@ -253,3 +253,67 @@ Phase B: reduce repeated Chromium/setup cost
 ~~~
 
 This order attacks overhead first and avoids weakening tests prematurely.
+
+
+## Phase B cold-run findings
+
+Browser CI run `35865004148` verified the setup change on a fresh hosted runner:
+
+~~~text
+result: 56 / 56 passed
+runner: ubuntu-24.04
+Playwright suite: 38.0s
+browser-tests job: about 57s
+cache state: miss
+~~~
+
+Cold setup behavior:
+
+- `npm install` remained about 2–3s;
+- the Playwright cache lookup was a miss as expected;
+- `npx playwright install chromium` downloaded the browser binaries without running the previous apt-heavy `--with-deps` path;
+- the full Chromium suite launched successfully, proving the pinned `ubuntu-24.04` hosted image provides the runtime libraries required by this test suite;
+- the successful run saved the versioned Playwright browser cache for the next run.
+
+Compared with the ~67s baseline browser-test job, the cold path improved by about 10s even before a cache hit.
+
+### Dependency-install decision
+
+A lockfile + `npm ci` was evaluated as a possible setup optimization, but dependency installation is only about 2–3s in the measured runs. It is not the material runtime bottleneck for this mini-project, so Phase B does not add lockfile complexity solely for speed.
+
+Direct test-tool versions remain exact in `package.json`. Any future lockfile decision belongs to dependency/reproducibility maintenance rather than being justified as a meaningful Browser CI speed optimization.
+
+### Flake found during the first cold experiment
+
+The first cold experiment run `35864772837` produced:
+
+~~~text
+55 passed / 1 failed
+viewer-live-refresh refreshCount expected >= 1, received 0
+~~~
+
+RCA showed a test-synchronization race:
+
+- the test waited for the rendered security count;
+- the rendered table becomes observable before `executeRefresh()` completes all detail/diagnostic work;
+- `refreshCount` increments only at the end of that refresh;
+- the assertion could therefore observe the correct DOM while the semantic refresh completion counter was still zero.
+
+Fix:
+
+- wait on `refreshCount >= 1` as the actual completion condition;
+- no fixed sleep was added;
+- production/runtime behavior was unchanged.
+
+The corrected full cold run passed 56/56.
+
+### Warm-run gate
+
+Phase B is not accepted from the cold result alone.
+
+The next run must demonstrate:
+
+- cache hit;
+- full 56-test Chromium success;
+- lower setup/job elapsed time than the cold path;
+- no change to workers or storage-growth coverage.
