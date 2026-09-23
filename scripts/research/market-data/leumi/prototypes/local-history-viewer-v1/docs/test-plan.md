@@ -6,6 +6,19 @@ This document defines planned cases. Execution rules are authoritative in `../te
 
 Adding or changing a test creates an immediate verification obligation: the changed test must run in its real layer after its final edit and before the next implementation unit.
 
+For browser TDD/regression work, immediate verification means **targeted-first**:
+
+~~~text
+write/change exact browser test
+→ run that exact Playwright target in Chromium
+→ if intentionally red, confirm it fails for the intended reason
+→ implement/fix
+→ rerun exact target until green
+→ widen only when coupling/risk/evidence requires it
+~~~
+
+Do not run the full Browser suite merely to prove an expected red.
+
 In addition, **every numbered Stage requires a full Browser CI run before it can be marked complete**. Additional browser checkpoints are integration milestones beyond this minimum cadence; they do not replace per-Stage verification.
 
 Status:
