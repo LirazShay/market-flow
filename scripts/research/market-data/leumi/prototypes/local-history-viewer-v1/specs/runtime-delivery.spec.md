@@ -50,6 +50,8 @@ Generated artifacts:
 ~~~text
 runtime/dist/market-flow-v1.runtime.js
 runtime/dist/market-flow-v1.bookmarklet.txt
+runtime/dist/market-flow-v1.manifest.json
+runtime/dist/market-flow-loader-probe.bookmarklet.txt
 ~~~
 
 The readable runtime preserves assembled repository source for inspection/debugging.
@@ -89,6 +91,31 @@ bookmarklet bytes
 compact runtime bytes
 +
 bytes("javascript:")
+~~~
+
+### Integrity manifest and loader probe
+
+The build also emits a deterministic manifest whose build identity is the SHA-256 of the readable runtime.
+
+The manifest records:
+
+~~~text
+formatVersion
+buildId
+runtime.fileName
+runtime.url
+runtime.sha256
+runtime.bytes
+~~~
+
+The loader-probe Bookmarklet is an experimental compatibility artifact. It may fetch and verify the remote runtime, but it must not execute it or replace the currently running runtime.
+
+The self-contained Bookmarklet remains the normal verified delivery path unless a later spec explicitly promotes a remote loader after live-origin verification.
+
+Full probe semantics live in:
+
+~~~text
+loader-probe.spec.md
 ~~~
 
 ### Runtime API
@@ -145,6 +172,9 @@ The stable download should represent browser-verified generated output, not an a
 10. Restart is blocked while prior stop persistence is pending.
 11. Generated artifacts contain no credentials, cookies, authorization headers, account identifiers, or private session state.
 12. Stable release publication follows full Browser CI success.
+13. The runtime manifest SHA-256 and byte count must describe the exact published readable runtime.
+14. The compatibility probe never executes or replaces the remote runtime it downloads.
+15. A permanent remote loader is not considered supported until real Leumi-origin compatibility is verified.
 
 ## Failure semantics
 
@@ -192,9 +222,10 @@ Browser smoke:
 
 ~~~text
 ../tests/automation/specs/runtime-assembly.spec.js
+../tests/automation/specs/loader-probe.spec.js
 ~~~
 
-The Browser suite verifies generated execution, initial/repeated launch and restart behavior.
+The Browser suite verifies generated execution, initial/repeated launch and restart behavior, plus probe-side remote fetch/integrity/compile-without-execute behavior under controlled browser conditions.
 
 Real Chrome bookmark storage/execution inside the authenticated Leumi site remains live-provider verification.
 
@@ -210,6 +241,9 @@ Review this spec whenever changing:
 - generated artifact names;
 - launch/relaunch/restart behavior;
 - external-host dependency;
+- manifest/build identity;
+- loader compatibility probe;
+- promotion of a remote loader from experiment to supported delivery;
 - release publication rule;
 - security contents of generated output.
 
@@ -219,6 +253,8 @@ Review this spec whenever changing:
 - `../runtime/source-order.js`
 - `../runtime/build-runtime.js`
 - `../runtime/entry.js`
+- `../runtime/loader-probe.js`
+- `loader-probe.spec.md`
 - `system.spec.md`
 - `../tests/unit/runtime-build.test.js`
 - `../tests/automation/specs/runtime-assembly.spec.js`
