@@ -6,7 +6,10 @@ These files are **cold context**:
 
 - they are preserved for fresh chats that need to understand how/why the current state was reached;
 - they are not read on every normal continuation;
-- they are not the current operational source of truth.
+- they are not the current operational source of truth;
+- they may contain rules/status that were correct at that historical moment but were later superseded.
+
+Current `AGENTS.md`, current policy/spec/decision docs and current `STATUS.json` always win over archived instructions/status.
 
 Current V1 status:
 
