@@ -2,7 +2,7 @@
   "schemaVersion": 3,
   "workstream": "local-history-viewer-v1",
   "updatedAt": "2026-09-23",
-  "overallStatus": "in-progress",
+  "overallStatus": "complete",
   "authority": {
     "operationalProgress": "STATUS.json",
     "planAndOrder": "ROADMAP.md",
@@ -13,35 +13,35 @@
     "stage": "20",
     "substep": null,
     "title": "V1 freeze",
-    "status": "in-progress"
+    "status": "complete"
   },
   "stageSummary": {
-    "completed": "1-19",
-    "inProgress": "20",
+    "completed": "1-20",
+    "inProgress": null,
     "planned": null
   },
   "currentStage": {
     "stage": "20",
     "title": "V1 freeze",
-    "status": "in-progress"
+    "status": "complete"
   },
   "activeMiniProject": null,
   "verification": {
     "codeBaseline": {
       "fastCi": {
-        "runId": 35863145121,
+        "runId": 35870322869,
         "conclusion": "success"
       },
       "browserCi": {
-        "runId": 35862723542,
+        "runId": 35870035162,
         "conclusion": "success",
-        "verifiedCommit": "362fe0278f93ba9b4417522355ab4f7ae4494519",
+        "verifiedCommit": "5e95c7c5fc791f022a50038d3ef18e8f81886502",
         "tests": 56,
         "passed": 56,
         "failed": 0
       },
       "rollingReleaseTag": "local-history-viewer-v1-runtime-latest",
-      "note": "Stage 19 final browser/test state is fully Chromium-verified. The one-time push trigger used to start Browser CI was removed immediately afterward; no temporary CI scaffolding remains."
+      "note": "Stage 20 final code/test state is Chromium-verified. Later commits only removed temporary CI triggering, archived freeze evidence and updated status/docs; production/runtime payload did not change."
     },
     "stage19": {
       "status": "complete",
@@ -87,20 +87,27 @@
       "coverage": "All 56 Browser tests retained; storage-growth sample unchanged; retries remain 0.",
       "specImpact": "No spec impact.",
       "historyReport": "docs/history/test-runtime-optimization/2026-09-23-browser-ci-optimization.md"
+    },
+    "stage20": {
+      "status": "complete",
+      "version": "V1",
+      "freezeReport": "docs/history/v1-freeze/2026-09-23-stage-20-v1-freeze.md",
+      "finalFastCiRunId": 35870322869,
+      "finalBrowserCiRunId": 35870035162,
+      "finalBrowserResult": "56/56 passed with workers=2; Playwright suite 24.9s.",
+      "closureIncident": "A debug-bundle teardown deleteDatabase race was isolated, fixed in test teardown, and promoted to E2E debugging guidance; no production/runtime behavior changed.",
+      "specImpact": "No spec impact."
     }
   },
   "next": {
-    "action": "Finish Stage 20 V1 freeze closure.",
+    "action": "V1 is frozen. There is no remaining V1 Stage.",
     "steps": [
-      "verify final README, VERSION, durable docs/spec/test-policy consistency and absence of temporary Stage 20 artifacts",
-      "run Fast CI on the cleaned freeze state",
-      "run the mandatory full Browser CI closure gate and remove its temporary trigger afterward",
-      "record final closure evidence and mark the V1 process complete only if all gates are green"
+      "Start V2 only through an explicit new planning decision using the existing V2 backlog as scope input."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
-    "latestArchive": "docs/history/live-verification/2026-09-23-stage-19-live-report.md",
+    "latestArchive": "docs/history/v1-freeze/2026-09-23-stage-20-v1-freeze.md",
     "rule": "Historical Stage/CI/mini-project evidence is preserved in cold history and read only when needed."
   }
 }
