@@ -18,6 +18,8 @@ evidence
 → minimal fix
 → targeted green
 → required broader regression
+→ Failure Review
+→ promote reusable lesson or keep it local
 ~~~
 
 Do not start by repeatedly running the whole suite, adding sleeps, weakening assertions, or changing production code before understanding the failure.
@@ -278,6 +280,38 @@ Prefer waiting for the causal condition:
 
 If a sleep makes the test pass, treat that as evidence of a race, not as the final fix.
 
+### Readiness predicate rule
+
+When waiting for async readiness, require a **positive existence + terminal-state condition**.
+
+Prefer:
+
+~~~javascript
+const result = window.someResult;
+return Boolean(
+    result &&
+    result.completedAtMs !== null
+);
+~~~
+
+Avoid predicates whose inequality accidentally treats missing state as ready:
+
+~~~javascript
+window.someResult?.completedAtMs !== null
+~~~
+
+because when `someResult` is still missing, optional chaining yields `undefined`, and `undefined !== null` is true.
+
+General rule:
+
+~~~text
+prove the object/state exists
++
+prove the required terminal condition
+~~~
+
+Do not let "not equal to a sentinel" substitute for positive readiness.
+
 ---
 
 ## 14. Fix discipline
@@ -291,7 +325,10 @@ Once RCA is strong enough:
 5. once targeted green, run the relevant spec/cluster only when coupling/risk/evidence justifies it;
 6. run full Browser CI only when required by policy/checkpoint or when suite-level reproduction is necessary;
 7. restore temporary diagnostics and CI triggers;
-8. update STATUS.json with root cause, fix commit and verification evidence.
+8. complete the Failure Review: technical root cause, reasoning/process cause, escape cause and smallest prevention;
+9. evaluate the Learning Promotion Gate from `docs/project/continuous-improvement.md`;
+10. promote reusable lessons to the narrowest correct owner, or explicitly keep the lesson local;
+11. update STATUS.json with root cause, fix, verification evidence and learning disposition when material.
 
 ---
 
@@ -325,6 +362,13 @@ What minimal fix was made?
 Did the exact test pass?
 Did the required broader Browser suite pass?
 Were temporary diagnostics restored?
+
+What reasoning/process choice helped create this failure?
+Why did existing safeguards not catch it earlier?
+If starting again, what would we do differently?
+What is the smallest prevention?
+Is the lesson local, workstream-wide or repository-wide?
+Was a reusable lesson promoted? Where?
 ~~~
 
 ---
