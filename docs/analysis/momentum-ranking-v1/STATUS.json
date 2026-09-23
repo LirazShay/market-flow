@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Price/Wave, Activity/Flow, Book/Directional Flow, Tradability, Freshness/Data Quality and Path Quality/Wave Health established under the objective-alignment contract."
+    "subfocus": "Core microstructure/path families now include Pullback/Retest/Micro-Barrier State under the objective-alignment contract."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Pullback/Retest/Micro-Barrier State: pullback depth/duration, reclaim latency/strength, post-retest acceleration, target-path obstacles and barrier-clearance/rejection semantics."
+    "action": "Populate Sequence/Lead-Lag/Opportunity Stage: cross-family event ordering, SIMULTANEOUS_CLUSTER handling, precursor/confirmation timing, usable lead-time concepts and EARLY/CONFIRMED/MATURE/LATE/FAILING opportunity stage."
   }
 }

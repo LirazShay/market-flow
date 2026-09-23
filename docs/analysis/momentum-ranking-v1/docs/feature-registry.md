@@ -1737,12 +1737,330 @@ future MFE/MAE are OUTCOMES/LABELS
 not inputs to PH at decision time
 ~~~
 
+# Family PR — Pullback / Retest / Micro-Barrier State
+
+Purpose:
+
+> Detect whether a short pullback/retest has created a **fresh capturable leg from now**, and whether a nearby micro-level sits materially inside the path to the short target.
+
+This family does **not** encode classical chart-pattern folklore.
+
+Critical rule:
+
+~~~text
+pullback exists
+!=
+healthy pullback
+!=
+new opportunity
+~~~
+
+A pullback becomes useful only when its subsequent state improves the seconds-to-~2-minute opportunity.
+
+Likewise:
+
+~~~text
+breakout occurred
+!=
+continuation guaranteed
+~~~
+
+The relevant question is whether crossing a **path-relevant micro barrier** converts into additional progress quickly enough before rejection.
+
+## Ownership boundary
+
+This family owns:
+
+- pullback depth/duration;
+- reclaim/retest timing and strength;
+- post-retest reacceleration;
+- fresh-leg reset semantics;
+- distance to relevant micro barriers;
+- barrier clearance / acceptance / rejection.
+
+It does **not** own:
+
+- generic GiveBack/path deterioration → Path/WaveHealth;
+- raw speed/acceleration → Price/Wave;
+- displayed Book direction → Book/Directional Flow;
+- broad daily highs/lows as standalone signals;
+- future target outcomes → validation/outcome layer.
+
+### PR-001 — PullbackDepthPct
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** recent local peak/reference + current/retreat low using valid LAST/MID history
+- **Derivation:** adverse move from relevant local peak to pullback low; exact reference semantics deferred to Issue #6
+- **Unit / shape:** percent
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, PathRisk
+- **Meaning:** measures how much extension has been reset and how much structure has been surrendered
+- **Known overlaps:** PH-004 GiveBackPct
+- **Confidence limits:** depth alone does not classify pullback as healthy; must not duplicate PH-004 as a second penalty
+- **Validation targets:** post-retest target-before-adverse, MAE, TimeToTarget
+- **Research state:** Candidate / reference semantics pending Issue #6
+
+### PR-002 — PullbackDurationSeconds
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** pullback start/end timestamps
+- **Derivation:** elapsed time from relevant local peak/retreat onset to pullback low or reclaim phase
+- **Unit / shape:** seconds
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** quantifies whether the reset is fast enough to remain relevant to the short objective
+- **Known overlaps:** PW WaveAge/LegAge; FQ freshness
+- **Confidence limits:** exact phase boundaries depend on pullback/retest state semantics; long duration is not automatically failure without target/horizon context
+- **Validation targets:** post-retest TimeToTarget, detection lateness, target-before-adverse
+- **Research state:** Candidate
+
+### PR-003 — PullbackCounterPressureState
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** STATE
+- **Raw sources:** Price/Wave + Activity/Flow + Book/Directional Flow during the retreat
+- **Derivation:** characterize whether adverse movement is expanding, contained or fading; exact synthesis TBD
+- **Unit / shape:** CONTAINED / EXPANDING / FADING / CONFLICTED / UNKNOWN
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, Confirmation
+- **Meaning:** distinguishes a modest reset from a retreat accompanied by growing adverse process
+- **Known overlaps:** PH WaveHealthState; BD directional flow
+- **Confidence limits:** cross-family inputs must not be re-added as independent votes; state owns only pullback interpretation
+- **Validation targets:** retest success/failure, target-before-adverse, breakdown
+- **Research state:** Candidate
+
+### PR-004 — ReclaimLatencySeconds
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** pullback low/end timestamp + reclaim event timestamp
+- **Derivation:** elapsed time from pullback low/reset point to defined reclaim of relevant micro reference
+- **Unit / shape:** seconds
+- **Role:** LEADING, CONFIRMING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, Confirmation
+- **Meaning:** measures how quickly upward process reasserts itself after a reset
+- **Known overlaps:** Issue #16 conversion latency; PR-006
+- **Confidence limits:** reclaim reference must be explicit; slow reclaim can consume most of the opportunity horizon
+- **Validation targets:** target-before-adverse, TimeToTarget, usable lead time
+- **Research state:** Candidate
+
+### PR-005 — ReclaimStrengthState
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** STATE
+- **Raw sources:** reclaimed price/MID level + current Price/Book/Activity response
+- **Derivation:** classify whether reclaim is weak, confirmed or rejected based on persistence/progress after reclaim
+- **Unit / shape:** WEAK_RECLAIM / CONFIRMED_RECLAIM / FAILED_RECLAIM / UNKNOWN
+- **Role:** CONFIRMING, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation, PathRisk
+- **Meaning:** separates touching/recovering a level from actually re-establishing upward progress
+- **Known overlaps:** BD book confirmation; PH path transition
+- **Confidence limits:** no single quote/print proves reclaim acceptance; persistence must be defined without future leakage
+- **Validation targets:** target-before-adverse, post-retest continuation, MAE
+- **Research state:** Candidate
+
+### PR-006 — PostRetestAccelerationState
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** STATE
+- **Raw sources:** PW acceleration/speed immediately after reclaim + aligned AF/BD confirmation
+- **Derivation:** classify whether a fresh leg accelerates after the retest
+- **Unit / shape:** REACCELERATING / STEADY / WEAK / DETERIORATING / UNKNOWN
+- **Role:** LEADING, CONFIRMING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity
+- **Meaning:** tests whether the pullback actually reset into a new fast leg rather than merely stopping the decline
+- **Known overlaps:** PW-004; Sequence
+- **Confidence limits:** family owns the post-retest interpretation, not a duplicate acceleration vote
+- **Validation targets:** TimeToTarget, target-before-adverse, detection lateness
+- **Research state:** Candidate
+
+### PR-007 — LegResetStrength
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** STATE
+- **Raw sources:** PR-001..PR-006 + PH path state
+- **Derivation:** synthesize whether the pullback meaningfully reduced extension and produced a fresh upward leg
+- **Unit / shape:** NO_RESET / PARTIAL_RESET / FRESH_LEG / STRONG_FRESH_LEG / FAILED / UNKNOWN
+- **Role:** LEADING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** explicit representation of renewed opportunity inside an older broad wave
+- **Known overlaps:** PW LegAge; MoveConsumptionState
+- **Confidence limits:** should not infer large remaining opportunity solely from reset state; direct outcome validation required
+- **Validation targets:** target-before-adverse, remaining excursion at detection, TimeToTarget
+- **Research state:** Provisional composite
+
+### PR-008 — RetestFailureClockSeconds
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** reclaim/retest state timestamps + subsequent progress/invalidating events
+- **Derivation:** elapsed time since retest/reclaim without required continued progress or before explicit failure
+- **Unit / shape:** seconds
+- **Role:** PROTECTIVE, LEADING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** detects a retest that looked promising but is failing to convert quickly enough
+- **Known overlaps:** PH-007/PH-008; Issue #16
+- **Confidence limits:** “too long” depends on conversion-latency/target context; exact failure threshold not yet known
+- **Validation targets:** failure-before-target, TimeToTarget deterioration, false-start reduction
+- **Research state:** Candidate / partially blocked by Issue #16
+
+### PR-009 — DistanceToNearestRelevantMicroBarrierPct
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** current decision reference + recent micro/leg highs or other explicitly defined local barriers
+- **Derivation:** smallest positive distance to a relevant barrier that lies above current reference and inside the researched short path
+- **Unit / shape:** percent
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, PathRisk
+- **Meaning:** identifies whether the desired move must first clear a nearby local obstacle
+- **Known overlaps:** PR-010; daily/recent high context
+- **Confidence limits:** broad/distant daily highs are not automatically relevant; barrier definition must be causal/observable at decision time
+- **Validation targets:** TimeToTarget, barrier-first/rejection outcomes
+- **Research state:** Candidate
+
+### PR-010 — BarrierDistanceToTargetRatio
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** PR-009 + candidate positive target
+- **Derivation:** `distanceToBarrierPct / positiveTargetPct`
+- **Unit / shape:** ratio
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** distinguishes a barrier that consumes a large share of the desired move from one that is economically irrelevant to that target
+- **Known overlaps:** TargetFeasibilityFrontier
+- **Confidence limits:** blocked until target semantics exist; a near barrier can be positive if rapidly accepted
+- **Validation targets:** target-before-adverse, TimeToTarget
+- **Research state:** Candidate / blocked pending target semantics
+
+### PR-011 — BarrierClearanceLatencySeconds
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** barrier-cross timestamp + first subsequent meaningful progress/acceptance timestamp
+- **Derivation:** elapsed time from crossing a relevant micro barrier to additional confirmed progress
+- **Unit / shape:** seconds
+- **Role:** LEADING, CONFIRMING, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation, RemainingOpportunity
+- **Meaning:** measures whether the cross converts quickly into useful continuation
+- **Known overlaps:** Issue #16 conversion latency; PR-012
+- **Confidence limits:** crossing alone is not acceptance; current cadence may create interval uncertainty
+- **Validation targets:** target-before-adverse, TimeToTarget, breakout continuation/rejection
+- **Research state:** Candidate
+
+### PR-012 — BarrierAcceptanceState
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** STATE
+- **Raw sources:** barrier level + subsequent BID/MID/LAST path + activity/book confirmation
+- **Derivation:** classify post-cross behavior as ACCEPTED / TENTATIVE / REJECTED / FAILED_BREAK / UNKNOWN
+- **Unit / shape:** state
+- **Role:** CONFIRMING, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation, PathRisk
+- **Meaning:** differentiates a mere print above a level from sustained market-center/progress above it
+- **Known overlaps:** BD flow state; PH path state
+- **Confidence limits:** exact persistence requirement uncalibrated; must not peek beyond the decision timestamp when used online
+- **Validation targets:** post-break target-before-adverse, MAE, TimeToTarget
+- **Research state:** Candidate
+
+### PR-013 — PostBreakGiveBackPct
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** DERIVED
+- **Raw sources:** barrier-cross reference + subsequent current path up to decision time
+- **Derivation:** surrendered progress after the most recent relevant barrier cross
+- **Unit / shape:** percent
+- **Role:** PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** PathRisk
+- **Meaning:** identifies rejection/failure developing after a cross
+- **Known overlaps:** PH-004 GiveBackPct
+- **Confidence limits:** should be consumed as barrier-specific context, not a second generic GiveBack penalty
+- **Validation targets:** failed break, target-before-adverse, MAE
+- **Research state:** Candidate
+
+### PR-014 — PullbackRetestBarrierState
+
+- **Family:** Pullback / Retest / Micro-Barrier State
+- **Kind:** STATE
+- **Raw sources:** PR-001..PR-013 where valid
+- **Derivation:** family-level synthesis of reset/reclaim/reacceleration and barrier path state
+- **Unit / shape:** NO_SETUP / RESETTING / RETESTING / FRESH_LEG / BARRIER_PENDING / BARRIER_ACCEPTED / REJECTED / FAILED / UNKNOWN + Strength/Confidence/Coverage
+- **Role:** LEADING, CONFIRMING, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity, PathRisk
+- **Meaning:** compact state that tells higher-level logic whether a recent retreat/barrier event has created, preserved or invalidated a fresh short-horizon opportunity
+- **Known overlaps:** PH WaveHealthState; Sequence; RemainingOpportunity
+- **Confidence limits:** this is not a classical-pattern buy signal; each state must be validated against direct target/adverse outcomes
+- **Validation targets:** target-before-adverse, TimeToTarget, detection lateness, MAE
+- **Research state:** Provisional composite
+
+---
+
+## Pullback / Retest / Micro-Barrier objective-alignment boundary
+
+This family should answer:
+
+~~~text
+did the recent retreat/barrier interaction
+create or destroy a fresh capturable leg from NOW?
+~~~
+
+It must not answer:
+
+~~~text
+pullback = healthy
+breakout = bullish
+daily high nearby = important
+~~~
+
+Preferred flow:
+
+~~~text
+retreat/reset
+→ reclaim
+→ reacceleration
+→ barrier interaction if relevant
+→ fresh leg / rejection / failure
+~~~
+
+Only barriers that materially sit inside or near the current short target path deserve meaningful influence.
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Pullback / Retest / Micro-Barrier State
+Sequence / Lead-Lag / Opportunity Stage
 ~~~
 
-It will own opportunity-reset/reclaim semantics and path-relevant micro levels, without turning classical chart-pattern labels into automatic bullish votes.
+It will own cross-family event ordering, simultaneous-cluster uncertainty, usable lead time and early-vs-late opportunity-stage semantics.
