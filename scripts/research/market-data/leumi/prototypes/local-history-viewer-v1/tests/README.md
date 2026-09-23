@@ -120,6 +120,8 @@ full Browser suite
 
 An expected red from the newly written target is not a reason to run the whole Browser suite.
 
+Once implementation code changes, the final changed code state must be exercised in Chromium. Use a targeted browser test/spec for a truly localized change; use the full Browser suite for shared runtime/harness/storage/messaging/viewer integration, cross-component, or multi-area changes.
+
 ## Browser harness
 
 ~~~text
