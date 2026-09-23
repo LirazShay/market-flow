@@ -52,11 +52,16 @@ docs/project/engineering-practices.md
 
 ~~~text
 changed test
-→ run immediately in its real layer
-→ green before continuing
+→ run the smallest sufficient target immediately in its real layer
+
+intentional TDD/regression red
+→ exact target fails for intended reason
+→ implement/fix
+→ exact target green
 
 browser behavior/test changed
-→ Chromium immediately
+→ targeted Chromium immediately
+→ widen only when justified
 
 numbered Stage closure
 → Fast CI green
