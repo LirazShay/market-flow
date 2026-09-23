@@ -29,7 +29,7 @@
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
     "phase": "F",
-    "phaseStatus": "planned",
+    "phaseStatus": "in-progress",
     "title": "Final optimization verification",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
@@ -130,12 +130,12 @@
     }
   },
   "next": {
-    "action": "Execute Phase F final optimization verification only.",
+    "action": "Finish Phase F verification and hand back to Stage 20 freeze.",
     "steps": [
-      "run the final Fast CI on the durable no-push workflow state",
-      "run one final full Browser CI on the optimized durable state without publication",
-      "compare final timing against the original baseline and confirm no temporary benchmark scaffolding remains",
-      "only after Phase F is green return to the remaining Stage 20 V1-freeze closure work"
+      "run one full optimized Chromium suite with publication disabled",
+      "remove the temporary push trigger immediately after the run",
+      "run Fast CI on the final durable no-push state",
+      "record final timing comparison and close the optimization mini-project only if both gates are green"
     ]
   },
   "history": {
