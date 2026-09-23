@@ -2354,12 +2354,358 @@ family transitions
 → SequenceOpportunityState
 ~~~
 
+# Family RO — Remaining Opportunity / Target Frontier
+
+Purpose:
+
+> Represent how much **useful upward opportunity may still remain from the current decision point**, across several target/time/adverse combinations, while preserving the difference between raw market potential and what is realistically capturable after time and friction.
+
+This family is one of the core objective families.
+
+Critical distinction:
+
+~~~text
+ObservedMove
+!=
+PotentialRemaining
+!=
+CapturableRemaining
+~~~
+
+And:
+
+~~~text
+RemainingOpportunity
+!=
+generic momentum strength
+~~~
+
+## No fabricated probability rule
+
+Before sufficient empirical history:
+
+~~~text
+supported / plausible / weak / unsupported / unknown
+~~~
+
+may be used as semantic research states.
+
+Do **not** emit calibrated probabilities from this family until Issue #15/#11 establishes them empirically.
+
+## Online-vs-outcome separation
+
+Future realized:
+
+- MFE;
+- MAE;
+- TimeToTarget;
+- WhichBarrierFirst;
+- realized executable result
+
+are outcome labels.
+
+They may validate RO features but must not leak into decision-time inputs.
+
+### RO-001 — ObservedMoveFromDecisionContext
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** CONTEXT
+- **Raw sources:** decision-time LAST/MID plus relevant current leg/reset reference
+- **Derivation:** observed move already completed before the current decision point; exact reference depends on leg/reset semantics
+- **Unit / shape:** percent + reference identity
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PI
+- **Decision role:** RemainingOpportunity
+- **Meaning:** records how much movement has already occurred before the engine is deciding
+- **Known overlaps:** PW-009, PH-006, SQ-009
+- **Confidence limits:** should not become a duplicate momentum score; reference ownership must be reconciled with Issue #6
+- **Validation targets:** detection lateness, remaining excursion at decision time
+- **Research state:** Candidate
+
+### RO-002 — CurrentPotentialState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** current PW/AF/BD/PH/PR/SQ family states
+- **Derivation:** synthesize whether fresh upward process currently exists without estimating remaining magnitude yet
+- **Unit / shape:** NONE / WEAK / DEVELOPING / STRONG / CONFLICTED / UNKNOWN
+- **Role:** LEADING, CONFIRMING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential
+- **Meaning:** separates evidence that upward process exists from the separate question of how much is left
+- **Known overlaps:** family scores; SQ OpportunityStage
+- **Confidence limits:** strong potential does not imply large remaining excursion or executable opportunity
+- **Validation targets:** target-before-adverse, TimeToTarget
+- **Research state:** Provisional composite
+
+### RO-003 — PotentialRemainingState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** RO-001/RO-002 + SQ stage + PR reset + future conditional excursion priors from Issue #15 + recent-capacity context later
+- **Derivation:** estimate semantic remaining market opportunity before execution friction; exact empirical mapping deferred
+- **Unit / shape:** NONE / LOW / MODERATE / HIGH / RENEWED_AFTER_RESET / UNKNOWN
+- **Role:** LEADING, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** forward-looking market-only assessment of remaining upward excursion
+- **Known overlaps:** MoveConsumptionState; Recent Wave Memory
+- **Confidence limits:** cannot be reliably calibrated before Issue #15; must not use recent typical wave minus current move as a deterministic formula
+- **Validation targets:** future MFE, target-before-adverse, remaining excursion at decision time
+- **Research state:** Candidate / blocked pending direct outcome research
+
+### RO-004 — MoveConsumptionState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** RO-001 + SQ DetectionLatenessState + PR LegResetStrength + later conditional excursion/capacity priors
+- **Derivation:** classify how much of comparable useful movement appears already consumed, preserving reset semantics
+- **Unit / shape:** EARLY / PARTIALLY_CONSUMED / MATURE / MOSTLY_CONSUMED / RENEWED_AFTER_RESET / UNKNOWN
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** HISTORY + FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** prevents a very strong but mostly completed move from outranking a fresher opportunity
+- **Known overlaps:** SQ-009 DetectionLatenessState; PW recency concentration
+- **Confidence limits:** broad WaveAge is insufficient; online state cannot use future final excursion
+- **Validation targets:** remaining excursion at detection, target-before-adverse
+- **Research state:** Candidate / empirical mapping pending
+
+### RO-005 — TimeBudgetAfterLatencySeconds
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** DERIVED
+- **Raw sources:** candidate target horizon + FQ-002 observation age + ranking/decision latency + expected entry latency where available
+- **Derivation:** `targetHorizon - observationAge - rankingDelay - decisionDelay - expectedEntryDelay`
+- **Unit / shape:** seconds
+- **Role:** GATE, PROTECTIVE, CONTEXT
+- **Availability:** NOW for partial market-system form; EXEC for full form
+- **Evidence:** PI
+- **Decision role:** RemainingOpportunity, Feasibility
+- **Meaning:** expresses how much of the target's time horizon remains available after the system consumes time
+- **Known overlaps:** TE-011, SQ-008
+- **Confidence limits:** expected entry delay is execution-policy dependent; negative/near-zero budget does not imply bearish direction, only unusable timing
+- **Validation targets:** executable target-before-adverse, missed opportunity, implementation shortfall
+- **Research state:** Candidate
+
+### RO-006 — TargetCandidate
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** CONTEXT
+- **Raw sources:** predefined research target grid from Issue #15
+- **Derivation:** explicit target size + timeout + adverse barrier specification
+- **Unit / shape:** tuple `{targetPct, timeoutSec, adversePct}`
+- **Role:** CONTEXT, OUTCOME
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Outcome, RemainingOpportunity
+- **Meaning:** atomic research question against which opportunity evidence is evaluated
+- **Known overlaps:** Issue #15 target-before-adverse surface
+- **Confidence limits:** grid values are research parameters, not promises or recommended execution thresholds
+- **Validation targets:** WhichBarrierFirst, TimeToTarget, MFE/MAE
+- **Research state:** Candidate research primitive
+
+### RO-007 — TargetSupportState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** one RO-006 target + current family evidence + later conditional outcome priors
+- **Derivation:** semantic support for one target/time/adverse combination
+- **Unit / shape:** SUPPORTED / PLAUSIBLE / WEAK / UNSUPPORTED / UNKNOWN + Confidence/Coverage
+- **Role:** LEADING, PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** target-specific opportunity evidence without pretending to be calibrated probability
+- **Known overlaps:** RO-003, Issue #15 outcome surface
+- **Confidence limits:** support mapping must be learned/validated; UNKNOWN must not become UNSUPPORTED
+- **Validation targets:** target-before-adverse, TimeToTarget
+- **Research state:** Candidate / blocked pending Issue #15
+
+### RO-008 — TargetFeasibilityFrontier
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** RO-006/RO-007 across the research target grid
+- **Derivation:** preserve the set of target/time/adverse combinations supported by current evidence
+- **Unit / shape:** ordered structured frontier, not one scalar
+- **Role:** LEADING, CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** allows the same stock to support a small-fast target while not supporting a larger/slower one
+- **Known overlaps:** Issue #15 FastExcursionProfile/TargetBeforeAdverseSurface
+- **Confidence limits:** not a probability surface until calibrated; do not interpolate unsupported targets casually
+- **Validation targets:** target-specific barrier-first outcomes, TimeToTarget
+- **Research state:** Candidate / core future structure
+
+### RO-009 — AdversePathBudgetState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** target candidate + PH path risk + PR barrier state + later conditional MAE distributions
+- **Derivation:** characterize whether expected/allowed adverse path remains compatible with the candidate target
+- **Unit / shape:** COMFORTABLE / TIGHT / POOR / UNKNOWN
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** PathRisk, RemainingOpportunity
+- **Meaning:** keeps a target that requires large adverse movement distinct from a clean target path
+- **Known overlaps:** PH family; future MAE labels
+- **Confidence limits:** future MAE is label, not online input; semantic mapping awaits Issue #15/#11
+- **Validation targets:** MAE-before-target, WhichBarrierFirst, TimeUnderWater
+- **Research state:** Candidate / blocked pending empirical outcome distributions
+
+### RO-010 — FrictionBudgetState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** TE spread/tick/depth/latency inputs + execution profile where available
+- **Derivation:** characterize how much of the candidate target would be consumed by market/account friction
+- **Unit / shape:** LOW_BURDEN / MATERIAL / DOMINANT / UNKNOWN
+- **Role:** GATE, PROTECTIVE
+- **Availability:** NOW for partial market-only form; EXEC for full form
+- **Evidence:** PI
+- **Decision role:** Feasibility, RemainingOpportunity
+- **Meaning:** prevents raw upside potential from being confused with usable post-friction opportunity
+- **Known overlaps:** TE-012/TE-013/TE-014
+- **Confidence limits:** family consumes TE outputs; it does not recompute spread/depth/cost independently
+- **Validation targets:** implementation shortfall, net executable opportunity
+- **Research state:** Candidate
+
+### RO-011 — CapturableRemainingState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** RO-003 + RO-005 + RO-008/RO-009/RO-010 + TE feasibility
+- **Derivation:** synthesize market potential that survives time, path and friction constraints
+- **Unit / shape:** NONE / LOW / MODERATE / HIGH / UNKNOWN + Confidence/Coverage
+- **Role:** LEADING, GATE, PROTECTIVE
+- **Availability:** FUTURE + EXEC for full form
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, Feasibility
+- **Meaning:** closest online representation of “how much useful opportunity is still capturable from now”
+- **Known overlaps:** NetExecutableOpportunity, CentralRanker
+- **Confidence limits:** not expected return; no calibrated magnitude/probability until Issues #15/#11 and execution research support it
+- **Validation targets:** executable target-before-adverse, net executable excursion, TimeToTarget
+- **Research state:** Provisional core composite
+
+### RO-012 — OpportunityBudget
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** RO-002..RO-011 where valid
+- **Derivation:** preserve structured dimensions without premature scalar compression
+- **Unit / shape:** structured object
+- **Role:** LEADING, CONTEXT, PROTECTIVE, GATE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Potential, RemainingOpportunity, PathRisk, Feasibility, Freshness/Trust
+- **Meaning:** canonical structured opportunity representation consumed later by CentralRanker
+- **Known overlaps:** Issue #10 family composition
+- **Confidence limits:** must retain UNKNOWN dimensions rather than filling defaults
+- **Validation targets:** target-before-adverse, TimeToTarget, MAE, detection lateness, executable opportunity
+- **Research state:** Provisional architecture primitive
+
+Candidate shape:
+
+~~~text
+OpportunityBudget {
+  currentPotential
+  observedMove
+  moveConsumption
+  potentialRemaining
+  targetFeasibilityFrontier
+  timeBudgetAfterLatency
+  adversePathBudget
+  frictionBudget
+  capturableRemaining
+  confidence
+  coverage
+}
+~~~
+
+### RO-013 — OpportunityDominanceState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** OpportunityBudget for two or more eligible candidates
+- **Derivation:** determine whether one candidate clearly dominates another on relevant dimensions without forcing arbitrary early weights
+- **Unit / shape:** DOMINATES / DOMINATED / TRADEOFF / EFFECTIVE_TIE / UNKNOWN
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, Feasibility
+- **Meaning:** supports later cross-sectional ranking while preserving speed/move/path/feasibility tradeoffs
+- **Known overlaps:** Issue #10 CentralRanker / LeaderDominanceMargin
+- **Confidence limits:** not a final ranking rule; utility tradeoffs and tie semantics require Issue #10/#11
+- **Validation targets:** top-K future opportunity quality, leader stability
+- **Research state:** Candidate / ownership transitions to CentralRanker in Issue #10
+
+### RO-014 — RemainingOpportunityState
+
+- **Family:** Remaining Opportunity / Target Frontier
+- **Kind:** STATE
+- **Raw sources:** RO-001..RO-012
+- **Derivation:** family-level summary of current remaining opportunity while keeping OpportunityBudget available for detailed reasoning
+- **Unit / shape:** NONE / EMERGING / USABLE / STRONG / MOSTLY_CONSUMED / RENEWED / UNUSABLE_AFTER_FRICTION / UNKNOWN + Strength/Confidence/Coverage
+- **Role:** LEADING, PROTECTIVE, CONTEXT, GATE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** compact family state for later ranking without losing the structured budget
+- **Known overlaps:** SQ OpportunityStage; CentralRanker
+- **Confidence limits:** semantic evidence strength only, not probability or expected return
+- **Validation targets:** target-before-adverse, remaining excursion, TimeToTarget, executable opportunity
+- **Research state:** Provisional composite
+
+---
+
+## Remaining Opportunity objective-alignment boundary
+
+This family should answer:
+
+~~~text
+from the current decision point,
+what target/time/adverse opportunities still appear supportable,
+and how much survives system latency and friction?
+~~~
+
+It must not answer by shortcut:
+
+~~~text
+recent wave average - current move = remaining opportunity
+~~~
+
+or:
+
+~~~text
+strong momentum = lots left
+~~~
+
+Core architecture:
+
+~~~text
+current evidence
+→ PotentialRemaining
+→ target/time/adverse frontier
+→ time/path/friction budgets
+→ CapturableRemaining
+→ OpportunityBudget
+→ later CentralRanker
+~~~
+
+Future realized outcome surfaces from Issue #15 validate these concepts but never leak into online inputs.
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Remaining Opportunity / Target Frontier
+Recent Wave Memory / Capacity Prior
 ~~~
 
-It will own structured forward opportunity budget, move-consumption state, target/time/adverse frontier and potential-vs-capturable remaining opportunity, while keeping future outcomes separate from online inputs.
+It will own recent same-stock amplitude/speed/adverse-path/opportunity-arrival capacity and comparable-memory coverage, explicitly as a conditional prior rather than a directional trigger.

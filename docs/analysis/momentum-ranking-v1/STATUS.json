@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Sequence/Lead-Lag/Opportunity Stage added with explicit sampling uncertainty and usable-lead semantics."
+    "subfocus": "Remaining Opportunity/Target Frontier added as a structured forward opportunity budget with explicit online-vs-outcome separation."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Remaining Opportunity/Target Frontier: structured OpportunityBudget, PotentialRemaining vs CapturableRemaining, MoveConsumptionState, TimeBudgetAfterLatency and target/time/adverse frontier semantics."
+    "action": "Populate Recent Wave Memory/Capacity Prior: amplitude/speed/adverse-path/opportunity-arrival capacity, target-specific recent profiles, failure memory, comparable-memory coverage and conditional prior semantics."
   }
 }
