@@ -100,6 +100,30 @@ For non-trivial changes, especially existing/legacy code:
 
 Keep a nearby known-green state so regressions can be localized.
 
+## Failure-learning gate
+
+When an unexpected failure, regression, CI defect, live-verification surprise, or meaningful rework occurs, fixing the symptom is only the first half of the work.
+
+Use:
+
+~~~text
+technical root cause
+→ reasoning/process cause
+→ escape cause
+→ smallest prevention
+→ Promotion Gate
+~~~
+
+The repository-wide method is:
+
+~~~text
+docs/project/continuous-improvement.md
+~~~
+
+The review should ask what we would do differently if starting again with the new evidence.
+
+Do not promote every incident into a global rule. Promote only reusable lessons; keep exact behavior protection in regression tests/local invariants.
+
 ---
 
 # 4. Characterization before modification
@@ -156,6 +180,8 @@ Do not split functions mechanically just to reduce line count. Cohesion matters 
 ## Modules
 
 Prefer high cohesion, low coupling, explicit state ownership, clear dependency direction, and pure deterministic logic separated from I/O where practical.
+
+For shared mutable state or shared UI surfaces, prefer a **single authoritative owner/writer**. Multiple writers to the same state/DOM metric require an explicit coordination contract; otherwise ordering/race bugs become likely.
 
 Avoid modules that simultaneously own storage, networking, scheduling, rendering, and policy.
 
@@ -359,6 +385,8 @@ Relevant items must be true:
 - [ ] required unit/integration/browser layers are green;
 - [ ] every numbered Stage closure has fresh full Browser CI evidence for its final state;
 - [ ] no known regression is deferred;
+- [ ] any meaningful unexpected failure received a Failure Review covering technical cause, reasoning/process cause, escape cause and smallest prevention;
+- [ ] reusable lessons were promoted to the narrowest correct owner, or the decision not to promote was explicit;
 - [ ] status is accurate;
 - [ ] SPEC impact review is complete and affected specs are synchronized;
 - [ ] temporary verification changes are restored;
