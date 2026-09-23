@@ -12,3 +12,4 @@
 ## Domains
 
 - `market-data/` — מחקר מקורות market data.
+- `momentum-ranking-v1/` — כלי מדידה/מחקר עבור workstream הדירוג; אינם production ranker.

@@ -13,8 +13,8 @@
   "currentFocus": {
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
-    "status": "in-progress",
-    "subfocus": "Outcome-reference reconciliation complete: BID(t0)→future BID is primary across Issue #15 and normative outcome docs, MID is the parallel control, ASK→future BID is diagnostic only, and LAST remains supplementary/semantics-blocked. Next: measure existing-history cadence/jitter and per-horizon evaluability before choosing coverage tolerances."
+    "status": "verification-pending",
+    "subfocus": "Read-only existing-history cadence/evaluability analyzer implemented with deterministic unit coverage. Pure timing semantics are green; Chromium adapter verification and execution against the real local IndexedDB history are still required before empirical cadence/jitter/coverage claims or tolerance choices."
   },
   "completedWorkUnits": [
     {
@@ -72,6 +72,6 @@
   },
   "next": {
     "issue": 15,
-    "action": "Measure cadence/jitter and per-horizon evaluability from existing frozen LHV V1 history: inter-observation delta distribution, endpoint availability/error, first-future-sample delay, max gaps, session-edge censoring and 5/10/20/.../120s coverage. Do not change collection cadence yet; Issue #18 owns extraction/cadence design."
+    "action": "Run and verify the read-only history-coverage analyzer in Chromium on the same Leumi origin against the real frozen LHV V1 IndexedDB; capture the sanitized aggregate report for 5/10/20/30/40/50/60/90/120s. Do not choose endpointTolerance/maxAllowedPathGap/minimumPathCoverage until those measurements exist, and do not change collection cadence (Issue #18 owns that)."
   }
 }

@@ -746,7 +746,19 @@ modify recorder
 
 This preserves the V1 freeze and its source-of-truth responsibilities.
 
-## 27. Next work unit
+## 27. Existing-history measurement tool
+
+The read-only measurement implementation lives at:
+
+~~~text
+scripts/research/momentum-ranking-v1/issue-15-history-coverage/
+~~~
+
+It reads only `securityId`, `sessionId` and `collectedAtMs`, scans `history.bySecurityTime`, verifies exact store/index row coverage, and emits aggregate timing/coverage statistics without exporting raw market payloads.
+
+It deliberately applies **no** endpoint tolerance, path-gap threshold or minimum-path-coverage threshold. Those remain outputs of the empirical measurement, not inputs chosen in advance.
+
+## 28. Next work unit
 
 Before implementing a label generator, measure the actual timestamp behavior in recorded history and define the **observation-coverage policy**:
 
