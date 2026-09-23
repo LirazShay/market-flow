@@ -132,7 +132,8 @@ pure deterministic behavior
 → fast Node unit tests
 
 browser semantics / cross-component browser integration
-→ Chromium immediately when browser behavior/tests change
+→ exact changed/new Playwright test in Chromium first
+→ widen only when coupling/evidence requires it
 → full Browser CI at every numbered Stage closure
 
 real provider behavior
@@ -150,20 +151,32 @@ Checkpoint scheduling controls **when broad suites are run for unchanged tests**
 If a test, test fixture, harness, or test helper is added or modified:
 
 ~~~text
-change test
-→ execute that test in its real layer immediately
-→ fix every failure
-→ rerun until green
-→ only then continue to the next implementation unit
+change/add test
+→ execute the smallest target that proves it
+
+intentional TDD/regression red
+→ exact target fails for intended reason
+→ implement/fix
+→ exact target green
+
+unexpected red
+→ stop
+→ diagnose
+→ targeted rerun
 ~~~
 
 Rules:
 
-- changed unit tests must be executed before continuing;
-- changed Playwright/browser tests must be executed in Chromium before continuing;
-- if targeted browser execution is unavailable in CI, run the Browser suite rather than defer the changed test;
+- changed unit tests must be executed before continuing; prefer the exact/nearby unit target first, while cheap Fast CI may still run normally;
+- changed Playwright/browser tests must be executed in Chromium before continuing, targeted to the exact changed/new test by default;
+- do **not** run the full Browser suite merely to establish an expected TDD red;
+- an intentional red that fails for the intended missing behavior is valid evidence and permits moving to implementation;
+- after implementation/fix, rerun the same targeted test until green before widening;
+- widen to a spec/related cluster only when shared fixtures, harness, integration coupling, or observed evidence justify it;
+- reserve full Browser CI for required Stage/checkpoint boundaries, broad shared-browser-infrastructure risk, suite-only reproduction, or explicit request;
+- if targeted browser execution is unavailable, do not substitute a full expensive suite solely to demonstrate expected red; establish a targeted path or mark that proof pending;
 - a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
-- a failing test blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
+- an unexpected red, or a red that remains after the supposed fix, blocks progression;
 - if the required environment cannot be run, mark the work `verification-pending` in the workstream `STATUS.json` and stop before the next feature/substep;
 - do not mark behavior verified from source inspection alone when its test layer has not run;
 - verification evidence must identify the run and code/test state being claimed as verified.
