@@ -31,13 +31,7 @@
       "19.4": "planned — long-run live report"
     }
   },
-  "activeMiniProject": {
-    "id": "context-architecture-audit",
-    "title": "AI context loading / history preservation audit",
-    "status": "in-progress",
-    "goal": "Keep fresh-chat context small while preserving full historical rationale for on-demand recovery.",
-    "currentStep": "compact HOT context and add automated context-budget/history-discoverability guard"
-  },
+  "activeMiniProject": null,
   "verification": {
     "codeBaseline": {
       "fastCi": {
@@ -65,11 +59,25 @@
         "Export Debug",
         "inspect recorder failure + provider-time/market-data evidence"
       ]
+    },
+    "contextArchitecture": {
+      "status": "complete-fast-ci-verified",
+      "fastCiRunId": 35858279348,
+      "result": "Fresh-chat HOT context compacted while full historical status/rationale remains discoverable through docs/history/README.md.",
+      "hotContextApproxTokens": 4620,
+      "worstCaseWithRouterApproxTokens": 5140,
+      "archivedFullStatus": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json"
     }
   },
   "next": {
-    "action": "Complete the context-architecture audit/guard, then resume Stage 19.3 live Leumi verification.",
-    "afterAudit": "Refresh Leumi, run the latest verified Bookmarklet, let several cycles complete, Export Debug, and diagnose the after-market behavior from evidence."
+    "action": "Resume Stage 19.3 live Leumi verification.",
+    "steps": [
+      "refresh authenticated Leumi page",
+      "run latest verified Bookmarklet",
+      "allow several cycles",
+      "Export Debug",
+      "diagnose after-market behavior from recorder/provider evidence"
+    ]
   },
   "history": {
     "index": "docs/history/README.md",
