@@ -152,3 +152,17 @@ Book-pressure conversion timing
 ```
 
 Do not assume a universal SignalOpportunityHalfLife. A half-life is reportable only if empirical incremental-value decay is sufficiently monotonic/stable and a 50% crossing is identifiable out of sample.
+
+## Wave segmentation ownership from Issue #6
+
+Wave segmentation does not add a universal predictor.
+
+```text
+CompletedWaveEpisode
+→ historical capacity/memory primitive
+
+CurrentLegReference
+→ geometric reference for conditional Renewal / Remaining Opportunity
+```
+
+Canonical V1 segmentation uses causal MID directional-change semantics with separate extremum timestamps and known-at confirmation timestamps. Completed-wave memory becomes available only after completionKnownAtTime; active episodes remain censored. Recent wave capacity is context/prior and must prove incremental value beyond the sparse core and Issue #15 all-observation baseline.

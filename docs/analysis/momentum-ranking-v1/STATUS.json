@@ -13,8 +13,8 @@
   "currentFocus": {
     "issue": 6,
     "title": "Wave segmentation and recent realized wave capacity",
-    "status": "in-progress",
-    "subfocus": "Issue #16 research definition and verification are complete. Issue #6 is now the next research unit, but no Stage #6 research content has been added yet."
+    "status": "verification-pending",
+    "subfocus": "Minimal wave contract defined: causal MID directional-change broad waves, explicit extremum-vs-known-at timestamps, CurrentLegReference for conditional Renewal, CompletedWaveEpisode for historical capacity, active/censored handling, and segmentation sensitivity. No universal predictor is added."
   },
   "completedWorkUnits": [
     {
@@ -65,7 +65,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 6,
-    "action": "Define the minimal wave-segmentation contract needed for Renewal and recent-wave memory/capacity, with a strict rule that segmentation is support/context unless it proves incremental value beyond the sparse core."
+    "issue": 7,
+    "action": "Define recent-wave recurrence/pattern-similarity as a conditional prior over completed episodes only, using explicit comparable coverage, failures, recency/regime match and the Issue #15 all-observation baseline; do not promote recurrence into universal alpha."
   }
 }
