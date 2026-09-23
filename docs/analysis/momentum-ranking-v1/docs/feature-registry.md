@@ -4282,6 +4282,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** provides broad geometry around the current micro opportunity
+- **Plain-language intuition:** this keeps several return windows side by side—micro, near and broad—to show whether the current short move sits inside a larger uptrend, downtrend, stall or mixed background.
+- **Market mechanism / why it can matter:** broader context can change how we interpret the same short move. A +0.15% micro-rise inside a broad selloff may behave differently from the same +0.15% inside a steady broader uptrend, especially in adverse path and target size.
+- **Objective connection:** our primary decision is still seconds-to-~2-minute opportunity from now. Longer windows are allowed to modify context only if they improve those direct outcomes after current micro evidence is already known.
+- **Favorable / unfavorable interpretation:** aligned broad context may support cleaner continuation; opposing broad context may raise path risk or mark a reversal attempt. Neither should automatically add/remove the candidate.
+- **Failure modes / counterexamples:** overlapping windows are highly redundant; a negative 60-minute return can coexist with an excellent 30-second rebound opportunity; majority voting across windows would double-count the same historical move.
+- **Relationship to other evidence:** PW owns the primary short-window price process. MR-001 only adds cross-scale context and must prove incremental value through MR-005.
+- **Worked example:** 30s +0.20%, 2m +0.10%, 30m -2.0%. This is not “2 bearish horizons beat 1 bullish horizon”; it is a fresh micro-up move occurring inside a broad-down context.
 - **Known overlaps:** PW return profiles; overlapping windows are highly redundant
 - **Confidence limits:** broad negative returns are not automatic vetoes; windows overlap and must not be treated as independent evidence
 - **Validation targets:** incremental target-before-adverse value after micro state is known
@@ -4299,6 +4306,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** describes how the immediate move sits inside broader intraday movement
+- **Plain-language intuition:** this converts a pile of overlapping return windows into a readable cross-scale story such as aligned up, fresh micro-up inside broad-down, or broad-up while micro momentum is fading.
+- **Market mechanism / why it can matter:** the same raw return values can mean very different lifecycle situations. Cross-scale geometry helps distinguish continuation, reversal attempt, renewed acceleration and broad strength with local exhaustion.
+- **Objective connection:** the state helps RemainingOpportunity interpret whether the short move looks fresh, conflicted or mature without letting longer horizons dominate the actual short-horizon evidence.
+- **Favorable / unfavorable interpretation:** `ALIGNED_UP_CONTEXT` can be supportive; `MICRO_UP_INSIDE_BROAD_DOWN` is a valid counter-trend candidate; `BROAD_UP_BUT_MICRO_DECELERATING` can warn that broad strength is irrelevant to the immediate entry.
+- **Failure modes / counterexamples:** state labels can oversimplify; exact horizon boundaries are research parameters; context can change quickly after news or regime breaks.
+- **Relationship to other evidence:** MR-002 summarizes MR-001 plus micro PW; MR-003 keeps explicit disagreement details instead of hiding them inside one label.
+- **Worked example:** broad 30m +1.5% but latest 30s flat/down and PriceWave slowing → `BROAD_UP_BUT_MICRO_DECELERATING`, not automatic bullish confirmation.
 - **Known overlaps:** MR-003; PW state
 - **Confidence limits:** state is descriptive context, not a buy/reject rule
 - **Validation targets:** target-before-adverse, MAE-before-target, target frontier by state
@@ -4316,6 +4330,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** distinguishes aligned movement from fresh counter-trend micro opportunities and unresolved cross-scale conflict
+- **Plain-language intuition:** this explicitly records when micro, near and broad horizons disagree rather than forcing one combined trend direction.
+- **Market mechanism / why it can matter:** conflict can mean a fresh reversal is starting, or simply that a small bounce is occurring inside a dominant move. The disagreement itself contains information about path risk and transition state.
+- **Objective connection:** preserving conflict lets the system test whether counter-trend micro-opportunities are still profitable enough for the short objective instead of filtering them out by rule.
+- **Favorable / unfavorable interpretation:** conflict is neither good nor bad. Fresh micro acceleration against broad-down can be attractive if direct outcomes support it; unresolved conflict with weak confirmation may increase risk.
+- **Failure modes / counterexamples:** broad trend can lag reality; a sudden regime break can make old broad context irrelevant; noisy short windows can create false conflict.
+- **Relationship to other evidence:** MR-003 is the detailed conflict object behind MR-002 and feeds MR-004 CounterTrendMicroOpportunityState.
+- **Worked example:** micro +0.18% accelerating, 5m flat, 30m -2.5%. That is explicit cross-scale conflict to evaluate—not a reason to discard the stock.
 - **Known overlaps:** MR-002
 - **Confidence limits:** conflict is not automatically bad; only subsequent short-horizon outcomes can determine its value
 - **Validation targets:** target-before-adverse, MAE, TimeToTarget
@@ -4333,6 +4354,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Confirmation, PathRisk
 - **Meaning:** makes counter-trend opportunities first-class instead of silently filtering them out
+- **Plain-language intuition:** this asks whether the positive micro-move is aligned with the larger context or is a fresh/confirmed move against it.
+- **Market mechanism / why it can matter:** short-lived rebounds and reversals can offer excellent seconds-to-minutes opportunities even while the broader chart remains negative.
+- **Objective connection:** the project explicitly searches for what can rise *from now*. A broad negative trend cannot be allowed to erase a direct, fresh, executable micro-opportunity unless data proves that it worsens outcomes.
+- **Favorable / unfavorable interpretation:** `COUNTER_TREND_FRESH/CONFIRMED` can remain eligible; `COUNTER_TREND_WEAK` may carry more path risk; `REVERSAL_ATTEMPT` is transitional and needs confirmation.
+- **Failure modes / counterexamples:** many counter-trend bounces fail quickly; broad selling can cap target size; a fresh rebound can still be too late or too expensive to trade.
+- **Relationship to other evidence:** PR reset/reclaim and SQ stage provide the live micro evidence; MR-004 only names its relationship to broader context.
+- **Worked example:** stock down -3% over 30m, but after a local reset BID/MID rise cleanly for 20s with expanding activity. This is a counter-trend micro-opportunity candidate, not an automatic reject.
 - **Known overlaps:** PR reset/reclaim; SQ opportunity stage
 - **Confidence limits:** broader downtrend cannot be assumed to reduce immediate upside unless validated
 - **Validation targets:** target-before-adverse, MAE, target-size frontier
@@ -4350,6 +4378,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI
 - **Decision role:** Outcome
 - **Meaning:** decides whether longer-horizon context deserves any influence after immediate micro evidence is already known
+- **Plain-language intuition:** this is the future ablation test: does adding 5m/30m/session context actually improve prediction of our short target outcomes compared with using the micro-state alone?
+- **Market mechanism / why it can matter:** contextual features are easy to rationalize after the fact. Only out-of-sample incremental value proves they deserve weight.
+- **Objective connection:** the project should keep only context that improves target-before-adverse, TimeToTarget, MAE or ranking quality for the seconds-to-~2-minute objective.
+- **Favorable / unfavorable interpretation:** positive robust incremental value justifies influence; near-zero/negative value means demote or remove the context.
+- **Failure modes / counterexamples:** in-sample improvement can be overfit; context may help one target/horizon and hurt another; this is a validation result, never an online signal.
+- **Relationship to other evidence:** Issue #11 owns the ablation methodology; MR-005 is the formal gate that protects the model from “interesting but useless” context.
+- **Worked example:** micro-only model and micro+30m trend perform identically out of sample → 30m trend should not get score weight despite intuitive appeal.
 - **Known overlaps:** Issue #11 group ablation
 - **Confidence limits:** validation artifact only, never an online feature
 - **Validation targets:** target-before-adverse discrimination, TimeToTarget/MAE improvement, ranking lift
@@ -4367,6 +4402,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, Context/Prior
 - **Meaning:** allows broad context to matter through MAE/rejection/target frontier without becoming a blunt directional veto
+- **Plain-language intuition:** broad context may matter more by changing how rough the path is than by telling us the immediate direction.
+- **Market mechanism / why it can matter:** a short bounce against a strong broad selloff may still rise, but perhaps with deeper pullbacks, more rejection or smaller feasible targets.
+- **Objective connection:** this preserves valid counter-trend opportunities while letting broader conditions influence adverse-path budget and target size where evidence supports it.
+- **Favorable / unfavorable interpretation:** `BENIGN` means broad context does not materially worsen path; `ELEVATED_ADVERSE` means same micro opportunity may require smaller targets/tighter caution.
+- **Failure modes / counterexamples:** without empirical target/adverse distributions this is hypothesis only; broad context can reverse suddenly.
+- **Relationship to other evidence:** RO-009 owns AdversePathBudget; MR-006 supplies conditional broad-context adjustment only after validation.
+- **Worked example:** two identical micro-up states; one occurs in stable broad context, another during heavy broad selloff. Both may rise, but the second might historically show larger MAE before target.
 - **Known overlaps:** RO AdversePathBudget
 - **Confidence limits:** blocked until target/adverse validation exists; no direct sign rule
 - **Validation targets:** MAE-before-target, WhichBarrierFirst, target frontier
@@ -4384,6 +4426,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Feasibility, Freshness/Trust
 - **Meaning:** one transferability dimension for deciding whether recent evidence remains comparable
+- **Plain-language intuition:** this asks whether the current market is deeper, thinner, normal or unstable compared with similar recent periods.
+- **Market mechanism / why it can matter:** spread/depth behavior changes how reliably signals and execution statistics transfer. A pattern learned in deep stable liquidity may behave differently when the book becomes thin and jumpy.
+- **Objective connection:** prior target/execution evidence should be trusted less when current liquidity regime differs materially from the regime in which it was learned.
+- **Favorable / unfavorable interpretation:** `NORMAL/DEEPER` can improve transferability for priors learned there; `THINNER/UNSTABLE` may reduce confidence or feasibility. It is not bullish/bearish.
+- **Failure modes / counterexamples:** deeper liquidity can slow price movement; thin liquidity can create fast favorable jumps. Regime describes environment, not direction.
+- **Relationship to other evidence:** TE owns live spread/depth feasibility; MR-007 owns only the relative regime/context interpretation.
+- **Worked example:** same BID-chasing pattern seen earlier with 10k–20k depth may transfer poorly if current depth is only 500 and spread is flickering.
 - **Known overlaps:** TE family
 - **Confidence limits:** regime owns comparison/context, not duplicate spread/depth scoring
 - **Validation targets:** prior transferability, execution feasibility stability
@@ -4401,6 +4450,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** distinguishes raw activity intensity from whether that intensity is normal for the current environment
+- **Plain-language intuition:** 20 trades in 20 seconds may be huge for one stock/time-of-day and completely ordinary for another. ActivityRegime asks how unusual current activity is relative to a proper baseline.
+- **Market mechanism / why it can matter:** raw activity thresholds are not portable across securities or session phases. Relative regime helps distinguish true participation expansion from normal background activity.
+- **Objective connection:** the same AF signal should not get equal trust if one occurs during genuinely abnormal activation and another during routine opening activity.
+- **Favorable / unfavorable interpretation:** `SURGING` means activity is unusually high, not bullish; `QUIET` means low activity context. Direction still comes from PW/BD.
+- **Failure modes / counterexamples:** poor same-time baseline can misclassify normal opening volume as a surge; market-wide news can raise activity everywhere.
+- **Relationship to other evidence:** AF measures actual current activity; MR-008 says whether that activity is contextually unusual.
+- **Worked example:** 15 trades/20s at noon might be a surge for a stock, while 15 trades/20s near opening could be perfectly normal.
 - **Known overlaps:** AF ActivityBurst; MR-015 TimeOfDayAbnormality
 - **Confidence limits:** ACTIVE is not bullish; it can accompany both upward and adverse moves
 - **Validation targets:** prior transferability, target frontier, conversion latency
@@ -4418,6 +4474,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** describes the movement scale in which current evidence is operating
+- **Plain-language intuition:** this asks whether current price movement is compressed, normal, expanded or extreme compared with similar periods.
+- **Market mechanism / why it can matter:** target sizes, adverse paths and timing behave differently when the market shifts from quiet to highly volatile.
+- **Objective connection:** a target that is unrealistic in compressed conditions may be ordinary in expanded conditions; expanded movement can also increase downside/path risk.
+- **Favorable / unfavorable interpretation:** `EXPANDED` means more movement capacity, not positive direction; `COMPRESSED` may reduce target size but improve stability.
+- **Failure modes / counterexamples:** volatility can expand because of adverse moves; extreme states can be short-lived; same percentage movement can have different tick structure.
+- **Relationship to other evidence:** WM CapacityTrend remembers recent movement capacity; MR-009 determines the current local movement regime that qualifies its transferability.
+- **Worked example:** usual 30s excursion 0.05%, current comparable excursions 0.25% → expanded movement regime; targets may need recalibration in both directions.
 - **Known overlaps:** WM CapacityTrend; PH path quality
 - **Confidence limits:** expanded movement is not directionally positive and may raise downside risk
 - **Validation targets:** target frontier, MAE, opportunity arrival
@@ -4435,6 +4498,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, PathRisk
 - **Meaning:** qualifies whether historical path-quality priors transfer to the current environment
+- **Plain-language intuition:** this asks whether the market currently moves in an orderly way or is unusually choppy/unstable compared with normal.
+- **Market mechanism / why it can matter:** a path-quality model learned during orderly conditions may underestimate reversals and drawdowns when the environment becomes noisy.
+- **Objective connection:** our strategy needs target paths that can be traversed quickly without excessive adverse movement. Path-noise regime tells us how much trust to place in historical path priors.
+- **Favorable / unfavorable interpretation:** `ORDERLY` can support clean-path transferability; `CHOPPY/UNSTABLE` raises path uncertainty. It does not itself determine direction.
+- **Failure modes / counterexamples:** a noisy regime can suddenly organize into a clean micro-leg; live PH evidence must outrank broad regime labels.
+- **Relationship to other evidence:** PH describes the current path directly; MR-010 describes the surrounding path-noise environment used to qualify priors.
+- **Worked example:** current leg is clean for 15s, but surrounding 10m regime has frequent deep reversals. The live leg remains valid, but historical continuation confidence may be lower.
 - **Known overlaps:** PH family
 - **Confidence limits:** does not replace live PH path state
 - **Validation targets:** MAE, TimeUnderWater, prior transferability
@@ -4452,6 +4522,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Freshness/Trust
 - **Meaning:** transferability qualifier for L1-based priors/signals
+- **Plain-language intuition:** this asks whether current best-bid/best-ask behavior looks like the stable book environment seen recently or has become fast-changing, thin, volatile or atypical.
+- **Market mechanism / why it can matter:** L1 signals such as imbalance, persistence or quote migration can behave very differently when quotes flicker rapidly or depth disappears.
+- **Objective connection:** the system should trust recent L1 patterns less if the current book behaves structurally differently from the history that supported them.
+- **Favorable / unfavorable interpretation:** `STABLE` supports transferability; `FAST_CHANGING/THIN_VOLATILE/ATYPICAL` reduces confidence or useful lifetime. None gives direction.
+- **Failure modes / counterexamples:** fast-changing book can be exactly where profitable momentum occurs; displayed behavior still does not reveal participant intent.
+- **Relationship to other evidence:** BD owns current directional book state; MR-011 only says how normal/transferable that behavior is.
+- **Worked example:** prior BID persistence lasted 20–30s, but current quotes change every 2s. Historical persistence thresholds should not be trusted unchanged.
 - **Known overlaps:** BD family; TE liquidity
 - **Confidence limits:** displayed-book changes do not imply intent
 - **Validation targets:** BD signal stability, conversion-latency transferability
@@ -4469,6 +4546,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** H + U
 - **Decision role:** Context/Prior
 - **Meaning:** optional qualifier for whether same-stock recent evidence occurred under similar market-wide conditions
+- **Plain-language intuition:** this would describe the broader market environment—if a reliable broad-market feed is later available—separately from the individual stock.
+- **Market mechanism / why it can matter:** the same stock setup can behave differently during market-wide surges, selloffs or calm periods because common flows affect many securities simultaneously.
+- **Objective connection:** broad-market context may improve prior transferability or adverse-path interpretation if it adds value beyond same-stock micro evidence.
+- **Favorable / unfavorable interpretation:** no broad-market state is automatically good/bad for the stock. It is purely contextual unless validated.
+- **Failure modes / counterexamples:** current project has no canonical broad-market feed yet; inferring it indirectly would create hidden assumptions; stock-specific news can dominate broad context.
+- **Relationship to other evidence:** MR-012 remains optional/UNKNOWN until a verified source exists and must prove incremental value via MR-005.
+- **Worked example:** the same stock pattern occurring during market-wide panic may transfer differently from one during calm trading—but only data can justify the adjustment.
 - **Known overlaps:** cross-sectional normalization
 - **Confidence limits:** current project does not yet establish a canonical broad-market feed; must remain UNKNOWN rather than inferred
 - **Validation targets:** incremental prior transferability
@@ -4486,6 +4570,13 @@ Do not use majority-vote logic across overlapping returns.
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Freshness/Trust
 - **Meaning:** central answer to “how much can recent evidence transfer to now?”
+- **Plain-language intuition:** this combines similarity, regime match, time-of-day, session compatibility, recency, sample coverage and horizon match to answer how much historical evidence deserves to influence the present.
+- **Market mechanism / why it can matter:** historical evidence becomes weaker when current conditions differ materially from those in which it was observed.
+- **Objective connection:** RemainingOpportunity should use prior memory only when it is relevant enough to the current short-horizon state. Poor transferability should shrink prior influence rather than create an opposite signal.
+- **Favorable / unfavorable interpretation:** `HIGH` allows meaningful prior influence; `MODERATE/LOW` progressively discount it; `BROKEN` means prior should be near-zero; `UNKNOWN` means insufficient proof.
+- **Failure modes / counterexamples:** no validated weighting formula exists yet; dimensions can disagree; overly strict transferability can throw away useful history.
+- **Relationship to other evidence:** WM supplies memory coverage/similarity; MR-013 is the gate that determines how much of that memory can flow into RO.
+- **Worked example:** 50 historical matches exist, but current liquidity/session/path regime differs sharply → high sample count yet LOW/BROKEN transferability.
 - **Known overlaps:** WM ComparableMemoryCoverage/HierarchicalFallback
 - **Confidence limits:** no validated weighting formula; poor transferability should reduce prior influence, not fabricate an opposite signal
 - **Validation targets:** prior usefulness, confidence calibration, target-support robustness
@@ -4515,6 +4606,13 @@ horizonMatch
 - **Evidence:** PI + H
 - **Decision role:** Freshness/Trust, Context/Prior
 - **Meaning:** avoids one universal half-life for all evidence
+- **Plain-language intuition:** different evidence types stay useful for different lengths of time, and regime change can make evidence stale faster than the clock alone suggests.
+- **Market mechanism / why it can matter:** a quote-pressure signal may decay in seconds, while a session-level capacity prior may remain useful for minutes. One global “30s expiry” would be wrong.
+- **Objective connection:** the system should stop relying on evidence when its useful lifetime for the short opportunity is exhausted, but not prematurely discard slower context.
+- **Favorable / unfavorable interpretation:** `FRESH` evidence can influence normally; `DECAYING/WEAK` gets reduced weight; `EXPIRED` or `INVALIDATED_BY_REGIME` should have near-zero influence.
+- **Failure modes / counterexamples:** decay curves must be empirically learned; repeated reconfirmation can refresh some signals; elapsed time alone is insufficient.
+- **Relationship to other evidence:** FQ-008 handles generic freshness; Issue #16 researches opportunity half-life; MR-014 adds evidence-specific regime-aware decay.
+- **Worked example:** L1 imbalance from 20s ago may be expired after several quote changes, while a 20-minute same-session liquidity regime prior may still be relevant.
 - **Known overlaps:** FQ FreshnessState; Issue #16 OpportunityHalfLife
 - **Confidence limits:** exact decay curves/lifetimes require Issues #9/#16; elapsed time alone is insufficient
 - **Validation targets:** target-before-adverse, confidence calibration, stale-signal reduction
@@ -4532,6 +4630,13 @@ horizonMatch
 - **Evidence:** PI + H
 - **Decision role:** Freshness/Trust, Context/Prior
 - **Meaning:** marks when recent same-session memory may no longer describe current conditions
+- **Plain-language intuition:** this detects a meaningful environmental break—conditions did not merely drift; they changed enough that recent priors may no longer apply.
+- **Market mechanism / why it can matter:** news, sudden liquidity changes or broad volatility shocks can invalidate recent relationships faster than ordinary recency decay.
+- **Objective connection:** after a regime break, stale priors can mis-rank opportunities precisely when the market is changing fastest. Fresh live micro evidence should dominate.
+- **Favorable / unfavorable interpretation:** `STABLE` supports transferability; `DRIFTING` reduces confidence gradually; `BROKEN` strongly discounts recent priors. It does not imply price direction.
+- **Failure modes / counterexamples:** a large price move alone is not sufficient; thresholds can over-detect breaks and reset useful history too often.
+- **Relationship to other evidence:** MR-015 can force MR-013 transferability lower and MR-014 decay faster; FQ freshness alone cannot capture this structural invalidation.
+- **Worked example:** spread triples, depth collapses and activity/volatility jump simultaneously after an event → recent quiet-regime priors may become BROKEN immediately.
 - **Known overlaps:** FQ freshness; WM recency
 - **Confidence limits:** no thresholds fixed yet; a large market move is not automatically a regime break unless relevant dimensions changed
 - **Validation targets:** prior degradation, target-frontier stability
@@ -4549,6 +4654,13 @@ horizonMatch
 - **Evidence:** PI + U until TASE phase semantics are re-verified
 - **Decision role:** Freshness/Trust, Context/Prior
 - **Meaning:** prevents short windows or priors from silently crossing materially different trading mechanisms
+- **Plain-language intuition:** this checks whether current and historical evidence belong to the same compatible trading phase/session mechanics.
+- **Market mechanism / why it can matter:** opening, continuous trading, closing/auction-like phases can have different quote formation, liquidity and execution behavior. A window crossing phase boundaries may mix incomparable mechanics.
+- **Objective connection:** short-horizon features should not inherit priors from a phase where the market operates differently, because target timing and execution behavior can change.
+- **Favorable / unfavorable interpretation:** `COMPATIBLE` allows normal comparison; `PHASE_CHANGED/INCOMPATIBLE` reduces or blocks transfer. It is not directional.
+- **Failure modes / counterexamples:** exact TASE phase semantics/times must be re-verified authoritatively before implementation; phase compatibility may differ by feature.
+- **Relationship to other evidence:** MR-016 feeds EvidenceTransferability and TimeOfDayAbnormality; it is a context gate, not a signal.
+- **Worked example:** a 90s feature that starts in one session mechanism and ends after a phase change should not be treated like a normal continuous-trading 90s window.
 - **Known overlaps:** session-phase research
 - **Confidence limits:** current TASE phase/timing rules must be verified from authoritative source before implementation
 - **Validation targets:** feature correctness, prior transferability
@@ -4566,6 +4678,13 @@ horizonMatch
 - **Evidence:** GL + PI + H
 - **Decision role:** Context/Prior
 - **Meaning:** distinguishes “high in absolute terms” from “unusually high for this time/phase”
+- **Plain-language intuition:** this compares current activity/spread/volatility/etc. with what is normally seen at the same time-of-day or session phase.
+- **Market mechanism / why it can matter:** markets have strong intraday seasonality. High activity near opening may be normal, while the same activity at midday may be highly unusual.
+- **Objective connection:** abnormality helps decide whether a burst truly represents a regime/event change likely to affect the short opportunity, instead of reacting to predictable clock-time behavior.
+- **Favorable / unfavorable interpretation:** high abnormality means “unusual,” not “good.” Direction must come from current price/book evidence.
+- **Failure modes / counterexamples:** insufficient same-phase history makes normalization unstable; special days/events can alter the normal baseline.
+- **Relationship to other evidence:** AF/TE provide raw values; MR-017 normalizes them against time-of-day. Cross-sectional normalization later answers a different question: unusual versus peers.
+- **Worked example:** 30 trades/min at open may be normal; 30 trades/min at a normally quiet midday period may be a strong activity abnormality.
 - **Known overlaps:** cross-sectional/self-relative normalization
 - **Confidence limits:** requires sufficient same-phase history; not a directional signal
 - **Validation targets:** incremental context value, target frontier, conversion latency
@@ -4583,6 +4702,13 @@ horizonMatch
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, RemainingOpportunity, PathRisk
 - **Meaning:** allows the same live micro state to have different supported target frontiers under different local environments
+- **Plain-language intuition:** this asks whether the target sizes/times that work for a given micro setup change depending on liquidity, volatility, path-noise or session regime.
+- **Market mechanism / why it can matter:** the same signal may reach larger targets in expanded orderly conditions and smaller/rougher targets in thin choppy conditions.
+- **Objective connection:** this keeps target feasibility adaptive to current environment instead of assuming one universal target grid behaves identically everywhere.
+- **Favorable / unfavorable interpretation:** regime context may expand, shrink or reshape the frontier; no regime is assumed favorable in advance.
+- **Failure modes / counterexamples:** requires substantial empirical data per regime; sparse conditioning can overfit; live micro evidence remains primary.
+- **Relationship to other evidence:** RO-008 owns the current frontier; MR-018 provides validated regime-conditioned context only if it improves outcomes.
+- **Worked example:** identical micro signal historically supports +0.20%/30s in orderly expanded regime but only +0.10%/30s in choppy thin regime.
 - **Known overlaps:** RO-008; Issue #15
 - **Confidence limits:** must be learned from project data; no assumed liquid-regime rule
 - **Validation targets:** target-specific barrier-first outcomes, MAE, TimeToTarget
@@ -4600,6 +4726,13 @@ horizonMatch
 - **Evidence:** PI + H
 - **Decision role:** Context/Prior, Freshness/Trust, PathRisk
 - **Meaning:** compact context object consumed by RecentWavePrior/RemainingOpportunity/CentralRanker without turning long-horizon context into a separate alpha family
+- **Plain-language intuition:** this is the final family summary of cross-scale geometry, regime, session compatibility, abnormality and transferability.
+- **Market mechanism / why it can matter:** many context dimensions are correlated. A single structured synthesis prevents duplicated context from overpowering the fresh micro signal.
+- **Objective connection:** higher-level logic needs one answer to “what environment are we in, and how much should we trust history/context here?” while preserving the direct seconds-to-~2-minute opportunity as primary.
+- **Favorable / unfavorable interpretation:** a compatible/stable context can support confidence; broken/poor-transferability context reduces prior influence. It should not create an independent bullish score.
+- **Failure modes / counterexamples:** a compact state can hide conflicting dimensions; fresh current evidence can legitimately override broad context; missing broad-market/session data must remain UNKNOWN.
+- **Relationship to other evidence:** MR-019 is consumed by WM/RO/CentralRanker as Context/Prior/Freshness-Trust. It should never be added as another alpha vote.
+- **Worked example:** micro opportunity strong and fresh, broad trend negative, liquidity normal, regime stable, prior transferability moderate → keep candidate, adjust context/confidence; do not veto it.
 - **Known overlaps:** WM RecentWavePrior; FQ confidence; Issue #10
 - **Confidence limits:** should never override strong fresh micro evidence merely because broad context disagrees unless validation proves incremental value
 - **Validation targets:** incremental target-before-adverse value, confidence calibration, prior robustness

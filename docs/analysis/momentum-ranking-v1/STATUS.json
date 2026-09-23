@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Recent Wave Memory/Capacity Prior WM-001..WM-017. Recent same-stock history is documented as a conditional prior with explicit denominator, failure memory, comparability, recency, fallback and segmentation-robustness requirements—not a directional prediction."
+    "subfocus": "Deep-rationale retrofit completed for Multi-Horizon/Local Regime/Session Context MR-001..MR-019. Longer horizons are documented as context, counter-trend micro-opportunities remain first-class, and regime/session primarily control evidence transferability, decay and target/path interpretation rather than directional alpha."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Multi-Horizon/Local Regime/Session Context MR-001..MR-019 to the deep-rationale documentation contract, explaining cross-scale context, counter-trend micro-opportunities, transferability, evidence-specific decay, regime breaks and session/time-of-day normalization without broad-trend vetoes."
+    "action": "Audit the entire existing registry for deep-rationale completeness and consistency after the retrofit (PW, AF, BD, TE, FQ, PH, PR, SQ, RO, WM, MR), fix any missing documentation-contract fields or cross-family ownership inconsistencies, then resume new family population with Cross-Sectional/Relative Edge Context."
   }
 }
