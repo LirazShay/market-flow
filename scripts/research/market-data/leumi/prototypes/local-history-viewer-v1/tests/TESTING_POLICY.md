@@ -21,20 +21,32 @@ Checkpoint scheduling controls **when broad suites are run for unchanged tests**
 If a test, test fixture, harness, or test helper is added or modified:
 
 ~~~text
-change test
-→ execute that test in its real layer immediately
-→ fix every failure
-→ rerun until green
-→ only then continue to the next implementation unit
+change/add test
+→ run the smallest target that proves the change
+
+intentional TDD/regression red
+→ exact target fails for intended reason
+→ implement/fix
+→ exact target green
+
+unexpected red
+→ stop
+→ diagnose
+→ targeted rerun
 ~~~
 
 Rules:
 
-- changed unit tests must be executed before continuing;
-- changed Playwright/browser tests must be executed in Chromium before continuing;
-- if targeted browser execution is unavailable in CI, run the Browser suite rather than defer the changed test;
+- changed unit tests must be executed before continuing; targeted unit execution is preferred first, while the cheap Fast suite may still run normally;
+- changed Playwright/browser tests must be executed in Chromium before continuing, with the **exact changed/new test as the default target**;
+- do **not** trigger the full Browser suite just to prove a newly written browser test is expectedly red;
+- expected TDD red is considered successful red-phase evidence when the exact target fails for the intended missing behavior;
+- after implementation/fix, the exact target must pass before any broader run;
+- then expand only as needed: exact test → spec → related cluster → full suite;
+- full Browser CI is required at numbered Stage closure and other explicit integration checkpoints, and may be justified earlier for broad shared-browser-infrastructure changes or suite-only failures;
+- if targeted browser execution is unavailable, do not replace it with a full expensive suite solely for expected-red proof; create/use a targeted path or mark that proof pending;
 - a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
-- a failing test blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
+- an unexpected red, or a red that remains after the supposed fix, blocks progression;
 - if the required environment cannot be run, mark the work `verification-pending` in `STATUS.json` and stop before the next feature/substep;
 - do not mark behavior verified from source inspection alone when its test layer has not run;
 - verification evidence must identify the run and code/test state being claimed as verified.
@@ -65,7 +77,8 @@ every commit
 → Fast CI
 
 browser behavior/test changed
-→ Chromium before continuing
+→ exact changed/new Chromium test first
+→ widen only when justified
 
 numbered Stage ready to close
 → full Browser CI
@@ -74,7 +87,7 @@ numbered Stage ready to close
 
 Do **not** run Chromium merely because a small substep or documentation-only commit completed. But Stage closure is always a Browser CI boundary.
 
-A changed browser test or material browser-only implementation change must be verified immediately; do not wait for Stage closure.
+A changed browser test or material browser-only implementation change must be verified immediately with the smallest sufficient Chromium target; do not wait for Stage closure, but also do not escalate automatically to the full Browser suite.
 
 ## 1.1 Tests-first change rule
 
@@ -83,10 +96,15 @@ For new behavior, define the externally meaningful test cases before implementat
 For a bug fix:
 
 ~~~text
-reproduce with a regression test
+write the smallest meaningful regression test
+→ run that exact target and confirm the intended red
 → fix implementation
+→ rerun that exact target until green
+→ broaden verification only when required by risk/checkpoint
 → keep the regression test
 ~~~
+
+For browser TDD, the full Browser suite is **not** part of the normal red/green micro-cycle.
 
 Tests should target public behavior/contracts rather than private implementation details.
 
@@ -206,7 +224,7 @@ Minimum mandatory cadence:
 
 ~~~text
 changed browser behavior/test
-→ Chromium immediately
+→ targeted Chromium immediately
 
 every numbered Stage closure
 → full Browser CI
@@ -324,7 +342,7 @@ must be green/recorded.
 
 ## 5. Immediate browser-verification rule
 
-This is no longer merely an exception. Chromium verification is mandatory before continuing whenever a change materially touches browser-only behavior or changes browser tests/infrastructure.
+Chromium verification is mandatory before continuing whenever a change materially touches browser-only behavior or changes browser tests/infrastructure. **Immediate means targeted-first, not full-suite-first.**
 
 Examples:
 
@@ -362,7 +380,7 @@ A normal implementation change can be considered locally verified when:
 - relevant fast unit tests pass;
 - Fast CI passes;
 - every added/modified test has been executed after its final edit in the layer where it actually runs;
-- every changed browser test has passed Chromium before the next implementation unit starts;
+- every changed browser test has passed its smallest sufficient targeted Chromium run before the next implementation unit starts;
 - if a numbered Stage is being closed, full Browser CI passed on the final Stage state;
 - any additional integration checkpoint that is due also passed;
 - any live-provider verification that cannot be automated is explicitly marked pending.
