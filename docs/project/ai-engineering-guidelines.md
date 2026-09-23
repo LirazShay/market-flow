@@ -147,9 +147,22 @@ For a reproducible bug, when practical:
 
 1. add a failing test that demonstrates the bug;
 2. confirm failure;
-3. implement the fix;
-4. confirm pass;
-5. document the material behavior change if needed.
+3. establish the technical root cause;
+4. ask what reasoning/process choice created the condition;
+5. ask why existing safeguards did not catch it earlier;
+6. implement the smallest correct fix;
+7. confirm pass;
+8. evaluate the smallest prevention and Learning Promotion Gate;
+9. promote only generalizable lessons to the narrowest correct owner;
+10. document material behavior/contract changes if needed.
+
+Repository method:
+
+~~~text
+docs/project/continuous-improvement.md
+~~~
+
+Expected TDD red is not itself a failure-learning event.
 
 ---
 
@@ -565,6 +578,8 @@ Apply only the checklist items relevant to the current natural work unit.
 - [ ] if closing a numbered Stage, full Browser CI passed on that Stage's final state;
 - [ ] live-only verification is marked pending where required;
 - [ ] no known failure is hidden;
+- [ ] meaningful unexpected failures were reviewed for technical cause, reasoning/process cause, escape cause and prevention;
+- [ ] reusable lessons were promoted appropriately without creating instruction churn;
 - [ ] integrity validations exist where needed;
 - [ ] documentation/status updated at the correct cadence;
 - [ ] material facts are labeled Verified/Inferred/Unknown;
