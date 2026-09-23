@@ -46,19 +46,34 @@
         "failed": 0
       },
       "rollingReleaseTag": "local-history-viewer-v1-runtime-latest",
-      "note": "No production/runtime/browser code has changed since this browser-verified baseline; subsequent work is documentation/context architecture unless STATUS says otherwise."
+      "note": "Assembled production runtime remains at the browser-verified baseline; later changes are documentation/context/manual diagnostic tooling only unless STATUS says otherwise."
     },
     "live19_3": {
       "status": "verification-pending",
-      "expectedAfterMarketBehavior": "Viewer should still display the provider/site's current or last-known complete snapshot after market hours even when values are static. Lack of movement is not itself an error.",
-      "priorObservation": "An earlier after-market run showed 0 completed cycles and repeated failures while the Leumi site still exposed market data; the exact failure path remains to be diagnosed with the current Debug Bundle.",
-      "evidenceNeeded": [
-        "refresh authenticated Leumi page",
-        "run latest verified Bookmarklet",
-        "allow several cycles",
-        "Export Debug",
-        "inspect recorder failure + provider-time/market-data evidence"
-      ]
+      "liveEvidenceDate": "2026-09-23",
+      "verified": [
+        "Real Leumi-origin runtime is running with successful complete cycles, zero recorder failures and no latest recorder error.",
+        "Recent complete cycles each collected the full dynamic 561-security universe with requested=received=unique=561, missing=0 and duplicates=0.",
+        "GetSecuritiesData completed as three 187-security chunks with HTTP 200 and complete 187/187 responses.",
+        "Adjacent live cycles show changing market-data and provider-time fingerprints/change counts, proving the collected snapshot is not frozen.",
+        "IndexedDB contains universe=561, latest=561 and populated history; the Viewer is open against the persisted data.",
+        "Evidence across recorder sessions shows persisted history survives a new session boundary."
+      ],
+      "inferred": [
+        "A fresh successful recorder session necessarily completed the configured universe-loading path, but the Debug Bundle does not directly record the MapHeat2 HTTP status."
+      ],
+      "remaining": [
+        "record the exact verified runtime artifact/commit used for the live run",
+        "repeat the Bookmarklet while running and verify recorder/viewer reuse with no duplicate recorder",
+        "perform an explicit MarketFlowRuntime.stop() then restart and verify graceful stop persistence plus retained history",
+        "classify any endpoint/UI checks not directly observed as Verified/Inferred/Unknown"
+      ],
+      "diagnosticHelper": {
+        "status": "fixed-fast-ci-verified",
+        "issue": "Manual helper falsely required recorder.status === \"running\" even though a healthy active recorder can be waiting or running-cycle.",
+        "regressionTest": "tests/unit/live-verification-check.test.js",
+        "fastCiRunId": 35861680307
+      }
     },
     "contextArchitecture": {
       "status": "complete-fast-ci-verified",
@@ -75,13 +90,12 @@
     }
   },
   "next": {
-    "action": "Resume Stage 19.3 live Leumi verification.",
+    "action": "Finish the remaining Stage 19.3 lifecycle/artifact checks; live provider collection and persistence are already evidenced.",
     "steps": [
-      "refresh authenticated Leumi page",
-      "run latest verified Bookmarklet",
-      "allow several cycles",
-      "Export Debug",
-      "diagnose after-market behavior from recorder/provider evidence"
+      "record exact runtime artifact/commit used",
+      "verify repeated Bookmarklet launch reuses the running recorder/viewer",
+      "explicitly stop then restart and verify stop persistence plus retained history",
+      "record final Verified/Inferred/Unknown classification and only then decide Stage 19.3 closure"
     ]
   },
   "history": {
