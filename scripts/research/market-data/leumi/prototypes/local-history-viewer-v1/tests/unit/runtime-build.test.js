@@ -6,6 +6,8 @@ const os =
     require("node:os");
 const path =
     require("node:path");
+const crypto =
+    require("node:crypto");
 const test =
     require("node:test");
 const assert =
@@ -320,6 +322,202 @@ test(
                 ),
                 artifacts
                     .bookmarkletText
+            );
+        } finally {
+            fs.rmSync(
+                outputDirectory,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+        }
+    }
+);
+
+
+test(
+    "Loader probe build emits a deterministic manifest tied to the runtime SHA-256",
+    () => {
+        const runtimeText =
+            runtimeBuilder
+                .buildRuntimeText();
+
+        const manifest =
+            runtimeBuilder
+                .buildRuntimeManifest(
+                    runtimeText
+                );
+
+        const expectedSha256 =
+            crypto
+                .createHash(
+                    "sha256"
+                )
+                .update(
+                    runtimeText,
+                    "utf8"
+                )
+                .digest(
+                    "hex"
+                );
+
+        assert.equal(
+            manifest.formatVersion,
+            1
+        );
+
+        assert.equal(
+            manifest.buildId,
+            "sha256:" +
+                expectedSha256
+        );
+
+        assert.equal(
+            manifest.runtime
+                .sha256,
+            expectedSha256
+        );
+
+        assert.equal(
+            manifest.runtime
+                .bytes,
+            Buffer.byteLength(
+                runtimeText,
+                "utf8"
+            )
+        );
+
+        assert.equal(
+            manifest.runtime
+                .fileName,
+            runtimeBuilder
+                .runtimeFileName
+        );
+
+        assert.match(
+            manifest.runtime
+                .url,
+            /local-history-viewer-v1-runtime-latest\/market-flow-v1\.runtime\.js$/
+        );
+    }
+);
+
+test(
+    "Loader probe Bookmarklet is compact, non-invasive and points at the stable manifest",
+    () => {
+        const bookmarklet =
+            runtimeBuilder
+                .buildLoaderProbeBookmarkletText();
+
+        assert.equal(
+            bookmarklet.startsWith(
+                "javascript:"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "\n"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "%20"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "MarketFlowLoaderProbeLastResult"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "market-flow-v1.manifest.json"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "MarketFlowRuntime.stop"
+            ),
+            false,
+            "Probe must not stop or replace the currently running runtime."
+        );
+    }
+);
+
+test(
+    "Runtime build writes manifest and loader-probe artifacts alongside existing delivery files",
+    () => {
+        const outputDirectory =
+            fs.mkdtempSync(
+                path.join(
+                    os.tmpdir(),
+                    "market-flow-loader-probe-"
+                )
+            );
+
+        try {
+            const artifacts =
+                runtimeBuilder
+                    .buildArtifacts({
+                        outputDirectory
+                    });
+
+            assert.equal(
+                path.basename(
+                    artifacts
+                        .manifestPath
+                ),
+                runtimeBuilder
+                    .manifestFileName
+            );
+
+            assert.equal(
+                path.basename(
+                    artifacts
+                        .loaderProbePath
+                ),
+                runtimeBuilder
+                    .loaderProbeFileName
+            );
+
+            const manifestOnDisk =
+                JSON.parse(
+                    fs.readFileSync(
+                        artifacts
+                            .manifestPath,
+                        "utf8"
+                    )
+                );
+
+            assert.equal(
+                manifestOnDisk
+                    .buildId,
+                artifacts
+                    .manifest
+                    .buildId
+            );
+
+            assert.equal(
+                fs.readFileSync(
+                    artifacts
+                        .loaderProbePath,
+                    "utf8"
+                ),
+                artifacts
+                    .loaderProbeText
             );
         } finally {
             fs.rmSync(
