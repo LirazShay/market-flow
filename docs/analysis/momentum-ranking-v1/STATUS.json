@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Multi-Horizon/Local Regime/Session Context added with longer horizons demoted to context and regime focused on evidence transferability/decay."
+    "subfocus": "Integrated short-horizon BID1/ASK1 quote-migration horizons and historical-buyer-to-current-BID exitability profiles into Book/Directional Flow; next planned family remains Cross-Sectional/Relative Edge Context."
   },
   "completedWorkUnits": [
     {

@@ -557,12 +557,12 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Family:** Book / Directional Flow
 - **Kind:** DERIVED
 - **Raw sources:** `BuyLimit1` history + timestamps
-- **Derivation:** price change/return of valid BID1 across recent observation windows
-- **Unit / shape:** price/percent profile
+- **Derivation:** price change/return of valid BID1 across recent observation windows; candidate lags include ~10/20/30/40/50/60/90s (and longer research windows where useful), always using actual observation timestamps/tolerance rather than assuming exact cadence
+- **Unit / shape:** price/percent profile by actual elapsed horizon
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + GL + H
-- **Meaning:** detects whether the best displayed buyer level is chasing upward, holding or retreating
+- **Meaning:** detects whether the best displayed buyer price is rising, holding or retreating across short horizons — i.e. whether the market's current best displayed willingness-to-pay has migrated upward or downward
 - **Known overlaps:** BD-003, PW-002 MID movement
 - **Confidence limits:** BID1 can disappear or jump because displayed liquidity changes; invalid/zero quote must not be treated as a real price
 - **Validation targets:** next MID direction, target-before-adverse, continuation
@@ -573,12 +573,12 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Family:** Book / Directional Flow
 - **Kind:** DERIVED
 - **Raw sources:** `SellLimit1` history + timestamps
-- **Derivation:** price change/return of valid ASK1 across recent observation windows
-- **Unit / shape:** price/percent profile
+- **Derivation:** price change/return of valid ASK1 across recent observation windows; candidate lags include ~10/20/30/40/50/60/90s (and longer research windows where useful), always using actual observation timestamps/tolerance rather than assuming exact cadence
+- **Unit / shape:** price/percent profile by actual elapsed horizon
 - **Role:** LEADING, CONFIRMING, PROTECTIVE
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + GL + H
-- **Meaning:** detects whether the best displayed seller level is moving upward, holding or retreating downward
+- **Meaning:** detects whether the best displayed seller price is moving upward, holding or retreating across short horizons — observable seller-side quote migration, without claiming participant identity or intent
 - **Known overlaps:** BD-003, PW-002 MID movement
 - **Confidence limits:** quote movement is observable behavior, not proof of seller intention
 - **Validation targets:** next MID direction, target-before-adverse, continuation/exhaustion
@@ -808,6 +808,77 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Validation targets:** next MID direction, target-before-adverse, TimeToTarget, future cross-sectional rank
 - **Research state:** Provisional composite
 
+### BD-017 — HistoricalLastToCurrentBidReturnProfile
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** canonical phase-aware historical `LAST` + current valid BID1 + observation timestamps
+- **Derivation:** for each candidate lag `h`, compute `(BID1_now / LAST_then(h) - 1) * 100`; candidate lags include ~10/20/30/40/50/60/90s and may extend to 120s where history supports it
+- **Unit / shape:** signed gross-return profile by actual elapsed horizon
+- **Role:** CONFIRMING, CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PV(input availability) + PI + H
+- **Decision role:** Confirmation, RemainingOpportunity, PathRisk
+- **Meaning:** measures the **current top-of-book liquidation return** relative to historical transaction prices. Positive values mean that a hypothetical buyer at the historical trade price would currently see a positive gross mark-to-BID return at the displayed best bid.
+- **Known overlaps:** PW return profile, BD-001 BID migration, BD-010 LastBidGapPct, RO ObservedMove/MoveConsumption
+- **Confidence limits:** historical LAST is a transaction reference, not proof that our strategy could have bought at that exact price; current BID1 is only displayed touch liquidity, not guaranteed fill; available size and costs are separate execution concerns; stale LAST/session boundaries invalidate the comparison
+- **Validation targets:** target-before-adverse, continuation, current-to-future BID progression, detection lateness, incremental value beyond LAST/LAST and BID/BID returns
+- **Research state:** Candidate — high objective alignment, predictive value still unvalidated
+
+Interpretation example:
+
+~~~text
+LAST at t-30s = 100.00
+BID1 now       = 100.30
+
+HistoricalLastToCurrentBidReturn(30s) = +0.30%
+~~~
+
+This does **not** claim a realized +0.30% trade. It says the current displayed exit side is +0.30% above that historical transaction reference before size, fill certainty, slippage and costs.
+
+### BD-018 — HistoricalAskToCurrentBidTouchReturnProfile
+
+- **Family:** Book / Directional Flow
+- **Kind:** DERIVED
+- **Raw sources:** historical valid ASK1 + current valid BID1 + observation timestamps
+- **Derivation:** for each candidate lag `h`, compute `(BID1_now / ASK1_then(h) - 1) * 100`
+- **Unit / shape:** signed gross touch-to-touch round-trip profile by actual elapsed horizon
+- **Role:** CONFIRMING, CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PV(L1 availability where valid) + PI + H
+- **Decision role:** Confirmation, Feasibility, RemainingOpportunity
+- **Meaning:** stricter sibling of BD-017: asks whether a hypothetical trader who could buy at the historical best ask could now liquidate at the current best bid for a positive **gross top-of-book** return
+- **Known overlaps:** BD-017, spread/tradability, TE execution feasibility
+- **Confidence limits:** both entry ASK and exit BID are displayed touch prices, not guaranteed fills; depth may be insufficient; quote persistence and latency matter; no fees/slippage/impact included; missing/invalid L1 must remain UNKNOWN
+- **Validation targets:** execution-aware target-before-adverse, implementation shortfall, incremental predictive value beyond BD-017
+- **Research state:** Candidate — especially useful as a conservative market-touch benchmark
+
+This profile is closer to:
+
+~~~text
+buy at historical displayed ask
+→ later sell at current displayed bid
+~~~
+
+than a LAST-to-LAST return, while still remaining only a quote-based gross proxy.
+
+### BD-019 — RecentBuyerExitabilityState
+
+- **Family:** Book / Directional Flow
+- **Kind:** STATE
+- **Raw sources:** BD-017 and BD-018 profiles
+- **Derivation:** summarize whether recent historical transaction/ask reference cohorts are broadly above or below the current BID1, while retaining the full horizon profile rather than counting overlapping horizons as independent votes
+- **Unit / shape:** TOUCH_PROFITABLE / LAST_REFERENCE_POSITIVE_ONLY / MIXED / BROADLY_UNDERWATER / DETERIORATING / UNKNOWN + profile
+- **Role:** CONFIRMING, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation, RemainingOpportunity, PathRisk
+- **Meaning:** compact description of whether recent buyers could plausibly exit at today's current touch with gross positive buffer, and whether that buffer is broad or fragile across recent horizons
+- **Known overlaps:** PW momentum, RO MoveConsumptionState, PH path quality
+- **Confidence limits:** this is backward-looking realized exitability context, not a forecast by itself; overlapping horizons are not independent cohorts; exact state mapping requires validation
+- **Validation targets:** future target-before-adverse, future BID progression, continuation vs giveback
+- **Research state:** Provisional composite
+
 ---
 
 ## Book / Directional Flow ownership boundary
@@ -837,14 +908,15 @@ ASK-LAST shrinks because LAST ↑ while ASK holds
 ASK-LAST shrinks because ASK ↓ while LAST holds
 ~~~
 
-The final model should consume BD-016 plus explicit conflict/confidence context rather than summing BD-004, BD-005, BD-009..BD-015 as independent votes.
+The final model should consume BD-016 plus BD-019 and explicit conflict/confidence context rather than summing BD-004, BD-005, BD-009..BD-019 as independent votes.
 
 Preferred flow:
 
 ~~~text
-L1 prices/volumes + LAST geometry
-→ BD-001..BD-015
-→ BD-016 L1DirectionalFlowState
+L1 prices/volumes + LAST geometry/history
+→ BD-001..BD-015 quote/flow structure
+→ BD-017..BD-018 historical-buyer exitability profiles
+→ BD-016 L1DirectionalFlowState + BD-019 RecentBuyerExitabilityState
 → family Strength + Confidence + Coverage
 → cross-family sequence/confirmation logic
 ~~~
