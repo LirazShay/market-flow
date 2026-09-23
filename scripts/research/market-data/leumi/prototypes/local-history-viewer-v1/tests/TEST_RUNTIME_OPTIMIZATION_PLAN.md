@@ -452,3 +452,85 @@ No spec impact.
 This phase changes test execution configuration only; no durable production/runtime contract changed.
 
 Phase C is accepted. The next isolated optimization unit is Phase D expensive-test review.
+
+
+## Phase D findings
+
+Phase D reviewed the Stage 18 storage-growth benchmark against the accepted `workers=2` full-suite runs rather than optimizing it in isolation.
+
+Observed timing:
+
+| Browser CI run | storage-growth local elapsed | Time from storage-growth completion to suite completion | Full suite |
+|---|---:|---:|---:|
+| `35865811136` | ~11.18s | ~6.13s | 25.2s |
+| `35866009146` | ~6.29s | ~9.35s | 24.1s |
+
+The benchmark therefore was **not on the suite critical path in either accepted two-worker run**. Other browser work continued for more than six seconds after storage-growth had already completed.
+
+### Cost characterization
+
+The test intentionally writes:
+
+~~~text
+20 measured cycles × 561 securities
+= 11,220 added history rows
+~~~
+
+through the real successful-cycle IndexedDB persistence path.
+
+That volume is the core measurement workload because Stage 18 exists to estimate:
+
+- bytes per history row;
+- rows/minute;
+- MB/minute;
+- estimated time before storage quota concern.
+
+The test also samples `navigator.storage.estimate()` eight times before and eight times after the measured writes, with seven 100ms gaps per side:
+
+~~~text
+fixed estimate-wait budget = about 1.4s
+~~~
+
+This fixed waiting is visible, but eliminating all of it would save at most about 1.4s from the individual benchmark and is unlikely to reduce the current full-suite wall time because the benchmark is already finishing well before the suite.
+
+### Measurement-validity evidence
+
+The same 20-cycle benchmark produced:
+
+~~~text
+run 35865811136: ~537.9 bytes/history-row
+run 35866009146: ~462.8 bytes/history-row
+~~~
+
+That is roughly 15% spread between two otherwise successful hosted-runner measurements. Chromium storage accounting is therefore already noisy enough that reducing the written sample only for speed would increase the risk that fixed/browser-accounting noise becomes a larger fraction of the measured delta.
+
+### Decision
+
+Keep the Stage 18 benchmark unchanged:
+
+- keep 20 measured cycles;
+- keep all 11,220 measured history-row writes;
+- keep the storage-estimate stabilization sampling;
+- keep the benchmark inside the full Browser suite;
+- do not introduce a separate benchmark-only checkpoint.
+
+Reason:
+
+~~~text
+no material current critical-path gain
++
+real risk of weakening/noising the storage measurement
+→ no optimization change
+~~~
+
+Moving this test out of ordinary full Browser CI would also weaken the existing browser-storage regression surface while producing little or no current suite wall-clock benefit.
+
+No `TESTING_POLICY.md` change is needed because checkpoint placement remains unchanged.
+
+SPEC impact review:
+
+~~~text
+No spec impact.
+~~~
+
+Phase D is accepted as a deliberate no-change result. The next isolated optimization unit is Phase E release-path latency.
