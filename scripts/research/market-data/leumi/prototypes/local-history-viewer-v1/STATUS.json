@@ -31,13 +31,7 @@
       "19.4": "planned — long-run live report"
     }
   },
-  "activeMiniProject": {
-    "id": "repository-self-maintenance",
-    "title": "Self-maintaining repository workflow",
-    "status": "in-progress",
-    "goal": "Make every future development unit preserve context/documentation/status structure as part of the change itself, with Fast CI guardrails and no separate cleanup phase.",
-    "currentStep": "Implement change-local maintenance policy and machine guards."
-  },
+  "activeMiniProject": null,
   "verification": {
     "codeBaseline": {
       "fastCi": {
@@ -68,15 +62,27 @@
     },
     "contextArchitecture": {
       "status": "complete-fast-ci-verified",
-      "fastCiRunId": 35858279348,
-      "result": "Fresh-chat HOT context compacted while full historical status/rationale remains discoverable through docs/history/README.md.",
-      "hotContextApproxTokens": 4620,
-      "worstCaseWithRouterApproxTokens": 5140,
-      "archivedFullStatus": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json"
+      "fastCiRunId": 35859140344,
+      "result": "Fresh-chat HOT context is bounded and preserved history is discoverable. Repository self-maintenance guards now enforce the structure during future changes.",
+      "hotContextApproxTokens": 4672,
+      "worstCaseWithRouterApproxTokens": 5191,
+      "archivedFullStatus": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json",
+      "durableRules": [
+        "docs/project/context-loading.md",
+        "docs/project/decisions/D-023.md",
+        "docs/project/decisions/D-024.md"
+      ]
     }
   },
   "next": {
-    "action": "Complete repository self-maintenance policy/guards, then resume Stage 19.3 live Leumi verification."
+    "action": "Resume Stage 19.3 live Leumi verification.",
+    "steps": [
+      "refresh authenticated Leumi page",
+      "run latest verified Bookmarklet",
+      "allow several cycles",
+      "Export Debug",
+      "diagnose after-market behavior from recorder/provider evidence"
+    ]
   },
   "history": {
     "index": "docs/history/README.md",
