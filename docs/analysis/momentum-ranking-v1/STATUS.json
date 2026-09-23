@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 6,
-    "title": "Wave segmentation and recent realized wave capacity",
-    "status": "verification-pending",
-    "subfocus": "Minimal wave contract defined: causal MID directional-change broad waves, explicit extremum-vs-known-at timestamps, CurrentLegReference for conditional Renewal, CompletedWaveEpisode for historical capacity, active/censored handling, and segmentation sensitivity. No universal predictor is added."
+    "issue": 19,
+    "title": "Simplify Momentum Ranking into practical Hebrew metric shortlist",
+    "status": "in-progress",
+    "subfocus": "User-facing simplification checkpoint added. Internal research remains available, but all remaining work must collapse toward about 5–7 practical metrics plus a few hard gates, explained in plain Hebrew."
   },
   "completedWorkUnits": [
     {
@@ -47,6 +47,7 @@
     14,
     5,
     17,
+    19,
     15,
     16,
     6,
@@ -65,7 +66,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 7,
-    "action": "Define recent-wave recurrence/pattern-similarity as a conditional prior over completed episodes only, using explicit comparable coverage, failures, recency/regime match and the Issue #15 all-observation baseline; do not promote recurrence into universal alpha."
+    "issue": 19,
+    "action": "Build the first plain-Hebrew metric map: classify intuitive metrics such as % rise/minute, trades/minute, trades/hour, BID/ASK movement, ASK-LAST/BID-LAST distance, spread and recent-high distance as CORE/SUPPORT/GATE/CONTEXT/REDUNDANT, with simple reasons. Do not add new research families."
   }
 }

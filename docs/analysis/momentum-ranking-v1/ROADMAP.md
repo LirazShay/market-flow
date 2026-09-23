@@ -10,6 +10,7 @@ Master backlog: GitHub Issue #3.
 | #14 | Objective alignment audit and first-principles hypotheses | objective-audit + new research directions |
 | #5 | Feature registry and evidence taxonomy | feature/evidence registry |
 | #17 | Core predictive signal prioritization and feature reduction | staged mini-research + sparse-core contract |
+| #19 | Simplify research into practical Hebrew metric shortlist | simple Hebrew guide + priority ranking |
 | #15 | Direct short-horizon outcome surfaces / fast-excursion propensity | observation-based target/time/adverse outcome surface |
 | #16 | Precursor-to-price conversion latency / opportunity half-life | conversion-latency + signal-decay design |
 | #6 | Wave segmentation and recent realized wave capacity | wave semantics/capacity design |
