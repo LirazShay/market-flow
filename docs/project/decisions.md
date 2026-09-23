@@ -38,6 +38,7 @@ decisions.md
 | [D-020](decisions/D-020.md) | Tests-first pyramid with mandatory Chromium verification after code changes | Accepted / evolved | testing, ci, playwright |
 | [D-021](decisions/D-021.md) | KISS: simplest sufficient design, complexity only when proven necessary | Accepted | architecture, simplicity, kiss, yagni |
 | [D-022](decisions/D-022.md) | Failure-to-learning loop and continuous improvement | Accepted | quality, learning, rca, process, testing |
+| [D-023](decisions/D-023.md) | Progressive context loading with preserved cold history | Accepted | ai-context, navigation, history, efficiency |
 
 ## Fast lookup
 
@@ -56,6 +57,9 @@ Architecture / complexity / KISS
 
 Failures / RCA / continuous improvement
 → D-022
+
+AI context / fresh-chat loading / preserved history
+→ D-023
 
 Local History Viewer V1
 → D-019, D-020
