@@ -157,10 +157,10 @@ Do not preload all of these.
 | Debug Bundle | `specs/debug-bundle.spec.md`, debug files/tests |
 | test/verification rules | `tests/TESTING_POLICY.md` |
 | E2E failure | `tests/E2E_DEBUGGING.md` |
-| non-trivial refactor/design | project `engineering-practices.md` |
-| unexpected failure learning | project `continuous-improvement.md` |
+| non-trivial refactor/design | `docs/project/engineering-practices.md` from repo root |
+| unexpected failure learning | `docs/project/continuous-improvement.md` from repo root |
 | past Stage/run/mini-project rationale | `docs/history/README.md` |
-| durable cross-cutting rationale | project `decisions.md` |
+| durable cross-cutting rationale | `docs/project/decisions.md` from repo root |
 
 ## Verification summary
 
