@@ -10,11 +10,10 @@ Market Flow הוא repository רחב למחקר ופיתוח של market-data / 
 README.md
 → AGENTS.md
 → docs/project/workstreams.md
-→ workstream מקומי
-   ├── AI_CONTEXT.md
-   ├── STATUS.json
-   ├── HANDOFF.md
-   └── files/tests הרלוונטיים
+→ workstream README.md
+→ workstream STATUS.json
+→ workstream AI_CONTEXT.md
+→ current task files/tests/specs as needed
 ~~~
 
 ## איפה נמצא מה?
@@ -22,6 +21,7 @@ README.md
 | צורך | קובץ |
 |---|---|
 | כללי עבודה קבועים ל-AI/agent | AGENTS.md |
+| מדיניות טעינת context מדורגת | docs/project/context-loading.md |
 | מטרת Market Flow וה-scope הכללי | PROJECT_CONTEXT.md |
 | routing בין workstreams | docs/project/workstreams.md |
 | evidence/context רוחבי שאינו micro-status | docs/project/current-state.md |
