@@ -14,7 +14,7 @@
     "issue": 14,
     "title": "Objective alignment audit and first-principles short-horizon hypotheses",
     "status": "in-progress",
-    "subfocus": "Audit passes 1–5 completed. Pass 5 retained Recent Wave Memory as a conditional capacity/timing/path prior, with all-observation excursion memory as the required baseline denominator."
+    "subfocus": "Audit passes 1–6 completed. Pass 6 demoted longer-horizon trend to conditional context and retained Local Regime/Decay primarily as evidence-transferability/confidence logic."
   },
   "completedWorkUnits": [
     {
@@ -44,6 +44,6 @@
   },
   "next": {
     "issue": 14,
-    "action": "Audit Multi-Horizon Context and Local Regime/Decay against the direct short-horizon opportunity objective."
+    "action": "Perform a final objective-alignment sweep over remaining checkpoint concerns (session phase/time-of-day, adverse path/execution reality, normalization/redundancy/family-score semantics), reconcile discovered hypotheses into backlog/registry boundaries, and decide whether Issue #14 can close."
   }
 }

@@ -1882,3 +1882,484 @@ to produce fast excursions of this scale
 ~~~
 
 That evidence becomes useful only after conditioning on current state, target/horizon, adverse path, comparable regime, valid denominator, sample size, recency and execution feasibility.
+
+
+---
+
+# Audit pass 6 — Multi-Horizon Context and Local Regime / Decay
+
+## Multi-Horizon Context — KEEP, but DEMOTE_TO_CONTEXT by default
+
+The 2m/5m/10m/30m/60m history should not outvote the seconds-level process merely because it contains more observations or larger cumulative return.
+
+Core principle:
+
+~~~text
+micro horizon = candidate opportunity
+longer horizons = context that may modify interpretation
+~~~
+
+Do not build:
+
+~~~text
+20s bullish + 2m bearish + 5m bearish + 30m bearish + 60m bearish
+→ four votes to one → reject
+~~~
+
+because that would structurally suppress the counter-trend micro-opportunities this project explicitly wants to detect.
+
+External literature documents that momentum and reversal can coexist at different horizons, and more recent work on order-flow imbalance reports horizon-dependent and regime-dependent predictive behavior. That supports horizon-specific validation rather than assuming one trend rule transfers across scales.
+
+Research leads:
+- https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4069575
+- https://www.sciencedirect.com/science/article/pii/S1544612318307414
+- https://arxiv.org/abs/2505.17388
+
+These are methodological/context evidence, not TASE validation.
+
+---
+
+## New hierarchy: opportunity horizon vs context horizons
+
+Treat horizons asymmetrically.
+
+Candidate hierarchy:
+
+~~~text
+PRIMARY opportunity horizon:
+  ~5s / 10s / 20s / 30s / 60s / 120s outcome surface
+
+NEAR context:
+  ~2m / 5m
+
+BROAD context:
+  ~10m / 30m / 60m / session
+~~~
+
+The exact boundaries are research parameters, not fixed truths.
+
+Broad context should have decreasing authority over the immediate decision unless empirical data proves otherwise.
+
+---
+
+## Replace overlapping-horizon vote counting with shape/state
+
+Returns at 2m/5m/10m/30m/60m are strongly overlapping.
+
+Do not independently add them.
+
+Use an interpretable shape/state such as:
+
+~~~text
+ALIGNED_UP_CONTEXT
+MICRO_ACCELERATION_WITH_UP_CONTEXT
+MICRO_UP_INSIDE_BROAD_DOWN
+REVERSAL_ATTEMPT
+MICRO_UP_AFTER_BROAD_STALL
+BROAD_UP_BUT_MICRO_DECELERATING
+MIXED
+UNKNOWN
+~~~
+
+The state describes cross-scale geometry; it does not by itself decide buy/no-buy.
+
+---
+
+## Counter-trend micro-opportunity must be first-class, not an exception
+
+Candidate state:
+
+~~~text
+CounterTrendMicroOpportunityState
+~~~
+
+Possible values:
+
+~~~text
+ALIGNED
+COUNTER_TREND_FRESH
+COUNTER_TREND_CONFIRMED
+COUNTER_TREND_WEAK
+REVERSAL_ATTEMPT
+UNKNOWN
+~~~
+
+Validation question:
+
+> Conditional on the current micro Price/Activity/Book/Path state, does broader negative trend materially change target-before-adverse outcomes within seconds-to-~2m?
+
+If the answer is no, broad negative trend must not penalize that state.
+
+---
+
+## New concept: ContextIncrementalValue
+
+Broad context earns influence only if it adds out-of-sample information after current micro state is known.
+
+Candidate research test:
+
+~~~text
+Base model:
+  current micro state
+
+Add:
+  2m/5m context
+
+Add:
+  10m/30m/60m context
+
+Measure marginal improvement in:
+  target-before-adverse
+  TimeToTarget
+  MAE
+  ranking quality
+~~~
+
+If broad horizons add no incremental value, demote or remove them regardless of conventional trading intuition.
+
+---
+
+## New concept: HorizonConflictState
+
+Cross-scale disagreement is not automatically bad.
+
+Candidate:
+
+~~~text
+HorizonConflictState {
+  microDirection
+  nearDirection
+  broadDirection
+  microAcceleration
+  conflictAge
+  resolutionEvidence
+}
+~~~
+
+Useful interpretations may include:
+- fresh counter-trend bounce;
+- genuine local reversal beginning;
+- broad-trend pullback resuming;
+- noisy conflict with no usable edge.
+
+The correct distinction must come from subsequent short-horizon outcomes, not labels.
+
+---
+
+## Broad context may matter more for adverse path than direction
+
+A broad downtrend may not prevent a +0.10% micro excursion, but it may increase:
+- adverse excursion before target;
+- failure rate for larger targets;
+- speed of rejection;
+- probability that a pullback turns into breakdown.
+
+Therefore validate broad context against:
+
+~~~text
+target-specific barrier-first outcomes
+MAE before target
+TimeToTarget
+target-size frontier
+~~~
+
+rather than only future sign.
+
+---
+
+# Local Regime / Decay — KEEP STRONGLY as transferability/confidence logic
+
+Regime is important because recent memory is useful only when the current process is sufficiently comparable.
+
+But regime should not become:
+
+~~~text
+REGIME_BULLISH → add score
+REGIME_BEARISH → reject
+~~~
+
+by default.
+
+Its primary role is:
+
+~~~text
+how much should evidence learned from recent history be trusted NOW?
+~~~
+
+Recent OFI work reports horizon-dependent and regime-dependent predictive behavior, which supports testing conditional transferability rather than universal signal weights.
+
+Research lead:
+- https://arxiv.org/abs/2505.17388
+
+---
+
+## Separate regime dimensions; avoid premature one-label regime
+
+A monolithic label like:
+
+~~~text
+CALM / STRESSED
+~~~
+
+may hide important combinations.
+
+For this project preserve dimensions such as:
+
+~~~text
+LiquidityRegime
+SpreadRegime
+ActivityRegime
+Movement/VolatilityRegime
+PathNoiseRegime
+BookBehaviorRegime
+SessionPhase
+BroadMarketRegime
+~~~
+
+Later research may compress them only if validation supports it.
+
+---
+
+## New concept: EvidenceTransferability
+
+Candidate:
+
+~~~text
+EvidenceTransferability {
+  stateSimilarity
+  regimeSimilarity
+  timeOfDaySimilarity
+  recency
+  sampleCoverage
+  horizonMatch
+}
+~~~
+
+This controls how much prior observations/waves/patterns should influence current confidence or target-feasibility estimates.
+
+It is distinct from current signal strength.
+
+---
+
+## Decay should be evidence-specific, not one universal clock
+
+Do not define:
+
+~~~text
+all evidence loses 50% every N minutes
+~~~
+
+Different evidence can decay differently:
+- a quote-pressure precursor may have a lifetime of seconds;
+- a local activity regime may persist minutes;
+- time-of-day context changes slowly;
+- a completed-wave prior may remain relevant until regime changes.
+
+Candidate:
+
+~~~text
+EvidenceSpecificDecayState
+~~~
+
+with decay driven by both:
+
+~~~text
+elapsed time
++ state/regime divergence
+~~~
+
+---
+
+## New concept: regime-change invalidation can dominate wall-clock recency
+
+A two-minute-old prior can be irrelevant after a sudden spread/liquidity/activity regime change.
+
+A ten-minute-old prior can remain useful if the local regime stayed stable and enough comparable observations exist.
+
+Candidate:
+
+~~~text
+RegimeBreakState =
+STABLE / DRIFTING / BROKEN / UNKNOWN
+~~~
+
+Possible triggers to research:
+- spread jumps materially;
+- activity intensity changes regime;
+- path volatility/noise changes sharply;
+- L1 behavior changes;
+- session phase changes;
+- broad market shock occurs.
+
+No threshold is fixed yet.
+
+---
+
+## New concept: conditional decay rather than recency decay
+
+Candidate weighting concept:
+
+~~~text
+PriorWeight
+~
+recency
+× state similarity
+× regime similarity
+× horizon match
+× sample coverage
+~~~
+
+This is conceptual only; no formula/weights are validated.
+
+The key correction is that recency alone is insufficient.
+
+---
+
+## Session phase is a hard comparability boundary candidate
+
+Opening auction, continuous trading, closing mechanisms and TAL are different market mechanisms.
+
+At minimum, memory and short-window features should not silently cross a session-mechanism boundary.
+
+Candidate:
+
+~~~text
+SessionEpochCompatibility
+~~~
+
+Possible outcome:
+
+~~~text
+COMPATIBLE
+PHASE_CHANGED
+UNKNOWN
+~~~
+
+Current TASE phase semantics must be re-verified from authoritative sources before implementation.
+
+---
+
+## Time of day should normalize opportunity environment, not dictate direction
+
+Intraday activity/volatility often has strong seasonality. Therefore:
+
+~~~text
+high activity at 09:xx
+may be normal
+
+same activity at a quiet period
+may be exceptional
+~~~
+
+Candidate future concept:
+
+~~~text
+TimeOfDayAbnormality
+~~~
+
+but only after enough same-phase history exists.
+
+External literature documents strong intraday activity/volatility seasonality, supporting the need for time-of-day normalization rather than raw thresholds.
+
+Research leads:
+- https://www.sciencedirect.com/science/article/pii/S0378437115002952
+- https://www.sciencedirect.com/science/article/abs/pii/S0264999320311676
+
+---
+
+## New concept: regime-conditioned target frontier
+
+The same current micro signal may support different target/time combinations in different local regimes.
+
+Candidate:
+
+~~~text
+RegimeConditionedTargetFeasibilityFrontier
+~~~
+
+Example conceptually:
+
+~~~text
+same micro state:
+  liquid/fast regime  → +0.20% / 20s may be supported
+  quiet/wide regime   → only +0.10% / 60s may be supported
+~~~
+
+This must be learned from project data; it is not an assumed rule.
+
+---
+
+## New concept: current-state evidence outranks stale prior
+
+When strong fresh current evidence conflicts with weak old memory:
+
+~~~text
+fresh current state
+>
+weak / poorly matched historical prior
+~~~
+
+unless validation proves otherwise.
+
+Recent-memory priors should be able to fall to near-zero influence under poor transferability rather than veto the live state.
+
+---
+
+# New hypotheses from audit pass 6
+
+## AQ. ContextIncrementalValue
+
+Longer horizons earn influence only if they add short-horizon outcome information beyond the current micro state.
+
+## AR. CounterTrendMicroOpportunityState
+
+Counter-trend micro waves are first-class candidate states, not automatic rejects.
+
+## AS. HorizonConflictState
+
+Preserve cross-scale disagreement and validate what each conflict pattern means for immediate outcomes.
+
+## AT. BroadContextAdversePathEffect
+
+Broad trend may affect MAE/failure/target-size frontier more than immediate direction.
+
+## AU. EvidenceTransferability
+
+Regime/state/time/horizon similarity determines how much recent evidence can transfer to now.
+
+## AV. EvidenceSpecificDecayState
+
+Different signal families have different useful lifetimes.
+
+## AW. RegimeBreakState
+
+A regime break can invalidate recent memory faster than wall-clock decay.
+
+## AX. SessionEpochCompatibility
+
+Do not silently transfer windows/memory across distinct market mechanisms.
+
+## AY. TimeOfDayAbnormality
+
+Normalize activity/volatility relative to phase/time when enough history exists.
+
+## AZ. RegimeConditionedTargetFeasibilityFrontier
+
+The target/time/adverse frontier may depend on the current local regime.
+
+---
+
+## Audit verdict
+
+~~~text
+Multi-Horizon Context = KEEP, mostly context / conditional modifier
+Longer-horizon negative trend = NOT an automatic veto
+Local Regime = KEEP STRONGLY for evidence transferability and confidence
+Decay = evidence-specific and regime-aware, not one universal time constant
+~~~
+
+The governing question remains:
+
+> Does this context materially improve selection of a capturable seconds-to-~2-minute excursion from NOW?
+
+If not, it must be demoted or removed regardless of how familiar the indicator is.
