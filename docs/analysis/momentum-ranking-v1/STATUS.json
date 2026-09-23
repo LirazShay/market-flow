@@ -11,16 +11,21 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 14,
-    "title": "Objective alignment audit and first-principles short-horizon hypotheses",
+    "issue": 5,
+    "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Audit passes 1–6 completed. Pass 6 demoted longer-horizon trend to conditional context and retained Local Regime/Decay primarily as evidence-transferability/confidence logic."
+    "subfocus": "Objective-alignment audit completed and embedded; resume registry population with Path Quality/Wave Health using the revised short-horizon contract."
   },
   "completedWorkUnits": [
     {
       "issue": 4,
       "title": "Consolidate chat research into durable repository artifacts",
       "result": "Workstream shell, routing and durable checkpoint capture the research developed through Family Scores plus ASK/LAST spread-position dynamics and recent wave-memory/capacity additions."
+    },
+    {
+      "issue": 14,
+      "title": "Objective alignment audit and first-principles short-horizon hypotheses",
+      "result": "Re-audited existing research against the capturable seconds-to-~2-minute objective, reframed conventional context/signals, introduced direct outcome/latency hypotheses, and propagated requirements into the downstream research backlog."
     }
   ],
   "plannedIssues": [
@@ -43,7 +48,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 14,
-    "action": "Perform a final objective-alignment sweep over remaining checkpoint concerns (session phase/time-of-day, adverse path/execution reality, normalization/redundancy/family-score semantics), reconcile discovered hypotheses into backlog/registry boundaries, and decide whether Issue #14 can close."
+    "issue": 5,
+    "action": "Populate the Path Quality/Wave Health family under the objective-alignment contract: directional efficiency, reversals, giveback, progress stall, effort-to-progress efficiency and exhaustion evidence."
   }
 }

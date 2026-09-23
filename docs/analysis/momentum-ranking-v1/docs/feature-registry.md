@@ -10,6 +10,38 @@ Evidence codes and role semantics are defined in:
 evidence-taxonomy.md
 ~~~
 
+## Objective-alignment contract
+
+Every candidate in this registry exists to support one narrow objective:
+
+> select a capturable upward opportunity **from now**, preferably in seconds and with an outer research horizon around two minutes.
+
+A feature is not useful merely because it describes a healthy stock, a strong daily trend or a conventional trading pattern.
+
+Every future family/feature should be traceable to at least one decision role:
+
+~~~text
+Potential
+Confirmation
+RemainingOpportunity
+PathRisk
+Feasibility
+Freshness/Trust
+Context/Prior
+Outcome
+~~~
+
+and must name an objective-aligned validation target such as target-before-adverse, TimeToTarget, MFE/MAE, detection lateness, usable lead time or execution-aware opportunity.
+
+Longer-horizon negative trend is not an automatic veto. Relative percentile is not absolute opportunity. Historical wave capacity is a conditional prior, not a promise. Feasibility/trust families do not become bullish votes.
+
+Before scoring or implementation, apply the durable audit in:
+
+~~~text
+objective-alignment-audit.md
+~~~
+
+---
 ## Registry schema
 
 Every feature entry owns these fields:

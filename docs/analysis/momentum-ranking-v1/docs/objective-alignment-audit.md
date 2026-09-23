@@ -2363,3 +2363,283 @@ The governing question remains:
 > Does this context materially improve selection of a capturable seconds-to-~2-minute excursion from NOW?
 
 If not, it must be demoted or removed regardless of how familiar the indicator is.
+
+
+---
+
+# Audit pass 7 — Final cross-system sweep and reconciliation
+
+## Session phase / time-of-day — GATE / NORMALIZATION / CONTEXT
+
+Session mechanism and time of day matter because the same raw feature can mean different things under different market mechanics or normal activity baselines.
+
+Rules:
+- do not let short windows cross incompatible session mechanisms;
+- do not turn opening/closing/TAL context into generic bullish/bearish votes;
+- use time-of-day primarily to normalize what is unusual now;
+- re-verify current TASE phase/timing rules from authoritative sources before implementation.
+
+Primary concepts remain:
+
+~~~text
+SessionEpoch
+SessionEpochCompatibility
+TimeOfDayAbnormality
+~~~
+
+These affect comparability, priors and thresholds, not default direction.
+
+---
+
+## Adverse path — CORE OUTCOME / QUALITY DIMENSION
+
+Adverse path must not be reduced to a late penalty after a bullish score is computed.
+
+The project objective is path-dependent:
+
+~~~text
++target quickly with small MAE
+!=
++target after deep adverse excursion
+~~~
+
+Therefore future evaluation must retain:
+
+~~~text
+MFE
+MAE
+TimeToTarget
+TimeToAdverse
+WhichBarrierFirst
+TimeUnderWater
+RecoveryTime
+~~~
+
+At first these are labels/outcomes. Predictive adverse-path features must earn their status empirically.
+
+---
+
+## Execution reality — SEPARATE PREDICTION FROM MONETISATION
+
+Never allow market-prediction accuracy to masquerade as executable profitability.
+
+Keep distinct:
+
+~~~text
+RawMarketOpportunity
+TradableOpportunity
+DecisionReferenceOpportunity
+FilledOpportunity
+NetExecutableOpportunity
+~~~
+
+Reference prices must be explicit:
+
+~~~text
+signalReferencePrice
+decisionReferencePrice
+executableEntryReference
+actualFillPrice
+~~~
+
+Touching a price does not prove fill.
+
+Execution simulation / telemetry must account for spread, tick, queue/depth, delay, partial fill, slippage, impact and explicit costs as available.
+
+The research ranker should remain account-agnostic where possible; account/order-size specifics belong in a parameterized ExecutionEvaluator.
+
+---
+
+## L2 and trade tape — DATA-GAP QUESTIONS, not architectural assumptions
+
+Current L1 design should be exhausted before declaring richer data mandatory.
+
+Audit implications:
+- L2 is most relevant to deeper execution feasibility, depth persistence and impact beyond L1;
+- trade tape is most relevant to true event-time sequencing, inter-trade durations and signed-flow estimation;
+- neither feed should be required merely because conventional microstructure systems use it;
+- each must be judged by the exact incremental decision/outcome it improves.
+
+The correct question for Issue #12 is:
+
+> Which objective-aligned decisions remain materially uncertain with validated L1/history, and does L2 or tape resolve them enough to justify the dependency?
+
+---
+
+## Cross-sectional normalization — KEEP RAW + ABSOLUTE + RELATIVE
+
+Normalization must not erase economically meaningful magnitude.
+
+For each candidate preserve where relevant:
+
+~~~text
+RawValue
+AbsoluteQuality
+MarketPercentile
+SelfRelativeAbnormality
+TimeOfDayAbnormality
+Coverage
+~~~
+
+Percentiles are comparison/context, not replacements for absolute target feasibility.
+
+Do not normalize UNKNOWN as zero.
+
+Do not let a tiny extreme percentile outrank a materially larger usable excursion solely because it is statistically unusual.
+
+---
+
+## Redundancy / double counting — OBJECTIVE-BASED OWNERSHIP
+
+The strongest anti-double-counting rule is not statistical correlation alone.
+
+Ask:
+
+> Does this concept add objective-aligned out-of-sample information after its parent/family evidence is already known?
+
+Architecture remains hierarchical:
+
+~~~text
+raw observations
+→ derived concepts
+→ family state
+→ family strength/confidence/coverage
+→ cross-family interaction
+→ OpportunityBudget / candidate frontier
+→ ranking
+~~~
+
+Examples that must not become multiple full votes:
+- overlapping returns;
+- trade count / volume / money;
+- BID/ASK/MID deterministic derivatives;
+- queue imbalance and microprice;
+- giveback reused across path/exhaustion;
+- long-horizon overlapping returns.
+
+Validation should use group ablation and marginal out-of-sample value, not only model feature importance.
+
+---
+
+## Family score semantics — SEMANTIC EVIDENCE, not probability
+
+Keep:
+
+~~~text
+FamilyState
+FamilyScore 0–100
+FamilyConfidence
+Coverage
+MarketPercentile
+~~~
+
+But `FamilyScore=90` means strong evidence under the family's semantic mapping, not 90% probability and not +90 expected return.
+
+Do not multiply score by confidence early and pretend the result is calibrated.
+
+The audit adds a stronger rule:
+
+~~~text
+family score must map to an objective decision role
+~~~
+
+Each family should primarily serve one or more of:
+
+~~~text
+Potential
+Confirmation
+RemainingOpportunity
+PathRisk
+Feasibility
+Freshness/Trust
+Context/Prior
+Outcome
+~~~
+
+If a feature/family cannot explain its role in the seconds-to-~2m objective and cannot name a validation outcome, it should be demoted or rejected.
+
+---
+
+## Scalar final score should be late, not early
+
+Before empirical evidence, preserve the structured opportunity:
+
+~~~text
+OpportunityBudget
+TargetFeasibilityFrontier
+RemainingCapturableExcursion
+TimeBudgetAfterLatency
+AdversePath
+Feasibility
+Confidence
+~~~
+
+The final user-facing ranking may eventually use one scalar score, but internal architecture should not destroy these dimensions prematurely.
+
+---
+
+## Validation must punish late detection
+
+Traditional direction accuracy can reward a signal that fires after most of the move occurred.
+
+For this project future validation must include:
+
+~~~text
+DetectionLateness
+UsableLeadTimeAfterSystemLatency
+remaining excursion at detection
+target-before-adverse from decision/entry reference
+~~~
+
+A correct but too-late detector is operationally weak.
+
+---
+
+## Final audit contract for every feature / heuristic
+
+Every future candidate must answer:
+
+1. Which exact seconds-to-~2m outcome can validate it?
+2. At what timestamp does the evidence become observable?
+3. How much useful lead remains after system latency?
+4. Does it measure future opportunity, past description, feasibility, risk, confidence or context?
+5. Can it wrongly reject a valid counter-trend micro-opportunity?
+6. Does it add information after stronger/directer parent concepts are known?
+7. What data quality / freshness / regime conditions make it invalid?
+8. Is its value raw-market or execution-dependent?
+
+No conventional indicator receives special status.
+
+---
+
+# Final Issue #14 verdict
+
+The audit has now covered the material checkpoint areas:
+- registered Price / Activity / Book / Tradability / Freshness families;
+- Path/WaveHealth, pullback/retest, levels/breakout and sequence;
+- RemainingOpportunity;
+- cross-sectional ranking and hysteresis;
+- Recent Wave Memory / recurrence;
+- Multi-Horizon Context;
+- Local Regime / Decay;
+- session/time-of-day;
+- adverse path and execution reality;
+- normalization, redundancy and family-score semantics.
+
+New material research concerns discovered by the audit have durable owners:
+
+~~~text
+#15 Direct short-horizon outcome surfaces / fast-excursion propensity
+#16 Precursor-to-price conversion latency / opportunity half-life
+#6/#7 wave capacity + recurrence with objective-alignment additions
+#8 multi-horizon context additions
+#9 regime/decay additions
+#10 CentralRanker additions
+#11 validation/calibration additions
+#12 L2/tape objective-based data-gap decision
+#13 final specification synthesis
+~~~
+
+No additional standalone research issue is required from this sweep.
+
+Therefore Issue #14 can close after the objective-alignment contract is embedded into the feature registry/backlog.
