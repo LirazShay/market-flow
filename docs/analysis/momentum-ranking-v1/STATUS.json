@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "workstream": "momentum-ranking-v1",
+  "updatedAt": "2026-09-23",
+  "overallStatus": "in-progress",
+  "authority": {
+    "operationalProgress": "STATUS.json",
+    "planAndOrder": "ROADMAP.md",
+    "fastTechnicalContext": "AI_CONTEXT.md",
+    "durableResearch": "docs/research-checkpoint.md",
+    "backlog": "GitHub Issue #3 and linked research issues"
+  },
+  "currentFocus": {
+    "issue": 5,
+    "title": "Build feature registry and evidence taxonomy",
+    "status": "next"
+  },
+  "completedWorkUnits": [
+    {
+      "issue": 4,
+      "title": "Consolidate chat research into durable repository artifacts",
+      "result": "Workstream shell, routing and durable checkpoint capture the research developed through Family Scores plus ASK/LAST spread-position dynamics and recent wave-memory/capacity additions."
+    }
+  ],
+  "plannedIssues": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "researchState": {
+    "empiricalCalibrationAvailable": false,
+    "productionImplementationStarted": false,
+    "probabilityClaimsAllowed": false
+  },
+  "next": {
+    "issue": 5,
+    "action": "Build the feature registry and evidence taxonomy from the durable checkpoint before resuming new signal research."
+  }
+}
