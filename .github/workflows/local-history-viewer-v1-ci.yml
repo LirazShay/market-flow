@@ -1,6 +1,9 @@
 name: Local History Viewer V1 Browser CI
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   workflow_call:
 
@@ -10,7 +13,7 @@ permissions:
 jobs:
   browser-tests:
     name: Chromium browser tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     defaults:
@@ -29,8 +32,14 @@ jobs:
       - name: Install test dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/package.json') }}
+
+      - name: Ensure Chromium is installed
+        run: npx playwright install chromium
 
       - name: Run browser tests
         run: npm run test:browser
