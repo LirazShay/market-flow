@@ -88,13 +88,26 @@ Plain question:
 
 This is a synthesis, not another independent alpha signal.
 
-### 7. Spread / depth / freshness gates
+### 7. Recent executed activity / data-validity gates
 
 Plain question:
 
-> גם אם המניה נראית טובה — האם בכלל אפשר להיכנס/לצאת בלי שה-spread, stale data או depth יהרסו את העסקה?
+> גם אם המניה נראית טובה — האם יש בה עסקאות אמיתיות עכשיו, והאם הנתונים/הציטוטים טריים ותקינים מספיק כדי לדרג אותה?
 
-These are gates, not directional predictors.
+Primary gate evidence:
+
+~~~text
+time since latest observed trade increment
+trades / 10s
+trades / 20s
+trades / 30s
+trades / 60s
+activity persistence
+~~~
+
+Additional gates may include required quote validity, latency and size/depth only where position-size feasibility actually requires them.
+
+Spread is **not** a gate for this strategy. It remains raw diagnostic data only and must not rank, penalize or reject a candidate.
 
 ## Intuitive metrics that must be explicitly judged
 
@@ -120,7 +133,8 @@ CORE
 SUPPORT
 GATE
 CONTEXT
-MOSTLY_REDUNDANT / NOISE
+REDUNDANT
+IGNORE / NOISE
 ~~~
 
 and explain why in plain Hebrew.
@@ -144,12 +158,12 @@ For every retained metric:
 The final document must end with a compact practical flow such as:
 
 ~~~text
-1. Is price moving up now?
-2. Is BID participating?
-3. Is activity converting into price progress?
+1. Is the security actively trading now?
+2. Is BID moving up now?
+3. Is activity strengthening and converting into price progress?
 4. Is the path usable?
-5. Is the move still fresh?
-6. Do spread/freshness/depth gates pass?
+5. Is the move still fresh / is opportunity still remaining?
+6. Do data-validity / quote-validity / latency / required size constraints pass?
 → rank / no opportunity
 ~~~
 

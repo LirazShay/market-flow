@@ -14,7 +14,7 @@
     "issue": 19,
     "title": "Simplify Momentum Ranking into practical Hebrew metric shortlist",
     "status": "in-progress",
-    "subfocus": "Critical strategy correction applied: spread is removed from ranking/eligibility and retained only as raw diagnostic. Live-candidate eligibility is based on recent executed trading activity. Primary research outcome is corrected to current BID -> future BID, with MID control; ASK->future BID is diagnostic only."
+    "subfocus": "19.A complete: first practical Hebrew metric map defines the live-activity gate, BID repricing core, quote/activity support, activity-to-progress candidate, path protection, remaining-opportunity synthesis and conditional reset context; spread is explicitly IGNORE/raw diagnostic. Next: 19.B measurement-window semantics."
   },
   "completedWorkUnits": [
     {
@@ -67,6 +67,6 @@
   },
   "next": {
     "issue": 19,
-    "action": "Build the first plain-Hebrew practical metric map under the corrected assumptions: prioritize % rise/speed, recent trades-per-time/activity persistence, BID/ASK movement, activity-to-progress conversion, path usability, remaining opportunity and recent-high/reset context; classify spread as IGNORE/REDUNDANT for ranking."
+    "action": "19.B: define measurement-window semantics for 10s/20s/30s/60s and minute/hour variants; decide what is primary vs context without introducing arbitrary thresholds or duplicate votes."
   }
 }
