@@ -27,7 +27,9 @@ full Browser suite
 
 Do not run the full Browser suite merely to prove an expected red.
 
-A later checkpoint never substitutes for immediate execution of the changed browser test. An **unexpected** red, or a red that remains after the intended fix, blocks the next implementation unit.
+After implementation code changes, Chromium verification is mandatory on the final changed code state even when the Playwright spec itself did not change. Localized code changes may use a targeted browser test; shared runtime/harness/storage/messaging/viewer-integration or multi-area code changes require the full Browser suite.
+
+A later checkpoint never substitutes for immediate execution of the changed browser test/code path. An **unexpected** red, or a red that remains after the intended fix, blocks the next implementation unit.
 
 Additionally, the **full browser suite is mandatory before every numbered Stage is marked complete**, even if that Stage did not add a browser test in its final substep.
 
