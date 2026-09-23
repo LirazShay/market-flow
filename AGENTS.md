@@ -1,114 +1,112 @@
-# AGENTS.md — Fast AI Operating Rules for Market Flow
+# AGENTS.md — Market Flow AI Operating Rules
 
-This file is the **mandatory compact entry point** for any AI/agent working in this repository.
+This is the mandatory compact entry point for AI/agents working in this repository.
 
-Goal: preserve correctness **without forcing a full-repository reread on every small continuation**.
+GitHub `main` is the source of truth.
 
-The repository is the source of truth.
-
----
-
-## 0. Fresh-chat entry point
-
-When a chat starts without enough current context, do not guess which part of Market Flow is active.
-
-Use:
+Detailed context-loading policy:
 
 ~~~text
-AGENTS.md
-→ docs/project/workstreams.md
-→ target workstream AI_CONTEXT.md
-→ target workstream STATUS.json
-→ HANDOFF.md if present/relevant
-→ target files
-→ relevant tests
+docs/project/context-loading.md
 ~~~
 
-If the user names a concrete workstream/path, you may go directly to that workstream after reading this file.
+---
 
-For "continue the project" with no more detail, docs/project/workstreams.md is the project-wide routing table.
+## 1. Fresh-chat / continuation loading
 
-The workstream-local STATUS.json is authoritative for the exact next implementation pointer.
+### Fresh chat
 
-Do not hardcode the currently active workstream into project-wide operating rules.
+When conversation history is unavailable:
+
+~~~text
+fetch main
+→ AGENTS.md
+→ identify workstream
+→ workstream README.md
+→ workstream STATUS.json
+→ workstream AI_CONTEXT.md
+→ current Stage scope / target files / direct tests / owning SPEC as needed
+~~~
+
+If the user names a concrete workstream/path, go directly there after this file.
+
+If the workstream is unknown:
+
+~~~text
+docs/project/workstreams.md
+~~~
+
+Do **not** preload all project policies, ROADMAP, specs, decisions or history.
+
+Use progressive disclosure:
+
+~~~text
+HOT  = AGENTS + workstream README + STATUS + AI_CONTEXT
+WARM = task-specific ROADMAP section / code / tests / SPEC / component docs
+COLD = history / completed mini-projects / deep rationale / detailed policies
+~~~
+
+History must remain discoverable for new chats, but is read only when needed.
+
+### Same-chat continuation
+
+Reuse context already read when still current.
+
+Before meaningful changes, refresh:
+
+- `STATUS.json` if progress may have changed;
+- files being edited;
+- directly relevant tests/specs.
+
+Do not mechanically reread the repository.
 
 ---
 
-## 1. Choose the correct context depth
+## 2. Source-of-truth ownership
 
-### Normal continuation inside an existing workstream
-
-If the workstream contains:
+For a workstream:
 
 ~~~text
-AI_CONTEXT.md
 STATUS.json
+= live operational state / current pointer / current verification
+
+ROADMAP.md
+= plan, scope and order
+
+AI_CONTEXT.md
+= compact technical continuation context
+
+specs/
+= durable normative contracts/invariants
+
+docs/history/
+= preserved cold history / past evidence
+
+docs/project/decisions/
+= durable cross-cutting decisions
 ~~~
 
-read only:
+Operational stage/completion/next state belongs only in `STATUS.json`.
 
-1. `AI_CONTEXT.md`
-2. `STATUS.json`
-3. files being changed
-4. directly relevant tests
-
-Do **not** reread the full project documentation by default.
-
-### Escalate to broader context only when needed
-
-Read wider project/design/docs when one of these is true:
-
-- entering a new/different workstream;
-- `AI_CONTEXT.md` / `STATUS.json` is missing or stale;
-- changing architecture, schema, public behavior, or a durable decision;
-- resolving a contradiction;
-- re-verifying external API evidence;
-- touching a cross-cutting project concern.
-
-Then read only the relevant subset, such as:
-
-~~~text
-PROJECT_CONTEXT.md
-docs/project/current-state.md
-docs/project/decisions.md
-relevant design/API docs
-~~~
-
-Do not mechanically read every project file.
+If sources conflict, inspect the authoritative code/spec/decision/evidence, resolve the contradiction, and update the stale surface in the same coherent batch.
 
 ---
 
-## 2. Choose implementation scope naturally
+## 3. Scope and continuation
 
-When the user asks to continue existing work without naming a stage boundary, choose scope according to technical coherence and verification needs.
+When the user asks to continue, work directly on the repository.
 
-There is no default rule that one chat message must equal one substep or one stage.
+Choose a natural engineering + verification boundary. One message does not equal one Stage or one substep.
 
-A response may implement part of a substage, one full stage, or adjacent work when that is the most coherent verified unit.
-
-Prefer:
-
-~~~text
-meaningful implementation + verification boundary
-over
-arbitrary numbering/message boundary
-~~~
-
-### Continuation command
-
-When the user writes:
+For:
 
 ~~~text
 תמשיך לשלב הבא
 ~~~
 
-continue from the authoritative workstream `STATUS.json` / `ROADMAP.md` into the next planned work.
+continue from the exact `STATUS.json` pointer into the next correct work.
 
-The user explicitly prefers natural engineering/verification boundaries. A single response does **not** have to complete an entire numbered stage.
-
-It is valid to complete a coherent substep or part of a stage, verify it, update `STATUS.json`, and stop there.
-
-Do not skip planned work or jump to an unrelated later stage.
+Do not skip planned work.
 
 The word:
 
@@ -116,254 +114,148 @@ The word:
 סיימתי
 ~~~
 
-is reserved for the end of the full planned process/version the user asked to complete. Do not use it merely because a stage, checkpoint or mini-project finished.
+is reserved for completion of the full planned process/version, not a Stage/checkpoint.
 
 ---
 
-## 3. Fast status files are operational state
+## 4. KISS — simplest sufficient design
 
-For workstreams using fast context:
-
-~~~text
-AI_CONTEXT.md
-STATUS.json
-~~~
-
-Rules:
-
-- `AI_CONTEXT.md` = compact human/AI working context.
-- `STATUS.json` = machine-readable current pointer.
-- update `STATUS.json` on normal implementation progress;
-- update `AI_CONTEXT.md` only when current focus, invariants, or relevant working set changes;
-- update `ROADMAP.md` only when scope/order/stage definitions change; operational completion belongs only in `STATUS.json`.
-
-If fast context conflicts with a durable design/decision document:
-1. inspect the authoritative document;
-2. resolve the conflict;
-3. update the fast context in the same work batch.
-
----
-
-## 4. KISS — simplest sufficient design by default
-
-Use the **simplest design that fully satisfies the current verified requirement**.
+Default to the simplest coherent design that satisfies the **current verified requirement**.
 
 ~~~text
 current requirement + proven constraints
-→ smallest coherent solution
+→ smallest sufficient mechanism
 → verify
 → stop
 ~~~
 
-Do not add complexity merely because it may be useful later.
+Do not add abstraction/framework/lifecycle/cache/concurrency/retry/compatibility/extensibility merely because it may help later.
 
-Examples of complexity that require a concrete current need before introduction:
+Additional complexity needs a concrete present-day reason:
 
-- new abstraction layers;
-- generic frameworks or plugin systems;
-- loaders/updaters/rollback machinery;
-- generalized lifecycle/state machinery;
-- extra persistence/cache layers;
-- concurrency/parallelism;
-- retry/recovery orchestration;
-- extensibility points for hypothetical future consumers;
-- migrations or compatibility layers that no current supported version requires.
+- correctness/data integrity/security;
+- observed failure;
+- measured performance/reliability;
+- current recovery/testability need;
+- stable repetition causing real maintenance cost.
 
-Acceptable reasons to add complexity include:
+Future possibility alone is not enough.
 
-- a current requirement cannot be met cleanly without it;
-- an observed bug/failure requires it;
-- measured performance/reliability evidence requires it;
-- a repeated concept is stable enough that duplication is now causing real cost;
-- correctness, data integrity, security, testability, or recoverability requires it.
-
-Not acceptable by itself:
+Detailed rule:
 
 ~~~text
-"we may need this later"
-"this is more enterprise"
-"this is more flexible"
-"let's make it generic now"
+docs/project/engineering-practices.md
+docs/project/decisions/D-021.md
 ~~~
-
-When choosing a more complex approach, be able to state the concrete present-day reason the simpler approach is insufficient.
-
-KISS does **not** mean cutting required validation, tests, observability, security, or data-integrity guarantees. It means meeting those requirements with the minimum necessary machinery.
 
 ---
 
-## 5. Testing policy
+## 5. Testing and verification
 
-Tests should protect observable/public behavior, not private implementation details.
+Tests protect observable/public behavior, not private implementation details.
 
-For new behavior, define the meaningful tests first whenever practical.
-
-For a reproducible bug:
+Use the cheapest valid layer:
 
 ~~~text
-regression test
-→ fix
-→ keep the regression test
+pure deterministic logic
+→ Node unit tests
+
+browser semantics / IndexedDB / DOM / BroadcastChannel / integration
+→ Playwright + Chromium
+
+provider/session behavior not provable by mocks
+→ live verification
 ~~~
 
-Default testing pyramid:
+Tests-first when practical.
+
+For browser TDD:
 
 ~~~text
-pure deterministic behavior
-→ fast Node unit tests
-
-browser semantics / integration
-→ run the exact changed/new Playwright test in Chromium first
-→ expand only when evidence/risk requires it
-→ full Browser CI at every numbered Stage closure
-
-real provider behavior
-→ live verification only when required
-~~~
-
-Fast CI is the normal cheap feedback loop, but this browser-based workstream must not treat it as sufficient proof after code changes. Any production/runtime/browser code change requires Chromium verification on the final changed code state.
-
-### Non-negotiable test-change gate
-
-Checkpoint scheduling controls **when broad suites are run for unchanged tests**. It never permits an edited test to remain unexecuted.
-
-If a test, test fixture, harness, or test helper is added or modified:
-
-~~~text
-change/add test
-→ execute the smallest test target that proves that change
-
-intentional TDD/regression red
-→ confirm the exact target fails for the intended reason
+new/changed test
+→ exact targeted Chromium red
 → implement/fix
-→ rerun that exact target until green
-
-unexpected red
-→ stop
-→ diagnose
-→ fix
-→ rerun the smallest relevant target
+→ exact targeted green
 ~~~
 
-Rules:
+Do not run the full Browser suite merely to prove an expected red.
 
-- changed unit tests must be executed before continuing; targeted unit execution is preferred first, while the cheap Fast suite may still run normally;
-- changed Playwright/browser tests must be executed in Chromium before continuing, **targeted to the exact changed/new test by default**;
-- do **not** run the full Browser suite merely to prove an expected TDD red;
-- an intentional red phase is complete when the targeted test fails for the intended behavior gap; that expected red does not block moving to implementation;
-- after implementation/fix, the same targeted browser test must pass before widening verification;
-- **any production/runtime/browser code change requires a Chromium run on the final changed code state**, even when no browser test file itself changed;
-- for a small localized code change, the smallest relevant Chromium test/spec may satisfy the immediate code-change gate;
-- for runtime assembly, shared harness/fixture, storage integration, messaging, viewer integration, cross-component behavior, or multi-area code changes, run the full Browser suite;
-- widen from exact test → spec/related cluster when coupling, shared fixtures/harness, or evidence makes that useful;
-- run the full Browser suite at required Stage/checkpoint boundaries and for broad/shared browser code risk; do not skip browser execution merely because the code previously matched a known-good design;
-- if targeted browser execution is unavailable, do not substitute an expensive full suite solely to demonstrate an expected red; establish a targeted execution path or mark that proof pending;
-- a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
-- an **unexpected** failing test, or a test still red after the supposed fix, blocks progression: inspect logs, decide whether product code or the test is wrong, fix, and rerun;
-- if the required environment cannot be run, mark the work `verification-pending` in the workstream `STATUS.json` and stop before the next feature/substep;
-- do not mark behavior verified from source inspection alone when its test layer has not run;
-- verification evidence must identify the run and code/test state being claimed as verified.
+After **production/runtime/browser code changes**, Chromium verification on the final changed state is mandatory:
 
-This gate applies even when Fast CI is green.
+- localized change → targeted Chromium may be sufficient;
+- shared runtime/harness/storage/messaging/viewer integration, cross-component or multi-area change → full Browser suite;
+- every numbered Stage closure → Fast CI + full Browser CI.
 
-### Mandatory Browser CI at every Stage closure
+Any added/modified test must run in its real layer after the final edit.
 
-Before **any numbered Stage** is marked `complete`, the full Browser CI suite must pass against the final code/test state of that Stage.
+Unexpected red or red remaining after the intended fix blocks progression.
+
+Detailed workstream policy:
 
 ~~~text
-Stage implementation complete
-→ Fast CI green
-→ full Browser CI green
-→ only then Stage = complete
+tests/TESTING_POLICY.md
 ~~~
 
-Broad checkpoints remain useful as additional integration milestones, but they never replace this per-Stage Browser CI gate.
-
-For non-trivial E2E/Playwright failures, follow the RCA/debugging method in:
+Browser failure methodology:
 
 ~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md
+tests/E2E_DEBUGGING.md
 ~~~
-
-For browser work:
-- use real IndexedDB/DOM/BroadcastChannel where their semantics matter;
-- mock Leumi endpoints with deterministic sanitized fixtures;
-- never store Leumi session data/credentials in CI.
-
-If a behavior can only be verified live, mark it:
-
-~~~text
-Live verification pending
-~~~
-
-Workstream-specific testing policy may further refine browser checkpoints.
 
 ---
 
-## 6. Continuous improvement after unexpected failures
+## 6. Learn from unexpected failures
 
-Do not treat an unexpected failure as complete at:
+A meaningful unexpected bug/test/CI/live-verification/rework failure does not end at:
 
 ~~~text
 fix
 → green
 ~~~
 
-For a meaningful unexpected bug/test/CI/live-verification/rework failure, perform the lightweight Failure Review defined in:
+Ask:
+
+1. What technically failed?
+2. What assumption/process choice helped create it?
+3. Why did existing safeguards not catch it earlier?
+4. What would we do differently if starting again?
+5. What is the smallest prevention?
+6. Is the lesson local, workstream-wide or repository-wide?
+
+Expected TDD red is not itself an incident.
+
+Promote only lessons that are generalizable, actionable, evidence-based, preventive and KISS-compatible.
+
+Put the lesson in the narrowest correct owner: regression test, code invariant, SPEC, test guide, engineering policy or durable decision.
+
+Detailed method:
 
 ~~~text
 docs/project/continuous-improvement.md
-~~~
-
-At minimum ask:
-
-~~~text
-What technically failed?
-What assumption/process choice led us there?
-Why did existing safeguards not catch it earlier?
-What would we do differently if starting again?
-What is the smallest prevention?
-Is the lesson local, workstream-wide, or repository-wide?
-~~~
-
-Expected TDD red is not itself a learning incident.
-
-If a lesson is generalizable, actionable, evidence-based and KISS-compatible, promote it to the **narrowest correct durable owner** (test, code invariant, SPEC, test guide, engineering practice, AGENTS rule or decision).
-
-Do not add global rules for one-off failures merely to appear thorough.
-
-A meaningful unexpected failure is not fully resolved until the learning disposition is clear:
-
-~~~text
-promoted lesson
-or
-local prevention only
-or
-no generalizable lesson — with reason
+docs/project/decisions/D-022.md
 ~~~
 
 ---
 
-## 7. Data correctness rules
+## 7. Data correctness baseline
 
 Never silently accept partial/corrupt data.
 
 Validate where relevant:
 
-- requested count;
-- received count;
-- unique count;
-- duplicates;
-- missing IDs;
-- response structure.
+- requested / received / unique;
+- duplicate IDs;
+- missing/unexpected IDs;
+- response shape;
+- transaction atomicity.
 
 Preserve:
 
 ~~~text
-null != 0 != ""
+null != 0 != "" != undefined
 ~~~
 
-Do not guess unknown schema semantics.
+Do not guess unknown API/schema semantics.
 
 Use:
 
@@ -373,122 +265,48 @@ Inferred
 Unknown
 ~~~
 
-for material factual claims/evidence.
+for material evidence claims.
+
+Workstream-specific invariants belong in its `AI_CONTEXT.md` / specs, not here.
 
 ---
 
-## 8. Preserve proven behavior and change safely
+## 8. Safe change + SPEC impact
 
-Before modifying something already verified:
+Before modifying proven behavior:
 
-- understand its observable behavior;
-- keep that behavior unless intentionally changing it;
-- prefer small changes over rewrites;
-- add/extend tests when practical;
-- create or strengthen a characterization/regression test before risky changes;
-- prefer one behavior change at a time;
-- separate behavior change from structural refactoring when practical;
-- keep a nearby known-green checkpoint so regressions can be localized.
+- understand the observable contract;
+- keep it unless intentionally changing it;
+- prefer small coherent changes;
+- add/strengthen regression/characterization tests when practical;
+- avoid mixing unrelated refactor + behavior change.
 
-Do not introduce architecture/frameworks/abstractions without a demonstrated need.
+Every meaningful system change must perform a SPEC impact review.
 
-Repository-wide Clean Code, design, refactoring, and safe-change rules live in:
-
-~~~text
-docs/project/engineering-practices.md
-~~~
-
----
-
-## 9. Documentation cadence
-
-### Mandatory SPEC impact review
-
-Every meaningful system change must review the relevant durable specifications before the work batch is considered complete.
-
-Repository-wide policy:
-
-~~~text
-docs/project/specification-policy.md
-~~~
-
-Review specs when changing observable behavior, architecture, public APIs, data model/schema, transaction boundaries, integrity rules, lifecycle/state transitions, provider assumptions, messaging, UI/UX behavior, failure/recovery semantics, security/privacy boundaries, runtime delivery, or extension/reuse boundaries.
-
-The outcome must be explicit in the work:
+Outcome:
 
 ~~~text
 No spec impact
 or
-affected specs updated/added/removed in the same coherent batch
+affected specs updated/added/removed in the same batch
 ~~~
 
-If a new durable responsibility has no owning spec, create one when the responsibility is substantial enough to have its own contract/invariants/failure semantics.
-
-If code/tests and a spec disagree, treat that as a coherence defect. Do not silently assume either side is authoritative; resolve intended behavior from evidence/design/decisions and update the affected artifacts together.
-
-Specs must not duplicate live operational status. Current stage/substep, next pointer and current verification state still belong only in the workstream `STATUS.json`.
-
-Do **not** update every document on every tiny implementation edit.
-
-### Normal implementation batch
-
-Usually update:
+Detailed policies:
 
 ~~~text
-code
-tests
-STATUS.json
+docs/project/engineering-practices.md
+docs/project/specification-policy.md
 ~~~
 
-### Meaningful stage boundary
+Do not duplicate live status into README/AI_CONTEXT/HANDOFF/design/spec docs.
 
-Also update when useful:
-
-~~~text
-component README
-AI_CONTEXT.md if focus/working set changed
-~~~
-
-Update `ROADMAP.md` only if the plan/scope/order itself changed.
-
-### Durable project decision
-
-Update both:
-
-~~~text
-docs/project/decisions/D-NNN.md
-docs/project/decisions.md
-~~~
-
-### Documentation source-of-truth rule
-
-Operational progress belongs **only** in the workstream `STATUS.json`.
-
-Never copy current stage/substep, completion state, next pointer, or "latest verification" snapshots into:
-
-~~~text
-README.md
-AI_CONTEXT.md
-HANDOFF.md
-NEXT_CHAT_PROMPT.md
-docs/project/current-state.md
-docs/project/workstreams.md
-component README files
-design/architecture docs
-~~~
-
-Those files may link to `STATUS.json` and may contain durable architecture/evidence, but not a live progress snapshot.
-
-Historical stage/run narratives belong under an explicit history location such as `docs/history/`, not in a README that users may read as current.
-
-The Fast unit suite contains a documentation source-of-truth guard; do not bypass it.
-
-Code-specific documentation stays next to the code.
-Cross-cutting/domain knowledge stays under `docs/`.
+Archive historical evidence under explicit `docs/history/` locations rather than growing live context indefinitely.
 
 ---
 
-## 10. Security
+## 9. Security
+
+The repository is public.
 
 Never commit:
 
@@ -497,41 +315,45 @@ Never commit:
 - authorization headers;
 - credentials;
 - account numbers;
-- unnecessary private/personal data;
-- sensitive raw dumps.
+- private browser/session data;
+- unnecessary sensitive raw dumps.
 
-Use sanitized fixtures/examples.
+Use sanitized synthetic fixtures.
+
+Do not bypass WAF/access controls.
 
 ---
 
-## 11. Completion standard
+## 10. Completion standard
 
-A work batch is done when the relevant items are true:
+A work unit is complete only when relevant items are true:
 
-- code/change is valid;
-- available automated tests pass;
-- every code change has the required Chromium verification on its final state; documentation-only changes are exempt;
-- every added/modified test has been executed in its native test layer;
-- no red test or unexecuted changed test is carried into the next implementation unit;
-- if a numbered Stage is being closed, full Browser CI passed on that Stage's final state;
-- live-only verification is explicitly marked pending when applicable;
+- implementation/change is valid;
+- required tests passed;
+- changed tests ran in their native layer;
+- code changes received required Chromium verification;
+- numbered Stage closure has Fast + full Browser CI;
+- live-only verification is explicitly pending when applicable;
 - no known failure is hidden;
-- integrity validations are present where needed;
-- status/documentation is updated at the correct cadence;
-- SPEC impact review is complete and affected specs are synchronized;
-- repository remains in a clear state;
-- if a meaningful unexpected failure occurred, its Failure Review / learning disposition is complete.
+- data-integrity checks are present where needed;
+- SPEC impact review is complete;
+- unexpected-failure learning disposition is complete when applicable;
+- `STATUS.json` is current;
+- repository is left in a clear resumable state.
 
-At the end, report briefly:
+End report briefly:
 
-1. what changed;
-2. files added/changed;
-3. what was tested;
-4. what remains pending/unknown.
+- what changed;
+- files changed;
+- tests;
+- Fast CI;
+- Browser CI if relevant;
+- pending/unknown;
+- next pointer from `STATUS.json`.
 
 ---
 
-## 12. Priority order
+## 11. Priority order
 
 ~~~text
 Correctness / data integrity / security
@@ -542,29 +364,12 @@ Correctness / data integrity / security
 → Speed
 ~~~
 
-Efficiency matters, but not at the cost of data integrity.
-
----
-
-## Detailed rules
-
-For deeper guidance on:
-
-- evidence classification;
-- research vs production;
-- testing philosophy;
-- error handling;
-- data-integrity assertions;
-- documentation ownership;
-- Leumi documentation map;
-- schema discipline;
-- logging;
-- Definition of Done;
-
-read:
+For detailed repository-wide engineering guidance, read only when the task needs it:
 
 ~~~text
+docs/project/engineering-practices.md
 docs/project/ai-engineering-guidelines.md
+docs/project/specification-policy.md
+docs/project/continuous-improvement.md
+docs/project/decisions.md
 ~~~
-
-Only read that file when the current task needs those details.
