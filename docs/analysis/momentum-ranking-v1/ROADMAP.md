@@ -9,6 +9,7 @@ Master backlog: GitHub Issue #3.
 | #4 | Consolidate chat research | workstream shell + checkpoint |
 | #14 | Objective alignment audit and first-principles hypotheses | objective-audit + new research directions |
 | #5 | Feature registry and evidence taxonomy | feature/evidence registry |
+| #17 | Core predictive signal prioritization and feature reduction | staged mini-research + sparse-core contract |
 | #15 | Direct short-horizon outcome surfaces / fast-excursion propensity | observation-based target/time/adverse outcome surface |
 | #16 | Precursor-to-price conversion latency / opportunity half-life | conversion-latency + signal-decay design |
 | #6 | Wave segmentation and recent realized wave capacity | wave semantics/capacity design |
@@ -18,6 +19,7 @@ Master backlog: GitHub Issue #3.
 | #10 | Compose family scores into opportunity ranking | CentralRanker composition |
 | #11 | Validation, calibration and leakage-safe evaluation | evaluation protocol |
 | #12 | Decide whether L2 or trade tape is needed | data-gap decision |
+| #18 | Market-data extraction and collection cadence | deferred extraction/cadence design |
 | #13 | Final implementation-ready research specification | coherent final design |
 
 New material research concerns should become Issues rather than surviving only as chat prose.

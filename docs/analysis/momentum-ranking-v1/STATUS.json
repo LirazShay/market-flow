@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 15,
-    "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
+    "issue": 17,
+    "title": "Core predictive signal prioritization and feature reduction",
     "status": "in-progress",
-    "subfocus": "Data-feasibility mapping completed against frozen Local History Viewer V1. MID and ASK(t0)->future BID touch-exit surfaces are derivable from existing IndexedDB history; canonical LAST and exchange-phase semantics remain blocked; true intra-gap ordering, trade tape, L2-L5 and actual fills are not collected."
+    "subfocus": "Staged mini-research plan established for eight provisional concepts. No eight-way ranking has been performed; research will proceed in separate A-E stages."
   },
   "completedWorkUnits": [
     {
@@ -36,6 +36,9 @@
   "plannedIssues": [
     14,
     5,
+    17,
+    15,
+    16,
     6,
     7,
     8,
@@ -43,9 +46,8 @@
     10,
     11,
     12,
-    13,
-    15,
-    16
+    18,
+    13
   ],
   "researchState": {
     "empiricalCalibrationAvailable": false,
@@ -53,7 +55,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 15,
-    "action": "Measure actual per-security cadence/jitter and per-horizon evaluability from recorded history, then define endpointTolerance/maxAllowedPathGap/minimumPathCoverage from evidence before implementing the outcome label generator."
+    "issue": 17,
+    "action": "Stage 17.A only: deeply compare Fresh Price Impulse vs BID/Quote Migration Strength, including directness, lead/confirmation role, redundancy boundary, failure modes and provisional priority. Do not yet rank concepts 3–8."
   }
 }
