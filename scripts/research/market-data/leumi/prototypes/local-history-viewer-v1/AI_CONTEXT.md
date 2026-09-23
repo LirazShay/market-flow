@@ -209,9 +209,11 @@ intentional TDD red
 → exact target green
 ~~~
 
-For browser tests, targeted Chromium is the default red/green loop. Do not spend a full Browser-suite run merely to prove an expected red. Widen only for coupling/risk/evidence or a required checkpoint.
+For browser tests, targeted Chromium is the default red/green loop. Do not spend a full Browser-suite run merely to prove an expected red.
 
-Browser checkpoints are additional integration milestones only. They never permit a changed Playwright/browser test, fixture, harness, or helper to remain unexecuted. An unexpected red, or red remaining after the intended fix, blocks progression and must be reflected in `STATUS.json`.
+After implementation code changes, Chromium proof is mandatory on the final changed state even when no Playwright file changed. A small localized change may use a targeted test/spec; shared runtime/harness/storage/messaging/viewer integration, cross-component, or multi-area changes require the full Browser suite.
+
+Browser checkpoints are additional integration milestones only. They never permit changed code or a changed Playwright/browser test, fixture, harness, or helper to remain unverified. An unexpected red, or red remaining after the intended fix, blocks progression and must be reflected in `STATUS.json`.
 
 Every numbered Stage also has a mandatory closure gate:
 
