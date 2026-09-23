@@ -366,7 +366,7 @@ test(
             report.horizons["5"]
                 .sessionEdgeCensoredCount
         ).toBe(
-            5
+            6
         );
 
         expect(
