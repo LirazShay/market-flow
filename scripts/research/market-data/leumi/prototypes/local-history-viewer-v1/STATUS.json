@@ -25,7 +25,20 @@
     "title": "V1 freeze",
     "status": "in-progress"
   },
-  "activeMiniProject": null,
+  "activeMiniProject": {
+    "id": "stage20-test-runtime-optimization",
+    "status": "in-progress",
+    "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
+    "baselineBrowserCiRunId": 35862723542,
+    "baseline": {
+      "tests": 56,
+      "passed": 56,
+      "playwrightSeconds": 39,
+      "workflowSecondsApprox": 90,
+      "chromiumSetupSecondsApprox": 20,
+      "slowestKnownTest": "storage-growth.spec.js (~12s)"
+    }
+  },
   "verification": {
     "codeBaseline": {
       "fastCi": {
@@ -66,12 +79,12 @@
     }
   },
   "next": {
-    "action": "Complete Stage 20 V1 freeze.",
+    "action": "Execute Phase A of the Stage 20 test-runtime optimization plan.",
     "steps": [
-      "finalize stable README verified behavior and known limitations",
-      "resolve stale durable documentation/spec contradictions and add a simple V1 version marker",
-      "run Fast CI and full Browser CI on the final freeze state",
-      "mark the full planned V1 process complete only after both verification gates are green"
+      "restore Fast CI green after the freeze README guard regressions",
+      "record precise Browser CI cost classification from the baseline logs",
+      "audit browser-test isolation and expensive-test structure before changing workers or skipping any coverage",
+      "do not resume V1 freeze closure until the optimization mini-project is verified"
     ]
   },
   "history": {
