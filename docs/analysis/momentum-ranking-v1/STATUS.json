@@ -14,7 +14,7 @@
     "issue": 19,
     "title": "Simplify Momentum Ranking into practical Hebrew metric shortlist",
     "status": "in-progress",
-    "subfocus": "19.B complete: measurement-window semantics are defined. 10s=NOW/freshness, 20s=immediate confirmation, 30s=local process, 60s=broader local reference/synthesis; minute metrics are aliases of 60s windows, hour activity is context only, and multi-window values are not independent votes. Next: 19.C redundancy elimination."
+    "subfocus": "19.C complete: redundancy elimination reduced the practical model to four universal decision interfaces (Fresh BID Repricing, Activity→Price Progress, Path Usability, Remaining Opportunity), one conditional Fresh Reset/Renewal interface, plus live-activity/data-validity gates. ASK/MID movement, trade-rate acceleration, minute/hour activity, ASK/BID-vs-LAST distances, recent-high distance and reversal children are merged/demoted; spread remains IGNORE/raw diagnostic. Next: 19.D final Hebrew guide."
   },
   "completedWorkUnits": [
     {
@@ -67,6 +67,6 @@
   },
   "next": {
     "issue": 19,
-    "action": "19.C: perform explicit redundancy elimination across intuitive metrics and the 19.A shortlist; merge aliases/children, demote or remove non-incremental candidates, and produce the smallest candidate set for the final Hebrew guide without assigning weights or arbitrary thresholds."
+    "action": "19.D: build the comprehensive final Hebrew guide from the reduced candidate set, with formulas, window guidance, good/bad examples, failure modes, explicit intuitive-metric verdicts, evidence status and a compact ranking flow; do not assign arbitrary weights or thresholds."
   }
 }
