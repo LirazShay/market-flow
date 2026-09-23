@@ -42,8 +42,11 @@ Rules:
 - do **not** trigger the full Browser suite just to prove a newly written browser test is expectedly red;
 - expected TDD red is considered successful red-phase evidence when the exact target fails for the intended missing behavior;
 - after implementation/fix, the exact target must pass before any broader run;
+- **every production/runtime/browser code change must receive Chromium verification on the final changed code state**, regardless of whether a Playwright test file changed;
+- small localized code changes may use the smallest relevant targeted Chromium test/spec for immediate verification;
+- runtime assembly, harness/fixture, storage integration, messaging, viewer integration, cross-component behavior, or multi-area code changes require the full Browser suite;
 - then expand only as needed: exact test → spec → related cluster → full suite;
-- full Browser CI is required at numbered Stage closure and other explicit integration checkpoints, and may be justified earlier for broad shared-browser-infrastructure changes or suite-only failures;
+- full Browser CI remains mandatory at numbered Stage closure and explicit integration checkpoints;
 - if targeted browser execution is unavailable, do not replace it with a full expensive suite solely for expected-red proof; create/use a targeted path or mark that proof pending;
 - a planned later Browser checkpoint is **not** permission to leave newly added/modified browser tests unexecuted;
 - an unexpected red, or a red that remains after the supposed fix, blocks progression;
@@ -87,7 +90,7 @@ numbered Stage ready to close
 
 Do **not** run Chromium merely because a small substep or documentation-only commit completed. But Stage closure is always a Browser CI boundary.
 
-A changed browser test or material browser-only implementation change must be verified immediately with the smallest sufficient Chromium target; do not wait for Stage closure, but also do not escalate automatically to the full Browser suite.
+Any production/runtime/browser code change must be verified in Chromium on its final state. Use the smallest sufficient target for a truly localized change, but use the full Browser suite for shared runtime/harness/storage/messaging/viewer-integration or multi-area changes. Do not wait for Stage closure.
 
 ## 1.1 Tests-first change rule
 
