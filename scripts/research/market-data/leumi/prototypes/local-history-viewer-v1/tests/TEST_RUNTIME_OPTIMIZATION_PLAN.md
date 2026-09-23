@@ -405,3 +405,50 @@ browser-tests job: ~48s → ~40s
 ~~~
 
 This is promising but not yet accepted. A second full Chromium run is required before keeping `workers=2` as the default.
+
+
+## Phase C acceptance
+
+A second full Chromium run was executed with the same `workers=2` configuration:
+
+~~~text
+run: 35866009146
+workers: 2
+result: 56 / 56 passed
+cache: hit
+Playwright suite: 24.1s
+browser-tests job: about 39s
+~~~
+
+Repeatability evidence:
+
+| Run | Workers | Result | Playwright suite | Browser job |
+|---|---:|---:|---:|---:|
+| Phase B warm baseline `35865194288` | 1 | 56/56 | 36.5s | ~48s |
+| Phase C run 1 `35865811136` | 2 | 56/56 | 25.2s | ~40s |
+| Phase C run 2 `35866009146` | 2 | 56/56 | 24.1s | ~39s |
+
+Measured outcome versus the accepted workers=1 warm baseline:
+
+- Playwright suite improved by about one third;
+- browser-tests job improved by about 19%;
+- all 56 tests remained enabled;
+- Stage 18 storage-growth remained unchanged and passed in both parallel runs;
+- no retries were added;
+- no production/runtime behavior changed.
+
+Decision:
+
+- keep `workers: 2` as the default for this suite;
+- do not increase beyond two workers without a separate measured experiment;
+- the temporary `push` trigger used for the benchmark was removed after the second run.
+
+SPEC impact review:
+
+~~~text
+No spec impact.
+~~~
+
+This phase changes test execution configuration only; no durable production/runtime contract changed.
+
+Phase C is accepted. The next isolated optimization unit is Phase D expensive-test review.
