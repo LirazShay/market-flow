@@ -1965,6 +1965,49 @@
         "workflowRestoreCommit": "bc5910ba1422f730f4dd63e8a5006a65f18d8814"
       },
       "specImpact": "No durable contract change. The implementation was corrected to the existing viewer UX contract: header last-update is derived from recorderState.lastCompletedAtMs by diagnostics."
+    },
+    "continuousImprovementPolicy": {
+      "status": "complete",
+      "repositoryPolicy": "docs/project/continuous-improvement.md",
+      "durableDecision": "docs/project/decisions/D-022.md",
+      "rule": "Meaningful unexpected failures must be reviewed beyond the technical fix: technical root cause, reasoning/process cause, escape cause, counterfactual, smallest prevention, and learning-promotion decision.",
+      "expectedTddRed": "Expected tests-first red is not itself an incident unless it reveals an unexpected defect/process mistake.",
+      "promotionGate": [
+        "generalizable",
+        "actionable",
+        "preventive",
+        "evidence-based",
+        "cost-effective",
+        "KISS-compatible",
+        "non-duplicate"
+      ],
+      "updatedGuidance": [
+        "AGENTS.md",
+        "docs/project/engineering-practices.md",
+        "docs/project/ai-engineering-guidelines.md",
+        ".github/pull_request_template.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/TESTING_POLICY.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md"
+      ],
+      "initialPromotedLessons": [
+        {
+          "sourceIncident": "viewer diagnostics last-update race",
+          "lesson": "Shared mutable/UI state should have one authoritative owner/writer unless coordination is explicit.",
+          "destination": "docs/project/engineering-practices.md"
+        },
+        {
+          "sourceIncident": "Playwright loader-probe readiness wait accepted missing state",
+          "lesson": "Async readiness predicates must positively prove object/state existence plus the terminal condition; sentinel inequality alone can treat undefined as ready.",
+          "destination": "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md"
+        },
+        {
+          "sourceIncident": "abandoned permanent-loader design",
+          "lesson": "Do not build generalized infrastructure for hypothetical future needs; complexity must have a proven present-day requirement.",
+          "destination": "docs/project/decisions/D-021.md and KISS guidance"
+        }
+      ],
+      "verification": "documentation/policy-only change; no production code or test implementation changed, so Browser CI is not required and no temporary CI trigger was created",
+      "specImpact": "No product SPEC impact; this is repository engineering/process policy."
     }
   },
   "fastContext": {
@@ -1996,10 +2039,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Rolling release is clean and viewer diagnostics ownership race is fixed and fully Browser-verified. Main work remains Stage 19.3 live Leumi verification.",
+    "reason": "Continuous-improvement Failure Review and lesson-promotion mechanism is now a durable repository rule. Main product work remains Stage 19.3 live Leumi verification.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Refresh the authenticated Leumi page, run the latest verified Bookmarklet, let several cycles complete, and use Export Debug to investigate after-market static-data behavior."
+    "nextAction": "Resume normal live verification. Any meaningful unexpected failure from this point must use the Failure Review and promote reusable lessons when warranted."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
