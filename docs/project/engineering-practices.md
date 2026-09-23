@@ -173,25 +173,34 @@ A test suite should enable refactoring, not punish it.
 
 # 9. Non-negotiable verification rule
 
-Any added or modified test must run after its final edit before work advances.
+Any added or modified test must run after its final edit before work advances, but verification should use the **smallest sufficient target first**.
 
 ~~~text
 unit test changed
-→ run unit layer
+→ run exact/nearby unit target
 → green
+→ cheap Fast suite may run normally
 
-browser test / fixture / harness changed
-→ run Chromium layer
+browser test changed
+→ run exact Playwright test in Chromium
 → green
+→ widen only when justified
 
-red
+intentional TDD/regression red
+→ exact target fails for intended reason
+→ implement/fix
+→ exact target green
+
+unexpected red
 → stop
 → diagnose
 → fix
-→ rerun
+→ targeted rerun
 ~~~
 
-Checkpoint scheduling controls broad-suite frequency. It never authorizes leaving changed tests unexecuted.
+Do not spend a full Browser-suite run merely to prove that a newly written TDD test is red when that failure is expected.
+
+Checkpoint scheduling controls broad-suite frequency. It never authorizes leaving changed tests unexecuted, but it also does not require broad regression on every red/green micro-step.
 
 Every numbered Stage also has a full-browser closure gate:
 
@@ -213,7 +222,7 @@ Verification evidence must be traceable to the code/test state being claimed as 
 
 ---
 
-For browser/E2E failures, the workstream's dedicated RCA method is `scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md`. Diagnose narrowly before broad reruns; do not use retries, sleeps, or weakened assertions as substitutes for root-cause analysis.
+For browser/E2E work, the workstream's dedicated RCA method is `scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md`. Diagnose and verify narrowly before broad reruns. Full Browser CI is reserved for required closure/checkpoints or evidence that demands suite-level reproduction; do not use retries, sleeps, weakened assertions, or routine full-suite runs as substitutes for root-cause analysis.
 
 # 10. Legacy-code strategy
 
