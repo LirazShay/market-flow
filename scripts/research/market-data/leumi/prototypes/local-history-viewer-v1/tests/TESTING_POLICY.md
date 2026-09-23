@@ -341,17 +341,17 @@ Stage 19.1 is a full mocked browser E2E checkpoint.
 
 ### Live checkpoint
 
-Stage 19.2:
+Stage 19.3:
 
 ~~~text
-manual live Leumi verification
+authenticated live Leumi verification
 ~~~
 
 Only provider-dependent behavior is checked here.
 
 ### Long-run checkpoint
 
-Stage 19.3 validates long-run behavior.
+Stage 19.4 validates long-run behavior.
 
 Use the cheapest valid environment for each part; browser execution is required where browser storage/session behavior matters.
 
