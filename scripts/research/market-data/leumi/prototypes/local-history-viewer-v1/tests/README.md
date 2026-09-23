@@ -103,6 +103,23 @@ evidence
 
 Do not repeatedly rerun the full suite during diagnosis when a targeted test can reject/confirm the current hypothesis.
 
+The same cost rule applies to tests-first development:
+
+~~~text
+new/changed browser test
+→ exact targeted Chromium run
+
+expected TDD red
+→ confirm intended failure
+→ implement/fix
+→ exact targeted green
+
+full Browser suite
+→ required Stage/checkpoint or broad/suite-level risk
+~~~
+
+An expected red from the newly written target is not a reason to run the whole Browser suite.
+
 ## Browser harness
 
 ~~~text
