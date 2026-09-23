@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Deep-rationale retrofit completed for Price/Wave PW-001..PW-010. Each metric now explains market intuition, plausible mechanism, objective connection, favorable/ambiguous interpretation, failure modes, relationship to neighboring evidence and a worked example."
+    "subfocus": "Deep-rationale retrofit completed for Activity/Flow AF-001..AF-011. Activity is documented as executed effort/participation, explicitly direction-agnostic, with clear distinctions among trade count, rate, quantity, monetary turnover, trade size and participation expansion."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Retrofit Activity/Flow AF-001..AF-011 to the deep-rationale documentation contract, keeping activity direction-agnostic and explaining exactly how effort/participation can support or mislead the short-horizon objective."
+    "action": "Retrofit Book/Directional Flow BD-001..BD-019 to the deep-rationale documentation contract, including BID/ASK migration, displayed depth/imbalance, LAST-to-quote geometry and recent-buyer exitability."
   }
 }

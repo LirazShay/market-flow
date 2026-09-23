@@ -453,6 +453,13 @@ A negative cumulative delta is **not** valid negative activity; it indicates res
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI(derivation) + H(predictive value)
 - **Meaning:** how many executions occurred during recent windows
+- **Plain-language intuition:** this counts how many separate trades were completed during each recent window. Twenty trades in 20 seconds describes a very different market pulse from two trades in the same period, even if total traded quantity happens to be similar.
+- **Market mechanism / why it can matter:** frequent executions mean buyers and sellers are actively meeting, so price can update more often and a short-lived opportunity has more chances to convert. But trade count alone says nothing about which side is stronger or whether those trades are tiny.
+- **Objective connection:** our strategy needs a move to develop and later provide an exit within seconds to roughly two minutes. A stock with almost no recent executions may simply be too inactive for that objective, while rising execution count can indicate that the market is becoming active enough for a quick opportunity to exist.
+- **Favorable / unfavorable interpretation:** a rising count can support the idea that participation is waking up, especially when price/BID are also progressing upward. Low count can mean inactivity, but a low-count stock can still jump sharply; high count can also accompany selling pressure or churn.
+- **Failure modes / counterexamples:** 50 tiny trades can be less economically meaningful than 5 large trades; a burst of trades can be panic selling; repeated executions at the same price can increase count without producing any upward progress. Reset/session errors can create impossible deltas and must not be interpreted as activity.
+- **Relationship to other evidence:** AF-001 measures how many executions occurred. AF-002 adjusts that count for elapsed time, AF-005 measures total quantity, AF-006 measures monetary value, and Price/Book families determine direction and price response.
+- **Worked example:** 30 trades in the last 20s and 5 trades in the prior 20s means participation accelerated sharply. That is useful context, but if BID and MID are falling, the burst is not a bullish signal.
 - **Known overlaps:** AF-002, AF-003, AF-004
 - **Confidence limits:** sampling windows are approximate to actual observation times; multiple unseen trades occur between snapshots; valid zero differs from missing/reset
 - **Validation targets:** TimeToTarget, target-before-adverse, continuation, cross-sectional future rank
@@ -471,6 +478,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** converts recent trade count into an elapsed-time-aware activity rate
+- **Plain-language intuition:** trade count tells how many trades occurred; trade rate tells how densely they occurred in time. Ten trades in 10 seconds is much more active than ten trades in 60 seconds.
+- **Market mechanism / why it can matter:** short-horizon opportunities depend on how quickly market participants are interacting. Higher trades-per-second means the market is updating its executed consensus more rapidly, which can help a move reach a target sooner—or can accelerate a reversal just as quickly.
+- **Objective connection:** because the target horizon is measured in seconds/minutes, elapsed-time-normalized activity is more useful than raw count. We care whether enough market interaction is occurring fast enough for entry→exit to happen before the opportunity expires.
+- **Favorable / unfavorable interpretation:** increasing trade rate can support a fresh move when price and book move in the desired direction. Falling trade rate during a supposed breakout can suggest weak follow-through. However, very high rate during violent selling or two-sided churn is not favorable by itself.
+- **Failure modes / counterexamples:** collector cadence can quantize short windows; a sudden cluster of tiny prints may inflate rate; high rate with no progress can be exhaustion/churn rather than strength.
+- **Relationship to other evidence:** AF-002 is AF-001 divided by actual elapsed time. AF-003 asks whether this rate itself is accelerating. PH EffortToProgress later checks whether the activity rate is converting into price progress.
+- **Worked example:** 12 trades over 12s = 1 trade/sec; 12 trades over 60s = 0.2 trades/sec. Same count, very different suitability for a 20–30s opportunity.
 - **Known overlaps:** AF-001, AF-003
 - **Confidence limits:** short intervals are quantized by collector cadence; rate does not reveal direction or individual trade timing
 - **Validation targets:** short-horizon target hit, TimeToTarget, continuation
@@ -487,6 +501,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** detects whether executed activity itself is waking up or cooling down
+- **Plain-language intuition:** this asks whether trades are arriving faster now than just before. It is the activity equivalent of price acceleration.
+- **Market mechanism / why it can matter:** a market can transition from quiet to active before or during a short move. Rising execution intensity may indicate more participants are becoming involved, while falling intensity can signal that the burst is losing energy.
+- **Objective connection:** a fresh rise in trade-rate can provide earlier evidence that conditions are changing quickly enough for a seconds-to-minutes opportunity. It can be especially useful when it appears before or alongside price/BID acceleration.
+- **Favorable / unfavorable interpretation:** `ACCELERATING` activity plus upward price/book migration can support an emerging opportunity. `DECELERATING` activity while price stalls can be cautionary. But accelerating activity with falling price is adverse, and decelerating activity after a clean breakout can simply mean temporary consolidation.
+- **Failure modes / counterexamples:** one short burst can create false acceleration; different-sized comparison windows can distort the state; increased rate may be sellers hitting bids rather than buyers lifting asks.
+- **Relationship to other evidence:** AF-003 says whether activity speed is changing; AF-004 turns that into a broader burst lifecycle. Direction still comes from PW/BD, while PH evaluates whether the added effort is producing useful progress.
+- **Worked example:** previous 20s = 4 trades, latest 20s = 18 trades. Activity clearly accelerated. If BID1 simultaneously rises and price moves cleanly, that combination is more meaningful than AF-003 alone.
 - **Known overlaps:** AF-004; Sequence family
 - **Confidence limits:** requires enough aligned observations; a single burst may be transient; high acceleration is not directional
 - **Validation targets:** target-before-adverse, TimeToTarget, continuation/exhaustion transition
@@ -503,6 +524,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** interpretable activity-regime state rather than a raw trade-count threshold
+- **Plain-language intuition:** instead of saying “37 trades = high”, this asks whether the stock is dormant, normal, waking up, bursting, already in sustained high activity, or cooling.
+- **Market mechanism / why it can matter:** absolute trade counts vary enormously by stock and time of day. What matters is often the transition from the stock's recent baseline into unusually intense activity, because regime changes can accompany opportunity onset.
+- **Objective connection:** the engine wants to discover opportunities near their beginning, not after a long established burst. Distinguishing `WAKING` from `HIGH_ACTIVITY` helps separate a fresh activation from a possibly mature crowded state.
+- **Favorable / unfavorable interpretation:** `WAKING/BURSTING` can be useful when upward Price/Book evidence confirms direction. `HIGH_ACTIVITY` is ambiguous: it may mean strong continuation or a mature volatile battle. `COOLING` can warn that momentum support is fading.
+- **Failure modes / counterexamples:** market-wide news can raise activity everywhere; open/close periods naturally have different baselines; one illiquid stock can look like it “burst” from 0 to 2 trades. Without self/time-of-day normalization, state confidence must remain limited.
+- **Relationship to other evidence:** AF-004 summarizes AF-001..AF-003 and later cross-sectional/time-of-day context. It should not become an independent extra vote on top of its inputs.
+- **Worked example:** a stock normally shows 1–2 trades per 20s, then shifts to 10, 18, 24 across successive windows. That is a `WAKING→BURSTING` pattern, but it is only attractive if directional evidence is also favorable.
 - **Known overlaps:** AF-003, future self-normalization/time-of-day context
 - **Confidence limits:** without historical self-baseline, “unusual for this stock at this hour” cannot yet be claimed; market-wide bursts require relative context
 - **Validation targets:** opportunity onset, future rank, TimeToTarget
@@ -519,6 +547,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + H
 - **Meaning:** measures how much inventory/quantity actually changed hands recently
+- **Plain-language intuition:** this measures the total number of shares/units traded recently, regardless of how many separate trades were needed to do it.
+- **Market mechanism / why it can matter:** high traded quantity means more inventory changed owners. That can indicate materially larger participation than trade count alone suggests. A move supported by meaningful quantity can be harder to dismiss as a few tiny prints—but quantity still has no direction by itself.
+- **Objective connection:** for a quick trade, substantial recent quantity can support the idea that enough real participation exists for the move and later exit to be executable, especially when the displayed book and price are moving consistently.
+- **Favorable / unfavorable interpretation:** rising quantity together with rising BID/MID and clean price progress can strengthen confirmation. High quantity with flat/falling price may indicate absorption, churn or heavy selling. Low quantity can make a price jump fragile.
+- **Failure modes / counterexamples:** one block trade can dominate the window; raw quantities are not comparable across securities with different prices/liquidity; a huge quantity can trade without moving price at all.
+- **Relationship to other evidence:** AF-001 measures number of trades; AF-005 measures total quantity. AF-007 combines them into average quantity per trade. AF-006 translates executed activity into money value.
+- **Worked example:** Window A has 20 trades totaling 2,000 shares; Window B has 5 trades totaling 20,000 shares. Trade count favors A, quantity favors B—showing why both dimensions are needed.
 - **Known overlaps:** AF-001, AF-006, AF-007
 - **Confidence limits:** raw quantity is not directly comparable across securities without normalization; session/reset checks required
 - **Validation targets:** target-before-adverse, TimeToTarget, continuation
@@ -535,6 +570,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PV(field semantics/coverage) + PI + H
 - **Meaning:** measures recent economic value of executed activity, complementing trade count and raw quantity
+- **Plain-language intuition:** this asks how much money changed hands recently, not merely how many trades or shares were involved.
+- **Market mechanism / why it can matter:** the same share quantity can represent very different economic participation in a ₪5 stock versus a ₪500 stock. Monetary turnover provides a more comparable sense of capital actually transacted, although it still depends strongly on security size/liquidity.
+- **Objective connection:** a short opportunity supported by meaningful economic turnover may be more robust than one produced by tiny nominal activity, because enough capital is interacting to move and potentially support the exit side.
+- **Favorable / unfavorable interpretation:** increasing money turnover plus favorable price/book migration can confirm that the upward move is attracting economically meaningful participation. High money turnover during falling prices can instead indicate strong adverse selling pressure.
+- **Failure modes / counterexamples:** large-cap or expensive securities naturally produce larger monetary turnover; one block can dominate; cross-stock comparisons require normalization; monetary value alone does not tell us who was aggressive.
+- **Relationship to other evidence:** AF-006 complements AF-001 count and AF-005 quantity. Agreement across all three can raise family confidence, but because they are correlated they must not be scored as three independent signals.
+- **Worked example:** 10,000 shares traded in a ₪2 stock ≈ ₪20,000 turnover, while 10,000 shares in a ₪200 stock ≈ ₪2,000,000. Same quantity, very different economic scale.
 - **Known overlaps:** AF-001, AF-005, AF-007
 - **Confidence limits:** absolute money flow differs greatly by security size/liquidity; needs cross-sectional and later self/time-of-day normalization
 - **Validation targets:** target-before-adverse, TimeToTarget, future rank
@@ -551,6 +593,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** distinguishes many smaller executions from fewer larger executions within the sampled window
+- **Plain-language intuition:** this divides recent traded quantity by number of trades to estimate the average trade size in the sampled window.
+- **Market mechanism / why it can matter:** many tiny trades can create high activity count without much inventory transfer, while fewer larger trades can represent more concentrated size. The mix can help describe what kind of participation is occurring.
+- **Objective connection:** understanding whether activity is count-led or size-led helps judge whether a burst is likely to provide enough depth/participation for a short move and later exit, while avoiding overvaluing a flood of tiny prints.
+- **Favorable / unfavorable interpretation:** rising average size together with rising trade rate and upward price/book progress may suggest broadening participation. A sudden giant average caused by one block is ambiguous. Falling average size with exploding count can still be healthy if the market is becoming highly active.
+- **Failure modes / counterexamples:** the arithmetic mean hides the distribution; one huge trade can distort it; no value exists when trade count is zero; snapshot data cannot reconstruct each individual trade size distribution.
+- **Relationship to other evidence:** AF-007 explains the relationship between AF-001 count and AF-005 quantity. `LastDealVolume` gives one latest-trade sample, whereas AF-007 summarizes a whole window.
+- **Worked example:** 100 trades totaling 10,000 shares → average 100 shares/trade. Ten trades totaling 10,000 shares → average 1,000 shares/trade. Same quantity, very different execution pattern.
 - **Known overlaps:** AF-001, AF-005; `LastDealVolume`
 - **Confidence limits:** arithmetic mean can be dominated by one large trade; impossible when no trades occurred; does not reveal the distribution of individual trade sizes
 - **Validation targets:** continuation, path quality, target-before-adverse
@@ -567,6 +616,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** asks whether the activity burst is broad-based across several executed-activity dimensions rather than visible in one counter only
+- **Plain-language intuition:** this checks whether trade frequency, traded quantity and monetary turnover are all expanding together, or whether only one dimension is responsible for the apparent burst.
+- **Market mechanism / why it can matter:** a broad expansion is harder to dismiss as a single artifact. For example, rising count + rising quantity + rising money turnover suggests participation is expanding in several ways. Count-only expansion may simply be many tiny trades; size-only expansion may be one block.
+- **Objective connection:** the short-horizon engine benefits from knowing whether the activity environment is genuinely broadening enough to support fast movement and exitability, rather than reacting to one noisy counter.
+- **Favorable / unfavorable interpretation:** `EXPANDING` can strengthen confidence in an emerging move when direction is favorable. `COUNT_LED` or `SIZE_LED` is not bad, but should be interpreted more cautiously. `CONTRACTING` during a slowing move can support exhaustion concerns.
+- **Failure modes / counterexamples:** the three inputs are mechanically related and correlated; a broad expansion can still be downward; a market-wide activity shock can make many stocks look expanded simultaneously.
+- **Relationship to other evidence:** AF-008 is a family interpretation layer, not another independent measurement. It synthesizes AF-003/005/006 and later feeds PH EffortToProgress plus Sequence.
+- **Worked example:** trade rate doubles, quantity triples and money turnover triples while BID/MID rise: broad participation expansion. If only trade count doubles while quantity/money barely change, the burst is count-led and weaker evidence.
 - **Known overlaps:** AF-003..AF-007; future EvidenceDiversity logic
 - **Confidence limits:** count/quantity/money are correlated and must not be treated as three independent votes; direction remains unknown without other families
 - **Validation targets:** opportunity onset, TimeToTarget, target-before-adverse
@@ -583,6 +639,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PV(field meaning + partial availability) + PI + H
 - **Meaning:** captures whether the latest reported trade is small/typical/large relative to recent local activity
+- **Plain-language intuition:** this asks whether the most recent trade was unusually small or large compared with the recent trading pattern.
+- **Market mechanism / why it can matter:** a very large latest print can be evidence that a meaningful amount of inventory just changed hands, while a tiny print may be less informative. But one trade is always weak evidence because it may be isolated.
+- **Objective connection:** when a large latest trade occurs during an already favorable upward sequence, it may strengthen confirmation that the move is supported by material executed size. Conversely, a large print with no upward progress can be cautionary.
+- **Favorable / unfavorable interpretation:** large-in-context plus upward BID/MID continuation can support confirmation. Large-in-context with immediate stall/giveback may indicate absorption or a block that did not improve the opportunity. Small does not automatically mean weak if many small trades are occurring rapidly.
+- **Failure modes / counterexamples:** `LastDealVolume` had partial measured coverage; timestamps can be stale relative to the current snapshot; one large print can be negotiated/block-like and not representative of continuing flow.
+- **Relationship to other evidence:** AF-009 is one-print context. AF-007 summarizes average size over a window. It should never override the broader activity profile.
+- **Worked example:** recent average size ≈ 200 shares/trade and latest trade = 2,000 shares. That is large relative to local context, but only becomes useful evidence if subsequent price/book behavior supports it.
 - **Known overlaps:** AF-007; future Book/Execution features
 - **Confidence limits:** measured coverage was partial; latest-trade timestamp alignment to the snapshot must be respected; one print alone is weak evidence
 - **Validation targets:** continuation, target-before-adverse
@@ -599,6 +662,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** TAPE
 - **Evidence:** U(project availability) + GL + H
 - **Meaning:** true event-time pulse of executions, distinct from snapshot-based trade-rate proxies
+- **Plain-language intuition:** this would measure the exact time gaps between individual trades—e.g. 800ms, 300ms, 120ms—rather than inferring activity from cumulative counters sampled every few seconds.
+- **Market mechanism / why it can matter:** shrinking gaps between trades can show a market rapidly speeding up in true event time. That can reveal onset earlier and more precisely than snapshot trade-count deltas.
+- **Objective connection:** for very short opportunities, knowing whether executions are arriving every fraction of a second versus every several seconds can materially affect how quickly a move may reach an exit target and whether our collector is already too slow.
+- **Favorable / unfavorable interpretation:** rapidly shrinking inter-trade durations can indicate accelerating activity when combined with favorable direction. Long gaps can indicate inactivity. Neither state is directional by itself.
+- **Failure modes / counterexamples:** this cannot be reconstructed honestly from current snapshot counters. Fabricating exact trade times from polling intervals would create false precision. Even very rapid trades can be adverse selling.
+- **Relationship to other evidence:** AF-002 is a coarse snapshot-based rate proxy; AF-010 would be the true event-time version if trade-tape data becomes available. Issue #12 decides whether richer tape is worth the dependency.
+- **Worked example:** three trades observed individually at gaps of 2.0s, 0.8s and 0.2s show true acceleration. A 5s polling snapshot might only report “3 trades happened” and lose that sequence.
 - **Known overlaps:** AF-002, AF-003
 - **Confidence limits:** cannot be reconstructed from cumulative counters plus sparse snapshots; must not be faked from current collector cadence
 - **Validation targets:** opportunity onset, TimeToTarget, event-time continuation
@@ -615,6 +685,13 @@ Important: overlapping windows are a **profile**, not independent additive votes
 - **Availability:** NOW
 - **Evidence:** PI + H
 - **Meaning:** single family-level representation used by higher-level opportunity logic instead of independently summing correlated activity measures
+- **Plain-language intuition:** this compresses the activity evidence into a readable lifecycle: dormant, normal, waking, accelerating, expanding, high-activity or cooling.
+- **Market mechanism / why it can matter:** activity is multi-dimensional. The family state summarizes whether the market is becoming more active, broadly expanding, already very active, or losing participation—without pretending activity alone gives direction.
+- **Objective connection:** higher-level opportunity logic needs to know whether there is enough and changing executed participation to support a short move, while relying on Price/Book/Path to decide whether that participation is helping the desired upward path.
+- **Favorable / unfavorable interpretation:** `WAKING/ACCELERATING/EXPANDING` can support early opportunity formation when upward directional evidence agrees. `HIGH_ACTIVITY` can be continuation or late-stage battle. `COOLING` can weaken confidence, especially if price progress is also stalling.
+- **Failure modes / counterexamples:** strong activity can accompany crashes, churn or exhaustion; a family state built from missing inputs can look cleaner than reality unless Coverage is preserved; correlated submetrics must not be double-counted.
+- **Relationship to other evidence:** AF-011 is the intended family synthesis. Price/Wave supplies direction/progress, Book supplies L1 directional structure, PH evaluates effort-to-progress conversion, and SQ handles ordering/timing.
+- **Worked example:** trade rate rises, quantity and money turnover expand, but BID/MID fall. AF-011 may be `EXPANDING`, while the overall opportunity remains poor because the activity is occurring in the wrong direction.
 - **Known overlaps:** Sequence, cross-sectional normalization, future regime/self-baseline context
 - **Confidence limits:** does not determine direction; high activity can accompany either continuation or reversal; unavailable fields reduce coverage rather than becoming zero
 - **Validation targets:** target-before-adverse, TimeToTarget, future rank, opportunity onset
