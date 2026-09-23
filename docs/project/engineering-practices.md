@@ -371,7 +371,44 @@ Specs describe intended durable contracts; tests describe executable evidence; c
 
 ---
 
-# 14. Healthy-system Definition of Done
+# 14. Repository self-maintenance / no-cleanup debt
+
+Every work unit owns the repository hygiene consequences of its own change.
+
+Do not rely on a later cleanup phase to restore:
+
+- source-of-truth ownership;
+- compact HOT context;
+- STATUS/history separation;
+- SPEC alignment;
+- decision/policy consistency;
+- removal of temporary CI/debug scaffolding;
+- removal of abandoned artifacts/experiments.
+
+Use:
+
+~~~text
+before change
+→ identify affected owners
+
+during change
+→ update code/tests + owning docs/spec/status together
+
+before completion
+→ run guards
+→ remove temporary scaffolding
+→ verify no stale/duplicate surface remains
+~~~
+
+If a new field/file/layer is necessary, first ask whether an existing owner can carry the information. Prefer extending the correct existing owner over creating a parallel source of truth.
+
+A completed change should leave **no-cleanup debt** for the next engineer/AI.
+
+This rule is about preserving structure while work happens, not creating a separate housekeeping process.
+
+---
+
+# 15. Healthy-system Definition of Done
 
 Relevant items must be true:
 
@@ -387,6 +424,7 @@ Relevant items must be true:
 - [ ] no known regression is deferred;
 - [ ] any meaningful unexpected failure received a Failure Review covering technical cause, reasoning/process cause, escape cause and smallest prevention;
 - [ ] reusable lessons were promoted to the narrowest correct owner, or the decision not to promote was explicit;
+- [ ] the change leaves no-cleanup debt: no stale duplicate status/context, abandoned artifact, temporary scaffold, or unowned documentation drift;
 - [ ] status is accurate;
 - [ ] SPEC impact review is complete and affected specs are synchronized;
 - [ ] temporary verification changes are restored;
