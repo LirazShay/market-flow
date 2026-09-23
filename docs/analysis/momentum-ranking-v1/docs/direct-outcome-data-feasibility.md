@@ -197,7 +197,35 @@ For return arithmetic, Issue #15 may conservatively require a finite positive qu
 
 This is a mathematical eligibility rule, not a claim that every provider zero has one specific market meaning.
 
-## 6. MID market-center outcomes
+## 6. Primary BID(t0) → future BID outcomes
+
+Required fields:
+
+~~~text
+BID1(t0) = data.BuyLimit1
+future BID1 = future history.data.BuyLimit1
+~~~
+
+Both are already persisted.
+
+Therefore:
+
+~~~text
+FutureBidVsCurrentBidReturn(h): DERIVABLE_NOW
+BidAdvanceReturn(t): DERIVABLE_NOW
+BidAdvanceMFE(h): DERIVABLE_NOW
+BidAdvanceMAE(h): DERIVABLE_NOW
+BID target/adverse observed order: DERIVABLE_NOW
+interval-censored BID TimeToTarget/TimeToAdverse: DERIVABLE_NOW
+~~~
+
+This is the **primary decision-aligned outcome family** for sparse-core model selection.
+
+It measures advancement from the current BID to the future BID without embedding the displayed spread into the primary label.
+
+No Local History Viewer change is required.
+
+## 7. MID market-center outcomes
 
 Given positive valid L1 quotes:
 
@@ -220,7 +248,7 @@ interval-censored MID TimeToTarget/TimeToAdverse: DERIVABLE_NOW
 
 No Local History Viewer change is required.
 
-## 7. ASK(t0) → future BID touch-exit outcomes
+## 8. ASK(t0) → future BID touch-exit outcomes
 
 Required fields:
 
@@ -252,7 +280,7 @@ actual fill
 
 The V1 history does not contain actual execution telemetry.
 
-## 8. LAST-related fields
+## 9. LAST-related fields
 
 Persisted raw data includes:
 
@@ -283,7 +311,7 @@ LAST-reference target/adverse labels: SEMANTICS_BLOCKED
 
 No implementation may silently choose `LastKnownRate` or `ContinuousLastDealRate` as universal LAST.
 
-## 9. Provider time fields
+## 10. Provider time fields
 
 Persisted raw provider fields include:
 
@@ -310,7 +338,7 @@ They may later help freshness research after semantics are verified.
 
 They do not currently justify replacing local collection time or reconstructing exact intra-poll trade order.
 
-## 10. Path construction
+## 11. Path construction
 
 Per-security history can be queried by:
 
@@ -345,7 +373,7 @@ Classification:
 DERIVABLE_NOW
 ~~~
 
-## 11. Endpoint-at-horizon matching
+## 12. Endpoint-at-horizon matching
 
 The contract requires:
 
@@ -368,7 +396,7 @@ actual endpointTolerance value: NOT YET CALIBRATED
 
 The storage schema itself does not block this work.
 
-## 12. Horizon feasibility under current cadence
+## 13. Horizon feasibility under current cadence
 
 Verified earlier live evidence:
 
@@ -394,7 +422,7 @@ per-horizon evaluability statistics: DERIVABLE_NOW
 endpoint tolerance / maximum path-gap policy: NOT YET CALIBRATED
 ~~~
 
-## 13. Session boundaries
+## 14. Session boundaries
 
 The V1 stores:
 
@@ -417,7 +445,7 @@ recorder-session-end censoring: DERIVABLE_NOW
 
 This is not equivalent to an exchange trading-session/phase boundary.
 
-## 14. Exchange phase semantics
+## 15. Exchange phase semantics
 
 The current V1 data does not contain a verified normalized exchange phase field per observation.
 
@@ -434,7 +462,7 @@ The label generator must not invent phase cutoffs.
 
 A first research implementation may operate only under an explicitly documented subset whose phase compatibility is externally verified later, or keep phase compatibility UNKNOWN.
 
-## 15. Gap detection
+## 16. Gap detection
 
 Because actual per-security timestamps are available:
 
@@ -454,7 +482,7 @@ NOT YET CALIBRATED
 
 It should be selected only after measuring the empirical cadence/jitter distribution.
 
-## 16. True barrier ordering inside polling gaps
+## 17. True barrier ordering inside polling gaps
 
 The recorder stores snapshots, not the continuous path between them.
 
@@ -472,7 +500,7 @@ If both barriers may have been crossed between two stored observations, the true
 
 This remains a possible Issue #12 data-resolution requirement.
 
-## 17. Exact trade-by-trade timing
+## 18. Exact trade-by-trade timing
 
 No trade tape is persisted.
 
@@ -494,7 +522,7 @@ DATA_NOT_COLLECTED
 
 Snapshot-counter deltas may still support other research, but cannot manufacture a tape.
 
-## 18. Deeper order book
+## 19. Deeper order book
 
 Provider fields for levels 2–5 are preserved in raw data if returned, but the verified 561-equity snapshot measured them as null for 561/561.
 
@@ -509,7 +537,7 @@ The schema technically preserves the fields, but there is no demonstrated usable
 
 Issue #12 owns the richer-data decision.
 
-## 19. Actual execution outcomes
+## 20. Actual execution outcomes
 
 The Local History Viewer is a market-data recorder, not an execution telemetry system.
 
@@ -536,7 +564,7 @@ DATA_NOT_COLLECTED
 
 Issue #15 can compute gross touch-price economics only.
 
-## 20. Size-aware execution
+## 21. Size-aware execution
 
 Available now:
 
@@ -563,7 +591,7 @@ simple intended-size/L1 ratio: DERIVABLE_NOW if intended size is supplied extern
 full-size executable outcome: DATA_NOT_COLLECTED / SEMANTICS_BLOCKED
 ~~~
 
-## 21. Daily high / low and cumulative activity
+## 22. Daily high / low and cumulative activity
 
 Raw history preserves:
 
@@ -585,7 +613,7 @@ snapshot deltas across history: DERIVABLE_NOW
 
 These are useful inputs/context elsewhere but are not required to generate the core MID/touch outcome surface.
 
-## 22. Censoring capability map
+## 23. Censoring capability map
 
 ### DERIVABLE_NOW
 
@@ -607,7 +635,7 @@ canonical LAST-reference semantic validity
 provider-event-time-based path ordering
 ~~~
 
-## 23. Contract field-by-field summary
+## 24. Contract field-by-field summary
 
 | Contract requirement | Feasibility | Evidence / note |
 | --- | --- | --- |
@@ -626,8 +654,11 @@ provider-event-time-based path ordering
 | ordered per-security future path | DERIVABLE_NOW | `bySecurityTime` |
 | endpoint <= deadline | DERIVABLE_NOW | timestamp scan/index |
 | endpoint error | DERIVABLE_NOW | timestamps |
+| BID(t0) → future-BID endpoint return | DERIVABLE_NOW | `data.BuyLimit1` current + future path |
+| BID-advance MFE/MAE | DERIVABLE_NOW | future BID path |
+| BID target/adverse observed order | DERIVABLE_NOW | snapshot BID path only |
 | MFE/MAE on MID | DERIVABLE_NOW | snapshot path |
-| ASK-entry → future-BID endpoint return | DERIVABLE_NOW | L1 fields |
+| ASK-entry → future-BID endpoint return | DERIVABLE_NOW | L1 fields; diagnostic only |
 | touch-exit MFE/MAE | DERIVABLE_NOW | future BID path |
 | observed barrier order | DERIVABLE_NOW | snapshot path only |
 | interval-censored TimeToTarget | DERIVABLE_NOW | previous/current sample interval |
@@ -642,18 +673,33 @@ provider-event-time-based path ordering
 | actual fills/execution telemetry | DATA_NOT_COLLECTED | outside LHV V1 |
 | realized slippage/impact | DATA_NOT_COLLECTED | no fill telemetry/deeper book |
 
-## 24. Outcome families we can research immediately
+## 25. Outcome families we can research immediately
 
 Without changing frozen Local History Viewer V1:
 
 ### Ready after cadence-policy measurement
+
+Primary model-selection family:
+
+~~~text
+FutureBidVsCurrentBidReturn
+BidAdvanceMFE / BidAdvanceMAE
+BID target/adverse observed order
+BID interval-censored TimeToTarget/TimeToAdverse
+~~~
+
+Parallel raw-market control:
 
 ~~~text
 MID endpoint returns
 MidMFE / MidMAE
 MID target/adverse observed order
 MID interval-censored TimeToTarget/TimeToAdverse
+~~~
 
+Optional conservative diagnostic:
+
+~~~text
 FutureBidVsEntryAskReturn
 TouchExitMFE / TouchExitMAE
 touch target/adverse observed order
@@ -678,7 +724,7 @@ actual-fill outcomes
 deep-book executable outcomes
 ~~~
 
-## 25. Architectural conclusion
+## 26. Architectural conclusion
 
 No change to frozen Local History Viewer V1 is required for the first useful Issue #15 research implementation.
 
@@ -700,7 +746,7 @@ modify recorder
 
 This preserves the V1 freeze and its source-of-truth responsibilities.
 
-## 26. Next work unit
+## 27. Next work unit
 
 Before implementing a label generator, measure the actual timestamp behavior in recorded history and define the **observation-coverage policy**:
 

@@ -14,7 +14,7 @@
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "Issue #19 practical-guide work is complete. Before continuing #15 empirical/outcome work, reconcile stale Issue #15 text that still names ASK(t0)→future BID as primary against the corrected durable decision: BID(t0)→future BID is primary, MID is control, ASK→future BID is diagnostic only."
+    "subfocus": "Outcome-reference reconciliation complete: BID(t0)→future BID is primary across Issue #15 and normative outcome docs, MID is the parallel control, ASK→future BID is diagnostic only, and LAST remains supplementary/semantics-blocked. Next: measure existing-history cadence/jitter and per-horizon evaluability before choosing coverage tolerances."
   },
   "completedWorkUnits": [
     {
@@ -72,6 +72,6 @@
   },
   "next": {
     "issue": 15,
-    "action": "Reconcile Issue #15 and any stale durable outcome-contract wording with the corrected BID→future BID primary outcome, MID control and ASK→future BID diagnostic role; then identify the next unresolved #15 research boundary without changing the frozen horizon/target/adverse grid."
+    "action": "Measure cadence/jitter and per-horizon evaluability from existing frozen LHV V1 history: inter-observation delta distribution, endpoint availability/error, first-future-sample delay, max gaps, session-edge censoring and 5/10/20/.../120s coverage. Do not change collection cadence yet; Issue #18 owns extraction/cadence design."
   }
 }

@@ -126,11 +126,26 @@ A success-only denominator is invalid for Issue #15.
 
 One observation may be evaluable for one outcome family and UNKNOWN/CENSORED for another.
 
-### 5.1 Market-center labels
+### 5.1 Primary BID-advancement labels
 
-Require a valid decision-time market-center reference.
+Require:
 
-Candidate primary reference:
+~~~text
+valid BID1(t0)
+valid future BID1 observations
+~~~
+
+Primary decision-aligned reference:
+
+~~~text
+BID1(t0)
+~~~
+
+This family owns `FutureBidVsCurrentBidReturn`, `BidAdvanceMFE`, `BidAdvanceMAE` and BID-path target/adverse timing.
+
+### 5.2 Market-center control labels
+
+Require a valid decision-time market-center reference:
 
 ~~~text
 MID(t0) = (BID1(t0) + ASK1(t0)) / 2
@@ -138,13 +153,15 @@ MID(t0) = (BID1(t0) + ASK1(t0)) / 2
 
 only when both L1 quotes are valid under verified provider semantics.
 
-### 5.2 LAST-reference labels
+MID is the parallel raw-market control, not the primary model-selection family.
+
+### 5.3 LAST-reference labels
 
 Require a verified phase-aware conceptual LAST mapping at `t0`.
 
 Until that mapping is verified, LAST-based labels must preserve semantic status rather than silently assuming a provider field.
 
-### 5.3 ASK-entry → future-BID touch labels
+### 5.4 ASK-entry → future-BID diagnostic labels
 
 Require:
 
@@ -153,16 +170,16 @@ valid ASK1(t0)
 valid future BID1 observations
 ~~~
 
-This is the closest current-feed touch-price proxy for:
+This is a conservative displayed touch-price execution-friction diagnostic:
 
 ~~~text
 aggressive entry now
 → possible displayed exit later
 ~~~
 
-It is **not** an actual fill simulation.
+It is **not** an actual fill simulation and must not determine predictive model selection.
 
-### 5.4 LAST-entry-reference → future-BID labels
+### 5.5 LAST-entry-reference → future-BID labels
 
 Require:
 
@@ -403,13 +420,19 @@ A = {0.10%,0.20%,0.30%}
 Primary reference family:
 
 ~~~text
-ASK_ENTRY_TO_BID_EXIT
+BID_TO_FUTURE_BID
 ~~~
 
 Parallel raw-market control:
 
 ~~~text
 MID_MARKET
+~~~
+
+Optional conservative diagnostic:
+
+~~~text
+ASK_ENTRY_TO_BID_EXIT
 ~~~
 
 LAST-based families remain secondary/blocked until canonical phase-aware LAST semantics are verified.

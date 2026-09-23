@@ -234,7 +234,7 @@ Censored is not failure.
 
 ## 9. Continuous outcomes reported for every horizon
 
-For both primary reference families preserve:
+For the primary BID family and the parallel MID control preserve:
 
 ~~~text
 endpointReturnPct
