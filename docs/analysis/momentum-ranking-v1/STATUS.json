@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Remaining Opportunity/Target Frontier added as a structured forward opportunity budget with explicit online-vs-outcome separation."
+    "subfocus": "Recent Wave Memory/Capacity Prior added with explicit denominator, failure-memory, comparability and no-directional-trigger semantics."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Recent Wave Memory/Capacity Prior: amplitude/speed/adverse-path/opportunity-arrival capacity, target-specific recent profiles, failure memory, comparable-memory coverage and conditional prior semantics."
+    "action": "Populate Multi-Horizon/Local Regime/Session Context: cross-scale trend state, horizon conflict, context incremental value, evidence transferability, evidence-specific decay, regime-break/session compatibility and time-of-day abnormality."
   }
 }

@@ -2700,12 +2700,439 @@ current evidence
 
 Future realized outcome surfaces from Issue #15 validate these concepts but never leak into online inputs.
 
+# Family WM — Recent Wave Memory / Capacity Prior
+
+Purpose:
+
+> Preserve what this same security has **recently demonstrated** about excursion size, speed, adverse path and opportunity arrival under comparable conditions, and expose it only as a conditional prior/context layer.
+
+Critical rule:
+
+~~~text
+recent demonstrated capacity
+!=
+next-wave promise
+!=
+directional trigger
+~~~
+
+This family does not predict direction by itself.
+
+Its job is to answer:
+
+> When current conditions are sufficiently comparable to recent conditions, what movement scale/timing/path has this stock recently shown, with what coverage and what failure history?
+
+## Baseline-denominator rule
+
+Completed waves are selected episodes.
+
+Therefore:
+
+~~~text
+WaveMemory alone
+cannot estimate opportunity probability
+~~~
+
+The all-observation outcome surface from Issue #15 is the baseline denominator/context.
+
+Wave memory must prove incremental value beyond that baseline.
+
+## Ownership boundary
+
+This family owns:
+
+- recent completed-wave / excursion memory summaries;
+- amplitude / speed / adverse-path / arrival-capacity priors;
+- target-specific recent outcome profiles;
+- successful-vs-failed recent episode memory;
+- comparable-memory coverage;
+- recency / regime / similarity metadata attached to the prior;
+- active/censored episode status;
+- segmentation-sensitivity metadata.
+
+It does **not** own:
+
+- exact wave segmentation semantics → Issue #6;
+- pattern-similarity model → Issue #7;
+- direct all-observation future outcome surface → Issue #15;
+- current live opportunity score → Remaining Opportunity family;
+- regime transferability rules → later Regime family / Issue #9.
+
+### WM-001 — WaveMemoryEpisodeStatus
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** STATE
+- **Raw sources:** segmented episode lifecycle from Issue #6
+- **Derivation:** classify an episode as COMPLETED / ACTIVE_CENSORED / INVALID
+- **Unit / shape:** enum
+- **Role:** GATE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI
+- **Decision role:** Context/Prior, Freshness/Trust
+- **Meaning:** prevents unfinished current episodes from contaminating completed-wave statistics
+- **Known overlaps:** Issue #6 segmentation lifecycle
+- **Confidence limits:** exact completion semantics remain blocked on Issue #6; ACTIVE_CENSORED must not be silently treated as a failure or completed success
+- **Validation targets:** leakage-safe backtests, memory-statistic correctness
+- **Research state:** Candidate / blocked by Issue #6
+
+### WM-002 — RecentUpwardAmplitudeCapacityProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** completed comparable upward episodes
+- **Derivation:** retain robust amplitude distribution summaries such as median/P75/P90 and sample count
+- **Unit / shape:** percent distribution summary
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, RemainingOpportunity
+- **Meaning:** describes the recent upward excursion scale this stock/regime has actually demonstrated
+- **Known overlaps:** RO TargetFeasibilityFrontier; Issue #6 wave amplitude
+- **Confidence limits:** not a target promise; max is diagnostic only; distribution must be conditioned by comparability/coverage
+- **Validation targets:** target-specific future excursion, incremental value over Issue #15 baseline
+- **Research state:** Candidate
+
+### WM-003 — RecentWaveAmplitudeMaxDiagnostic
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** recent completed comparable episodes
+- **Derivation:** maximum observed comparable amplitude with episode identity and age
+- **Unit / shape:** percent + metadata
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI
+- **Decision role:** Context/Prior
+- **Meaning:** preserves an extreme recent observation for diagnostics without using it as the default target anchor
+- **Known overlaps:** WM-002
+- **Confidence limits:** one outlier can dominate; must not be scored as strong capacity evidence by itself
+- **Validation targets:** robustness / outlier sensitivity
+- **Research state:** Diagnostic only
+
+### WM-004 — RecentSpeedCapacityProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** completed comparable episodes / target-hit times
+- **Derivation:** target-specific TimeToTarget and/or episode-speed summaries using actual elapsed time
+- **Unit / shape:** seconds / percent-per-second profile
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, RemainingOpportunity
+- **Meaning:** captures how quickly this security has recently converted movement opportunities
+- **Known overlaps:** Issue #16 conversion latency; RO target frontier
+- **Confidence limits:** do not extrapolate linearly from speed; fastest single observation is not a robust prior
+- **Validation targets:** TimeToTarget, usable lead, target-before-adverse
+- **Research state:** Candidate
+
+### WM-005 — RecentAdversePathCapacityProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** comparable completed target/episode outcomes
+- **Derivation:** recent MAE-before-target / giveback / time-under-water / recovery summaries where labels exist
+- **Unit / shape:** percent + seconds profile
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** describes how much adverse path recent successful excursions required
+- **Known overlaps:** RO AdversePathBudget; Issue #15 outcomes
+- **Confidence limits:** future outcome labels are produced by Issue #15/11; no leakage into the episode decision point
+- **Validation targets:** MAE-before-target, TimeUnderWater, target-before-adverse
+- **Research state:** Candidate / blocked pending outcome labels
+
+### WM-006 — RecentOpportunityArrivalProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** eligible observation denominator + target-before-adverse outcomes from Issue #15
+- **Derivation:** target/horizon-specific frequency or intensity of useful excursions among eligible comparable observations
+- **Unit / shape:** count/rate profile with denominator
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** distinguishes a stock with rare large waves from one that repeatedly presents useful short-horizon opportunities
+- **Known overlaps:** Issue #15 FastOpportunityPrior
+- **Confidence limits:** cannot be derived from completed waves alone; no probability claim before calibrated validation
+- **Validation targets:** future target-before-adverse frequency, rank usefulness
+- **Research state:** Candidate / blocked pending Issue #15
+
+### WM-007 — RecentConditionalTargetProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** target grid + comparable recent observations/episodes + Issue #15 outcome labels
+- **Derivation:** for each target/time/adverse tuple retain hit count, eligible denominator, TimeToTarget distribution and MAE-before-target distribution
+- **Unit / shape:** target-indexed structured profile
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, RemainingOpportunity, PathRisk
+- **Meaning:** objective-aligned memory of what recently happened for the exact types of targets the engine evaluates
+- **Known overlaps:** RO-008 TargetFeasibilityFrontier
+- **Confidence limits:** prior/context only; must not be copied directly into online probability or target recommendation
+- **Validation targets:** incremental value for target support / frontier calibration
+- **Research state:** Candidate / blocked pending Issue #15
+
+### WM-008 — RecentFailureMemoryProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** comparable recent target attempts / observation outcomes
+- **Derivation:** summarize adverse-first outcomes, timeout/no-progress, false starts, failed retests and pressure-without-progress where observable
+- **Unit / shape:** structured failure counts/rates + metadata
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** ensures recent memory contains cautionary evidence, not only successful waves
+- **Known overlaps:** PR failure states; PH stalls; Issue #15
+- **Confidence limits:** failure categories need explicit causal-time definitions; no double counting of one episode into incompatible categories without policy
+- **Validation targets:** false-positive reduction, target-before-adverse
+- **Research state:** Candidate
+
+### WM-009 — DirectionalCapacityAsymmetry
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** recent upward excursion profile + downward/adverse excursion profile
+- **Derivation:** preserve upward, downward and general movement capacity separately; exact summary TBD
+- **Unit / shape:** structured directional profile
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY + FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, PathRisk
+- **Meaning:** distinguishes “moves a lot” from “recently produces usable upward excursions with manageable downside”
+- **Known overlaps:** broad volatility context
+- **Confidence limits:** broad downside history must not automatically veto a fresh upward micro-opportunity
+- **Validation targets:** target-before-adverse, MAE, target-size frontier
+- **Research state:** Candidate
+
+### WM-010 — ComparableMemoryCoverage
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** DERIVED
+- **Raw sources:** raw recent samples + eligible denominator + current-state/regime matching metadata
+- **Derivation:** preserve raw sample count, eligible denominator, comparable sample count, effective recency-weighted count and regime-match quality separately
+- **Unit / shape:** structured coverage bundle
+- **Role:** GATE, CONTEXT
+- **Availability:** HISTORY + FUTURE
+- **Evidence:** PI
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** prevents tiny samples such as 2/2 or 3/3 from masquerading as strong memory evidence
+- **Known overlaps:** FQ coverage; Issue #9 regime transferability
+- **Confidence limits:** no universal minimum count yet; effective sample size depends on comparability/weighting
+- **Validation targets:** confidence calibration, prior robustness
+- **Research state:** Candidate
+
+Candidate shape:
+
+~~~text
+ComparableMemoryCoverage {
+  rawSampleCount
+  eligibleDenominator
+  comparableSampleCount
+  effectiveRecencyWeightedCount
+  regimeMatchQuality
+}
+~~~
+
+### WM-011 — MemorySimilarityContext
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** current state descriptors + recent episode descriptors
+- **Derivation:** carry similarity dimensions needed by Issue #7 without collapsing them prematurely
+- **Unit / shape:** structured similarity inputs
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** interface for asking whether current formation is comparable enough to recent memory to transfer evidence
+- **Known overlaps:** Issue #7 pattern similarity
+- **Confidence limits:** Issue #5 does not define final similarity function; no nearest-neighbor certainty claim
+- **Validation targets:** incremental prior value, recurrence robustness
+- **Research state:** Interface candidate / detailed ownership Issue #7
+
+Candidate dimensions:
+
+~~~text
+amplitudeShape
+duration
+speed
+activityShape
+bookSignature
+pathQuality
+spread/tradability
+endingPattern
+session/time
+broadMarketContext
+~~~
+
+### WM-012 — HierarchicalMemoryFallbackState
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** STATE
+- **Raw sources:** WM-010/WM-011 + availability of comparable memory layers
+- **Derivation:** identify which memory layer is currently being used when exact-state samples are insufficient
+- **Unit / shape:** EXACT_STATE_REGIME / LOOSER_STATE_REGIME / SAME_STOCK_RECENT / SAME_STOCK_SESSION / CROSS_SECTIONAL_COMPARABLE / NONE
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Freshness/Trust
+- **Meaning:** makes confidence loss explicit when the model backs off to broader, less-specific history
+- **Known overlaps:** Issue #9 EvidenceTransferability
+- **Confidence limits:** fallback order itself requires validation; broader pooling can introduce bias
+- **Validation targets:** confidence calibration, target-support robustness
+- **Research state:** Candidate / detailed policy deferred to Issues #7/#9
+
+### WM-013 — MemoryRecencyProfile
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** CONTEXT
+- **Raw sources:** episode/observation timestamps
+- **Derivation:** preserve recency distribution rather than one blind average age
+- **Unit / shape:** seconds/minutes profile
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI
+- **Decision role:** Context/Prior
+- **Meaning:** exposes whether the memory prior is based on very recent or stale observations
+- **Known overlaps:** Issue #9 evidence-specific decay
+- **Confidence limits:** recency alone does not determine transferability; regime break can dominate elapsed time
+- **Validation targets:** prior decay, confidence calibration
+- **Research state:** Candidate
+
+### WM-014 — CapacityTrendState
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** STATE
+- **Raw sources:** successive recent capacity profiles
+- **Derivation:** compare recent amplitude/speed/opportunity-arrival environment over compatible windows
+- **Unit / shape:** EXPANDING / STABLE / CONTRACTING / CONFLICTED / UNKNOWN
+- **Role:** CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** captures whether the recent movement environment is broadening or shrinking
+- **Known overlaps:** Regime context
+- **Confidence limits:** expanding capacity is not automatically bullish; downside risk/execution difficulty may also expand
+- **Validation targets:** target frontier changes, MAE, opportunity arrival
+- **Research state:** Candidate
+
+### WM-015 — OpportunityArrivalEnvironmentState
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** STATE
+- **Raw sources:** WM-006 + inter-opportunity spacing / recent counts
+- **Derivation:** classify recent opportunity environment without predicting deterministic periodic timing
+- **Unit / shape:** ACTIVE / NORMAL / QUIET / UNKNOWN
+- **Role:** CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior
+- **Meaning:** summarizes whether useful short-horizon opportunities have recently been dense or sparse
+- **Known overlaps:** WaveFrequency / InterWaveSpacing
+- **Confidence limits:** must never be interpreted as “next wave is due now”
+- **Validation targets:** target-arrival rate, prior usefulness
+- **Research state:** Candidate / blocked pending valid denominator
+
+### WM-016 — SegmentationSensitivityState
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** STATE
+- **Raw sources:** same memory metric recomputed under reasonable alternative wave-segmentation definitions from Issue #6
+- **Derivation:** quantify whether conclusions are stable or fragile across segmentation choices
+- **Unit / shape:** ROBUST / MODERATELY_SENSITIVE / FRAGILE / UNKNOWN
+- **Role:** GATE, CONTEXT
+- **Availability:** FUTURE
+- **Evidence:** PI
+- **Decision role:** Freshness/Trust, Context/Prior
+- **Meaning:** blocks false confidence in memory features that exist only under one convenient wave definition
+- **Known overlaps:** Issue #6 segmentation research
+- **Confidence limits:** alternative definitions must themselves be defensible; this is methodological robustness, not alpha
+- **Validation targets:** stability of downstream target/support improvements
+- **Research state:** Candidate / blocked by Issue #6
+
+### WM-017 — RecentWavePrior
+
+- **Family:** Recent Wave Memory / Capacity Prior
+- **Kind:** STATE
+- **Raw sources:** WM-002..WM-016 where valid
+- **Derivation:** structured conditional prior preserving supportive, cautionary, coverage, similarity, recency, regime-match and consistency dimensions
+- **Unit / shape:** structured prior + Confidence/Coverage
+- **Role:** CONTEXT, PROTECTIVE, CONFIRMING
+- **Availability:** FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Context/Prior, Freshness/Trust
+- **Meaning:** compact interface for injecting recent same-stock history into RemainingOpportunity without treating memory as an independent bullish vote
+- **Known overlaps:** Issues #7/#9, RO PotentialRemaining/TargetFrontier
+- **Confidence limits:** no direct probability; poor coverage/transferability must be able to reduce influence near zero
+- **Validation targets:** incremental target-before-adverse value beyond current-state + Issue #15 baseline
+- **Research state:** Provisional composite
+
+Candidate shape:
+
+~~~text
+RecentWavePrior {
+  amplitudeCapacity
+  speedCapacity
+  adversePathCapacity
+  opportunityArrival
+  targetProfiles
+  failureMemory
+  directionalAsymmetry
+  comparableCoverage
+  similarity
+  recency
+  regimeMatch
+  segmentationRobustness
+  supportiveEvidence
+  cautionaryEvidence
+  confidence
+}
+~~~
+
+---
+
+## Recent Wave Memory objective-alignment boundary
+
+This family should answer:
+
+~~~text
+what has this stock recently demonstrated
+under sufficiently comparable conditions,
+with what denominator, failures and confidence?
+~~~
+
+It must not answer:
+
+~~~text
+recent waves were large
+therefore the next wave will be large
+~~~
+
+Core hierarchy:
+
+~~~text
+Issue #15 all-observation baseline
+→ recent comparable same-stock memory
+→ coverage/similarity/regime qualification
+→ RecentWavePrior
+→ optional adjustment to RemainingOpportunity confidence/context
+~~~
+
+The prior should be able to have near-zero influence when coverage or transferability is weak.
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Recent Wave Memory / Capacity Prior
+Multi-Horizon / Local Regime / Session Context
 ~~~
 
-It will own recent same-stock amplitude/speed/adverse-path/opportunity-arrival capacity and comparable-memory coverage, explicitly as a conditional prior rather than a directional trigger.
+It will own cross-scale context, horizon conflict, evidence transferability, evidence-specific decay, session compatibility and time-of-day abnormality without turning longer-horizon trend into an automatic veto.
