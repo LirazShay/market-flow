@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Core microstructure/path families now include Pullback/Retest/Micro-Barrier State under the objective-alignment contract."
+    "subfocus": "Sequence/Lead-Lag/Opportunity Stage added with explicit sampling uncertainty and usable-lead semantics."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Sequence/Lead-Lag/Opportunity Stage: cross-family event ordering, SIMULTANEOUS_CLUSTER handling, precursor/confirmation timing, usable lead-time concepts and EARLY/CONFIRMED/MATURE/LATE/FAILING opportunity stage."
+    "action": "Populate Remaining Opportunity/Target Frontier: structured OpportunityBudget, PotentialRemaining vs CapturableRemaining, MoveConsumptionState, TimeBudgetAfterLatency and target/time/adverse frontier semantics."
   }
 }

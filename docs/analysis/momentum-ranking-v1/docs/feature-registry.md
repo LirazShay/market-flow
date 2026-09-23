@@ -2055,12 +2055,311 @@ retreat/reset
 
 Only barriers that materially sit inside or near the current short target path deserve meaningful influence.
 
+# Family SQ — Sequence / Lead-Lag / Opportunity Stage
+
+Purpose:
+
+> Describe **when** major evidence families become active relative to one another, whether a usable precursor exists before price progress, and whether the current opportunity is still early enough to capture.
+
+This family is central to the project because prediction that arrives after most of the useful move is operationally weak.
+
+Critical objective rule:
+
+~~~text
+predictive sequence
+!=
+tradable sequence
+~~~
+
+A precursor is valuable only if useful lead remains after observation, ranking, decision and execution latency.
+
+## Observation uncertainty rule
+
+The current collector observes the market in sequential snapshots/chunks, not event-by-event.
+
+Therefore:
+
+~~~text
+unobserved ordering
+!=
+known ordering
+~~~
+
+When several families change inside the same unresolved observation interval, use:
+
+~~~text
+SIMULTANEOUS_CLUSTER
+~~~
+
+rather than inventing a precise causal order.
+
+### SQ-001 — FamilyActivationTimestamp
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** state-transition timestamps from Price/Wave, Activity/Flow, Book/Directional Flow, Path/WaveHealth and Pullback/Retest families
+- **Derivation:** earliest observation timestamp at which a family-specific qualifying transition is observable under its own validity rules
+- **Unit / shape:** timestamp + source family + interval uncertainty
+- **Role:** LEADING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
+- **Meaning:** creates a common timing vocabulary for comparing when evidence families become active
+- **Known overlaps:** FQ signal age; Issue #16
+- **Confidence limits:** timestamp is observation-time, not hidden event-time; family transition criteria are not yet calibrated
+- **Validation targets:** usable lead time, detection lateness, TimeToTarget
+- **Research state:** Candidate
+
+### SQ-002 — SequenceOrderingState
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** STATE
+- **Raw sources:** SQ-001 across qualifying families
+- **Derivation:** classify observable ordering only when timing separation exceeds known uncertainty; otherwise emit simultaneous/unknown
+- **Unit / shape:** ACTIVITY_THEN_BOOK_THEN_PRICE / BOOK_THEN_ACTIVITY_THEN_PRICE / PRICE_THEN_CONFIRMATION / PULLBACK_RECLAIM_THEN_ACCELERATION / SIMULTANEOUS_CLUSTER / OTHER / UNKNOWN
+- **Role:** LEADING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation
+- **Meaning:** preserves process shape without pretending causal certainty
+- **Known overlaps:** Issue #16 precursor-conversion research
+- **Confidence limits:** sequence label is observational, not causal; current sampling cadence may collapse many true event orders
+- **Validation targets:** target-before-adverse, TimeToTarget, usable lead time
+- **Research state:** Candidate
+
+### SQ-003 — SequenceCompressionState
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** STATE
+- **Raw sources:** observation intervals for SQ-001 events + collector cadence/skew
+- **Derivation:** determine whether candidate event order is resolvable or compressed into the same uncertainty interval
+- **Unit / shape:** RESOLVED / PARTIALLY_RESOLVED / SIMULTANEOUS_CLUSTER / UNKNOWN
+- **Role:** CONTEXT, PROTECTIVE
+- **Availability:** HISTORY
+- **Evidence:** PV(collection constraint) + PI
+- **Decision role:** Freshness/Trust, Confirmation
+- **Meaning:** prevents overconfident lead-lag interpretation when sampling cannot support it
+- **Known overlaps:** FQ temporal alignment
+- **Confidence limits:** RESOLVED still means resolved at snapshot granularity, not exchange-event granularity
+- **Validation targets:** sequence-confidence calibration, feature correctness
+- **Research state:** Candidate
+
+### SQ-004 — EarliestQualifiedPrecursorTime
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** SQ-001/SQ-002 + qualifying precursor definition
+- **Derivation:** earliest observable time at which a validated candidate precursor state first exists before meaningful price progress
+- **Unit / shape:** timestamp + precursor type
+- **Role:** LEADING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential
+- **Meaning:** anchors how early the system could possibly begin considering the opportunity
+- **Known overlaps:** Issue #16 conversion latency
+- **Confidence limits:** must not backdate to an event that was not observable from available data at that time
+- **Validation targets:** detection lateness, target-before-adverse, usable lead time
+- **Research state:** Candidate
+
+### SQ-005 — FirstMeaningfulPriceProgressTime
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** Price/Wave path + meaningful-progress definition
+- **Derivation:** first observable timestamp after precursor at which LAST/MID achieves defined material upward progress
+- **Unit / shape:** timestamp
+- **Role:** CONFIRMING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation
+- **Meaning:** provides the conversion endpoint for precursor-to-price timing
+- **Known overlaps:** PH-007; Issue #16
+- **Confidence limits:** meaningful-progress threshold must be tick/noise/target aware; cannot use future final-wave peak
+- **Validation targets:** precursor conversion latency, TimeToTarget
+- **Research state:** Candidate
+
+### SQ-006 — ObservedPrecursorLeadSeconds
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** SQ-004 + SQ-005
+- **Derivation:** `FirstMeaningfulPriceProgressTime - EarliestQualifiedPrecursorTime` when ordering is resolvable
+- **Unit / shape:** seconds + uncertainty interval
+- **Role:** LEADING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential
+- **Meaning:** measures observed lead between a precursor and initial useful price conversion
+- **Known overlaps:** Issue #16 conversion-latency outputs
+- **Confidence limits:** positive lead is not proof of causality; unresolved ordering must remain UNKNOWN/SIMULTANEOUS
+- **Validation targets:** usable lead time, precursor usefulness
+- **Research state:** Candidate
+
+### SQ-007 — CrossFamilyConfirmationLatencySeconds
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** first qualifying family event + timestamps of subsequent independent-family confirmations
+- **Derivation:** elapsed time from first qualifying evidence to required cross-family confirmation state(s)
+- **Unit / shape:** seconds/profile
+- **Role:** CONFIRMING, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation, RemainingOpportunity
+- **Meaning:** quantifies how much opportunity time is consumed waiting for confirmation
+- **Known overlaps:** FQ signal age; Issue #16
+- **Confidence limits:** “independent” families are not statistically independent by assumption; confirmation policy remains research
+- **Validation targets:** target-before-adverse, detection lateness, TimeToTarget
+- **Research state:** Candidate
+
+### SQ-008 — UsableLeadTimeAfterSystemLatency
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** SQ-004 or decision-signal time + target/progress time + FQ/TE observation/decision latency and later execution latency
+- **Derivation:** candidate conceptual form `timeToUsefulProgress - effectiveSystemLatencyFromDetection`
+- **Unit / shape:** seconds
+- **Role:** GATE, LEADING, PROTECTIVE
+- **Availability:** FUTURE / EXEC for full form
+- **Evidence:** PI + H
+- **Decision role:** Potential, Feasibility, RemainingOpportunity
+- **Meaning:** asks whether predictive lead remains actionable after the system consumes its own time
+- **Known overlaps:** TE-011 LatencyToHorizonRatio; Issue #16 LeadTimeAfterSystemLatency
+- **Confidence limits:** full value requires explicit decision/entry timing and target semantics; negative value means the signal may be statistically interesting but operationally too late
+- **Validation targets:** executable target-before-adverse, detection lateness, implementation shortfall
+- **Research state:** Candidate / partially blocked by Issues #15/#16 and execution telemetry
+
+### SQ-009 — DetectionLatenessState
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** STATE
+- **Raw sources:** first detector/eligibility timestamp + observed move already completed + future excursion labels during validation
+- **Derivation:** during research, quantify how much useful excursion had already occurred before detection; online proxy must use only current observable consumption features
+- **Unit / shape:** EARLY / MODERATE / LATE / MOSTLY_CONSUMED / UNKNOWN
+- **Role:** PROTECTIVE, CONTEXT
+- **Availability:** FUTURE for validated label; HISTORY for online proxy
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity
+- **Meaning:** penalizes detectors that are directionally correct but discover the move after most of its value is gone
+- **Known overlaps:** MoveConsumptionState; PW recency concentration; PR LegResetStrength
+- **Confidence limits:** future excursion can be used only as evaluation label, never as online input
+- **Validation targets:** remaining excursion at detection, target-before-adverse from decision time
+- **Research state:** Candidate / label-proxy split required
+
+### SQ-010 — OpportunityStage
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** STATE
+- **Raw sources:** SQ-001..SQ-009 plus PW/AF/BD/PH/PR family states
+- **Derivation:** synthesize observable lifecycle position while preserving separate confidence and remaining-opportunity evidence
+- **Unit / shape:** EARLY / CONFIRMED / MATURE / LATE / FAILING / UNDETERMINED
+- **Role:** LEADING, CONFIRMING, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity, PathRisk
+- **Meaning:** captures whether the opportunity is forming, validated, already mature, too late or breaking down
+- **Known overlaps:** PW wave state; PH wave health; PR reset state
+- **Confidence limits:** stage is not score; EARLY is not automatically better than CONFIRMED; LATE depends on remaining opportunity, not wall-clock age alone
+- **Validation targets:** target-before-adverse, TimeToTarget, detection lateness, remaining excursion at detection
+- **Research state:** Provisional composite
+
+### SQ-011 — SequenceEvidenceDiversity
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** DERIVED
+- **Raw sources:** distinct family transitions participating in the current sequence
+- **Derivation:** count/structure of materially distinct evidence families supporting the sequence, with redundancy-aware grouping
+- **Unit / shape:** structured count/state
+- **Role:** CONTEXT, CONFIRMING
+- **Availability:** HISTORY
+- **Evidence:** PI + H
+- **Decision role:** Confirmation, Freshness/Trust
+- **Meaning:** distinguishes one-family persistence from a sequence supported by several different evidence origins
+- **Known overlaps:** FQ PredictiveConfidenceInputs; future CentralRanker EvidenceDiversity
+- **Confidence limits:** raw count is insufficient because families share inputs; diversity must follow ownership/redundancy rules
+- **Validation targets:** confidence calibration, target-before-adverse
+- **Research state:** Candidate
+
+### SQ-012 — SequenceInvalidationState
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** STATE
+- **Raw sources:** current sequence plus family invalidation/deterioration events
+- **Derivation:** detect when the expected next transition fails to appear in time or contrary evidence breaks the sequence
+- **Unit / shape:** ACTIVE / WAITING_FOR_CONFIRMATION / STALLED / INVALIDATED / UNKNOWN
+- **Role:** PROTECTIVE, LEADING
+- **Availability:** HISTORY + FUTURE
+- **Evidence:** PI + H
+- **Decision role:** RemainingOpportunity, PathRisk
+- **Meaning:** prevents a precursor from remaining “alive” indefinitely when conversion/confirmation never arrives
+- **Known overlaps:** PH ProgressStallState; PR RetestFailureClock; Issue #16 opportunity half-life
+- **Confidence limits:** timeout/invalidation must be evidence-specific and regime-aware; no universal fixed clock
+- **Validation targets:** false-positive reduction, target-before-adverse, TimeToTarget
+- **Research state:** Provisional / partially blocked by Issue #16
+
+### SQ-013 — SequenceOpportunityState
+
+- **Family:** Sequence / Lead-Lag / Opportunity Stage
+- **Kind:** STATE
+- **Raw sources:** SQ-001..SQ-012 where valid
+- **Derivation:** family-level synthesis of observable ordering, confirmation timing, stage, usable lead and invalidation
+- **Unit / shape:** PRECURSOR / BUILDING / CONFIRMED_EARLY / CONFIRMED_MATURE / TOO_LATE / FAILING / CONFLICTED / UNKNOWN + Strength/Confidence/Coverage
+- **Role:** LEADING, CONFIRMING, PROTECTIVE, CONTEXT
+- **Availability:** HISTORY + FUTURE
+- **Evidence:** PI + H
+- **Decision role:** Potential, Confirmation, RemainingOpportunity, PathRisk
+- **Meaning:** compact sequence summary for higher-level opportunity logic without independently summing each timing derivative
+- **Known overlaps:** OpportunityStage; RemainingOpportunity; CentralRanker
+- **Confidence limits:** must retain SIMULTANEOUS_CLUSTER/uncertainty; no causal claims; usable-lead semantics depend on Issues #15/#16
+- **Validation targets:** target-before-adverse, TimeToTarget, detection lateness, usable lead time
+- **Research state:** Provisional composite
+
+---
+
+## Sequence / Lead-Lag objective-alignment boundary
+
+This family should answer:
+
+~~~text
+what process is observable,
+how early was it observable,
+how much confirmation time has been consumed,
+and is useful lead still left NOW?
+~~~
+
+It must not answer:
+
+~~~text
+Activity happened first,
+therefore Activity caused the price move
+~~~
+
+Core sequence rule:
+
+~~~text
+observable order
++ uncertainty
++ remaining lead
+> narrative causality
+~~~
+
+Preferred flow:
+
+~~~text
+family transitions
+→ resolvable ordering or SIMULTANEOUS_CLUSTER
+→ precursor / confirmation timing
+→ usable lead after latency
+→ OpportunityStage
+→ SequenceOpportunityState
+~~~
+
 ## Next registry boundary
 
 Next planned family:
 
 ~~~text
-Sequence / Lead-Lag / Opportunity Stage
+Remaining Opportunity / Target Frontier
 ~~~
 
-It will own cross-family event ordering, simultaneous-cluster uncertainty, usable lead time and early-vs-late opportunity-stage semantics.
+It will own structured forward opportunity budget, move-consumption state, target/time/adverse frontier and potential-vs-capturable remaining opportunity, while keeping future outcomes separate from online inputs.
