@@ -49,6 +49,8 @@ jobs:
           path: |
             scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/dist/market-flow-v1.runtime.js
             scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/dist/market-flow-v1.bookmarklet.txt
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/dist/market-flow-v1.manifest.json
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/runtime/dist/market-flow-loader-probe.bookmarklet.txt
           if-no-files-found: error
           retention-days: 14
 
@@ -93,11 +95,15 @@ jobs:
 
           BOOKMARKLET="runtime-release/market-flow-v1.bookmarklet.txt"
           RUNTIME="runtime-release/market-flow-v1.runtime.js"
+          MANIFEST="runtime-release/market-flow-v1.manifest.json"
+          LOADER_PROBE="runtime-release/market-flow-loader-probe.bookmarklet.txt"
 
           test -s "$BOOKMARKLET"
           test -s "$RUNTIME"
+          test -s "$MANIFEST"
+          test -s "$LOADER_PROBE"
 
-          NOTES="Verified Local History Viewer V1 runtime generated from commit $GITHUB_SHA. Full Browser CI passed before publication. The release is rolling; assets always represent the latest verified main-branch runtime."
+          NOTES="Verified Local History Viewer V1 runtime generated from commit $GITHUB_SHA. Full Browser CI passed before publication. The rolling release includes the self-contained runtime, Bookmarklet, deterministic manifest, and non-invasive loader compatibility probe."
 
           if gh release view "$RUNTIME_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             git tag -f "$RUNTIME_TAG" "$GITHUB_SHA"
@@ -106,6 +112,13 @@ jobs:
             gh release upload "$RUNTIME_TAG" \
               "$BOOKMARKLET" \
               "$RUNTIME" \
+              "$LOADER_PROBE" \
+              --clobber \
+              --repo "$GITHUB_REPOSITORY"
+
+            # Publish the manifest last so it only points at assets already uploaded.
+            gh release upload "$RUNTIME_TAG" \
+              "$MANIFEST" \
               --clobber \
               --repo "$GITHUB_REPOSITORY"
 
@@ -118,6 +131,8 @@ jobs:
             gh release create "$RUNTIME_TAG" \
               "$BOOKMARKLET" \
               "$RUNTIME" \
+              "$LOADER_PROBE" \
+              "$MANIFEST" \
               --target "$GITHUB_SHA" \
               --title "Market Flow V1 Runtime — Latest Verified" \
               --notes "$NOTES" \
