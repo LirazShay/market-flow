@@ -44,6 +44,14 @@ runtime/dist/market-flow-v1.bookmarklet.txt
 
 The rolling release or a Browser CI artifact may also be used when it was produced from the exact verified code state being tested.
 
+Optional manual helper:
+
+~~~text
+../debug/live-verification-check.js
+~~~
+
+Run that helper only after the verified Market Flow runtime is already running. It is observational: it uses the existing Debug Bundle API, does not start another recorder, does not make provider requests, and downloads a sanitized live-verification JSON report.
+
 ## Verification sequence
 
 ### 1. Launch on the real Leumi origin
@@ -87,7 +95,21 @@ Equivalent runtime API:
 await MarketFlowRuntime.downloadDebugBundle()
 ~~~
 
-The generated file is named like:
+For a one-step manual verification report, run:
+
+~~~text
+../debug/live-verification-check.js
+~~~
+
+It downloads a file named like:
+
+~~~text
+market-flow-live-verification-YYYYMMDDTHHMMSSZ.json
+~~~
+
+The helper includes PASS/NEEDS_REVIEW checks plus the same bounded sanitized Debug Bundle evidence. A PASS means the automated live checks in that helper passed; it does not by itself prove manual UI interactions such as sorting, history drill-down, repeated launch or stop/restart.
+
+The normal Debug Bundle file is named like:
 
 ~~~text
 market-flow-debug-YYYYMMDD-HHMMSS.json
