@@ -58,11 +58,65 @@ Every feature entry owns these fields:
 | Role | LEADING / CONFIRMING / LAGGING_CONTEXT / PROTECTIVE / GATE / CONTEXT / OUTCOME. |
 | Availability | NOW / HISTORY / L2 / TAPE / EXEC / FUTURE. |
 | Evidence | PV / TL / GL / PI / H / U, with scope notes where useful. |
-| Meaning | What information the feature is intended to contribute. |
+| Meaning | Short canonical description of what information the feature contributes. |
+| Plain-language intuition | Explain the feature without assuming formula/statistics knowledge: what is happening in the market when this value rises/falls or changes state? |
+| Market mechanism / why it can matter | Explain the concrete market behavior the feature may reflect and why that behavior could affect the seconds-to-~2-minute opportunity. Avoid causal claims that the data cannot prove. |
+| Objective connection | Explain exactly how this feature could help answer the project's real question: can a buyer entering now obtain a useful upward move and later exit through the sell-side path quickly enough? |
+| Favorable / unfavorable interpretation | Describe what different values/states *may* suggest, including asymmetric or ambiguous cases. Never reduce to “high = good” unless proven. |
+| Failure modes / counterexamples | Give concrete situations where the feature looks positive/negative but the actual opportunity can be the opposite. |
+| Relationship to other evidence | Explain what this feature adds beyond related features and which other evidence is needed to interpret it correctly. |
+| Worked example | Give a small numeric or market-behavior example when useful. |
 | Known overlaps | Features/families likely to carry related information. |
 | Confidence limits | Conditions that make interpretation weak or invalid. |
 | Validation targets | Explicit future outcomes against which usefulness should be tested. |
 | Research state | Candidate / blocked / provisional / validated / rejected. |
+
+## Deep-rationale documentation contract
+
+The registry is not allowed to become a list of formulas, acronyms or statistical labels that only a quant can decode.
+
+For every material feature/state, the durable documentation must eventually make the **why** understandable in plain market language.
+
+Minimum explanatory questions:
+
+1. **What is actually happening in the market?**
+   - Describe the observable behavior in BID/ASK/LAST/activity/path terms.
+2. **Why could that behavior matter?**
+   - Explain the plausible market mechanism without pretending causality is proven.
+3. **How does it connect to our exact objective?**
+   - The question is not “is the stock strong?” but whether a buyer entering now can obtain a useful upward move and later exit through the sell side quickly enough.
+4. **What would a favorable reading mean?**
+   - Explain what it may suggest about potential, confirmation, remaining opportunity, path risk or feasibility.
+5. **What would an unfavorable or ambiguous reading mean?**
+   - State when the same metric can mean something different.
+6. **What can fool us?**
+   - Include counterexamples, stale quotes, spread changes, low depth, already-consumed moves, regime changes, etc. as applicable.
+7. **What does this add beyond nearby metrics?**
+   - Explain why this metric is not merely a duplicate of another feature.
+8. **Give a concrete example when useful.**
+   - Prefer simple numbers and a market story over abstract notation alone.
+
+Abbreviations remain useful for identifiers, but the first durable explanation of a concept must spell out the full meaning. A reader should not need to infer the idea from names such as `MFE`, `MAE`, `OFI`, `L1`, `MID` or `LAST` alone.
+
+Important discipline:
+
+~~~text
+formula
++
+plain-language mechanism
++
+objective connection
++
+counterexample
++
+validation target
+=
+acceptable research documentation
+~~~
+
+A formula without the reasoning behind it is incomplete documentation.
+
+---
 
 ## Ownership rule
 
@@ -820,6 +874,13 @@ The conceptual `LAST` abstraction remains explicit. For continuous-trading trade
 - **Evidence:** PV(input availability) + PI + H
 - **Decision role:** Confirmation, RemainingOpportunity, PathRisk
 - **Meaning:** measures the **current top-of-book liquidation return** relative to historical transaction prices. Positive values mean that a hypothetical buyer at the historical trade price would currently see a positive gross mark-to-BID return at the displayed best bid.
+- **Plain-language intuition:** look back to a trade price from 10/20/30/... seconds ago and ask: “if someone had bought around that traded price, what is the best displayed buyer willing to pay them right now?” This converts recent history into a direct buyer-exitability view rather than merely asking whether the last trade price itself moved.
+- **Market mechanism / why it can matter:** a rising current BID relative to recent historical trade prices means the **exit side of the market** has migrated upward. That is stronger evidence of usable upward progress than a LAST-only rise when the current bid has not followed. Conversely, if LAST rose but BID remains below recent entry references, the apparent move may be less monetisable at the current touch.
+- **Objective connection:** the project ultimately cares about buying and then later selling. This metric directly asks whether recent hypothetical buyers have a currently available displayed exit price above their historical entry reference, making it unusually close to the economic question we care about.
+- **Favorable / unfavorable interpretation:** broad positive values across several recent lags can suggest that recent buyers are increasingly “in the money” at the current bid and that the market's willingness to pay has advanced. Mixed values can mean the advance is very fresh or fragile. Broad negative values mean many recent entry references are still above the current exit touch.
+- **Failure modes / counterexamples:** a positive value can still be unusable when BID depth is too small, the spread is unstable, the quote disappears before execution, the move is already exhausted, or fees/slippage consume the buffer. A negative value can occur during a fresh reversal that has only just begun and still has future opportunity.
+- **Relationship to other evidence:** unlike LAST-to-LAST return, it anchors the endpoint on the **current exit side**. Unlike BID-to-BID migration, it anchors the start on an actually observed transaction reference. It should be interpreted together with BID depth, spread, path quality, move-consumption and current directional evidence.
+- **Worked example:** LAST 30s ago = 100.00 and BID1 now = 100.30 gives +0.30%. This means the displayed best buyer is now 0.30% above that historical transaction reference; it does not mean our full position was actually bought at 100.00 or can definitely be sold at 100.30.
 - **Known overlaps:** PW return profile, BD-001 BID migration, BD-010 LastBidGapPct, RO ObservedMove/MoveConsumption
 - **Confidence limits:** historical LAST is a transaction reference, not proof that our strategy could have bought at that exact price; current BID1 is only displayed touch liquidity, not guaranteed fill; available size and costs are separate execution concerns; stale LAST/session boundaries invalidate the comparison
 - **Validation targets:** target-before-adverse, continuation, current-to-future BID progression, detection lateness, incremental value beyond LAST/LAST and BID/BID returns
@@ -848,6 +909,13 @@ This does **not** claim a realized +0.30% trade. It says the current displayed e
 - **Evidence:** PV(L1 availability where valid) + PI + H
 - **Decision role:** Confirmation, Feasibility, RemainingOpportunity
 - **Meaning:** stricter sibling of BD-017: asks whether a hypothetical trader who could buy at the historical best ask could now liquidate at the current best bid for a positive **gross top-of-book** return
+- **Plain-language intuition:** instead of assuming entry at the historical traded price, pretend we had to **cross the spread and buy immediately at ASK1** at time t. Then ask whether the best buyer after h seconds is already above that old ASK. This is a much tougher test because it naturally includes the entry-side spread burden.
+- **Market mechanism / why it can matter:** for a short holding period, price appreciation is only useful if it exceeds the gap between where an immediate buyer had to enter and where an immediate seller can exit later. ASK_then→BID_now therefore measures whether the market has migrated enough to overcome that basic two-sided touch hurdle.
+- **Objective connection:** this closely mirrors the intended buy-then-sell workflow: pay the seller side on entry, later receive the buyer side on exit. It is therefore a stronger historical benchmark for “could this kind of move have been monetised quickly?” than a simple price-return statistic.
+- **Favorable / unfavorable interpretation:** positive values mean the later displayed bid has climbed above the earlier displayed ask; the gross touch hurdle has been cleared. Values near zero mean the move may exist but offers little execution buffer. Negative values mean the market has not yet moved enough to cover even the historical touch-to-touch spread.
+- **Failure modes / counterexamples:** the historical ASK might have had insufficient size; current BID may also be too small; quotes can disappear; latency/slippage/fees/impact are excluded; an aggressive buy at ASK is not necessarily the actual strategy we will use. Therefore this is a conservative market-touch benchmark, not a realized P&L record.
+- **Relationship to other evidence:** BD-017 uses LAST as the entry reference and is less strict. BD-018 deliberately uses ASK as the entry reference, making it more execution-aware but also more sensitive to spread width. TE features are still needed for size, costs and feasibility.
+- **Worked example:** ASK1 30s ago = 100.10 and BID1 now = 100.30 gives about +0.20% gross touch-to-touch return. If explicit and implicit costs exceed that buffer, the trade may still be unattractive.
 - **Known overlaps:** BD-017, spread/tradability, TE execution feasibility
 - **Confidence limits:** both entry ASK and exit BID are displayed touch prices, not guaranteed fills; depth may be insufficient; quote persistence and latency matter; no fees/slippage/impact included; missing/invalid L1 must remain UNKNOWN
 - **Validation targets:** execution-aware target-before-adverse, implementation shortfall, incremental predictive value beyond BD-017
@@ -874,6 +942,13 @@ than a LAST-to-LAST return, while still remaining only a quote-based gross proxy
 - **Evidence:** PI + H
 - **Decision role:** Confirmation, RemainingOpportunity, PathRisk
 - **Meaning:** compact description of whether recent buyers could plausibly exit at today's current touch with gross positive buffer, and whether that buffer is broad or fragile across recent horizons
+- **Plain-language intuition:** imagine several groups of recent buyers: those who entered roughly 10s, 20s, 30s, 60s and 90s ago. This state asks whether the current best bid leaves most of those groups above water, only the newest group above water, or almost everyone below water.
+- **Market mechanism / why it can matter:** when many recent entry cohorts can already exit at a positive touch return, the upward move has propagated from transaction prices into the actual buyer side. That can indicate broad recent price acceptance. But if only very old cohorts are profitable and the newest cohorts are not, the move may be stalling or giving back.
+- **Objective connection:** the desired system repeatedly asks “if I buy now, will there soon be a better bid to sell into?” Recent buyer exitability is not the answer for the future, but it is a direct description of whether the market has recently been delivering that exact outcome to buyers.
+- **Favorable / unfavorable interpretation:** TOUCH_PROFITABLE across many recent lags can confirm usable recent upward progress; LAST_REFERENCE_POSITIVE_ONLY says transaction references look profitable but the stricter ask-to-bid hurdle is not yet cleared; MIXED indicates horizon dependence; BROADLY_UNDERWATER is cautionary; DETERIORATING means exitability is worsening even if headline LAST remains elevated.
+- **Failure modes / counterexamples:** broad profitability can describe a move that is already mature and nearly exhausted. Broad underwater status can occur just before a fresh reversal. Therefore the state cannot substitute for RemainingOpportunity, sequence stage or path-health evidence.
+- **Relationship to other evidence:** this is the synthesis layer over BD-017/018. It should complement, not duplicate, Price/Wave momentum. Its special contribution is the **entry-reference-to-current-exit-side** perspective.
+- **Worked example:** if 10/20/30/60s cohorts all show positive ASK_then→BID_now returns but the 90s cohort is also positive, the recent move has broadly cleared its touch hurdle. If 10s turns negative while 30/60s remain positive, that may signal recent deterioration rather than broad weakness.
 - **Known overlaps:** PW momentum, RO MoveConsumptionState, PH path quality
 - **Confidence limits:** this is backward-looking realized exitability context, not a forecast by itself; overlapping horizons are not independent cohorts; exact state mapping requires validation
 - **Validation targets:** future target-before-adverse, future BID progression, continuation vs giveback

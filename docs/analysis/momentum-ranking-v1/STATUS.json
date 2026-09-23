@@ -14,7 +14,7 @@
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
     "status": "in-progress",
-    "subfocus": "Integrated short-horizon BID1/ASK1 quote-migration horizons and historical-buyer-to-current-BID exitability profiles into Book/Directional Flow; next planned family remains Cross-Sectional/Relative Edge Context."
+    "subfocus": "Deep-rationale documentation standard established. Existing registry families must be retrofitted so every material metric explains market intuition, mechanism, objective connection, ambiguity/counterexamples and worked examples—not only formulas."
   },
   "completedWorkUnits": [
     {
@@ -49,6 +49,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Populate Cross-Sectional/Relative Edge Context: absolute eligibility vs percentile, self-vs-peer abnormality, rank-rise cause, eligible-universe coverage and asynchronous decision-time comparability."
+    "action": "Retrofit the existing feature registry family-by-family to the deep-rationale documentation contract, starting with Price/Wave and Activity/Flow, before adding further families."
   }
 }
