@@ -532,3 +532,105 @@ test(
         }
     }
 );
+
+
+test(
+    "Transport probe Bookmarklet is compact and tests raw, API and local compilation independently",
+    () => {
+        const bookmarklet =
+            runtimeBuilder
+                .buildTransportProbeBookmarkletText();
+
+        assert.equal(
+            bookmarklet.startsWith(
+                "javascript:"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "\n"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "%20"
+            ),
+            false
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "raw.githubusercontent.com"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "api.github.com"
+            ),
+            true
+        );
+
+        assert.equal(
+            bookmarklet.includes(
+                "MarketFlowTransportProbeLastResult"
+            ),
+            true
+        );
+    }
+);
+
+test(
+    "Runtime build writes the transport-probe Bookmarklet artifact",
+    () => {
+        const outputDirectory =
+            fs.mkdtempSync(
+                path.join(
+                    os.tmpdir(),
+                    "market-flow-transport-probe-"
+                )
+            );
+
+        try {
+            const artifacts =
+                runtimeBuilder
+                    .buildArtifacts({
+                        outputDirectory
+                    });
+
+            assert.equal(
+                path.basename(
+                    artifacts
+                        .transportProbePath
+                ),
+                runtimeBuilder
+                    .transportProbeFileName
+            );
+
+            assert.equal(
+                fs.readFileSync(
+                    artifacts
+                        .transportProbePath,
+                    "utf8"
+                ),
+                artifacts
+                    .transportProbeText
+            );
+        } finally {
+            fs.rmSync(
+                outputDirectory,
+                {
+                    recursive:
+                        true,
+                    force:
+                        true
+                }
+            );
+        }
+    }
+);
