@@ -28,9 +28,9 @@
   "activeMiniProject": {
     "id": "stage20-test-runtime-optimization",
     "status": "in-progress",
-    "phase": "D",
-    "phaseStatus": "in-progress",
-    "title": "Expensive-test review",
+    "phase": "E",
+    "phaseStatus": "planned",
+    "title": "Release-path latency",
     "plan": "tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md",
     "baselineBrowserCiRunId": 35862723542,
     "baseline": {
@@ -66,6 +66,17 @@
       "run1": "56/56 passed; Playwright 25.2s; browser-tests job about 40s.",
       "run2": "56/56 passed; Playwright 24.1s; browser-tests job about 39s.",
       "result": "Two workers reduced the warm full-suite Playwright time by about one third and browser-job time by about 19% versus the accepted workers=1 Phase B baseline, with all 56 tests and storage-growth coverage unchanged.",
+      "specImpact": "No spec impact."
+    },
+    "phaseD": {
+      "status": "complete-analysis-verified",
+      "result": "Storage-growth remained unchanged because it was not on the workers=2 suite critical path in either accepted run; preserving the 20-cycle/11,220-row sample avoids weakening an already noisy Chromium storage estimate.",
+      "evidence": {
+        "run35865811136": "storage-growth ~11.18s; suite continued ~6.13s after it completed",
+        "run35866009146": "storage-growth ~6.29s; suite continued ~9.35s after it completed",
+        "bytesPerHistoryRow": "about 537.9 vs 462.8 across the two runs (~15% spread)"
+      },
+      "decision": "No test, sample-size, checkpoint, or policy change.",
       "specImpact": "No spec impact."
     }
   },
@@ -109,12 +120,12 @@
     }
   },
   "next": {
-    "action": "Complete Phase D storage-growth cost and critical-path analysis.",
+    "action": "Execute Phase E release-path latency review only.",
     "steps": [
-      "measure storage-growth local elapsed time from both accepted workers=2 full Chromium runs",
-      "compare its finish time with full-suite completion to determine whether it is still on the critical path",
-      "separate fixed storage-estimate waiting from meaningful IndexedDB volume work",
-      "keep the 20-cycle sample unless evidence shows a material wall-clock gain without weakening measurement validity"
+      "separate browser verification completion from rolling-release publication latency",
+      "measure how much publish-runtime adds after browser-tests are already green",
+      "prefer the simplest model that preserves the invariant that published runtime artifacts come only from successful full Browser CI",
+      "avoid adding a second workflow unless the measured latency benefit justifies the extra lifecycle complexity"
     ]
   },
   "history": {
