@@ -1901,6 +1901,27 @@
           "remote runtime compilation on Leumi origin"
         ]
       }
+    },
+    "testingPolicyTargetedFirst": {
+      "status": "complete",
+      "policy": "Browser tests-first/TDD uses the smallest sufficient targeted Chromium run for red/green. Full Browser CI is reserved for numbered Stage closure, explicit integration checkpoints, broad shared-browser-infrastructure risk, suite-only reproduction, or explicit request.",
+      "expectedRed": "An intentional TDD/regression red is valid when the exact targeted test fails for the intended missing behavior; it does not block implementation.",
+      "unexpectedRed": "Unexpected red, or red remaining after the intended fix, blocks progression.",
+      "updatedDocuments": [
+        "AGENTS.md",
+        "docs/project/engineering-practices.md",
+        "docs/project/ai-engineering-guidelines.md",
+        ".github/pull_request_template.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/TESTING_POLICY.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/E2E_DEBUGGING.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/AI_CONTEXT.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/NEXT_CHAT_PROMPT.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/docs/test-plan.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/README.md",
+        "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/tests/automation/README.md"
+      ],
+      "specImpact": "No product-spec impact; this changes engineering/test execution policy only.",
+      "ci": "not-run — documentation/policy-only change; no production code or test implementation changed"
     }
   },
   "fastContext": {
@@ -1998,15 +2019,26 @@
       },
       "L5": {
         "title": "Test CORS-friendly transport alternatives",
-        "status": "in-progress",
-        "candidates": [
-          "raw.githubusercontent.com",
-          "api.github.com"
-        ],
-        "goal": "Identify a supported cross-origin source before designing the permanent loader."
+        "status": "complete-live-poc-verified",
+        "result": {
+          "pageOrigin": "https://hb2.bankleumi.co.il",
+          "rawGithub": {
+            "success": true,
+            "status": 200
+          },
+          "githubApi": {
+            "success": true,
+            "status": 200
+          },
+          "functionCompile": {
+            "success": true
+          },
+          "cspViolations": 0
+        },
+        "method": "POC executed outside the repository; no speculative POC implementation should be committed before architecture is adopted."
       },
       "L6": {
-        "title": "Decide permanent loader architecture from transport evidence",
+        "title": "Decide and implement permanent loader architecture",
         "status": "planned"
       }
     }
@@ -2028,11 +2060,11 @@
     "resumeMainStage": "19.3"
   },
   "recommendedChatBoundary": {
-    "reached": false,
-    "reason": "Live probe rejected GitHub Release assets as a fetch transport because of CORS. A CORS-friendly transport must now be verified.",
+    "reached": true,
+    "reason": "Targeted-first browser TDD policy is documented consistently. Live POC also verified raw.githubusercontent.com, GitHub API, and Function compilation from the Leumi origin.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Build and run a small transport probe for raw.githubusercontent.com and api.github.com from the authenticated Leumi origin."
+    "nextAction": "When resuming loader work, design the permanent loader from the verified POC; keep further exploratory POCs outside the repository until a design is accepted."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
