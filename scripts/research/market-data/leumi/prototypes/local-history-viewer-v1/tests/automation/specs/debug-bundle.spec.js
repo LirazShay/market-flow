@@ -329,9 +329,5 @@ test(
                     .closePublisher();
             }
         );
-
-        await deleteDatabase(
-            page
-        );
     }
 );
