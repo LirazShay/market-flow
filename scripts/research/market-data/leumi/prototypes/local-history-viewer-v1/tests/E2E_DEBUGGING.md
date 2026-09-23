@@ -262,6 +262,19 @@ For browser persistence failures verify:
 
 Use real browser IndexedDB when the failure concerns real persistence semantics.
 
+### IndexedDB teardown ownership
+
+For ordinary Playwright tests that use the built-in isolated `page` fixture, prefer BrowserContext teardown as the final cleanup owner.
+
+Do not call `indexedDB.deleteDatabase()` at the end of a test merely to clean up an isolated context. A viewer/read operation that already started may still hold a short-lived connection and make deletion report `blocked` even though the tested behavior is correct.
+
+Use explicit database deletion when:
+
+- the test needs a clean reset **inside the same BrowserContext** before continuing; or
+- database deletion/blocking is itself the behavior under test.
+
+When explicit deletion is required, first close every known application window/connection and await the semantic operation that owns those connections. Do not hide a blocked deletion with an arbitrary timeout or retry.
+
 ---
 
 ## 13. Race debugging
