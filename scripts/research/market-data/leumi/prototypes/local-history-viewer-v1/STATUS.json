@@ -226,17 +226,18 @@
     "liveLeumiV1Integration": "verification-pending",
     "lastCiVerification": {
       "workflow": "Local History Viewer V1 Browser CI",
-      "runId": 35853701628,
-      "jobId": 107157116510,
-      "publishJobId": 107157399294,
-      "activationCommit": "21136ffe5dc8f5b26453b7c84da39006c8cc6941",
-      "workflowRestoreCommit": "76afeee5818b808db284e0324c773fd6f8d38311",
+      "runId": 35855002713,
+      "jobId": 107161269058,
+      "publishJobId": 107161806019,
+      "activationCommit": "6e61ebe6ae3ab3fd9643312552e357fd3f238faa",
+      "workflowRestoreCommit": "bc5910ba1422f730f4dd63e8a5006a65f18d8814",
       "conclusion": "success",
       "tests": [
-        "55 Chromium tests",
-        "55 passed / 0 failed",
-        "final code state after abandoned-loader cleanup verified",
-        "generated runtime artifacts published successfully"
+        "56 Chromium tests",
+        "56 passed / 0 failed",
+        "diagnostics last-update ownership regression verified",
+        "rolling release obsolete loader assets removed",
+        "rolling runtime/bookmarklet republished successfully"
       ]
     },
     "fastCi": "verified-success",
@@ -1847,9 +1848,9 @@
       },
       "latestVerifiedRelease": {
         "tag": "local-history-viewer-v1-runtime-latest",
-        "tagCommit": "9159d503b14fdfab26ff5738b38323fa2340761b",
-        "bookmarkletBytes": 158054,
-        "runtimeBytes": 362761
+        "tagCommit": "6e61ebe6ae3ab3fd9643312552e357fd3f238faa",
+        "bookmarkletBytes": 157880,
+        "runtimeBytes": 362406
       },
       "nextLiveQuestion": "After market hours, do successive complete cycles contain unchanged market fingerprints and/or unchanged provider-time fingerprints while Leumi still returns complete HTTP 200 data?"
     },
@@ -1886,6 +1887,84 @@
         "duration": "25.2s",
         "workflowRestoreCommit": "76afeee5818b808db284e0324c773fd6f8d38311"
       }
+    },
+    "releaseCleanupAndDiagnosticsOwnership": {
+      "status": "complete",
+      "issue": "Rolling GitHub Release retained obsolete loader-probe/manifest assets. Full Browser CI also exposed a real viewer race where current-table and diagnostics both wrote the header last-update metric.",
+      "rootCause": [
+        "gh release upload --clobber updates named assets but does not remove unrelated old assets",
+        "viewer/current-table.js wrote data-role=last-update as collected HH:mm:ss while viewer/diagnostics.js wrote the same metric as age from recorderState.lastCompletedAtMs; concurrent initial rendering made ownership order-dependent"
+      ],
+      "fix": [
+        "rolling-release publish step now deletes market-flow-loader-probe.bookmarklet.txt and market-flow-v1.manifest.json if they exist",
+        "current-table no longer writes the diagnostics-owned last-update header metric",
+        "added deterministic browser regression proving a current-table rerender cannot overwrite diagnostics last-update"
+      ],
+      "testsFirst": {
+        "initialFullBrowserRun": {
+          "runId": 35854260080,
+          "browserJobId": 107158899533,
+          "conclusion": "failure",
+          "tests": 55,
+          "passed": 54,
+          "failed": 1,
+          "failure": "Stage 15.3 last-update race"
+        },
+        "targetedRed": {
+          "runId": 35854744977,
+          "browserJobId": 107160460155,
+          "conclusion": "failure",
+          "tests": 1,
+          "passed": 0,
+          "failed": 1,
+          "expectedReason": "current-table deterministically overwrote diagnostics last-update"
+        },
+        "targetedGreen": {
+          "runId": 35854881689,
+          "conclusion": "success",
+          "tests": 1,
+          "passed": 1,
+          "failed": 0
+        },
+        "fastCi": {
+          "runId": 35854881699,
+          "conclusion": "success"
+        },
+        "finalFullBrowser": {
+          "runId": 35855002713,
+          "browserJobId": 107161269058,
+          "publishJobId": 107161806019,
+          "conclusion": "success",
+          "tests": 56,
+          "passed": 56,
+          "failed": 0,
+          "duration": "37.1s"
+        }
+      },
+      "release": {
+        "tag": "local-history-viewer-v1-runtime-latest",
+        "tagCommit": "6e61ebe6ae3ab3fd9643312552e357fd3f238faa",
+        "supportedAssets": [
+          {
+            "name": "market-flow-v1.bookmarklet.txt",
+            "sizeBytes": 157880
+          },
+          {
+            "name": "market-flow-v1.runtime.js",
+            "sizeBytes": 362406
+          }
+        ],
+        "removedObsoleteAssets": [
+          "market-flow-loader-probe.bookmarklet.txt",
+          "market-flow-v1.manifest.json"
+        ],
+        "githubGeneratedArchives": [
+          "Source code (zip)",
+          "Source code (tar.gz)"
+        ],
+        "workflowRestoreCommit": "bc5910ba1422f730f4dd63e8a5006a65f18d8814"
+      },
+      "specImpact": "No durable contract change. The implementation was corrected to the existing viewer UX contract: header last-update is derived from recorderState.lastCompletedAtMs by diagnostics."
     }
   },
   "fastContext": {
@@ -1917,10 +1996,10 @@
   },
   "recommendedChatBoundary": {
     "reached": true,
-    "reason": "Testing policy is now explicit: code changes require Chromium verification; expected TDD red alone may stay targeted. Abandoned loader cleanup final code state passed full Browser CI.",
+    "reason": "Rolling release is clean and viewer diagnostics ownership race is fixed and fully Browser-verified. Main work remains Stage 19.3 live Leumi verification.",
     "nextStage": "19",
     "nextSubstep": "19.3",
-    "nextAction": "Resume live Leumi verification and investigate after-market static-data behavior using the current verified Bookmarklet and Export Debug."
+    "nextAction": "Refresh the authenticated Leumi page, run the latest verified Bookmarklet, let several cycles complete, and use Export Debug to investigate after-market static-data behavior."
   },
   "navigation": {
     "allStages": "ROADMAP.md",
