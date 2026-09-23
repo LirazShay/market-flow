@@ -14,7 +14,7 @@
     "issue": 15,
     "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "Issue #5 is complete and handed off. No Issue #15 outcome contract has been defined yet; the first work unit is to specify the eligible-observation denominator, target/time/adverse grid, direct outcome labels, future-BID exitability labels, timestamp tolerance and leakage boundaries."
+    "subfocus": "Direct all-observation outcome-surface contract defined: label-family-specific denominators, timestamp-based horizon semantics, MID/LAST/touch-exit outcome separation, interval-censored timing, censoring, integrity reporting and no-leakage boundaries."
   },
   "completedWorkUnits": [
     {
@@ -54,6 +54,6 @@
   },
   "next": {
     "issue": 15,
-    "action": "Define the direct all-observation outcome-surface contract first: eligible observation denominator, target/time/adverse grid, MFE/MAE/TimeToTarget/WhichBarrierFirst labels, future-BID exitability labels, timestamp tolerance and no-leakage boundaries before any implementation."
+    "action": "Map the outcome-surface contract against the actual Local History Viewer/storage schema and classify each required field/timestamp as AVAILABLE NOW, DERIVABLE NOW, SEMANTICS-BLOCKED or DATA-NOT-COLLECTED before implementing any label generator."
   }
 }
