@@ -23,9 +23,10 @@ Market Data
 ~~~text
 AGENTS.md
 → docs/project/workstreams.md
-→ workstream-local AI_CONTEXT.md
+→ workstream-local README.md
 → workstream-local STATUS.json
-→ target files/tests
+→ workstream-local AI_CONTEXT.md
+→ target files/tests/specs as needed
 ~~~
 
 Operational progress אינו נשמר במסמך הזה.
@@ -105,5 +106,8 @@ workstream/ROADMAP.md
     plan/order/scope
 
 workstream/HANDOFF.md
-    fresh-chat instructions without live snapshot
+    optional human fresh-chat helper; not part of the default AI hot path
+
+workstream/docs/history/
+    preserved cold historical evidence, read on demand
 ~~~
