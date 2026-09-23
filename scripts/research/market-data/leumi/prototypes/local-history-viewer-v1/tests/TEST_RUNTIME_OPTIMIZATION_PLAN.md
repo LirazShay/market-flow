@@ -317,3 +317,58 @@ The next run must demonstrate:
 - full 56-test Chromium success;
 - lower setup/job elapsed time than the cold path;
 - no change to workers or storage-growth coverage.
+
+
+## Phase B warm-run findings
+
+Browser CI run `35865194288` exercised the same setup on a fresh hosted runner after the browser cache had been populated:
+
+~~~text
+result: 56 / 56 passed
+runner: ubuntu-24.04
+cache state: hit
+Playwright suite: 36.5s
+browser-tests job: about 48s
+end-to-end workflow including publication: about 67s
+~~~
+
+The cache was restored successfully and the subsequent:
+
+~~~text
+npx playwright install chromium
+~~~
+
+completed in under one second because the matching Playwright browser binaries were already present.
+
+Measured comparison:
+
+| Path | Baseline | Phase B | Approx. improvement |
+|---|---:|---:|---:|
+| browser-tests job, warm cache | ~67s | ~48s | ~19s / ~28% |
+| full workflow incl. publication | ~90s | ~67s | ~23s / ~26% |
+| corrected cold browser-tests job | ~67s | ~57s | ~10s / ~15% |
+
+Phase B therefore keeps the following durable setup:
+
+- pin Browser CI to `ubuntu-24.04`;
+- cache `~/.cache/ms-playwright` with a key derived from the pinned test-tool package definition;
+- use `npx playwright install chromium` instead of reinstalling OS dependencies with `--with-deps` on every run;
+- keep all 56 browser tests, `workers=1`, and the Stage 18 storage-growth benchmark unchanged.
+
+The temporary `push` trigger used only to produce cold/warm benchmark runs was removed after measurement.
+
+Phase B acceptance:
+
+~~~text
+cold full Chromium run: 35865004148 — 56/56
+warm full Chromium run: 35865194288 — 56/56
+coverage removed: none
+worker count changed: no
+storage-growth changed: no
+production/runtime behavior changed: no
+~~~
+
+Result:
+
+- setup optimization is accepted;
+- the next isolated experiment is Phase C controlled worker parallelism.
