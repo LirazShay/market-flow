@@ -439,20 +439,26 @@ A Fast unit guard enforces this rule for the Market Flow routing/context and Loc
 
 # 13. Project navigation
 
-Global project documents include:
+Context loading is governed by:
 
 ~~~text
-PROJECT_CONTEXT.md
-docs/project/current-state.md
-docs/project/system-scope.md
-docs/project/decisions.md
-docs/project/chat-map.md
-docs/project/repository-structure.md
+docs/project/context-loading.md
 ~~~
 
-Do not read all of them for every normal continuation.
+Default fresh-chat flow:
 
-Use them when the task actually crosses project/workstream boundaries or changes durable context.
+~~~text
+AGENTS.md
+→ identify workstream
+→ workstream README.md
+→ workstream STATUS.json
+→ workstream AI_CONTEXT.md
+→ task-specific files/tests/specs
+~~~
+
+Global/deep project documents such as `PROJECT_CONTEXT.md`, `current-state.md`, `decisions.md` and repository/design docs are WARM/COLD context. Read them only when the task crosses boundaries, changes durable context, or compact context is insufficient.
+
+Historical evidence stays discoverable under workstream/project history locations but is not preloaded.
 
 ---
 
