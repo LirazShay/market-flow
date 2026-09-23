@@ -13,7 +13,7 @@
   "currentFocus": {
     "issue": 5,
     "title": "Build feature registry and evidence taxonomy",
-    "status": "next"
+    "status": "in-progress"
   },
   "completedWorkUnits": [
     {
@@ -40,6 +40,6 @@
   },
   "next": {
     "issue": 5,
-    "action": "Build the feature registry and evidence taxonomy from the durable checkpoint before resuming new signal research."
+    "action": "Build and verify the durable feature registry and evidence taxonomy from the checkpoint."
   }
 }
