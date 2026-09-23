@@ -53,7 +53,7 @@ jobs:
         run: npx playwright install chromium
 
       - name: Run browser tests
-        run: npm run build:runtime && npx playwright test tests/automation/specs/debug-bundle.spec.js --repeat-each=10
+        run: npm run test:browser
 
       - name: Upload generated runtime artifacts
         if: success()
