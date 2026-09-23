@@ -13,17 +13,17 @@
     "stage": "20",
     "substep": null,
     "title": "V1 freeze",
-    "status": "planned"
+    "status": "in-progress"
   },
   "stageSummary": {
     "completed": "1-19",
-    "inProgress": null,
-    "planned": "20"
+    "inProgress": "20",
+    "planned": null
   },
   "currentStage": {
     "stage": "20",
     "title": "V1 freeze",
-    "status": "planned"
+    "status": "in-progress"
   },
   "activeMiniProject": null,
   "verification": {
@@ -66,12 +66,12 @@
     }
   },
   "next": {
-    "action": "Start Stage 20 V1 freeze.",
+    "action": "Complete Stage 20 V1 freeze.",
     "steps": [
-      "review Stage 20 freeze scope and owning specs/docs",
-      "finalize README verified behavior and known limitations without duplicating live status",
-      "perform final cleanup/version-marker work required by the roadmap",
-      "run Fast CI and full Browser CI before marking Stage 20 complete"
+      "finalize stable README verified behavior and known limitations",
+      "resolve stale durable documentation/spec contradictions and add a simple V1 version marker",
+      "run Fast CI and full Browser CI on the final freeze state",
+      "mark the full planned V1 process complete only after both verification gates are green"
     ]
   },
   "history": {
