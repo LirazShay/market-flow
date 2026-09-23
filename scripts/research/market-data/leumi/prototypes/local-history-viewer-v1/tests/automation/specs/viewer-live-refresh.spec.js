@@ -447,6 +447,17 @@ test(
                 "4"
         );
 
+        await viewer.waitForFunction(
+            () =>
+                window.opener
+                    .MarketFlowViewerLiveRefresh
+                    .getState(
+                        window
+                    )
+                    ?.refreshCount >=
+                1
+        );
+
         const result =
             await viewer.evaluate(
                 () => ({
