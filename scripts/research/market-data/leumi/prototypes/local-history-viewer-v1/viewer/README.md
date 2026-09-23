@@ -53,7 +53,7 @@ MarketFlowViewerBootstrap.isViewerOpen()
 MarketFlowViewerBootstrap.getViewerSnapshot()
 ~~~
 
-Repeated launch reuses/focuses the named window.
+Repeated launch may reuse/focus an existing viewer or open another same-origin viewer. Multiple viewers are acceptable because IndexedDB remains the single data authority; runtime launch must not start a duplicate recorder.
 
 Reload recovery rebuilds the same-origin shell and rereads IndexedDB rather than depending on an in-memory market snapshot.
 
