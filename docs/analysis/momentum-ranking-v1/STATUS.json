@@ -11,10 +11,10 @@
     "backlog": "GitHub Issue #3 and linked research issues"
   },
   "currentFocus": {
-    "issue": 19,
-    "title": "Simplify Momentum Ranking into practical Hebrew metric shortlist",
+    "issue": 15,
+    "title": "Direct short-horizon outcome surfaces and fast-excursion propensity",
     "status": "in-progress",
-    "subfocus": "19.C complete: redundancy elimination reduced the practical model to four universal decision interfaces (Fresh BID Repricing, Activity→Price Progress, Path Usability, Remaining Opportunity), one conditional Fresh Reset/Renewal interface, plus live-activity/data-validity gates. ASK/MID movement, trade-rate acceleration, minute/hour activity, ASK/BID-vs-LAST distances, recent-high distance and reversal children are merged/demoted; spread remains IGNORE/raw diagnostic. Next: 19.D final Hebrew guide."
+    "subfocus": "Issue #19 practical-guide work is complete. Before continuing #15 empirical/outcome work, reconcile stale Issue #15 text that still names ASK(t0)→future BID as primary against the corrected durable decision: BID(t0)→future BID is primary, MID is control, ASK→future BID is diagnostic only."
   },
   "completedWorkUnits": [
     {
@@ -41,6 +41,11 @@
       "issue": 16,
       "title": "Precursor-to-price conversion latency and opportunity half-life",
       "result": "Collapsed six timing candidates into two nested timing interfaces: ConversionTimingState under Progress Conversion Efficiency and OpportunityEvidenceDecayProfile/UsableLeadBudget under Remaining Opportunity Lifecycle; book-pressure timing remains diagnostic/validate-only and no universal half-life is assumed."
+    },
+    {
+      "issue": 19,
+      "title": "Simplify Momentum Ranking into practical Hebrew metric shortlist",
+      "result": "Converted the broad research into a comprehensive plain-Hebrew practical guide with live-activity/data-validity gates, four universal decision interfaces (Fresh BID Repricing, Activity→Price Progress, Path Usability, Remaining Opportunity), one conditional Fresh Reset/Renewal interface, explicit intuitive-metric verdicts, window semantics, formulas, failure modes, examples and a no-double-counting/no-arbitrary-threshold contract. Spread remains ignored for ranking/eligibility and raw diagnostic only."
     }
   ],
   "plannedIssues": [
@@ -66,7 +71,7 @@
     "probabilityClaimsAllowed": false
   },
   "next": {
-    "issue": 19,
-    "action": "19.D: build the comprehensive final Hebrew guide from the reduced candidate set, with formulas, window guidance, good/bad examples, failure modes, explicit intuitive-metric verdicts, evidence status and a compact ranking flow; do not assign arbitrary weights or thresholds."
+    "issue": 15,
+    "action": "Reconcile Issue #15 and any stale durable outcome-contract wording with the corrected BID→future BID primary outcome, MID control and ASK→future BID diagnostic role; then identify the next unresolved #15 research boundary without changing the frozen horizon/target/adverse grid."
   }
 }
