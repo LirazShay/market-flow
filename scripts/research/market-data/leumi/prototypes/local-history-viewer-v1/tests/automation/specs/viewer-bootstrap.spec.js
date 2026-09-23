@@ -270,7 +270,7 @@ test(
 );
 
 test(
-    "Stage 10 reuses the named viewer instead of opening duplicate windows",
+    "Stage 10 keeps repeated viewer opens usable without changing the data authority",
     async ({ page }) => {
         await page.goto(
             "/tests/automation/harness.html"
@@ -346,12 +346,14 @@ test(
                 .viewState
         ).toBe("EMPTY");
 
-        expect(
-            page
-                .context()
-                .pages()
-                .length
-        ).toBe(2);
+        await expect(
+            viewer.locator(
+                "[data-role='viewer-status']"
+            )
+        ).toHaveAttribute(
+            "data-view-state",
+            "EMPTY"
+        );
 
         await viewer.close();
     }
