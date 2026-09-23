@@ -534,3 +534,101 @@ No spec impact.
 ~~~
 
 Phase D is accepted as a deliberate no-change result. The next isolated optimization unit is Phase E release-path latency.
+
+
+## Phase E findings
+
+Historical runs with automatic rolling-release publication showed that publication consistently extended the workflow **after** Browser CI was already green:
+
+| Run | Browser job complete | Publish job complete | Added post-verification latency |
+|---|---|---|---:|
+| `35865194288` | 13:10:53 | 13:11:07 | ~14s |
+| `35865811136` | 13:16:45 | 13:17:00 | ~15s |
+| `35866009146` | 13:17:56 | 13:18:06 | ~10s |
+
+The publication body itself was already proven by those successful runs.
+
+### Chosen model
+
+Keep one Browser CI workflow and add one explicit boolean input:
+
+~~~text
+publish_runtime
+default: false
+~~~
+
+Available to both:
+
+- `workflow_dispatch`;
+- `workflow_call`.
+
+The `publish-runtime` job still:
+
+- depends on successful `browser-tests`;
+- only runs on `main`;
+- downloads the runtime artifact produced by that same verified Browser CI run;
+- updates the same rolling release.
+
+No second workflow was added.
+
+### Verification-only benchmark
+
+Browser CI run `35867930699` exercised the new default verification path:
+
+~~~text
+workers: 2
+cache: hit
+tests: 56 / 56 passed
+Playwright suite: 26.1s
+browser-tests job: about 41s
+publish-runtime: skipped
+workflow elapsed: about 46s
+~~~
+
+Compared with the original ~90s baseline workflow, the ordinary verification path is now roughly half the original wall-clock time while preserving the same full Browser suite.
+
+Compared with the accepted two-worker runs that still published, ordinary verification avoids another ~10–15s of release latency after the browser result is already known.
+
+### Publication behavior
+
+For ordinary verification:
+
+~~~text
+publish_runtime = false
+~~~
+
+For a release-worthy verified runtime update:
+
+~~~text
+publish_runtime = true
+~~~
+
+Publication remains downstream of full Chromium success, preserving the verified-distribution invariant.
+
+The temporary `push` trigger used only to benchmark the verification-only path was removed after the successful run.
+
+### Decision
+
+Keep publication opt-in in the same workflow.
+
+Reason:
+
+~~~text
+meaningful measured latency reduction
++
+no coverage reduction
++
+no duplicate workflow/lifecycle
++
+verified artifact provenance preserved
+~~~
+
+SPEC impact review:
+
+~~~text
+No spec impact.
+~~~
+
+The runtime-delivery spec already defines publication as something a successful Browser CI run **may** perform and requires only that stable publication follow successful Browser CI. Phase E changes scheduling/default invocation, not the durable distribution invariant.
+
+Phase E is accepted. The next unit is Phase F final optimization verification and freeze handoff.
