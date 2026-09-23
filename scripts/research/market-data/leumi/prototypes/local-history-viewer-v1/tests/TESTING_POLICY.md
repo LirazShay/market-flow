@@ -257,7 +257,7 @@ These remain in the browser layer because they verify real browser APIs or adapt
 
 No automated live Leumi test belongs in normal CI.
 
-The planned live-provider checkpoint remains V1 Stage 19.2.
+Authenticated provider/session behavior is verified only at an explicit live checkpoint defined by the current plan/status; this policy does not own a live Stage number.
 
 ## 4. Additional V1 integration checkpoints
 
