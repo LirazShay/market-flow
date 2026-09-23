@@ -9,6 +9,14 @@ Describe the coherent behavior/design change.
 - [ ] If I added meaningful complexity, there is a concrete present-day requirement/evidence showing why the simpler approach is insufficient.
 - [ ] Simplicity did not remove required correctness, data-integrity, security, observability, recovery, or verification guarantees.
 
+## Repository self-maintenance
+
+- [ ] Affected STATUS / SPEC / context / decision / history owners were updated in the same coherent batch.
+- [ ] Historical detail was archived instead of appended to HOT/live context where applicable.
+- [ ] Temporary CI/debug scaffolding and abandoned artifacts were removed.
+- [ ] No duplicate source of truth or stale instruction was introduced.
+- [ ] The work leaves no-cleanup debt for a later engineer/AI.
+
 ## Verification
 
 - [ ] Relevant tests were run after their final edit.
