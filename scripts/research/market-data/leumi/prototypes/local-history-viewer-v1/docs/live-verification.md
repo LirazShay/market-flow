@@ -172,8 +172,8 @@ Execute the same Bookmarklet again while the recorder is running.
 Expected:
 
 - no second recorder instance;
-- no second viewer window;
-- the existing named viewer is focused/reused.
+- an existing viewer may be focused/reused or another same-origin viewer may open;
+- every viewer remains a read-only IndexedDB-backed view rather than creating another recorder.
 
 ### 7. Stop/restart
 
