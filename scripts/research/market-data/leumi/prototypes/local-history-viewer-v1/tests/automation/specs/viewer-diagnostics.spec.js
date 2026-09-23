@@ -546,6 +546,55 @@ test(
 );
 
 test(
+    "Stage 15.3 current-table rerender does not overwrite diagnostics last-update metric",
+    async ({ page }) => {
+        await seedDiagnosticsState(
+            page,
+            {
+                cycleId: 42,
+                completedCycles: 7,
+                failedCycles: 2,
+                historyCount: 3,
+                rate: 3200
+            }
+        );
+
+        const viewer =
+            await openViewer(
+                page
+            );
+
+        const lastUpdate =
+            viewer.locator(
+                "[data-role='last-update']"
+            );
+
+        await expect(
+            lastUpdate
+        ).toContainText(
+            "לפני"
+        );
+
+        await viewer.evaluate(
+            async () => {
+                await window
+                    .opener
+                    .MarketFlowViewerCurrentTable
+                    .loadAndRender(
+                        window
+                    );
+            }
+        );
+
+        await expect(
+            lastUpdate
+        ).toContainText(
+            "לפני"
+        );
+    }
+);
+
+test(
     "Stage 15.3 manual and BroadcastChannel refresh reread diagnostics from IndexedDB",
     async ({ page }) => {
         await seedDiagnosticsState(
