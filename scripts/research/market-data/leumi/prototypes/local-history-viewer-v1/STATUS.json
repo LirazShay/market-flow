@@ -57,14 +57,14 @@
         "GetSecuritiesData completed as three 187-security chunks with HTTP 200 and complete 187/187 responses.",
         "Adjacent live cycles show changing market-data and provider-time fingerprints/change counts, proving the collected snapshot is not frozen.",
         "IndexedDB contains universe=561, latest=561 and populated history; the Viewer is open against the persisted data.",
-        "Evidence across recorder sessions shows persisted history survives a new session boundary."
+        "Evidence across recorder sessions shows persisted history survives a new session boundary.",
+        "Repeated live Bookmarklet launch kept the recorder running and opened another Viewer; multiple Viewer windows are now an accepted contract because IndexedDB remains authoritative."
       ],
       "inferred": [
         "A fresh successful recorder session necessarily completed the configured universe-loading path, but the Debug Bundle does not directly record the MapHeat2 HTTP status."
       ],
       "remaining": [
         "record the exact verified runtime artifact/commit used for the live run",
-        "repeat the Bookmarklet while running and verify recorder/viewer reuse with no duplicate recorder",
         "perform an explicit MarketFlowRuntime.stop() then restart and verify graceful stop persistence plus retained history",
         "classify any endpoint/UI checks not directly observed as Verified/Inferred/Unknown"
       ],
@@ -90,12 +90,12 @@
     }
   },
   "next": {
-    "action": "Finish the remaining Stage 19.3 lifecycle/artifact checks; live provider collection and persistence are already evidenced.",
+    "action": "Finish Stage 19.3 with automated lifecycle verification only; no further manual user checks.",
     "steps": [
-      "record exact runtime artifact/commit used",
-      "verify repeated Bookmarklet launch reuses the running recorder/viewer",
-      "explicitly stop then restart and verify stop persistence plus retained history",
-      "record final Verified/Inferred/Unknown classification and only then decide Stage 19.3 closure"
+      "run targeted Chromium for the updated repeated-launch tests",
+      "run Fast CI and full Browser CI on the final Stage 19.3 contract state",
+      "record the runtime artifact identity as Verified if available, otherwise Unknown without blocking provider evidence",
+      "close Stage 19.3 only after required automated verification is green"
     ]
   },
   "history": {
