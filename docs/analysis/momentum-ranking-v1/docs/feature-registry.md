@@ -2086,6 +2086,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk
 - **Meaning:** distinguishes direct recent progress from equally large net movement reached through heavy oscillation
+- **Plain-language intuition:** two stocks can both end +0.30%, but one got there almost in a straight line while the other repeatedly moved up/down/up/down before ending at the same place. This metric asks how directly the path converted movement into net progress.
+- **Market mechanism / why it can matter:** a more direct path means less price travel was wasted on reversals. For a short holding period, that can reduce the chance that we spend time underwater before the target is reached.
+- **Objective connection:** our goal is not merely to find a stock that has risen; we want a move that can continue far enough and fast enough to give us a sellable higher BID. Efficient recent progress is a path-quality clue that the move may be easier to monetize if it remains active.
+- **Favorable / unfavorable interpretation:** high efficiency can support a healthy path when the move is fresh. Low efficiency indicates chop/fragmentation. But very high efficiency after a large already-consumed move can describe a beautiful past move with little left.
+- **Failure modes / counterexamples:** a single jump can look perfectly efficient but already be over; near-zero total movement makes the ratio unstable; sparse sampling can hide intrawindow reversals.
+- **Relationship to other evidence:** PW says how far/how fast price moved; PH-001 says how cleanly it got there. PH-002/003 explain whether inefficiency came from many reversals or deep reversals.
+- **Worked example:** Path A: 100→100.10→100.20→100.30. Path B: 100→100.20→100.05→100.35→100.30. Same final +0.30%, but A is much more directionally efficient.
 - **Known overlaps:** PH-002/PH-003; PW return profile
 - **Confidence limits:** unstable with too few samples or near-zero movement; a high value after a mature consumed move is not bullish by itself
 - **Validation targets:** target-before-adverse, MAE-before-target, TimeToTarget, RecoveryTime
@@ -2103,6 +2110,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk
 - **Meaning:** measures how fragmented/choppy the recent path is
+- **Plain-language intuition:** this counts how often the recent path meaningfully changes direction rather than continuing the same way.
+- **Market mechanism / why it can matter:** frequent reversals mean the market is repeatedly undoing recent progress. That can increase adverse excursions, delay target arrival and make a short entry harder to hold through.
+- **Objective connection:** if we need a small target within seconds/minutes, a path that repeatedly reverses can consume the entire time budget even if the final direction is upward.
+- **Favorable / unfavorable interpretation:** fewer meaningful reversals generally supports a cleaner path; higher reversal density raises path risk. But a temporary burst of reversals can also be a pullback/reset before a strong new leg.
+- **Failure modes / counterexamples:** bid-ask bounce and one-tick noise can create fake reversals; thresholds that are too small will classify normal micro-noise as chop.
+- **Relationship to other evidence:** PH-002 counts reversals; PH-003 measures their depth. PH-001 summarizes overall path efficiency.
+- **Worked example:** five meaningful direction changes in 30s is very different from one shallow pullback in 30s, even if both finish +0.20%.
 - **Known overlaps:** PH-001, PH-003
 - **Confidence limits:** must not count bid-ask bounce/tiny jitter as structural reversals; threshold sensitivity must be validated
 - **Validation targets:** MAE-before-target, TimeUnderWater, target-before-adverse
@@ -2120,6 +2134,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk
 - **Meaning:** separates frequent tiny oscillations from fewer materially adverse reversals
+- **Plain-language intuition:** not all reversals are equally dangerous. This measures how deep the adverse pullbacks were, not merely how many occurred.
+- **Market mechanism / why it can matter:** one or two deep reversals can expose a trader to more adverse movement and recovery time than several tiny harmless oscillations.
+- **Objective connection:** deeper recent reversals can imply that reaching a small target may require tolerating larger drawdowns or longer recovery, which is directly relevant to target-before-adverse.
+- **Favorable / unfavorable interpretation:** shallow reversal profile is generally easier to trade; deep repeated reversals increase path risk. A single deep pullback that fully resets and reclaims can still create a fresh opportunity.
+- **Failure modes / counterexamples:** without valid leg/path segmentation, what counts as a reversal can be arbitrary; percent depth can be exaggerated in coarse-tick securities.
+- **Relationship to other evidence:** PH-002 tells frequency; PH-003 tells severity; PH-004 measures how much of the latest upward progress was given back.
+- **Worked example:** three -0.02% reversals may be less concerning than one -0.25% reversal on a +0.30% target path.
 - **Known overlaps:** PH-002, PH-004
 - **Confidence limits:** requires explicit path/leg semantics; current broad wave segmentation is deferred to Issue #6
 - **Validation targets:** MAE-before-target, RecoveryTime, target-before-adverse
@@ -2137,6 +2158,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** measures how much of recent upward progress has already been surrendered
+- **Plain-language intuition:** this asks how far price has fallen back from the relevant recent local peak.
+- **Market mechanism / why it can matter:** giveback shows whether buyers are retaining gains or whether recent upward progress is being rapidly surrendered.
+- **Objective connection:** if a move repeatedly gives back a large share of its gains, a buyer entering now may have less stable remaining opportunity and more risk that the exit BID deteriorates before target.
+- **Favorable / unfavorable interpretation:** small giveback after fresh progress can support path strength; large/faster giveback is cautionary. But a controlled pullback can be healthy if it leads to a strong reclaim.
+- **Failure modes / counterexamples:** using daily high instead of the relevant micro peak can make giveback meaningless; a large giveback after a huge move may still leave the stock above entry.
+- **Relationship to other evidence:** PH-004 is generic surrendered progress. PR family later decides whether that giveback is a constructive pullback/retest or a failure.
+- **Worked example:** local peak 100.50, now 100.35 → 0.15% giveback from the relevant peak. Whether that is severe depends on the target and prior leg size.
 - **Known overlaps:** PH-005; pullback/retest; future wave segmentation
 - **Confidence limits:** daily high is not the default reference; relevant micro/leg peak must be defined without future leakage
 - **Validation targets:** continuation vs breakdown, target-before-adverse, MAE
@@ -2154,6 +2182,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** makes adverse giveback economically relative to the short move being pursued
+- **Plain-language intuition:** the same 0.10% giveback is minor if our target is +1.00%, but enormous if our target is +0.15%. This ratio compares the setback with the prize we are chasing.
+- **Market mechanism / why it can matter:** short-horizon trades have limited reward budgets. If recent giveback is already comparable to the target, the path may be too unstable to justify that target.
+- **Objective connection:** this converts path damage into the same scale as the desired opportunity, making it directly relevant to target feasibility.
+- **Favorable / unfavorable interpretation:** low ratio is generally better; high ratio means path noise/adverse movement is large relative to expected reward. It is not directional.
+- **Failure modes / counterexamples:** if target semantics are weak or invented, the ratio is meaningless; a healthy reset can temporarily produce a high ratio before renewed opportunity forms.
+- **Relationship to other evidence:** PH-004 supplies raw giveback; RO target frontier supplies the target. PH-005 is therefore a consumer of both.
+- **Worked example:** giveback=0.10%, target=0.50% → ratio 0.20. Same giveback with target=0.15% → ratio≈0.67.
 - **Known overlaps:** RemainingOpportunity / TargetFeasibilityFrontier
 - **Confidence limits:** blocked until target/frontier semantics are explicit; must not invent a target merely to compute the ratio
 - **Validation targets:** target-before-adverse, net useful excursion
@@ -2171,6 +2206,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** RemainingOpportunity, PathRisk
 - **Meaning:** supports distinguishing a fresh post-pullback leg from an old broad wave
+- **Plain-language intuition:** this measures how far price has risen from a recent local reset/pullback low rather than from the beginning of the whole broad wave.
+- **Market mechanism / why it can matter:** an old wave can contain a brand-new leg. Measuring progress from the recent low helps detect whether a fresh local move has just started after a reset.
+- **Objective connection:** fresh local progress may leave more capturable room than the age of the broad wave suggests, which is important for entering now rather than judging the whole session move.
+- **Favorable / unfavorable interpretation:** modest fresh progress with acceleration/reclaim can indicate an early leg; very large progress from the reset can mean the new leg is already partly consumed.
+- **Failure modes / counterexamples:** choosing the wrong recent low can create arbitrary “fresh” legs; noisy micro-lows can reset the reference too often.
+- **Relationship to other evidence:** overlaps PW-009 and PR LegResetStrength; final ownership should be reconciled after Issue #6 segmentation.
+- **Worked example:** broad wave began at 99.00, recent pullback low 100.00, now 100.12. Broad move is +1.13%, but fresh-leg progress is only +0.12%.
 - **Known overlaps:** PW-009 CurrentLegObservedMovePct; pullback/retest research
 - **Confidence limits:** should converge to one owner after Issue #6 defines leg semantics; avoid duplicate scoring with PW-009
 - **Validation targets:** detection lateness, target-before-adverse, TimeToTarget
@@ -2188,6 +2230,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** exposes stalls that raw cumulative momentum can hide
+- **Plain-language intuition:** this asks how long it has been since the market made a meaningful new upward step.
+- **Market mechanism / why it can matter:** cumulative return can remain strongly positive even while price has stopped progressing for 20–30 seconds. A stall can indicate that current buying effort is no longer converting quickly enough.
+- **Objective connection:** our opportunity clock is short. If price has not made meaningful progress for a large fraction of the horizon, the remaining opportunity may be shrinking even though the stock still looks strong on longer windows.
+- **Favorable / unfavorable interpretation:** short time since meaningful progress supports active movement; long time is cautionary. A brief pause can be healthy and should not be treated as exhaustion automatically.
+- **Failure modes / counterexamples:** “meaningful” must respect tick size/noise; illiquid stocks can naturally pause; a barrier/retest may justify a temporary stall.
+- **Relationship to other evidence:** PH-007 is a raw clock; PH-008 interprets whether the delay is normal or excessive given state/conversion expectations.
+- **Worked example:** stock still +0.40%/60s, but no new upward progress for 25s on a 30s target horizon → historical momentum looks strong while current path is effectively stalled.
 - **Known overlaps:** FQ signal age, PH-008/PH-011, Issue #16 conversion latency
 - **Confidence limits:** “meaningful” must be relative to tick/noise/target context; no universal seconds threshold
 - **Validation targets:** TimeToTarget, target-before-adverse, continuation vs exhaustion
@@ -2205,6 +2254,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** distinguishes a normal brief pause from pressure/effort that is no longer converting to useful upward movement
+- **Plain-language intuition:** this classifies whether price is actively progressing, merely pausing, truly stalling, or taking longer than similar states normally need to convert.
+- **Market mechanism / why it can matter:** a pause is normal; prolonged lack of progress while activity/book pressure remains high can indicate the move is failing to translate effort into price.
+- **Objective connection:** the system needs to know when waiting longer is consuming the remaining time budget without producing a better future BID.
+- **Favorable / unfavorable interpretation:** `PROGRESSING` supports healthy path; `PAUSING` is neutral/contextual; `STALLING/STALLED_BEYOND_EXPECTED` is increasingly protective.
+- **Failure modes / counterexamples:** current research does not yet know the correct expected conversion time; a temporary barrier can produce a benign pause.
+- **Relationship to other evidence:** Issue #16 will calibrate normal conversion latency. PH-008 combines PH-007 with activity/book context.
+- **Worked example:** activity and BID pressure stay elevated for 15s but MID/LAST stop making new highs. Depending on learned normal conversion time, this may move from PAUSING to STALLING.
 - **Known overlaps:** Issue #16 ProgressStallRelativeToNormalConversion
 - **Confidence limits:** current version cannot claim “beyond expected” until conversion-latency research exists
 - **Validation targets:** target-before-adverse, TimeToTarget, exhaustion transition
@@ -2222,6 +2278,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, Confirmation
 - **Meaning:** asks whether increasing market effort is producing useful upward movement
+- **Plain-language intuition:** this compares how much activity/participation is happening with how much useful upward price progress results from it.
+- **Market mechanism / why it can matter:** when lots of trades/turnover are required for very little progress, the market may be encountering resistance, absorption or two-sided churn. When modest effort produces clean progress, the path may be more efficient.
+- **Objective connection:** we care about progress that converts quickly into a better exit price. High effort without enough progress can waste time and increase the chance that the move is nearing exhaustion.
+- **Favorable / unfavorable interpretation:** improving/high efficiency can support a healthy move; poor efficiency is cautionary. But low effort can also simply reflect thin liquidity, so this is not a standalone strength measure.
+- **Failure modes / counterexamples:** naive division blows up near zero progress; absolute activity differs by stock; we cannot infer who caused the effort.
+- **Relationship to other evidence:** AF owns the effort inputs; PW owns progress; PH-009 owns only the cross-family efficiency interpretation.
+- **Worked example:** Window A: 100 trades produce +0.02%. Window B: 40 trades produce +0.15%. B may show better effort-to-progress conversion despite lower raw activity.
 - **Known overlaps:** AF activity measures; PW price response
 - **Confidence limits:** zero/near-zero progress makes naive division unstable; absolute activity differs by stock/regime; no causal intent inference
 - **Validation targets:** continuation vs exhaustion, target-before-adverse, MAE
@@ -2239,6 +2302,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** candidate early exhaustion evidence before an outright price reversal
+- **Plain-language intuition:** this asks whether the market is needing the same or more effort to achieve less upward progress than it did moments earlier.
+- **Market mechanism / why it can matter:** deteriorating conversion can be an early warning that buying pressure is meeting stronger resistance or that the move is losing effectiveness before price visibly reverses.
+- **Objective connection:** detecting deterioration before reversal matters because the strategy wants to avoid entering just as the remaining upside is disappearing.
+- **Favorable / unfavorable interpretation:** `IMPROVING/STABLE` supports path health; `DETERIORATING/SEVERE_DIVERGENCE` raises exhaustion risk. It is still a hypothesis until validated.
+- **Failure modes / counterexamples:** temporary barriers, scheduled pauses or healthy consolidation can create deterioration without true exhaustion; activity bursts can be noisy.
+- **Relationship to other evidence:** PH-010 is the change in PH-009 over time; PW deceleration and PH-008 stall can corroborate or contradict it.
+- **Worked example:** prior 20s: moderate activity → +0.12%. latest 20s: double activity → +0.01%. Same/up effort, much less progress = deterioration candidate.
 - **Known overlaps:** PH-008; AF participation expansion; PW deceleration
 - **Confidence limits:** divergence can occur transiently near barriers or during benign pauses; must be interpreted with Book/path/target context
 - **Validation targets:** target-before-adverse, exhaustion/reversal, TimeToTarget deterioration
@@ -2256,6 +2326,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk
 - **Meaning:** summarizes whether recent progress has required disproportionately large adverse travel
+- **Plain-language intuition:** this asks how much useful upward progress was achieved relative to how much the path had to move against us along the way.
+- **Market mechanism / why it can matter:** a move that advances +0.20% while repeatedly drawing down -0.15% is harder to trade than one that advances +0.20% with only -0.02% adverse excursion.
+- **Objective connection:** our actual experience after entry depends on both upside and adverse path. Cleaner progress can reach target with less time underwater and lower failure risk.
+- **Favorable / unfavorable interpretation:** more progress per adverse excursion indicates cleaner path quality; poor ratio means the recent move required substantial adverse travel.
+- **Failure modes / counterexamples:** past clean path does not guarantee future clean path; exact adverse excursions depend on sampling and path definition.
+- **Relationship to other evidence:** PH-011 complements PH-001 efficiency with explicit adverse-path emphasis. Future MAE remains an outcome label and must not leak into this current feature.
+- **Worked example:** both stocks gain +0.20%; Stock A worst adverse move within path = -0.02%, Stock B = -0.15%. A has much better progress per adverse excursion.
 - **Known overlaps:** PH-001/PH-003; future MFE/MAE outcome labels
 - **Confidence limits:** past realized path quality is not a prediction by itself; no future MAE leakage
 - **Validation targets:** MAE-before-target, TimeUnderWater, target-before-adverse
@@ -2273,6 +2350,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** allows a previously noisy stock to become attractive when current path quality is improving, while penalizing deterioration after a formerly clean move
+- **Plain-language intuition:** this focuses on **change in path quality**, not just average quality: is the stock moving from noise to orderly upward progress, or from orderly movement into chop/stall?
+- **Market mechanism / why it can matter:** transitions can be more informative than static labels. A formerly messy stock can suddenly organize into a clean leg, while a formerly strong move can begin degrading before the headline return changes much.
+- **Objective connection:** this helps detect fresh opportunities and fresh failures near the decision point rather than judging the stock by older path history.
+- **Favorable / unfavorable interpretation:** `NOISE_TO_ORDERED_UP` can support a fresh improving opportunity; `ORDERED_TO_CHOPPY/STALLING/DETERIORATING` is cautionary. `PULLBACK_RESET` is contextual and needs reclaim evidence.
+- **Failure modes / counterexamples:** thresholds can create rapid state-flipping; a single clean interval after noise may not be stable enough to call a transition.
+- **Relationship to other evidence:** PH-012 summarizes direction of change across PH metrics and connects naturally to PR pullback/retest and SQ sequence stage.
+- **Worked example:** first minute contains several reversals; last 20s show steady higher MID/BID with fewer reversals and better efficiency → possible NOISE_TO_ORDERED_UP transition.
 - **Known overlaps:** pullback/retest; PW acceleration; sequence
 - **Confidence limits:** transition thresholds/stability requirements are not yet calibrated
 - **Validation targets:** target-before-adverse, TimeToTarget, detection lateness
@@ -2290,6 +2374,13 @@ It does **not** own:
 - **Evidence:** PI + H
 - **Decision role:** PathRisk, RemainingOpportunity
 - **Meaning:** compact path-health summary used by higher-level opportunity logic instead of independently summing correlated path diagnostics
+- **Plain-language intuition:** this is the family-level answer to “how healthy or fragile is the recent route that price is taking right now?”
+- **Market mechanism / why it can matter:** path quality has several correlated dimensions—efficiency, reversals, giveback, stall and effort-to-progress. Combining them prevents us from counting the same deterioration multiple times.
+- **Objective connection:** higher-level ranking needs a compact PathRisk view to distinguish opportunities that look equally strong by return but differ greatly in how likely they are to reach a sellable higher BID without damaging adverse movement.
+- **Favorable / unfavorable interpretation:** `HEALTHY_PATH/ACCEPTABLE` supports usability; `FRAGILE/STALLING/EXHAUSTING/FAILING` progressively warns that remaining opportunity may be lower or riskier. None is a standalone buy/sell prediction.
+- **Failure modes / counterexamples:** a healthy path can still be fully consumed; an exhausting-looking path can reset and renew; provisional state thresholds can create false certainty.
+- **Relationship to other evidence:** PH-013 is the synthesis intended for RO/Sequence. PW supplies direction, AF effort, BD directional structure, PR reset/barrier context.
+- **Worked example:** two stocks both +0.30%/60s. A has low reversals, tiny giveback and fresh progress → HEALTHY_PATH candidate. B has repeated deep reversals, 20s stall and worsening effort-to-progress → FRAGILE/STALLING candidate.
 - **Known overlaps:** RemainingOpportunity, pullback/retest, Sequence, future exhaustion-specific research
 - **Confidence limits:** HEALTHY_PATH is not a buy signal; EXHAUSTING remains a hypothesis until validated; family must not double-count PW/AF/BD inputs as separate votes
 - **Validation targets:** target-before-adverse, MAE, continuation vs exhaustion, TimeToTarget
