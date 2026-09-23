@@ -498,13 +498,31 @@ Run the assembled recorder + viewer for an extended period and save a reproducib
 
 ## Stage 20 — V1 freeze
 
-Finalize:
+Before final freeze, optimize the verification path without weakening required coverage:
+
+~~~text
+baseline
+→ setup optimization
+→ controlled suite parallelism benchmark
+→ expensive-test review
+→ release-path latency review
+→ repeated full verification
+~~~
+
+Detailed optimization plan:
+
+~~~text
+tests/TEST_RUNTIME_OPTIMIZATION_PLAN.md
+~~~
+
+Then finalize:
 
 - README;
 - verified behavior;
 - known limitations;
 - cleanup;
-- version marker.
+- version marker;
+- final Fast CI + full Browser CI.
 
 ---
 
