@@ -109,8 +109,6 @@
                 true,
             recorderRunning:
                 recorder?.isRunning === true,
-            recorderStatusRunning:
-                recorder?.status === "running",
             hasCompletedCycle:
                 Number(
                     recorder?.completedCycles ??
