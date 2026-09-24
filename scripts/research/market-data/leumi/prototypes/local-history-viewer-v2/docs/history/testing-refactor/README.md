@@ -1,0 +1,110 @@
+# Testing Refactor Mini-Project
+
+Purpose:
+
+Reduce development feedback time by moving most deterministic logic checks to fast unit tests and reserving Chromium/Playwright for real browser integration boundaries.
+
+This mini-project is complete. Normal Local History Viewer feature work resumes at Stage 7.3.
+
+Resume point after completion:
+
+~~~text
+Stage 7.3 — Single chunk fetch
+~~~
+
+## Target testing pyramid
+
+~~~text
+                Live Leumi
+              very few checks
+                   ▲
+                   │
+          Playwright / Chromium
+        checkpoint integration only
+                   ▲
+                   │
+          lightweight integration
+              selected cases
+                   ▲
+                   │
+             fast unit tests
+          many tests, every change
+~~~
+
+## Principles
+
+- Fast tests should dominate test count.
+- Browser tests should verify browser-only behavior and cross-component integration.
+- Do not test private implementation details just because they are easy to reach.
+- Prefer pure functions for deterministic logic.
+- Keep browser adapters thin.
+- CI should give fast feedback on ordinary implementation changes.
+- Full Chromium should run at meaningful checkpoints, not every small push.
+- Live Leumi verification remains a separate, rare provider-integration layer.
+
+## Current baseline
+
+Fast/unit layer:
+
+~~~text
+Node built-in test runner
+automatic Fast CI on ordinary relevant push/PR changes
+no dependency install
+no browser startup
+~~~
+
+Browser layer:
+
+~~~text
+Playwright + Chromium
+manual/reusable Browser CI checkpoint
+real IndexedDB
+mocked Leumi endpoints
+~~~
+
+The expensive Chromium workflow is no longer triggered by every small prototype code push.
+
+## Ownership
+
+This folder owns the temporary testing-refactor plan/status only.
+
+Durable testing rules that survive the mini-project will be folded into:
+
+~~~text
+tests/README.md
+package.json
+GitHub Actions workflows
+AI_CONTEXT.md
+~~~
+
+when the mini-project is completed.
+
+
+## Completion verification
+
+Final verification completed on 2026-09-22.
+
+~~~text
+Fast CI
+Run 35741459430
+60 passed / 0 failed
+~27 ms test-runner duration
+
+Browser CI
+Run 35741876693
+9 passed / 0 failed
+Chromium
+~~~
+
+The Browser CI workflow was temporarily given a one-time self-path push trigger solely to prove the final workflow end to end. After the successful run it was restored to:
+
+~~~text
+workflow_dispatch
+workflow_call
+~~~
+
+Normal feature development resumes at:
+
+~~~text
+Stage 7.3 — Single chunk fetch
+~~~

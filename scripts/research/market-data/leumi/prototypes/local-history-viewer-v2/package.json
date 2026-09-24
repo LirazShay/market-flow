@@ -1,0 +1,22 @@
+{
+  "name": "market-flow-local-history-viewer-v1-tests",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Test tooling for the Market Flow Local History Viewer V1 research prototype.",
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "node tests/unit/run-unit-tests.js",
+    "test:browser": "npm run build:runtime && playwright test",
+    "test:browser:smoke": "playwright test tests/automation/specs/harness-smoke.spec.js",
+    "test:all": "npm run test:unit && npm run test:browser",
+    "build:runtime": "node runtime/build-runtime.js",
+    "test:browser:runtime": "npm run build:runtime && playwright test tests/automation/specs/runtime-assembly.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.0",
+    "terser": "5.51.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

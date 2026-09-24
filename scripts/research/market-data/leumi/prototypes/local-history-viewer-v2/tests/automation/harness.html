@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Market Flow Local History Viewer V1 Test Harness</title>
+</head>
+<body>
+    <main>
+        <h1>Market Flow Browser Test Harness</h1>
+        <p
+            id="harness-ready"
+            data-ready="false"
+        >
+            loading
+        </p>
+    </main>
+
+    <script src="../../storage/schema.js"></script>
+    <script src="../../storage/connection.js"></script>
+    <script src="../../storage/upgrade.js"></script>
+    <script src="../../storage/read.js"></script>
+    <script src="../../storage/write.js"></script>
+    <script src="../../storage/pure/persistence-records.js"></script>
+    <script src="../../storage/lifecycle-persistence.js"></script>
+    <script src="../../storage/successful-cycle-persistence.js"></script>
+    <script src="../../storage/recorder-diagnostics-persistence.js"></script>
+
+    <script src="../../messaging/pure/channel-message-logic.js"></script>
+    <script src="../../messaging/channel.js"></script>
+
+    <script src="../../recorder/pure/config-logic.js"></script>
+    <script src="../../recorder/pure/universe-logic.js"></script>
+    <script src="../../recorder/pure/securities-chunk-logic.js"></script>
+    <script src="../../recorder/pure/cycle-logic.js"></script>
+    <script src="../../recorder/pure/recorder-loop-logic.js"></script>
+    <script src="../../recorder/pure/diagnostics-logic.js"></script>
+    <script src="../../debug/pure/debug-bundle-logic.js"></script>
+    <script src="../../recorder/config.js"></script>
+    <script src="../../recorder/diagnostics.js"></script>
+    <script src="../../recorder/universe-loader.js"></script>
+    <script src="../../recorder/securities-chunk-fetcher.js"></script>
+    <script src="../../recorder/cycle-builder.js"></script>
+    <script src="../../recorder/recorder-loop.js"></script>
+    <script src="../../debug/debug-bundle.js"></script>
+
+    <script src="../../viewer/pure/viewer-state.js"></script>
+    <script src="../../viewer/pure/current-table-logic.js"></script>
+    <script src="../../viewer/pure/diagnostics-logic.js"></script>
+    <script src="../../viewer/current-table.js"></script>
+    <script src="../../viewer/history-data.js"></script>
+    <script src="../../viewer/security-detail.js"></script>
+    <script src="../../viewer/diagnostics-data.js"></script>
+    <script src="../../viewer/diagnostics.js"></script>
+    <script src="../../viewer/live-refresh.js"></script>
+    <script src="../../viewer/bootstrap.js"></script>
+
+    <script src="../storage-schema-self-test.js"></script>
+    <script src="../storage-fixture-roundtrip-self-test.js"></script>
+    <script src="../storage-cleanup-reopen-self-test.js"></script>
+
+    <script>
+        (() => {
+            "use strict";
+
+            const requiredGlobals = [
+                "MarketFlowStorageSchema",
+                "MarketFlowStorageConnection",
+                "MarketFlowStorageUpgrade",
+                "MarketFlowStorageRead",
+                "MarketFlowStorageWrite",
+                "MarketFlowPersistenceRecords",
+                "MarketFlowLifecyclePersistence",
+                "MarketFlowSuccessfulCyclePersistence",
+                "MarketFlowRecorderDiagnosticsPersistence",
+                "MarketFlowChannelMessageLogic",
+                "MarketFlowChannel",
+                "MarketFlowRecorderConfigLogic",
+                "MarketFlowUniverseLogic",
+                "MarketFlowSecuritiesChunkLogic",
+                "MarketFlowCycleLogic",
+                "MarketFlowRecorderLoopLogic",
+                "MarketFlowRecorderDiagnosticsLogic",
+                "MarketFlowDebugBundleLogic",
+                "MarketFlowRecorderConfig",
+                "MarketFlowRecorderDiagnostics",
+                "MarketFlowUniverseLoader",
+                "MarketFlowSecuritiesChunkFetcher",
+                "MarketFlowCycleBuilder",
+                "MarketFlowRecorderLoop",
+                "MarketFlowDebugBundle",
+                "MarketFlowViewerStateLogic",
+                "MarketFlowCurrentTableLogic",
+                "MarketFlowViewerDiagnosticsLogic",
+                "MarketFlowViewerCurrentTable",
+                "MarketFlowViewerHistoryData",
+                "MarketFlowViewerSecurityDetail",
+                "MarketFlowViewerDiagnosticsData",
+                "MarketFlowViewerDiagnostics",
+                "MarketFlowViewerLiveRefresh",
+                "MarketFlowViewerBootstrap",
+                "MarketFlowStorageSchemaSelfTest",
+                "MarketFlowStorageFixtureSelfTest",
+                "MarketFlowStorageCleanupSelfTest"
+            ];
+
+            const missingGlobals =
+                requiredGlobals.filter(
+                    name => !window[name]
+                );
+
+            if (missingGlobals.length > 0) {
+                throw new Error(
+                    "Browser harness failed to load globals: " +
+                    missingGlobals.join(", ")
+                );
+            }
+
+            if (!window.indexedDB) {
+                throw new Error(
+                    "IndexedDB is unavailable in the browser harness."
+                );
+            }
+
+            const readyElement =
+                document.getElementById(
+                    "harness-ready"
+                );
+
+            readyElement.dataset.ready = "true";
+            readyElement.textContent = "ready";
+
+            window.MarketFlowTestHarness =
+                Object.freeze({
+                    requiredGlobals:
+                        Object.freeze([
+                            ...requiredGlobals
+                        ])
+                });
+        })();
+    </script>
+</body>
+</html>

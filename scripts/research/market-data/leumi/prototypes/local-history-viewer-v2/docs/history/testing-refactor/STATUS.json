@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "miniProject": "testing-refactor",
+  "parentWorkstream": "local-history-viewer-v1",
+  "updatedAt": "2026-09-22",
+  "overallStatus": "complete",
+  "currentStage": {
+    "id": "T7",
+    "title": "End-to-end verification of the testing system",
+    "status": "complete"
+  },
+  "nextStage": null,
+  "resumeParentAt": {
+    "stage": "7.3",
+    "title": "Single chunk fetch"
+  },
+  "stages": [
+    {
+      "id": "T1",
+      "title": "Audit + target architecture",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "title": "Fast unit-test harness",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "title": "Extract deterministic logic from browser adapters",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "title": "Build the fast unit-test base",
+      "status": "complete"
+    },
+    {
+      "id": "T5",
+      "title": "Split CI by speed and purpose",
+      "status": "complete"
+    },
+    {
+      "id": "T6",
+      "title": "Migration + checkpoint policy",
+      "status": "complete"
+    },
+    {
+      "id": "T7",
+      "title": "End-to-end verification of the testing system",
+      "status": "complete"
+    }
+  ],
+  "baseline": {
+    "unitTests": "node-built-in-runner-ready",
+    "browserTests": "playwright-chromium-working",
+    "currentBrowserTrigger": "manual-or-reusable-checkpoint",
+    "identifiedProblem": "browser setup dominates feedback time for small changes"
+  },
+  "fastTestCommand": "npm run test:unit",
+  "extractedModules": [
+    "recorder/pure/config-logic.js",
+    "recorder/pure/universe-logic.js"
+  ],
+  "verification": {
+    "t3": {
+      "unitSmoke": {
+        "command": "node --test tests/unit/pure-module-smoke.test.js",
+        "result": "success",
+        "tests": 1,
+        "failed": 0
+      },
+      "browserCompatibility": {
+        "workflow": "Local History Viewer V1 CI",
+        "runId": 35740254929,
+        "commit": "085101f786968ce65c4edcef502dd258178fd846",
+        "conclusion": "success"
+      }
+    },
+    "t5": {
+      "fastCi": {
+        "workflow": "Local History Viewer V1 Fast CI",
+        "runId": 35741459430,
+        "commit": "c8668b6ac953602d6c387e9db27a76e8df8fa94a",
+        "conclusion": "success",
+        "browserInstalled": false,
+        "dependencyInstallStep": false
+      },
+      "browserCi": {
+        "trigger": "workflow_dispatch or workflow_call",
+        "automaticPushTrigger": false
+      },
+      "discoveryFix": {
+        "firstRunId": 35741307752,
+        "issue": "node --test default discovery included browser-only *-test.js files",
+        "fix": "tests/unit/run-unit-tests.js loads only tests/unit/*.test.js"
+      }
+    },
+    "t7": {
+      "fastCi": {
+        "workflow": "Local History Viewer V1 Fast CI",
+        "runId": 35741459430,
+        "commit": "c8668b6ac953602d6c387e9db27a76e8df8fa94a",
+        "conclusion": "success",
+        "tests": 60,
+        "passed": 60,
+        "failed": 0,
+        "durationMs": 26.994505
+      },
+      "browserCi": {
+        "workflow": "Local History Viewer V1 Browser CI",
+        "runId": 35741876693,
+        "commit": "8a2342c9dd027eccfb5176629e2c8a9ade184e99",
+        "conclusion": "success",
+        "tests": 9,
+        "passed": 9,
+        "failed": 0,
+        "browser": "Chromium",
+        "note": "one-time push trigger used only to verify the final checkpoint workflow; final workflow restored to workflow_dispatch/workflow_call"
+      },
+      "coverageAudit": "existing unit, IndexedDB, mocked API and browser harness coverage retained",
+      "finalPolicy": "fast unit CI by default; browser checkpoint CI; live provider verification only when required"
+    }
+  },
+  "fastUnitBase": {
+    "files": [
+      "tests/unit/config-logic.test.js",
+      "tests/unit/universe-logic.test.js",
+      "tests/unit/leumi-api-fixtures.test.js"
+    ],
+    "focus": [
+      "config validation",
+      "chunk planning",
+      "PaperId validation/canonicalization",
+      "record-count/completeness validation",
+      "fixture null-vs-zero behavior"
+    ]
+  },
+  "ciSplit": {
+    "fast": {
+      "workflow": ".github/workflows/local-history-viewer-v1-fast-ci.yml",
+      "trigger": "automatic relevant push/pull_request",
+      "command": "npm run test:unit",
+      "installsDependencies": false,
+      "launchesBrowser": false
+    },
+    "browser": {
+      "workflow": ".github/workflows/local-history-viewer-v1-ci.yml",
+      "trigger": "workflow_dispatch or workflow_call",
+      "command": "npm run test:browser",
+      "launchesBrowser": true
+    }
+  },
+  "migrationPolicy": {
+    "durablePolicyFile": "tests/TESTING_POLICY.md",
+    "defaultChangeGate": "fast-unit-ci",
+    "browserPolicy": "planned-checkpoints-plus-browser-risk-exception",
+    "livePolicy": "provider-dependent-only",
+    "plannedBrowserCheckpoints": [
+      "after-stage-7",
+      "after-stage-8",
+      "after-stages-10-12",
+      "after-stages-14-15",
+      "after-stages-16-17",
+      "stage-18",
+      "stage-19.1",
+      "pre-stage-20-freeze"
+    ],
+    "liveCheckpoints": [
+      "stage-19.2"
+    ]
+  },
+  "completedAt": "2026-09-22"
+}
