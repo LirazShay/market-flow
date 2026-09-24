@@ -45,6 +45,8 @@
 docs/
 ├── README.md
 ├── project/
+├── product/
+├── analysis/
 └── leumi-api/
 ~~~
 
@@ -70,6 +72,33 @@ docs/project/decisions/D-NNN.md
 ~~~
 
 AI should scan the compact index first and read only relevant decision files.
+
+## docs/product/
+
+מסמכי כיוון מוצר שחוצים workstream יחיד:
+
+- vision כללי של Market Flow.
+- capabilities ודרישות מוצר רוחביות.
+- רעיונות ואפיונים ראשוניים שצריכים לשרוד מעבר ל-prototype מסוים.
+- constraints ש-workstreams עתידיים יוכלו למפות ל-specs המקומיים שלהם.
+
+ברירת המחדל היא מבנה שטוח:
+
+~~~text
+docs/product/
+├── README.md
+├── vision.md                         # when the general vision is written
+├── live-opportunity-discovery.md
+└── <additional product documents>.md
+~~~
+
+לא יוצרים תתי-תיקיות רק מפני שנוספו עוד מסמכים. מוסיפים hierarchy רק כאשר נוצר גבול אחריות/מחזור חיים אמיתי והמבנה השטוח כבר מקשה מהותית על הניווט.
+
+מסמכי product אינם מחזיקים live implementation status, CI snapshot או next pointer.
+
+## docs/analysis/
+
+מחקר ותכנון אנליטי רוחבי: feature semantics, ranking/scoring research, validation approaches וניסויים שאינם ownership של component יחיד.
 
 ## docs/leumi-api/
 
@@ -246,7 +275,7 @@ scripts/research/.../tests/
 - שם צריך לתאר responsibility, לא implementation מקרי.
 - tests מחולקים לפי behavior/suite.
 - reports כוללים timestamp/תאריך בשם כאשר הם point-in-time evidence.
-- לא ליצור תיקייה כללית כמו `misc`, `temp`, `new` או `stuff`.
+- לא ליצור תיקייה כללית כמו misc, temp, new או stuff.
 
 ---
 
@@ -289,13 +318,14 @@ docs/market-data/<provider>/
 ~~~text
 Code-specific documentation → next to code
 Cross-cutting/domain knowledge → docs/
+Product vision / broad product requirements → docs/product/
 ~~~
 
 README שמסביר script, configuration, run procedure או test output שייך לתיקיית הקוד.
 
 Raw reports של test suite נשמרים ליד אותו test suite.
 
-`docs/` נשאר בסיס הידע של הפרויקט: API semantics, architecture/context, decisions ומסקנות שאינן שייכות לקובץ קוד יחיד.
+docs/ נשאר בסיס הידע של הפרויקט: product direction, API semantics, architecture/context, decisions ומסקנות שאינן שייכות לקובץ קוד יחיד.
 
 ---
 
@@ -311,7 +341,7 @@ HANDOFF.md
 
 These files are operational navigation aids.
 
-`HANDOFF.md` is optional and is created/updated only at a meaningful chat boundary. It captures the exact next boundary, critical implementation traps, and the minimal file set a fresh chat should read.
+HANDOFF.md is optional and is created/updated only at a meaningful chat boundary. It captures the exact next boundary, critical implementation traps, and the minimal file set a fresh chat should read.
 
 ## AI_CONTEXT.md
 
@@ -367,12 +397,11 @@ project/workstream milestone:
 
 This reduces duplicate reads and documentation churn while preserving durable sources of truth.
 
-
 ---
 
 # Active workstream layout pattern
 
-For a substantial active workstream, prefer a small operational root and move stable design material into a local `docs/` folder.
+For a substantial active workstream, prefer a small operational root and move stable design material into a local docs/ folder.
 
 Example:
 
@@ -402,7 +431,6 @@ tests/        executable tests + testing policy
 ~~~
 
 Completed temporary planning mini-projects should move to a local historical-docs area rather than remain mixed into executable test/code directories.
-
 
 ---
 

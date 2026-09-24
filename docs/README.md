@@ -1,10 +1,14 @@
 # Documentation
 
-The repository has three durable documentation domains.
+The repository has four durable documentation domains.
 
 ## [project/](project/README.md)
 
 Cross-project material: scope, structure, workstream routing, durable decisions and AI engineering guidance.
+
+## [product/](product/README.md)
+
+Product-level vision, capabilities, broad requirements and early cross-cutting specifications that may affect several workstreams.
 
 ## [leumi-api/](leumi-api/README.md)
 
@@ -17,7 +21,8 @@ Cross-cutting market-analysis research and design, including momentum ranking, f
 Rule:
 
 ~~~text
-cross-project/domain knowledge → /docs
-component-specific design     → beside the component
-operational status            → workstream STATUS.json
+product vision / cross-workstream requirements → /docs/product
+cross-project/domain knowledge                → /docs
+component-specific design                     → beside the component
+operational status                            → workstream STATUS.json
 ~~~

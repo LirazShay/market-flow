@@ -70,14 +70,14 @@
       "prevention": "Existing context-architecture and Browser regression tests remain the prevention; do not weaken them. Future identity forks should use those guards as the migration checklist.",
       "promotionDecision": "No new repository-wide rule added; the existing guards already caught the class of error."
     },
-    "specImpact": "No product-behavior contract change. V2 identity/namespace separation only; inherited V1 specs remain the V2 baseline until scope definition intentionally changes them."
+    "specImpact": "Product-level direction was captured in docs/product/live-opportunity-discovery.md. No runtime/product behavior was implemented and no V2 normative spec changed yet."
   },
   "next": {
-    "action": "Define the user's new V2 method and observable behavior before changing inherited V1 product behavior.",
+    "action": "Continue defining the broader product requirements, then map the approved subset into V2-specific specs before implementation.",
     "steps": [
-      "Capture what V2 must do differently from V1.",
-      "Classify inherited behavior as retained, replaced or removed.",
-      "Update affected V2 specs and derive tests/implementation stages from the new requirements."
+      "Continue capturing broad Market Flow product vision and related product ideas under docs/product without turning them into implementation status.",
+      "Separate stable product requirements from technical choices that still require benchmark or design evidence.",
+      "When the product direction is sufficiently clear, classify the V2-relevant behavior as retained, replaced or removed and update V2 specs/tests/implementation plan."
     ]
   },
   "history": {
