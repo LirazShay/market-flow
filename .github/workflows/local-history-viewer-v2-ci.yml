@@ -1,11 +1,6 @@
 name: Local History Viewer V2 Browser CI
 
 on:
-  # Temporary bootstrap trigger. Remove after the V2 baseline is Chromium-verified.
-  push:
-    paths:
-      - ".github/workflows/local-history-viewer-v2-ci.yml"
-      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**"
   workflow_dispatch:
     inputs:
       publish_runtime:
