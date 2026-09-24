@@ -59,5 +59,7 @@ The internal `window.MarketFlow*` globals are intentionally still inherited. Do 
 | inherited design/history | `docs/README.md` |
 | runtime usage | `runtime/README.md` |
 | testing policy | `tests/TESTING_POLICY.md` |
+| optional human fresh-chat helper | `HANDOFF.md` |
+| optional copy/paste continuation prompt | `NEXT_CHAT_PROMPT.md` |
 
 Prototype code remains research code. Promotion to `src/` requires a separate production decision.

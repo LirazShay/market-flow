@@ -373,7 +373,7 @@ test(
             )
         ).toHaveAttribute(
             "data-market-flow-viewer",
-            "market-flow-leumi-v1"
+            "market-flow-leumi-v2"
         );
 
         await expectSnapshot(

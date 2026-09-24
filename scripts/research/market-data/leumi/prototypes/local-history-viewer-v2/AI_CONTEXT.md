@@ -27,6 +27,14 @@ V2 was created from an exact Git tree clone of the frozen V1 workstream. V1 is p
 
 Treat inherited V1 code/tests/specs as the starting baseline. Do not assume the old V1 backlog defines V2 requirements.
 
+Historical rationale remains discoverable from:
+
+~~~text
+docs/history/README.md
+~~~
+
+Read cold history only when the current task needs it.
+
 ## Baseline architecture
 
 ~~~text
