@@ -4,37 +4,31 @@
 
 ## Default continuation target
 
-### 05 — Momentum Ranking V1 Research
+### 05 — Momentum Ranking Replacement
 
 Location:
 
 ~~~text
-docs/analysis/momentum-ranking-v1/
+docs/analysis/momentum-ranking/
 ~~~
 
 Operational source of truth:
 
 ~~~text
-docs/analysis/momentum-ranking-v1/STATUS.json
+docs/analysis/momentum-ranking/STATUS.json
 ~~~
 
 Fast context:
 
 ~~~text
-docs/analysis/momentum-ranking-v1/README.md
-docs/analysis/momentum-ranking-v1/AI_CONTEXT.md
+docs/analysis/momentum-ranking/README.md
+docs/analysis/momentum-ranking/AI_CONTEXT.md
 ~~~
 
-Deep recovery research:
+The prior Momentum Ranking V1 program is archived and must not be continued:
 
 ~~~text
-docs/analysis/momentum-ranking-v1/docs/research-checkpoint.md
-~~~
-
-Backlog/task management:
-
-~~~text
-GitHub Issue #3 and linked research Issues
+docs/analysis/archive/momentum-ranking-v1/
 ~~~
 
 Do not copy exact live stage/next state into this routing document.

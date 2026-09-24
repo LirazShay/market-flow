@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "workstream": "momentum-ranking",
+  "updatedAt": "2026-09-24",
+  "overallStatus": "awaiting-input",
+  "authority": {
+    "operationalProgress": "STATUS.json",
+    "planAndOrder": "ROADMAP.md",
+    "fastTechnicalContext": "AI_CONTEXT.md"
+  },
+  "currentFocus": {
+    "status": "awaiting-user-method",
+    "subfocus": "Momentum Ranking V1 was explicitly archived as irrelevant. Waiting for the user's completely different replacement method. No ranking-specific assumptions from V1 are active."
+  },
+  "researchState": {
+    "replacementMethodDefined": false,
+    "productionImplementationStarted": false
+  },
+  "next": {
+    "action": "Receive the replacement ranking method from the user, then define fresh scope/contracts/tests from that method only. Do not reuse archived V1 research unless explicitly requested."
+  }
+}
