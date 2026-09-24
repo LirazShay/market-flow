@@ -82,7 +82,7 @@ test(
         expect(
             contract.marker
         ).toBe(
-            "market-flow-leumi-v1"
+            "market-flow-leumi-v2"
         );
 
         expect(
@@ -185,7 +185,7 @@ test(
             await viewer.evaluate(
                 async () => {
                     const databaseName =
-                        "market-flow-leumi-history-v1";
+                        "market-flow-leumi-history-v2";
 
                     const database =
                         await new Promise(
@@ -332,13 +332,13 @@ test(
         expect(
             second.windowName
         ).toBe(
-            "market-flow-leumi-v1-viewer"
+            "market-flow-leumi-v2-viewer"
         );
 
         expect(
             second.marker
         ).toBe(
-            "market-flow-leumi-v1"
+            "market-flow-leumi-v2"
         );
 
         expect(

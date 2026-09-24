@@ -23,7 +23,7 @@ const workstreamRoot =
         "market-data",
         "leumi",
         "prototypes",
-        "local-history-viewer-v1"
+        "local-history-viewer-v2"
     );
 
 function read(
@@ -123,7 +123,7 @@ test(
     () => {
         const workflow =
             read(
-                ".github/workflows/local-history-viewer-v1-fast-ci.yml"
+                ".github/workflows/local-history-viewer-v2-fast-ci.yml"
             );
 
         const requiredPaths =
@@ -132,9 +132,9 @@ test(
                 "README.md",
                 "PROJECT_CONTEXT.md",
                 "docs/project/**/*.md",
-                "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.md",
-                "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json",
-                "scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/**/*.js"
+                "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.md",
+                "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json",
+                "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.js"
             ];
 
         for (

@@ -70,10 +70,10 @@
     }
 
     const VIEWER_WINDOW_NAME =
-        "market-flow-leumi-v1-viewer";
+        "market-flow-leumi-v2-viewer";
 
     const VIEWER_MARKER =
-        "market-flow-leumi-v1";
+        "market-flow-leumi-v2";
 
     let viewerWindow =
         null;
@@ -574,7 +574,7 @@
         );
 
         footer.textContent =
-            "Market Flow Local History Viewer V1";
+            "Market Flow Local History Viewer V2";
 
         shell.appendChild(
             footer

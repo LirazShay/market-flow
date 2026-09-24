@@ -2,23 +2,21 @@
 
 Longer-lived research prototypes that combine multiple concerns such as collection, storage and UI.
 
-## Active prototype
+## Local History Viewer versions
 
-### [Local History Viewer V1](local-history-viewer-v1/README.md)
+### [Local History Viewer V2](local-history-viewer-v2/README.md)
 
-~~~text
-Recorder
-→ validated cycles
-→ IndexedDB
-→ same-origin viewer
-~~~
+V2 is the independent development line derived from the frozen V1 baseline.
 
 Direct navigation:
 
-- [all V1 stages](local-history-viewer-v1/ROADMAP.md)
-- [current V1 status](local-history-viewer-v1/STATUS.json)
-- [V1 design docs](local-history-viewer-v1/docs/README.md)
-- [V1 tests](local-history-viewer-v1/tests/README.md)
+- [V2 plan](local-history-viewer-v2/ROADMAP.md)
+- [V2 operational status](local-history-viewer-v2/STATUS.json)
+- [V2 technical context](local-history-viewer-v2/AI_CONTEXT.md)
+- [V2 tests](local-history-viewer-v2/tests/README.md)
+
+### [Local History Viewer V1](local-history-viewer-v1/README.md)
+
+Frozen reference implementation and evidence baseline. V1 remains available side-by-side and is not modified by V2 work.
 
 Prototype code remains research code. Promotion to `src/` requires a separate production design decision.
-

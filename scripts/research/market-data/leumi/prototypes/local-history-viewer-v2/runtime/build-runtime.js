@@ -28,10 +28,10 @@ const defaultOutputDirectory =
     );
 
 const runtimeFileName =
-    "market-flow-v1.runtime.js";
+    "market-flow-v2.runtime.js";
 
 const bookmarkletFileName =
-    "market-flow-v1.bookmarklet.txt";
+    "market-flow-v2.bookmarklet.txt";
 
 function resolveSourcePath(
     relativePath
@@ -108,7 +108,7 @@ function buildRuntimeText() {
         );
 
     return (
-        "/* Market Flow Local History Viewer V1 — generated runtime. */\n" +
+        "/* Market Flow Local History Viewer V2 — generated runtime. */\n" +
         "/* Generated from repository sources by runtime/build-runtime.js. */\n\n" +
         sections.join(
             "\n\n"

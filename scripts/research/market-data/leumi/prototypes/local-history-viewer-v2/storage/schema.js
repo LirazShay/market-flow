@@ -7,7 +7,7 @@
     }
 
     const schema = Object.freeze({
-        databaseName: "market-flow-leumi-history-v1",
+        databaseName: "market-flow-leumi-history-v2",
         databaseVersion: 1,
 
         stores: Object.freeze({

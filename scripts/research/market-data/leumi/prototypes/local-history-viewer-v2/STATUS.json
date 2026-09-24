@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
-  "workstream": "local-history-viewer-v1",
-  "updatedAt": "2026-09-23",
-  "overallStatus": "complete",
+  "workstream": "local-history-viewer-v2",
+  "updatedAt": "2026-09-24",
+  "overallStatus": "verification-pending",
   "authority": {
     "operationalProgress": "STATUS.json",
     "planAndOrder": "ROADMAP.md",
@@ -10,104 +10,60 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "20",
-    "substep": null,
-    "title": "V1 freeze",
-    "status": "complete"
+    "stage": "bootstrap",
+    "substep": "baseline-isolation",
+    "title": "V2 baseline clone and namespace isolation",
+    "status": "verification-pending"
   },
   "stageSummary": {
-    "completed": "1-20",
-    "inProgress": null,
-    "planned": null
+    "completed": null,
+    "inProgress": "bootstrap",
+    "planned": "scope-definition"
   },
   "currentStage": {
-    "stage": "20",
-    "title": "V1 freeze",
-    "status": "complete"
+    "stage": "bootstrap",
+    "title": "V2 baseline clone and namespace isolation",
+    "status": "verification-pending"
   },
   "activeMiniProject": null,
   "verification": {
-    "codeBaseline": {
-      "fastCi": {
-        "runId": 35870322869,
-        "conclusion": "success"
-      },
-      "browserCi": {
-        "runId": 35870035162,
-        "conclusion": "success",
-        "verifiedCommit": "5e95c7c5fc791f022a50038d3ef18e8f81886502",
-        "tests": 56,
-        "passed": 56,
-        "failed": 0
-      },
-      "rollingReleaseTag": "local-history-viewer-v1-runtime-latest",
-      "note": "Stage 20 final code/test state is Chromium-verified. Later commits only removed temporary CI triggering, archived freeze evidence and updated status/docs; production/runtime payload did not change."
+    "baselineSource": {
+      "sourceWorkstream": "local-history-viewer-v1",
+      "sourceMainCommit": "044546a18e79ac820a246d477340bad8424cab64",
+      "exactCloneCommit": "d0b09913ef6d49359f7560b801cced7af53534a5",
+      "result": "V2 directory was created as an exact Git tree clone of the frozen V1 baseline before V2-specific edits."
     },
-    "stage19": {
-      "status": "complete",
-      "liveEvidenceDate": "2026-09-23",
-      "longRun": "about 52m 48s, 596 completed cycles, 0 failed cycles",
-      "result": "Real Leumi provider collection, persistence, Viewer behavior and long-run stability were evidenced; repeated launch may open another Viewer but must not duplicate the Recorder.",
-      "runtimeArtifactIdentityForOriginalLiveRun": "Unknown",
-      "historyReport": "docs/history/live-verification/2026-09-23-stage-19-live-report.md"
-    },
-    "contextArchitecture": {
-      "status": "complete-fast-ci-verified",
-      "fastCiRunId": 35859140344,
-      "result": "Fresh-chat HOT context is bounded and preserved history is discoverable. Repository self-maintenance guards now enforce the structure during future changes.",
-      "hotContextApproxTokens": 4672,
-      "worstCaseWithRouterApproxTokens": 5191,
-      "archivedFullStatus": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json",
-      "durableRules": [
-        "docs/project/context-loading.md",
-        "docs/project/decisions/D-023.md",
-        "docs/project/decisions/D-024.md"
+    "namespaceIsolation": {
+      "status": "verification-pending",
+      "indexedDb": "market-flow-leumi-history-v2",
+      "broadcastChannel": "market-flow-leumi-v2",
+      "viewerWindow": "market-flow-leumi-v2-viewer",
+      "runtimeArtifacts": [
+        "market-flow-v2.runtime.js",
+        "market-flow-v2.bookmarklet.txt"
       ]
     },
-    "testRuntimeOptimization": {
-      "status": "complete-browser-ci-verified",
-      "finalBrowserCiRunId": 35868415694,
-      "finalResult": "56/56 Chromium tests passed with workers=2, cache hit and publication skipped.",
-      "finalTiming": {
-        "playwrightSeconds": 27.8,
-        "browserTestsJobSecondsApprox": 47,
-        "workflowSecondsApprox": 51
-      },
-      "baseline": {
-        "playwrightSeconds": 39,
-        "browserTestsJobSecondsApprox": 67,
-        "workflowSecondsApprox": 90
-      },
-      "durableChanges": [
-        "Playwright Chromium cache on ubuntu-24.04",
-        "workers=2",
-        "publish_runtime=false by default with explicit opt-in publication",
-        "semantic completion wait for the viewer live-refresh regression"
-      ],
-      "coverage": "All 56 Browser tests retained; storage-growth sample unchanged; retries remain 0.",
-      "specImpact": "No spec impact.",
-      "historyReport": "docs/history/test-runtime-optimization/2026-09-23-browser-ci-optimization.md"
+    "fastCi": {
+      "runId": null,
+      "conclusion": "pending"
     },
-    "stage20": {
-      "status": "complete",
-      "version": "V1",
-      "freezeReport": "docs/history/v1-freeze/2026-09-23-stage-20-v1-freeze.md",
-      "finalFastCiRunId": 35870322869,
-      "finalBrowserCiRunId": 35870035162,
-      "finalBrowserResult": "56/56 passed with workers=2; Playwright suite 24.9s.",
-      "closureIncident": "A debug-bundle teardown deleteDatabase race was isolated, fixed in test teardown, and promoted to E2E debugging guidance; no production/runtime behavior changed.",
-      "specImpact": "No spec impact."
-    }
+    "browserCi": {
+      "runId": null,
+      "conclusion": "pending"
+    },
+    "specImpact": "No behavioral contract change intended; V2 identity/namespace separation only. Inherited V1 specs remain the baseline until V2 scope changes them."
   },
   "next": {
-    "action": "V1 is frozen. There is no remaining V1 Stage.",
+    "action": "Verify the V2 cloned baseline and namespace isolation.",
     "steps": [
-      "Start V2 only through an explicit new planning decision using the existing V2 backlog as scope input."
+      "Run V2 Fast CI.",
+      "Run the full V2 Chromium Browser CI.",
+      "If both are green, close bootstrap and move the pointer to V2 scope definition before changing product behavior."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
     "latestArchive": "docs/history/v1-freeze/2026-09-23-stage-20-v1-freeze.md",
-    "rule": "Historical Stage/CI/mini-project evidence is preserved in cold history and read only when needed."
+    "rule": "The cloned V1 history is inherited cold baseline evidence. New V2 historical evidence is added only when needed."
   }
 }

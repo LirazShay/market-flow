@@ -123,7 +123,7 @@ test(
             bundle.database
                 .name
         ).toBe(
-            "market-flow-leumi-history-v1"
+            "market-flow-leumi-history-v2"
         );
 
         expect(

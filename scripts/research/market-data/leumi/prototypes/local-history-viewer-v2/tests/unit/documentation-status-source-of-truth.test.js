@@ -19,7 +19,7 @@ const workstreamRoot =
         "market-data",
         "leumi",
         "prototypes",
-        "local-history-viewer-v1"
+        "local-history-viewer-v2"
     );
 
 function collectReadmes(

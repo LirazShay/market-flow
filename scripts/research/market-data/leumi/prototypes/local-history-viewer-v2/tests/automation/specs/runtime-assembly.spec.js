@@ -24,7 +24,7 @@ const bookmarkletPath =
         "../../..",
         "runtime",
         "dist",
-        "market-flow-v1.bookmarklet.txt"
+        "market-flow-v2.bookmarklet.txt"
     );
 
 async function deleteDatabase(
@@ -40,7 +40,7 @@ async function deleteDatabase(
                     const request =
                         indexedDB
                             .deleteDatabase(
-                                "market-flow-leumi-history-v1"
+                                "market-flow-leumi-history-v2"
                             );
 
                     request.onsuccess =

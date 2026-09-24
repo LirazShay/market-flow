@@ -17,7 +17,7 @@ test(
     () => {
         assert.equal(
             CHANNEL_NAME,
-            "market-flow-leumi-v1"
+            "market-flow-leumi-v2"
         );
 
         assert.deepEqual(

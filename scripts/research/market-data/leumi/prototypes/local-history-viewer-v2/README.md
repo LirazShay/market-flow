@@ -1,15 +1,14 @@
-# Local History Viewer V1
+# Local History Viewer V2
 
-Browser-only market-data research prototype inside Market Flow.
+Independent V2 workstream derived from the frozen Local History Viewer V1 baseline.
 
-Durable version marker:
+V1 remains intact at the sibling path:
 
 ~~~text
-VERSION
-→ V1
+../local-history-viewer-v1/
 ~~~
 
-This README is a compact orientation page, not a progress diary. Operational progress belongs only in `STATUS.json`.
+V2 begins from an exact source snapshot of V1, then evolves independently. Operational progress belongs only in `STATUS.json`.
 
 ## Fresh-chat HOT path
 
@@ -19,9 +18,9 @@ README.md
 → AI_CONTEXT.md
 ~~~
 
-After HOT context, read only the current task's scope, target code/tests and owning SPEC(s). Historical evidence is discoverable from `docs/history/README.md` but is not loaded by default.
+After HOT context, read only the current task scope, target code/tests and owning SPEC(s).
 
-## V1 flow
+## Baseline architecture
 
 ~~~text
 MapHeat2
@@ -31,39 +30,22 @@ MapHeat2
 → atomic IndexedDB persistence
 → metadata-only BroadcastChannel
 → Viewer rereads IndexedDB
-→ current/history UI
 ~~~
 
-## Verified V1 behavior
+This architecture is inherited as the starting baseline, not a restriction on future V2 design.
 
-V1 has executable/live evidence for:
+## V1 / V2 isolation
 
-- dynamic universe discovery with no hardcoded universe size;
-- exact complete-cycle integrity validation;
-- atomic IndexedDB `latest` + `history` persistence;
-- raw provider-record preservation and `null != 0 != "" != undefined`;
-- current table, sorting, per-security history, diagnostics and reload/reopen recovery;
-- notification-only BroadcastChannel with IndexedDB as authority;
-- one Recorder owner with multiple same-origin Viewers allowed;
-- generated self-contained runtime/Bookmarklet and sanitized Debug Bundle;
-- authenticated provider collection and extended live operation.
-
-Dated live evidence:
+V2 has its own browser data/runtime identities:
 
 ~~~text
-docs/history/live-verification/2026-09-23-stage-19-live-report.md
+IndexedDB:       market-flow-leumi-history-v2
+BroadcastChannel: market-flow-leumi-v2
+Viewer window:   market-flow-leumi-v2-viewer
+Runtime files:   market-flow-v2.*
 ~~~
 
-## Known V1 limitations
-
-- requires an authenticated browser session on the intended Leumi origin;
-- provider behavior is external and can change;
-- sequential chunks mean a cycle is not an atomic market snapshot; timing metadata is preserved instead;
-- chunk size 187 is a configurable verified baseline, not a permanent provider guarantee;
-- IndexedDB is browser-local; there is no server sync/backup;
-- no automatic retention, so history storage grows over time;
-- multiple Viewers may refresh at slightly different moments;
-- no execution, filtering, charts, derived momentum metrics or advanced history queries.
+The internal `window.MarketFlow*` globals are intentionally still inherited. Do not inject V1 and V2 into the same page context without a refresh. Separate tabs can run independently because their persistent data/channel/window identities are separated.
 
 ## Where to look
 
@@ -71,24 +53,11 @@ docs/history/live-verification/2026-09-23-stage-19-live-report.md
 |---|---|
 | version | `VERSION` |
 | progress / next | `STATUS.json` |
-| technical invariants | `AI_CONTEXT.md` |
+| technical continuation context | `AI_CONTEXT.md` |
 | plan / scope | `ROADMAP.md` |
 | normative contracts | `specs/README.md` |
-| design / rationale | `docs/README.md` |
-| historical evidence | `docs/history/README.md` |
-| runtime usage/download | `runtime/README.md` |
+| inherited design/history | `docs/README.md` |
+| runtime usage | `runtime/README.md` |
 | testing policy | `tests/TESTING_POLICY.md` |
-| optional human fresh-chat helper | `HANDOFF.md` |
-| optional copy/paste continuation prompt | `NEXT_CHAT_PROMPT.md` |
 
-## Source-of-truth ownership
-
-~~~text
-STATUS.json  = live progress / verification
-ROADMAP.md   = plan / order / scope
-AI_CONTEXT   = compact continuation context
-specs/       = durable contracts
-docs/        = durable design/evidence
-docs/history = cold historical evidence
-code + tests = implemented behavior / executable evidence
-~~~
+Prototype code remains research code. Promotion to `src/` requires a separate production decision.

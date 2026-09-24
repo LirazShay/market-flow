@@ -1,8 +1,8 @@
 {
-  "name": "market-flow-local-history-viewer-v1-tests",
+  "name": "market-flow-local-history-viewer-v2-tests",
   "version": "0.0.0",
   "private": true,
-  "description": "Test tooling for the Market Flow Local History Viewer V1 research prototype.",
+  "description": "Test tooling for the Market Flow Local History Viewer V2 research prototype.",
   "scripts": {
     "test": "npm run test:unit",
     "test:unit": "node tests/unit/run-unit-tests.js",

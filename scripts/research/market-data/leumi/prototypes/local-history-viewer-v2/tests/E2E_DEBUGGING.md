@@ -1,6 +1,6 @@
 # E2E / Browser Test Debugging Methodology
 
-This is the required debugging method for Playwright/Chromium failures in Local History Viewer V1.
+This is the required debugging method for Playwright/Chromium failures in Local History Viewer V2.
 
 The objective is not merely to make a red test green. The objective is to find the real cause with minimal disturbance, prove it, fix the correct layer, and keep the repository trustworthy.
 

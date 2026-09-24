@@ -1,4 +1,4 @@
-# Debug Bundle — Local History Viewer V1
+# Debug Bundle — Local History Viewer V2
 
 This directory contains the bounded sanitized diagnostic export used during live verification and production-like browser debugging.
 

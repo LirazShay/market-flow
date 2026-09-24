@@ -21,7 +21,7 @@
         "use strict";
 
         const CHANNEL_NAME =
-            "market-flow-leumi-v1";
+            "market-flow-leumi-v2";
 
         const MESSAGE_TYPES =
             Object.freeze({

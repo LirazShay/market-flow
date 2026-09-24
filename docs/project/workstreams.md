@@ -4,6 +4,33 @@
 
 ## Default continuation target
 
+### 01B — Local History Viewer V2
+
+Location:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/
+~~~
+
+Operational source of truth:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json
+~~~
+
+Fast context:
+
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/README.md
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/AI_CONTEXT.md
+~~~
+
+Do not copy exact live stage/next state into this routing document.
+
+---
+
+## Momentum ranking
+
 ### 05 — Momentum Ranking Replacement
 
 Location:
@@ -18,20 +45,11 @@ Operational source of truth:
 docs/analysis/momentum-ranking/STATUS.json
 ~~~
 
-Fast context:
-
-~~~text
-docs/analysis/momentum-ranking/README.md
-docs/analysis/momentum-ranking/AI_CONTEXT.md
-~~~
-
-The prior Momentum Ranking V1 program is archived and must not be continued:
+The prior Momentum Ranking V1 program is archived:
 
 ~~~text
 docs/analysis/archive/momentum-ranking-v1/
 ~~~
-
-Do not copy exact live stage/next state into this routing document.
 
 ---
 
@@ -39,17 +57,13 @@ Do not copy exact live stage/next state into this routing document.
 
 ### 01A — Local History Viewer V1
 
-Location:
+Frozen reference:
 
 ~~~text
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/
 ~~~
 
-Source of truth:
-
-~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v1/STATUS.json
-~~~
+Its historical/frozen operational record remains in its own `STATUS.json`.
 
 ---
 

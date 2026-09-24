@@ -1,0 +1,53 @@
+name: Local History Viewer V2 Fast CI
+
+on:
+  push:
+    paths:
+      - ".github/workflows/local-history-viewer-v2-fast-ci.yml"
+      - "AGENTS.md"
+      - "README.md"
+      - "PROJECT_CONTEXT.md"
+      - "docs/project/**/*.md"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.md"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package.json"
+  pull_request:
+    paths:
+      - ".github/workflows/local-history-viewer-v2-fast-ci.yml"
+      - "AGENTS.md"
+      - "README.md"
+      - "PROJECT_CONTEXT.md"
+      - "docs/project/**/*.md"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.md"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package.json"
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Fast unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    defaults:
+      run:
+        working-directory: scripts/research/market-data/leumi/prototypes/local-history-viewer-v2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install test/build dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run fast unit tests
+        run: npm run test:unit

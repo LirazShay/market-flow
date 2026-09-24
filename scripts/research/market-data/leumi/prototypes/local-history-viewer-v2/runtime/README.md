@@ -1,6 +1,6 @@
 # Runtime Assembly
 
-This directory contains the generated-delivery mechanism for Local History Viewer V1.
+This directory contains the generated-delivery mechanism for Local History Viewer V2.
 
 Normative delivery contract:
 
@@ -35,17 +35,17 @@ npm run build:runtime
 Generated files:
 
 ~~~text
-runtime/dist/market-flow-v1.runtime.js
-runtime/dist/market-flow-v1.bookmarklet.txt
+runtime/dist/market-flow-v2.runtime.js
+runtime/dist/market-flow-v2.bookmarklet.txt
 ~~~
 
 The dist directory is generated and ignored by Git.
 
 ## Artifact roles
 
-`market-flow-v1.runtime.js` is the readable assembled runtime used for inspection and debugging.
+`market-flow-v2.runtime.js` is the readable assembled runtime used for inspection and debugging.
 
-`market-flow-v1.bookmarklet.txt` is the user-facing delivery artifact. It is generated as compact single-line JavaScript. Terser is intentionally configured with compression and identifier mangling disabled: comments/formatting are removed, but source identifiers and runtime behavior remain recognizable. The Bookmarklet body is raw compact JavaScript prefixed only by `javascript:`; it is not whole-payload percent-encoded.
+`market-flow-v2.bookmarklet.txt` is the user-facing delivery artifact. It is generated as compact single-line JavaScript. Terser is intentionally configured with compression and identifier mangling disabled: comments/formatting are removed, but source identifiers and runtime behavior remain recognizable. The Bookmarklet body is raw compact JavaScript prefixed only by `javascript:`; it is not whole-payload percent-encoded.
 
 The Bookmarklet remains self-contained. It does not fetch executable code from an external host.
 
@@ -59,32 +59,32 @@ Ordinary Browser CI verification leaves `publish_runtime=false` (the default), s
 
 ~~~text
 tag:
-local-history-viewer-v1-runtime-latest
+local-history-viewer-v2-runtime-latest
 ~~~
 
 Release page:
 
 ~~~text
-https://github.com/LirazShay/market-flow/releases/tag/local-history-viewer-v1-runtime-latest
+https://github.com/LirazShay/market-flow/releases/tag/local-history-viewer-v2-runtime-latest
 ~~~
 
 Stable Bookmarklet download:
 
 ~~~text
-https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.bookmarklet.txt
+https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v2-runtime-latest/market-flow-v2.bookmarklet.txt
 ~~~
 
 Stable readable runtime download:
 
 ~~~text
-https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v1-runtime-latest/market-flow-v1.runtime.js
+https://github.com/LirazShay/market-flow/releases/download/local-history-viewer-v2-runtime-latest/market-flow-v2.runtime.js
 ~~~
 
 The rolling release is updated only after the full Chromium suite succeeds. The ordinary per-run GitHub Actions artifact is retained as additional verification evidence.
 
 ## Browser usage
 
-Download `market-flow-v1.bookmarklet.txt`, open it as text, and copy its complete single line into the URL field of a browser bookmark.
+Download `market-flow-v2.bookmarklet.txt`, open it as text, and copy its complete single line into the URL field of a browser bookmark.
 
 Run that bookmark only while already on the intended Leumi page/origin.
 

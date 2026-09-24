@@ -1,32 +1,11 @@
-# Handoff — Local History Viewer V1
+# Local History Viewer V2 — Handoff
 
-Optional fresh-chat helper.
-
-The normal AI entry path is defined by repository `AGENTS.md` and the project context-loading policy.
-
-For this workstream:
+Optional human helper only. The AI HOT path is:
 
 ~~~text
 README.md
 → STATUS.json
 → AI_CONTEXT.md
-→ current Stage scope / target files / direct tests / owning SPEC as needed
 ~~~
 
-Do not copy live status into this file.
-
-Current operational truth:
-
-~~~text
-STATUS.json
-~~~
-
-If a fresh chat needs to understand **how/why** the current state was reached:
-
-~~~text
-docs/history/README.md
-~~~
-
-Read only the relevant historical entry, not the whole archive.
-
-Detailed working rules are linked from `AGENTS.md`; do not duplicate them here.
+V2 is an independent sibling of frozen V1. Use `STATUS.json` for the exact current pointer and `ROADMAP.md` for plan/scope/order.
