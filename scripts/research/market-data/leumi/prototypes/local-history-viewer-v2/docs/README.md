@@ -1,18 +1,33 @@
-# Local History Viewer V1 — Design Docs
+# Local History Viewer V2 — Design Docs
 
-התיקייה הזו מכילה **design documents יציבים**, לא operational status.
+This directory contains stable design documents, not operational status.
 
 ## Read by question
 
-| אם צריך להבין... | קובץ |
+| Need | File |
 |---|---|
-| מה V1 חייב/לא חייב לעשות | [requirements.md](requirements.md) |
-| איך הרכיבים מתחברים | [architecture.md](architecture.md) |
-| schema, stores, records, transaction boundaries | [data-model.md](data-model.md) |
-| measured IndexedDB growth / bytes per history row / capacity caveats | [storage-growth-report.md](storage-growth-report.md) |
+| IndexedDB LIVE analytics evaluation design / reuse / gaps | [indexeddb-live-analytics-evaluation.md](indexeddb-live-analytics-evaluation.md) |
+| benchmark workloads, scales and measurement rules | [indexeddb-live-analytics-benchmark-plan.md](indexeddb-live-analytics-benchmark-plan.md) |
+| evidence-to-architecture decision gates | [indexeddb-live-analytics-decision-framework.md](indexeddb-live-analytics-decision-framework.md) |
+| inherited requirements baseline | [requirements.md](requirements.md) |
+| inherited component architecture | [architecture.md](architecture.md) |
+| inherited schema, stores, records and transaction boundaries | [data-model.md](data-model.md) |
+| measured inherited IndexedDB growth evidence | [storage-growth-report.md](storage-growth-report.md) |
 | viewer behavior / RTL / tables / states | [viewer-ux.md](viewer-ux.md) |
-| test cases שתוכננו ל-V1 | [test-plan.md](test-plan.md) |
-| Clean Code / design / safe-change rules | [project engineering practices](../../../../../../../docs/project/engineering-practices.md) |
+| inherited test cases/design | [test-plan.md](test-plan.md) |
+| Clean Code / safe-change rules | [project engineering practices](../../../../../../../docs/project/engineering-practices.md) |
+
+The inherited V1-era documents remain useful baseline evidence. New V2 decisions must not silently rewrite history; update or add V2 design/spec material deliberately when behavior changes.
+
+## Product direction
+
+Cross-cutting product requirements live at repository level:
+
+~~~text
+../../../../../../../docs/product/live-opportunity-discovery.md
+~~~
+
+This V2 directory maps only deliberately selected implementation/research responsibilities.
 
 ## Normative specifications
 
@@ -22,13 +37,7 @@ Durable behavioral contracts, invariants, failure semantics and reuse boundaries
 ../specs/README.md
 ~~~
 
-Design docs in this directory explain deeper rationale/evidence. If design and spec appear inconsistent, perform a SPEC impact review and resolve the mismatch rather than silently choosing one.
-
-Repository-wide spec policy:
-
-~~~text
-../../../../../../../docs/project/specification-policy.md
-~~~
+Design docs explain rationale, alternatives and evidence. If design and spec appear inconsistent, perform a SPEC impact review and resolve the mismatch.
 
 ## What does not live here
 
@@ -50,7 +59,7 @@ Testing execution/checkpoint policy:
 ../tests/TESTING_POLICY.md
 ~~~
 
-Historical completed mini-project documentation:
+Historical completed evidence:
 
 ~~~text
 history/
@@ -58,13 +67,6 @@ history/
 
 ## Ownership rule
 
-Design changes belong here.
+Design/research rationale belongs here.
 
-Implementation details/run instructions belong beside the code in:
-
-~~~text
-../recorder/
-../storage/
-../tests/
-~~~
-
+Implementation details/run instructions belong beside the code in recorder, storage and tests.

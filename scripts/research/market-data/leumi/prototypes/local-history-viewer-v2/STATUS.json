@@ -10,22 +10,22 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "scope-definition",
-    "substep": null,
-    "title": "Define the new V2 product behavior",
+    "stage": "indexeddb-evaluation-01",
+    "substep": "baseline-characterization",
+    "title": "Characterize the current IndexedDB baseline for LIVE analytics",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap",
-    "inProgress": "scope-definition",
-    "planned": null
+    "completed": "bootstrap, scope-definition",
+    "inProgress": "indexeddb-evaluation-01",
+    "planned": "indexeddb-evaluation-02 through indexeddb-evaluation-18"
   },
   "currentStage": {
-    "stage": "scope-definition",
-    "title": "Define the new V2 product behavior",
+    "stage": "indexeddb-evaluation-01",
+    "title": "Baseline characterization",
     "status": "in-progress"
   },
-  "activeMiniProject": null,
+  "activeMiniProject": "indexeddb-live-analytics-evaluation",
   "verification": {
     "baselineSource": {
       "sourceWorkstream": "local-history-viewer-v1",
@@ -70,14 +70,25 @@
       "prevention": "Existing context-architecture and Browser regression tests remain the prevention; do not weaken them. Future identity forks should use those guards as the migration checklist.",
       "promotionDecision": "No new repository-wide rule added; the existing guards already caught the class of error."
     },
-    "specImpact": "Product-level direction was captured in docs/product/live-opportunity-discovery.md. No runtime/product behavior was implemented and no V2 normative spec changed yet."
+    "indexedDbEvaluationPlanning": {
+      "status": "plan-established",
+      "baselineMainCommit": "82f363bbd40d7dfa07f41fa0f44c39b4b12dd14c",
+      "roadmap": "ROADMAP.md",
+      "design": "docs/indexeddb-live-analytics-evaluation.md",
+      "benchmarkPlan": "docs/indexeddb-live-analytics-benchmark-plan.md",
+      "decisionFramework": "docs/indexeddb-live-analytics-decision-framework.md",
+      "result": "The V2 workstream now has a staged evidence-first IndexedDB evaluation program from baseline characterization through benchmark-backed architecture decision and V2 implementation planning."
+    },
+    "specImpact": "Planning/design documentation only. No V2 runtime behavior or normative V2 specification changed in this work unit."
   },
   "next": {
-    "action": "Continue defining the broader product requirements, then map the approved subset into V2-specific specs before implementation.",
+    "action": "Execute IndexedDB Evaluation Stage 01: produce the evidence-backed baseline characterization before changing runtime behavior.",
     "steps": [
-      "Continue capturing broad Market Flow product vision and related product ideas under docs/product without turning them into implementation status.",
-      "Separate stable product requirements from technical choices that still require benchmark or design evidence.",
-      "When the product direction is sufficiently clear, classify the V2-relevant behavior as retained, replaced or removed and update V2 specs/tests/implementation plan."
+      "Inventory the current storage schema, indexes, persistence transaction and history/latest read paths in exact code terms.",
+      "Map existing unit/Chromium coverage that already proves atomicity, recovery and indexed history behavior.",
+      "Read the inherited storage-growth evidence and extract only measurements relevant to the new workload.",
+      "Create a reuse-versus-gap baseline artifact that classifies findings as Verified, Inferred or Unknown.",
+      "Do not implement SnapshotId, temporal references or enrichment until the baseline characterization is complete."
     ]
   },
   "history": {
