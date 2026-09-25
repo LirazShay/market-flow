@@ -51,18 +51,5 @@ jobs:
       - name: Install locked test/build dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Build WP-03 live probe artifact
-        run: npm run build:browser-sql-probe
-
-      - name: Upload WP-03 live probe artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: wp03-live-probe
-          path: |
-            scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/dist/market-flow-v2.browser-sql-probe.js
-            scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/dist/market-flow-v2.browser-sql-probe.bookmarklet.txt
-          if-no-files-found: error
-          retention-days: 1
-
       - name: Run fast unit tests
         run: npm run test:unit
