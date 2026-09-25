@@ -349,9 +349,9 @@ I-A12: graceful shutdown checkpoints when possible, abrupt shutdown remains reco
 - https://developer.mozilla.org/en-US/docs/Web/API/Storage_API
 - https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria
 
-## Deferred
+## Phase-I deferred items and later ownership
 
-Phase I did not originally decide runtime asset packaging/loading topology, Viewer transport/UI, retention/export lifecycle, IndexedDB migration or performance thresholds. Retention/export lifecycle is now closed by Phase S / D-038.
+Phase I did not originally decide runtime asset packaging/loading topology, Viewer transport/UI, retention/export lifecycle, IndexedDB migration or performance thresholds. These are now owned by D-031, D-032, D-038, D-035 and D-034 respectively; no item in this historical list remains unowned.
 
 ## Completion result
 

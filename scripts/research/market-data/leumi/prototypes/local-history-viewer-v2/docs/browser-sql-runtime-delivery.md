@@ -415,9 +415,9 @@ J-A10: real authenticated-Leumi compatibility remains a named live-verification 
 - MDN script-src / wasm-unsafe-eval: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src
 - MDN Worker constructor / blob URL behavior: https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker
 
-## 23. Deferred
+## 23. Phase-J deferred items and later ownership
 
-Phase J does not decide:
+Phase J did not decide the following at that time. Viewer/result transport is now D-032; migration/cutover is D-035; benchmark thresholds are D-034; multi-tab startup is D-040; release compatibility is D-041. Remaining visual/query-history/export choices are non-blocking product/implementation scope:
 
 - Viewer/result messaging protocol;
 - SQL editor/result UI;

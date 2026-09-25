@@ -423,9 +423,9 @@ K-A11: latest-success metadata survives reopen but preview payload is unavailabl
 
 K-A12: current/history market-data browsing uses Controller/SQL Authority reads rather than direct Viewer DB ownership.
 
-## 23. Deferred
+## 23. Phase-K implementation tuning / explicit non-goals
 
-Phase K does not define:
+The following are not architecture gaps. Exact visual styling, numeric preview cap and detailed query-history UI are implementation/benchmark tuning; arbitrary-result export and alert/decision-engine integration are separate future product features:
 
 - exact visual styling/layout;
 - numeric preview-row cap;

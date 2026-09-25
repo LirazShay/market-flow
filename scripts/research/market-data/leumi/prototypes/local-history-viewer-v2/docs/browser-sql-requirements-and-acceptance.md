@@ -201,7 +201,7 @@ when the query is still running at the next nominal tick,
 
 then the scheduler follows one deterministic documented policy and does not launch uncontrolled overlapping executions.
 
-The exact skip/delay/cancel policy is intentionally deferred.
+Resolved by later planning: D-029 defines anchored no-overlap/coalescing; D-039 adds ingest preemption, runtime budgets and cancellation/resource-isolation semantics.
 
 ### AB-08 — refresh/reopen recovery
 
@@ -211,7 +211,7 @@ when the page/tab/runtime is refreshed or reopened,
 
 then committed authoritative history remains recoverable and no synthetic market data is invented.
 
-Exact ownership/restart mechanics are deferred to persistence/recovery design.
+Resolved by later planning: D-030 defines persistent reopen/recovery and D-040 defines cross-tab runtime ownership.
 
 ### AB-09 — raw future-field access
 
@@ -231,7 +231,7 @@ when they are ingested, persisted and queried,
 
 then the system does not silently collapse those source meanings into the same value.
 
-Exact SQL mapping for source-missing remains data-model design work.
+Resolved by later planning: raw JSON preserves source-missing vs explicit null/zero/empty, while promoted analytical columns may use NULL only without destroying the raw distinction (D-027/D-028).
 
 ### AB-11 — dynamic universe
 
@@ -417,11 +417,11 @@ then exactly that candidate becomes production and Recorder resumes only after c
 | AS-02 | Collection around ~5 seconds is a useful representative planning workload. | Exact collector cadence remains configuration. |
 | AS-03 | Multi-million snapshot rows per trading day are a realistic scale to plan/benchmark. | Dataset sizing will be verified later. |
 | AS-04 | The existing Recorder's complete validated-cycle handoff is likely reusable while persistence is replaced. | Inference from current audit; target architecture must validate boundaries rather than preserve private structure by accident. |
-| AS-05 | DuckDB-Wasm is the leading browser-engine candidate. | Not selected until official capability research and later verification. |
+| AS-05 | DuckDB-Wasm + persistent OPFS is the selected target design. | Exact package/artifact and real Leumi suitability remain implementation-verification gates in WP-01/WP-03. |
 
-## 5. Unknowns deliberately deferred
+## 5. Phase-B unknown inventory and current resolution
 
-These are not requirement gaps to solve in Phase B; they belong to later roadmap phases.
+The list below is preserved as Phase-B discovery history. Later phases C–V resolved the architecture/design questions or assigned the remaining evidence to explicit implementation gates. It is **not** a current unowned-gap list.
 
 ### Browser/platform constraints
 
@@ -460,9 +460,9 @@ These are not requirement gaps to solve in Phase B; they belong to later roadmap
 - migration/import of existing IndexedDB history;
 - Bookmarklet/WASM/Worker packaging/delivery.
 
-## 6. Explicit planning non-goals
+## 6. Phase-B planning non-goals
 
-This Browser SQL planning effort does **not** define or implement:
+This list records what Phase B itself did not define or implement. Several design items were intentionally resolved by later planning phases; implementation remains outside this planning chat:
 
 - the final trading formula;
 - entry/exit/order execution logic;

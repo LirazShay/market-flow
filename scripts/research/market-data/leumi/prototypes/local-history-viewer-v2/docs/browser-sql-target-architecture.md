@@ -96,7 +96,7 @@ Current research established:
 - OPFS uses Worker-only synchronous handles;
 - an OPFS file may be held by only one handle at a time;
 - cross-tab/multi-instance OPFS behavior is not sufficiently proven for our target;
-- query cancellation is not yet a verified Wasm primitive.
+- at Phase E, query cancellation was not yet a verified Wasm primitive; Phase T later established a preemption/resource-isolation contract and requires exact pinned-build proof in WP-40.
 
 Therefore the architecture deliberately avoids:
 
@@ -332,9 +332,9 @@ No architecture requirement depends on:
 
 If later evidence proves threaded execution available and materially useful, it can optimize the SQL Authority internally without changing the authority boundary.
 
-## 16. Deliberately deferred decisions
+## 16. Phase-E deferred decisions and later ownership
 
-Phase E does not decide:
+Phase E intentionally did not decide the items below. Later phases F–V resolved them or assigned exact evidence to implementation Issues; this is historical phase-boundary context, not a current unowned list:
 
 - table names/columns/types;
 - SnapshotId physical representation;

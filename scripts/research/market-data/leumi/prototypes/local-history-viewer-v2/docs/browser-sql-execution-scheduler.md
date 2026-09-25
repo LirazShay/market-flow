@@ -312,13 +312,11 @@ A large result is not reinterpreted as a different SQL query.
 
 If later benchmarks prove that fully consuming pathological result sets is unsafe, a separate explicit safety policy may be added with visible truncation/rejection semantics; it must not silently rewrite the query.
 
-## 15. Timeout / cancellation
+## 15. Timeout / cancellation — Phase-H baseline, superseded by Phase T
 
-Current Phase D evidence did not verify a public DuckDB-Wasm hard-interrupt API equivalent to native DuckDB interrupt handles.
+At Phase H, current evidence did not verify a public DuckDB-Wasm hard-interrupt API equivalent to native DuckDB interrupt handles. The bullets below preserve that historical pre-evidence baseline only. **Phase T / D-039 is the current contract**: pinned-build pending cancellation + stream-abort/connection recycle, benchmark-derived runtime/preemption budgets, and controlled Worker recovery if cooperative preemption fails.
 
-Therefore the baseline contract does not promise hard cancellation.
-
-Selected behavior until that changes:
+Historical Phase-H behavior before Phase T:
 
 - no overlapping execution;
 - expose elapsed duration / long-running warning;
@@ -384,11 +382,11 @@ H-A10: a large result is streamed/countable; Viewer payload can be bounded and v
 
 H-A11: latest failed execution and latest successful execution remain distinguishable.
 
-H-A12: without a verified Wasm interrupt API, a long query is warned/observed rather than pretending it was hard-cancelled.
+H-A12 (historical Phase-H baseline): without verified interruption evidence, the plan did not pretend to hard-cancel. Phase T supersedes this with WP-40 pinned-build cancellation/preemption verification.
 
-## 19. Deferred
+## 19. Phase-H deferred items and later ownership
 
-Phase H does not decide:
+Phase H did not decide the following at that time. Later planning now owns them explicitly:
 
 - OPFS checkpoint cadence and recovery;
 - exact persistence of active scheduler state after refresh;
@@ -397,6 +395,8 @@ Phase H does not decide:
 - exact preview cap;
 - IndexedDB migration;
 - benchmark pass/fail thresholds.
+
+Persistence/recovery → D-030; runtime packaging → D-031; Viewer transport → D-032; migration → D-035; benchmark gates → D-034; cancellation/resource isolation → D-039. Numeric preview cap remains an implementation/benchmark tuning value owned by WP-27/WP-35 and does not change SQL semantics.
 
 ## 20. Completion result
 

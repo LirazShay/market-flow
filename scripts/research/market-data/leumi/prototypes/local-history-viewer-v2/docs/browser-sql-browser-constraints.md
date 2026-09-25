@@ -221,3 +221,17 @@ This phase intentionally stops before answering engine-specific unknowns.
 ## Phase U cross-tab ownership constraint
 
 A page-local singleton is not sufficient. The target requires the secure-context Web Locks API to acquire one stable exclusive `market-flow:local-history-viewer-v2:runtime-owner` lock before any production SQL Worker/OPFS/provider startup. BroadcastChannel/heartbeat/query snapshots never grant ownership, and `steal:true` is forbidden. WP-03 must verify two-tab behavior on the real authenticated Leumi origin.
+
+## Phase W resolution index for Phase-C unknowns
+
+Phase C intentionally recorded unknowns before engine/design research. Their current owners are:
+
+- CSP/Worker/Wasm/external assets → D-031, WP-01/WP-03 live gate;
+- OPFS persistence/reopen/quota → D-030/D-038, WP-06/WP-39;
+- DB ownership/concurrency/Viewer direct access → D-026/D-032/D-040, WP-41;
+- ingest/query scheduling and cancellation → D-029/D-039, WP-18/WP-40;
+- hidden/background behavior and capacity → D-034, WP-35;
+- cross-tab locking → D-040, WP-03/WP-41;
+- release/schema/storage compatibility → D-041, WP-42.
+
+Any exact browser/provider behavior still requiring real evidence is therefore an explicit implementation/live/benchmark gate, not an unowned planning gap.
