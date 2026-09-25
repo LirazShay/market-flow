@@ -1,293 +1,195 @@
 # AI Context — Local History Viewer V2
 
-Compact technical continuation context for V2.
-
-Live progress / current work / exact next action live only in:
+Compact continuation context only. Live progress/current/next belong only in:
 
 ~~~text
 STATUS.json
 ~~~
 
-Default fresh-chat order:
+Fresh-chat order:
 
 ~~~text
 README.md
 → STATUS.json
 → AI_CONTEXT.md
-→ current scope / target files / direct tests / owning SPEC as needed
+→ current task docs/code/tests/specs only
 ~~~
 
-## Origin
-
-V2 was created from an exact Git tree clone of the frozen V1 workstream. V1 is preserved unchanged in:
-
-~~~text
-../local-history-viewer-v1/
-~~~
-
-Treat inherited V1 code/tests/specs as the implemented starting baseline. Do not assume the old V1 backlog defines V2 requirements.
-
-Historical rationale remains discoverable from:
+Cold history remains discoverable at:
 
 ~~~text
 docs/history/README.md
 ~~~
 
-Read cold history only when the current task needs it.
+## Baseline vs target
 
-## Current planning target
-
-The implemented runtime is still the inherited IndexedDB baseline, but the active **planning target** is Browser-only SQL.
-
-Durable decision:
+Implemented baseline is still the inherited IndexedDB V2 runtime:
 
 ~~~text
-../../../../../../../docs/project/decisions/D-025.md
-../../../../../../../docs/project/decisions/D-026.md
-../../../../../../../docs/project/decisions/D-027.md
-../../../../../../../docs/project/decisions/D-028.md
-../../../../../../../docs/project/decisions/D-029.md
-../../../../../../../docs/project/decisions/D-030.md
-../../../../../../../docs/project/decisions/D-031.md
-../../../../../../../docs/project/decisions/D-032.md
-../../../../../../../docs/project/decisions/D-033.md
+authenticated Leumi page
+→ Recorder
+→ validated complete cycle
+→ atomic IndexedDB persistence
+→ metadata-only BroadcastChannel
+→ Viewer rereads IndexedDB
 ~~~
 
-Selected target boundary:
+Active planning target is Browser-only SQL:
 
 ~~~text
 authenticated Leumi page
 → Recorder / Collector
 → Runtime Controller
-→ dedicated SQL Authority Worker
+→ one SQL Authority Worker
    → DuckDB-Wasm
-   → persistent OPFS DuckDB database
-   → atomic successful-cycle commits
-   → active SQL scheduler + query execution
-→ Runtime Controller
+   → persistent OPFS DuckDB
+   → atomic ingest
+   → SQL scheduler/execution
 → Viewer client(s)
 ~~~
 
-DuckDB-Wasm + OPFS is now the selected planning target inside a single dedicated SQL Authority Worker. Exact package version and implementation suitability remain later verification work.
+Production Browser SQL implementation must not begin until planning reaches implementation handoff.
 
-localhost / Node / .NET / native database architecture is outside the current planning scope. Reopening that boundary requires a future explicit architecture decision.
-
-This workstream is currently in a planning-only project. Do not implement Browser SQL until STATUS/ROADMAP advance to implementation handoff.
-
-## Selected relational model
+## Durable decisions
 
 ~~~text
-security + current_universe
-cycle
-snapshot
-  + full raw Security JSON
-  + promoted typed analytical fields
-  + prev_H_snapshot_id / last_change_H_pct / deals_delta_H for core horizons
-latest_snapshot → pointer to authoritative snapshot
+D-025 Browser-only SQL boundary
+D-026 one SQL Authority Worker
+D-027 snapshot-centric relational model
+D-028 atomic enriched cycle ingest
+D-029 immutable SQL versions + anchored non-overlapping scheduler
+D-030 OPFS checkpointed durability + idempotent recovery
+D-031 pinned browser runtime delivery
+D-032 Viewer as detachable Runtime Controller client
+D-033 Node + Chromium + live-Leumi verification layers
 ~~~
 
-Canonical IDs:
+Decision files:
 
 ~~~text
-security_id = VARCHAR / String(PaperId or Key)
-snapshot_id = stable BIGINT surrogate
-UNIQUE(cycle_id, security_id)
+../../../../../../../docs/project/decisions/D-025.md ... D-033.md
 ~~~
 
-Canonical Market Flow timestamps remain epoch milliseconds. Source missing/null/zero/empty distinctions remain recoverable from raw JSON; promoted SQL NULL alone is not used to infer source presence.
+## Core target contracts
 
-## Selected ingest / atomicity contract
+Data:
+
+- canonical security ID = `String(PaperId or Key)`;
+- no hardcoded universe size;
+- preserve full raw MapHeat + full raw Security;
+- preserve `null != 0 != "" != undefined`;
+- snapshot identity is separate from security identity;
+- one successful cycle has `UNIQUE(cycle_id, security_id)`;
+- latest is a pointer to authoritative snapshot history;
+- core horizons: 10, 20, 30, 60, 90, 120, 300, 600 seconds;
+- missing horizon history stays NULL;
+- DealsDelta stays disabled until provider reset semantics are verified.
+
+Ingest:
 
 ~~~text
 complete validated cycle
-→ immutable handoff with exact validated universe
-→ SQL Authority defensive validation
-→ one bulk cycle operation
-→ set-based temporal/derived enrichment
-→ one SQL transaction
+→ immutable handoff
+→ defensive authority validation
+→ one bulk operation
+→ SQL enrichment
+→ one transaction
 → COMMIT
-→ success acknowledgement
+→ CHECKPOINT
+→ acknowledgement
 ~~~
 
-Temporal predecessor rule for horizon H: choose the latest same-security snapshot with `collected_at_ms <= current.collected_at_ms - H*1000`; if none exists, use NULL. current_universe and latest_snapshot advance only inside the same successful transaction.
+Every handoff carries stable UNIQUE `ingest_token` for retry/recovery reconciliation.
 
-## Selected SQL execution / scheduler contract
+SQL:
+
+- user analysis changes by immutable query version, not application rebuild;
+- analytical SQL is read-only via statement classification + DuckDB hardening;
+- cadence is anchored and independent from collection cadence;
+- no overlapping queries; missed ticks coalesce;
+- validated cycle commit outranks pending analytical execution;
+- latest execution and latest successful execution stay distinct;
+- hard cancellation is not assumed until proven in pinned Wasm.
+
+Viewer:
+
+- Viewer never opens DuckDB/OPFS;
+- attach/re-attach obtains a full state snapshot;
+- notifications are hints, not authority;
+- multiple Viewers share one runtime;
+- stale SQL editor activation is rejected optimistically;
+- bounded result preview is runtime memory; execution metadata persists.
+
+## Browser/runtime gate
+
+Planned delivery keeps Market Flow code self-contained while exact pinned DuckDB Worker/Wasm assets are loaded through the selected browser bootstrap.
+
+Before heavy Browser SQL implementation, live authenticated-Leumi verification must prove with synthetic data:
 
 ~~~text
-immutable query version
-→ parser-level read-only analytical gate
-→ fixed cadence anchored to activation
-→ no overlapping query executions
-→ missed ticks coalesce
-→ validated cycle commit outranks pending query
-→ streamed result accounting
-→ latest execution kept distinct from latest successful execution
+injected JS / Bookmarklet
+→ Blob Worker
+→ pinned DuckDB Worker/Wasm
+→ OPFS write
+→ COMMIT + CHECKPOINT
+→ refresh/relaunch
+→ reopen + verify
 ~~~
 
-Collection cadence and query cadence remain independent. Hard query cancellation is not assumed until verified in the exact pinned DuckDB-Wasm package.
+CI cannot substitute for this real-page CSP/origin proof.
 
-## Selected persistence / recovery contract
+## Testing
 
 ~~~text
-one origin-scoped OPFS DuckDB authority
-+ exact pinned/verified DuckDB-Wasm artifact
-+ market durability = COMMIT → CHECKPOINT → acknowledgement
-+ stable UNIQUE ingest_token for ambiguous retry reconciliation
-+ explicit persistent/best-effort browser-storage state
-+ non-destructive reopen/schema recovery
+pure deterministic logic → Node
+Worker/Wasm/OPFS/runtime/Viewer → Playwright Chromium
+real Leumi CSP/origin/provider behavior → live verification
 ~~~
 
-Unclean recording sessions and running query executions are marked interrupted on reopen; active query cadence keeps its original anchor and downtime ticks coalesce to at most one pending execution.
-
-## Selected runtime delivery contract
-
-~~~text
-self-contained Market Flow runtime/bookmarklet
-+ bundled pinned DuckDB main JS
-+ exact versioned external mvp/eh Worker + Wasm assets
-+ Blob SQL Worker under the authenticated page origin
-+ explicit CSP/capability preflight
-+ no silent fallback/version switching
-~~~
-
-Recorder starts only after SQL Authority readiness. Real authenticated-Leumi Bookmarklet/Worker/Wasm/CSP compatibility remains a live-verification gate before cutover.
-
-## Selected Viewer / result-delivery contract
-
-~~~text
-Viewer attach/re-attach
-→ one Runtime Controller bridge
-→ full ViewerStateSnapshot
-→ lightweight stateRevision notifications
-→ resync on every attach/missed-event recovery
-~~~
-
-Viewer never opens DuckDB. Runtime memory holds only a bounded latest-success preview; persisted execution metadata survives restart. Query activation uses expectedActiveQueryVersionId to prevent silent multi-Viewer overwrites.
-
-## Selected Browser SQL verification contract
-
-~~~text
-Node = deterministic logic
-Chromium = Worker/Wasm/OPFS/runtime/Viewer semantics
-Live Leumi = actual authenticated page CSP/origin/provider compatibility
-~~~
-
-Before heavy Browser SQL implementation proceeds, a minimal live probe must prove Bookmarklet/injected JS → Blob Worker → pinned DuckDB Worker/Wasm → OPFS write/CHECKPOINT → refresh/reopen on the real authenticated Leumi page using synthetic data only.
-
-## Implemented baseline architecture
-
-~~~text
-authenticated Leumi browser tab
-→ Recorder
-→ validated complete cycle
-→ atomic IndexedDB persistence
-→ metadata-only BroadcastChannel
-→ same-origin Viewer
-→ Viewer rereads IndexedDB
-~~~
-
-## V2 identity isolation
-
-~~~text
-database       market-flow-leumi-history-v2
-channel        market-flow-leumi-v2
-viewer window  market-flow-leumi-v2-viewer
-viewer marker  market-flow-leumi-v2
-runtime        market-flow-v2.runtime.js
-bookmarklet    market-flow-v2.bookmarklet.txt
-~~~
-
-The internal browser globals are still inherited as `window.MarketFlow*`. V1 and V2 must not both be injected into the same browsing context without refresh. Separate tabs remain isolated by persistent/runtime identity.
-
-## Inherited critical invariants
-
-Until V2 deliberately changes a contract:
-
-- never hardcode universe size;
-- canonical security ID is `String(PaperId or Key)`;
-- preserve full raw MapHeat and GetSecuritiesData Security objects;
-- preserve `null != 0 != "" != undefined`;
-- do not infer unknown provider field semantics;
-- complete-cycle validation precedes persistence;
-- successful cycle persistence is atomic across `cycles + history + latest + meta`;
-- API / validation / DB failure must not leave partial `latest` or `history`;
-- IndexedDB remains source of truth and BroadcastChannel remains notification-only **for the currently implemented baseline until an intentionally specified migration changes authority**.
-
-## Implementation map
-
-~~~text
-recorder/   provider collection + cycle loop
-storage/    IndexedDB schema/read/write + atomic persistence
-messaging/  BroadcastChannel contract
-viewer/     current/history UI + diagnostics
-runtime/    generated runtime + Bookmarklet
-debug/      sanitized Debug Bundle
-specs/      implemented baseline contracts
-tests/      unit + Playwright + fixtures
-~~~
+Tests protect observable contracts, not private internals. Fast CI is the normal push/PR gate; Browser CI is used for browser-dependent final states and Stage closure.
 
 ## Planning map
 
 ~~~text
 ROADMAP.md
-→ planning phases/order
-
 docs/browser-sql-current-state-audit.md
-→ current baseline / retain-replace-gap evidence
-
 docs/browser-sql-requirements-and-acceptance.md
-→ consolidated requirements / classifications / end-to-end acceptance behaviors
-
 docs/browser-sql-browser-constraints.md
-→ Browser/Windows/Chromium/origin/lifecycle/persistence/loading/concurrency constraints and research questions
-
 docs/browser-sql-official-capability-research.md
-→ current official DuckDB-Wasm/OPFS/Worker/Arrow/memory capability evidence and remaining unknowns
-
 docs/browser-sql-target-architecture.md
-→ selected single-authority Worker topology and startup/ingest/query/recovery flows
-
 docs/browser-sql-relational-data-model.md
-→ selected Cycle/Snapshot/security/latest/raw+typed/wide-horizon relational model
-
 docs/browser-sql-ingest-enrichment-atomicity.md
-→ validated-cycle handoff, bulk ingest boundary, enrichment order, temporal predecessor rule and one-transaction commit contract
-
 docs/browser-sql-execution-scheduler.md
-→ immutable query versions, read-only SQL gate, anchored cadence, no-overlap/coalescing and result/failure semantics
-
 docs/browser-sql-persistence-recovery.md
-→ OPFS identity, checkpointed durability acknowledgement, ingest-token reconciliation, reopen/migration/quota recovery
-
 docs/browser-sql-runtime-delivery.md
-→ self-contained Market Flow runtime, bundled DuckDB main JS, pinned Worker/Wasm assets, Blob Worker bootstrap and capability/CSP gate
-
 docs/browser-sql-viewer-result-delivery.md
-→ Viewer attach/re-attach, state snapshots, missed-notification recovery, result preview lifetime and multi-Viewer query-edit concurrency
-
 docs/browser-sql-testing-verification-strategy.md
-→ Node/Chromium/live verification ownership, fixtures, CI cadence and mandatory early authenticated-Leumi compatibility probe
-
-docs/sql-live-analytics-design.md
-→ durable design direction
-
 docs/sql-live-engine-benchmark-plan.md
-→ benchmark planning requirements
 ~~~
 
-## V2 change rule
+Read only the current-phase artifact(s) from this list.
 
-For future V2 behavior changes:
+## V2 isolation / implementation map
+
+Browser identities:
 
 ~~~text
-requirement / observable contract
-→ affected SPEC review
-→ tests first when practical
-→ implementation
-→ required verification
-→ STATUS.json update
+IndexedDB baseline: market-flow-leumi-history-v2
+channel:            market-flow-leumi-v2
+viewer window:      market-flow-leumi-v2-viewer
+runtime:            market-flow-v2.*
 ~~~
 
-During the current planning project, documentation/research/design may change, but production/runtime implementation must not begin.
+Code ownership:
 
-Do not modify frozen V1 merely to make V2 development easier.
+~~~text
+recorder/   provider collection
+storage/    implemented IndexedDB baseline
+messaging/  implemented BroadcastChannel baseline
+viewer/     implemented Viewer baseline
+runtime/    generated runtime/Bookmarklet
+tests/      Node + Playwright + fixtures
+specs/      implemented baseline contracts
+~~~
+
+Do not modify frozen V1 merely to make V2 easier.
