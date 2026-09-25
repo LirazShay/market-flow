@@ -460,7 +460,9 @@ test(
             deletedEntries: [
                 "market-flow-browser-sql-probe-v2.duckdb",
                 "market-flow-browser-sql-probe-v2.duckdb.wal"
-            ]
+            ],
+            error:
+                null
         });
     }
 );
