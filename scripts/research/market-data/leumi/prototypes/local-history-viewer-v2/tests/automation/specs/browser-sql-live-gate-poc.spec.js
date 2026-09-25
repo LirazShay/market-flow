@@ -36,6 +36,9 @@ const duckdbDist =
 const MOCK_PAGE =
     "/tests/automation/mock-leumi-authenticated.html";
 
+const WASM_BLOCKED_MOCK_PAGE =
+    "/tests/automation/mock-leumi-wasm-blocked.html";
+
 const LOCK_NAME =
     "market-flow:wp03:web-lock-probe";
 
@@ -459,6 +462,117 @@ test(
                 "market-flow-browser-sql-probe-v2.duckdb.wal"
             ]
         });
+    }
+);
+
+test(
+    "WP-03 synthetic Leumi preflight classifies CSP without Wasm compilation permission at wasm-instantiate",
+    async ({ context }) => {
+        await routePinnedEngineAssets(
+            context
+        );
+
+        const page =
+            await context.newPage();
+
+        await page.goto(
+            WASM_BLOCKED_MOCK_PAGE
+        );
+
+        await expect(
+            page.locator(
+                "#mock-leumi-ready"
+            )
+        ).toHaveText(
+            "ready"
+        );
+
+        await injectProbe(
+            page
+        );
+
+        const result =
+            await page.evaluate(
+                async () =>
+                    await window
+                        .MarketFlowBrowserSqlProbe
+                        .run({
+                            bundle:
+                                "mvp",
+                            workerReadyTimeoutMs:
+                                2000
+                        })
+            );
+
+        expect(
+            result.status
+        ).toBe(
+            "failed"
+        );
+
+        expect(
+            result.failedStage
+        ).toBe(
+            "wasm-instantiate"
+        );
+
+        expect(
+            result.stages
+        ).toEqual([
+            {
+                name:
+                    "bookmarklet-bootstrap",
+                status:
+                    "passed"
+            },
+            {
+                name:
+                    "browser-capabilities",
+                status:
+                    "passed"
+            },
+            {
+                name:
+                    "blob-worker-create",
+                status:
+                    "passed"
+            },
+            {
+                name:
+                    "worker-asset-load",
+                status:
+                    "passed"
+            },
+            {
+                name:
+                    "wasm-instantiate",
+                status:
+                    "failed"
+            }
+        ]);
+
+        const serialized =
+            JSON.stringify(
+                result
+            );
+
+        expect(
+            serialized
+        ).not.toContain(
+            "Authorization"
+        );
+
+        expect(
+            serialized
+        ).not.toContain(
+            "Cookie"
+        );
+
+        expect(
+            serialized
+        ).not.toContain(
+            "hb2.leumi"
+        );
     }
 );
 

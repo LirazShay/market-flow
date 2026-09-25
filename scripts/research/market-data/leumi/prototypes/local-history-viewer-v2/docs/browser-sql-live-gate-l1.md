@@ -83,6 +83,8 @@ Before live execution, GitHub Actions runs a synthetic authenticated-Leumi-like 
 - browser lock release after owner-tab close;
 - probe-only cleanup.
 
+The compatible synthetic page uses an explicit CSP allow-list for the pinned CDN Worker import and WebAssembly compilation. A separate negative CSP fixture intentionally omits WebAssembly compilation permission and must fail at the sanitized `wasm-instantiate` stage. This proves the harness distinguishes CSP compatibility from generic Chromium capability.
+
 CI evidence from this preflight is **not** live-origin evidence. For the real authenticated Leumi page these outcomes remain `Inferred` until Part A/Part B below are directly observed there.
 
 ## Part A — Worker/Wasm/OPFS probe

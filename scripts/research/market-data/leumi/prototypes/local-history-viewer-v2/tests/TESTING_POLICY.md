@@ -143,7 +143,7 @@ tests/automation/specs/browser-sql-live-gate-poc.spec.js
 Local History Viewer V2 WP-03 POC CI
 ~~~
 
-This deterministic preflight should cover same-origin two-tab Web Locks, Blob Worker, exact pinned Worker/Wasm, OPFS persistence, COMMIT/CHECKPOINT/reopen and probe-only cleanup. Its result is browser-mechanics evidence only and must be classified as Inferred for the real authenticated Leumi origin.
+This deterministic preflight should cover same-origin two-tab Web Locks, Blob Worker, exact pinned Worker/Wasm, OPFS persistence, COMMIT/CHECKPOINT/reopen and probe-only cleanup. The compatible synthetic CSP explicitly permits the pinned CDN Worker import and WebAssembly compilation; a second negative CSP fixture omits WebAssembly compilation permission and must be classified at the `wasm-instantiate` stage. Its result is browser-mechanics evidence only and must be classified as Inferred for the real authenticated Leumi origin.
 
 If it fails because of real CSP/origin/browser constraints, dependent implementation work stops and the runtime-delivery architecture must be reconsidered from evidence.
 
