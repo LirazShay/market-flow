@@ -1,0 +1,42 @@
+name: Local History Viewer V2 WP-02 Probe CI
+
+on:
+  push:
+    paths:
+      - ".github/workflows/local-history-viewer-v2-wp02-probe-ci.yml"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/**"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/tests/automation/specs/browser-sql-probe.spec.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/tests/unit/browser-sql-probe-build.test.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package-lock.json"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: WP-02 targeted Chromium probe
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    defaults:
+      run:
+        working-directory: scripts/research/market-data/leumi/prototypes/local-history-viewer-v2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Ensure Chromium is installed
+        run: npx playwright install chromium
+
+      - name: Run targeted WP-02 Chromium spec
+        run: npx playwright test tests/automation/specs/browser-sql-probe.spec.js
