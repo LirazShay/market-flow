@@ -98,6 +98,49 @@ Package identity, DuckDB core identity and asset flavor are separate fields and 
 
 This manifest foundation does not instantiate DuckDB, open OPFS, create a Worker authority or change the current IndexedDB runtime authority. Those behaviors belong to later Browser SQL work packages.
 
+### Browser SQL compatibility probe
+
+Before Browser SQL authority implementation, the repository can generate a synthetic compatibility probe:
+
+~~~text
+runtime/browser-sql-probe.js
+runtime/build-browser-sql-probe.js
+npm run build:browser-sql-probe
+~~~
+
+Generated artifacts:
+
+~~~text
+runtime/dist/market-flow-v2.browser-sql-probe.js
+runtime/dist/market-flow-v2.browser-sql-probe.bookmarklet.txt
+~~~
+
+The probe is intentionally separate from the production database and current recorder runtime. It uses only:
+
+- the exact pinned MVP/EH Worker + Wasm manifest;
+- a Blob Worker bootstrap;
+- probe-owned OPFS files `market-flow-browser-sql-probe-v2.duckdb` and its WAL;
+- one synthetic marker row.
+
+The observable probe stages are:
+
+~~~text
+bookmarklet-bootstrap
+browser-capabilities
+blob-worker-create
+worker-asset-load
+wasm-instantiate
+opfs-open
+write-commit-checkpoint
+reopen-verify
+~~~
+
+Success requires a synthetic write, COMMIT, CHECKPOINT, Worker teardown/reopen, and verification of the persisted marker. Failure is reported by stage with sanitized error metadata only.
+
+Probe cleanup may remove only the two probe-owned OPFS filenames. It must never delete or open the production Market Flow database identity.
+
+The probe contains no provider calls, authentication/session material, account data or live provider payloads. Chromium verification proves browser mechanics only; the real authenticated-Leumi CSP/origin result belongs to the later live gate.
+
 ### Compact artifact
 
 The Bookmarklet contract is:
@@ -236,12 +279,14 @@ Fast build/package tests:
 ~~~text
 ../tests/unit/runtime-build.test.js
 ../tests/unit/duckdb-engine-manifest.test.js
+../tests/unit/browser-sql-probe-build.test.js
 ~~~
 
 Browser smoke:
 
 ~~~text
 ../tests/automation/specs/runtime-assembly.spec.js
+../tests/automation/specs/browser-sql-probe.spec.js
 ~~~
 
 The Browser suite verifies generated execution, initial/repeated launch and restart behavior.
@@ -270,8 +315,12 @@ Review this spec whenever changing:
 - `../runtime/source-order.js`
 - `../runtime/build-runtime.js`
 - `../runtime/duckdb-engine-manifest.js`
+- `../runtime/browser-sql-probe.js`
+- `../runtime/build-browser-sql-probe.js`
 - `../runtime/entry.js`
 - `system.spec.md`
 - `../tests/unit/runtime-build.test.js`
 - `../tests/unit/duckdb-engine-manifest.test.js`
+- `../tests/unit/browser-sql-probe-build.test.js`
 - `../tests/automation/specs/runtime-assembly.spec.js`
+- `../tests/automation/specs/browser-sql-probe.spec.js`

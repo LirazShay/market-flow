@@ -72,6 +72,25 @@ bundles: mvp + eh
 
 Every Worker/Wasm URL contains the exact npm package version. Floating tags such as `latest` / `next`, semver ranges, cross-version Worker/Wasm pairs and flavor-mismatched pairs are rejected by the generator/validator. This file is only the engine identity/asset foundation; it does not instantiate DuckDB or create a SQL authority.
 
+## Browser SQL live-compatibility probe
+
+Build the synthetic probe with:
+
+~~~text
+npm run build:browser-sql-probe
+~~~
+
+Generated files:
+
+~~~text
+runtime/dist/market-flow-v2.browser-sql-probe.js
+runtime/dist/market-flow-v2.browser-sql-probe.bookmarklet.txt
+~~~
+
+The probe is deliberately not the production runtime. It uses the exact pinned DuckDB Worker/Wasm assets, a probe-only OPFS database, and one synthetic marker to test Blob Worker creation, Wasm instantiation, COMMIT/CHECKPOINT, reopen verification and exact probe-file cleanup.
+
+It makes no Leumi provider calls and contains no credentials, cookies, authorization headers, account data or production database identity. Deterministic Chromium verification uses locally fulfilled copies of the exact locked Worker/Wasm files; the actual authenticated-Leumi CSP/origin result remains a separate live verification gate.
+
 ## Artifact roles
 
 `market-flow-v2.runtime.js` is the readable assembled runtime used for inspection and debugging.
@@ -145,8 +164,8 @@ If stop persistence is still pending, a restart fails clearly rather than creati
 
 ## Verification
 
-Fast tests cover deterministic assembly, compact Bookmarklet generation, exact no-inflation packaging, absence of `%20` encoding, large-runtime packaging, artifact writing, exact DuckDB package/core identity, deterministic engine-manifest serialization and rejection of floating/version-mismatched engine assets.
+Fast tests cover deterministic assembly, compact Bookmarklet generation, exact no-inflation packaging, absence of `%20` encoding, large-runtime packaging, artifact writing, exact DuckDB package/core identity, deterministic engine-manifest serialization, rejection of floating/version-mismatched engine assets, and deterministic sanitized Browser SQL probe generation.
 
-Chromium smoke coverage executes the generated Bookmarklet on a clean page with deterministic mocked Leumi endpoints and verifies initial launch, repeated idempotent launch, restart after a clean stop, and the compact artifact contract.
+Chromium smoke coverage executes the generated runtime Bookmarklet on a clean page with deterministic mocked Leumi endpoints. The targeted Browser SQL probe spec separately verifies real Chromium Blob Worker, exact pinned Worker/Wasm loading, OPFS COMMIT/CHECKPOINT/reopen and probe-only cleanup.
 
 Real Chrome bookmark storage/execution on the authenticated Leumi site remains provider-dependent live verification and must not be claimed from CI alone.

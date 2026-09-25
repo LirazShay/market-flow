@@ -11,7 +11,9 @@
     "test:all": "npm run test:unit && npm run test:browser",
     "build:runtime": "node runtime/build-runtime.js",
     "build:engine-manifest": "node runtime/duckdb-engine-manifest.js",
-    "test:browser:runtime": "npm run build:runtime && playwright test tests/automation/specs/runtime-assembly.spec.js"
+    "test:browser:runtime": "npm run build:runtime && playwright test tests/automation/specs/runtime-assembly.spec.js",
+    "build:browser-sql-probe": "node runtime/build-browser-sql-probe.js",
+    "test:browser:sql-probe": "npx playwright test tests/automation/specs/browser-sql-probe.spec.js"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "1.32.0"
