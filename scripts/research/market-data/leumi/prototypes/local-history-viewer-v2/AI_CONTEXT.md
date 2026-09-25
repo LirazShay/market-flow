@@ -36,7 +36,7 @@ authenticated Leumi page
 
 ## Durable decisions
 
-Browser SQL decisions are `D-025` through `D-037`.
+Browser SQL decisions currently include `D-025` through `D-038`.
 
 Key execution source:
 
@@ -132,7 +132,9 @@ Fast CI is the normal push/PR gate. Browser-dependent numbered implementation ch
 
 Normal-profile benchmark gates target roughly 4x isolated and 2x mixed cadence headroom; full-session + 2x-session target Windows/Chrome evidence is required before cutover.
 
-Cutover starts a fresh SQL history epoch. No initial legacy-history import, permanent dual-write/read, or silent IndexedDB fallback. Legacy IndexedDB remains inert until explicit cleanup.
+Cutover starts a fresh SQL history epoch. No initial legacy-history import, permanent dual-write/read, or silent IndexedDB fallback.
+
+Storage lifecycle: default retain-all; no automatic history deletion. Storage pressure uses benchmark-derived byte reserve. Explicit archive + crash-recoverable database rollover creates a new database_epoch_id and may delete only exact Market-Flow OPFS entries.
 
 ## Navigation
 

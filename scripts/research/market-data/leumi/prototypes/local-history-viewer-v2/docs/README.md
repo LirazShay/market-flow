@@ -23,6 +23,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL implementation decomposition | [browser-sql-implementation-decomposition.md](browser-sql-implementation-decomposition.md) |
 | Browser SQL GitHub execution structure | [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
 | Browser SQL final plan audit / implementation handoff | [browser-sql-final-plan-audit.md](browser-sql-final-plan-audit.md) |
+| Browser SQL data lifecycle / retention / archive / rollover | [browser-sql-data-lifecycle-retention.md](browser-sql-data-lifecycle-retention.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
@@ -38,6 +39,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL migration/cutover durable decision | [D-035](../../../../../../../docs/project/decisions/D-035.md) |
 | Browser SQL failure/security/observability durable decision | [D-036](../../../../../../../docs/project/decisions/D-036.md) |
 | Browser SQL implementation decomposition durable decision | [D-037](../../../../../../../docs/project/decisions/D-037.md) |
+| Browser SQL data-lifecycle durable decision | [D-038](../../../../../../../docs/project/decisions/D-038.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 

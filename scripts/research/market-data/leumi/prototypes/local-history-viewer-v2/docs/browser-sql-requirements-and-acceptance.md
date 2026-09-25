@@ -106,6 +106,11 @@ Unknown             = intentionally deferred to later planning/research
 | DR-38 | LIVE analysis is the primary use case and the system must sustain mixed ingest + repeated SQL over a trading-session-scale history. | live-opportunity-discovery. |
 | DR-39 | The live path needs substantial headroom relative to collection/query cadence; merely finishing just before the next nominal tick is not sufficient design comfort. | product + benchmark planning. |
 | DR-40 | Performance conclusions and thresholds must be based on later benchmark evidence, not intuition. | product + benchmark planning. |
+| DR-41 | Market history must never be deleted automatically merely because storage usage crosses an estimate/percentage; destructive lifecycle actions require an explicit policy/user action. | Phase S. |
+| DR-42 | Storage pressure must be observable before exhaustion using benchmark-derived byte headroom rather than a hardcoded quota percentage. | Phase S + benchmark evidence. |
+| DR-43 | Destructive history rollover must occur only at a safe maintenance boundary and must leave exactly one provable Browser SQL authority after recovery. | Phase S. |
+| DR-44 | Every production database history epoch must have an observable database_epoch_id; live SQL never silently spans epochs. | Phase S. |
+| DR-45 | Export/backup terminology must be truthful: the initial target may provide logical archive export but must not claim verified restore/backup guarantees that are not implemented. | Phase S. |
 
 ## 3. Acceptance behaviors
 
@@ -247,6 +252,30 @@ when repository/runtime assets are inspected,
 
 then provider secrets/session material have not been copied into repository artifacts or a separate local service merely to enable analytics.
 
+### AB-16 — storage pressure without silent deletion
+
+Given a healthy retained history and a low estimated storage headroom warning,
+
+when the warning threshold is crossed,
+
+then authoritative history remains unchanged and recording is not silently pruned or rolled over.
+
+### AB-17 — explicit history epoch rollover
+
+Given an explicit user-approved rollover at a safe maintenance boundary,
+
+when the rollover completes successfully,
+
+then one new database_epoch_id becomes authoritative, the active analytical configuration is preserved, old market history is not mixed into the new live epoch, and horizon values warm from NULL naturally.
+
+### AB-18 — rollover failure isolation
+
+Given an archive/candidate/switch failure during explicit rollover,
+
+when recovery runs,
+
+then Recorder stays stopped until exactly one coherent production epoch is proven, and Market Flow never clears unrelated Leumi-origin OPFS data.
+
 ## 4. Assumptions that are not frozen contracts
 
 | ID | Assumption | Boundary |
@@ -294,7 +323,7 @@ These are not requirement gaps to solve in Phase B; they belong to later roadmap
 - timeout/cancellation/result-size policy;
 - query scheduling overrun policy;
 - schema migration/versioning;
-- retention/export/backup policy;
+- archive restore/import UX and cross-epoch analysis policy;
 - migration/import of existing IndexedDB history;
 - Bookmarklet/WASM/Worker packaging/delivery.
 

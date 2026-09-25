@@ -10,15 +10,15 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-planning",
-    "substep": "final-plan-audit-handoff",
-    "title": "Verify final Browser SQL plan audit and implementation handoff",
-    "status": "verification-pending"
+    "stage": "browser-sql-planning-assurance",
+    "substep": "analytical-resource-isolation",
+    "title": "Design Browser SQL analytical resource isolation and runaway-query safety",
+    "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "planning phases A-Q; Phase R audit content complete",
-    "verificationPending": "Phase R Fast CI",
-    "planned": "after green verification, planning closes and next pointer becomes WP-01 / Issue #29"
+    "completed": "planning phases A-S; Phase-R initial audit red-teamed and extended",
+    "inProgress": "phase T analytical resource isolation",
+    "planned": "phase U multi-tab ownership → phase V upgrade/release lifecycle → phase W final planning assurance/freeze"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -82,7 +82,7 @@
     },
     "specImpact": "No runtime code or normative implemented spec changed. Phase R audits planning/execution management only.",
     "finalPlanAudit": {
-      "status": "verification-pending",
+      "status": "reopened-by-red-team",
       "artifact": "docs/browser-sql-final-plan-audit.md",
       "structural": "38/38 canonical Work Issues contain all required sections; dependencies exactly match decomposition; graph has no cycles.",
       "requirements": "FD-01..08, DR-01..40, AB-01..15 and D-025..D-037 all have explicit execution owners.",
@@ -90,15 +90,25 @@
         "Added Target repository areas to all 38 canonical Work Issues.",
         "Added missing Implementation sequence to canonical WP-37 #66 and WP-38 #67."
       ],
-      "handoffCandidate": "WP-01 / Issue #29 after Fast CI is green."
+      "handoffCandidate": "Blocked until post-R assurance phases S-W complete."
+    },
+    "dataLifecycle": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-data-lifecycle-retention.md",
+      "decision": "../../../../../../../docs/project/decisions/D-038.md",
+      "policy": "retain-all by default; benchmark-derived storage warning; no automatic history deletion; explicit logical archive + crash-recoverable fresh database epoch rollover.",
+      "implementationOwner": "WP-39 (GitHub Issue to be created/linked in Phase S management update)."
     }
   },
   "next": {
-    "action": "Run Phase R Fast CI. If green, mark planning complete and hand implementation to WP-01 / Issue #29.",
+    "action": "Planning Phase T: close long-running analytical SQL / ingest-starvation resource isolation.",
     "steps": [
-      "Do not start WP-01 before Phase R repository verification is green.",
-      "After green, set planning status complete and leave WP-01 as the next ready implementation package.",
-      "Browser CI is not required for this docs/Issue-management-only audit because runtime/browser implementation did not change."
+      "Verify exact pinned DuckDB-Wasm cancellation/interrupt capabilities instead of assuming native DuckDB APIs exist in Wasm.",
+      "Define a bound on how analytical SQL may delay validated-cycle persistence.",
+      "Define query admission/timeout/disable behavior when cancellation is unavailable.",
+      "Define result-stream backpressure/resource limits without silently rewriting user SQL semantics.",
+      "Add/update implementation Work Issue ownership and cutover blockers.",
+      "Do not start implementation in this chat."
     ]
   },
   "history": {
@@ -107,8 +117,8 @@
     "latestArchive": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json"
   },
   "currentStage": {
-    "stage": "browser-sql-planning",
-    "title": "Browser SQL migration planning project",
-    "status": "verification-pending"
+    "stage": "browser-sql-planning-assurance",
+    "title": "Pre-implementation Browser SQL planning assurance",
+    "status": "in-progress"
   }
 }

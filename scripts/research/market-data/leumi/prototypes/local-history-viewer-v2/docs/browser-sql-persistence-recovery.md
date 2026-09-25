@@ -351,7 +351,7 @@ I-A12: graceful shutdown checkpoints when possible, abrupt shutdown remains reco
 
 ## Deferred
 
-Phase I does not decide runtime asset packaging/loading topology, Viewer transport/UI, exact retention cleanup, export/backup UI, IndexedDB migration or performance thresholds.
+Phase I did not originally decide runtime asset packaging/loading topology, Viewer transport/UI, retention/export lifecycle, IndexedDB migration or performance thresholds. Retention/export lifecycle is now closed by Phase S / D-038.
 
 ## Completion result
 
@@ -365,3 +365,9 @@ one origin-scoped OPFS authority
 + interrupted session/query reconciliation
 + explicit quota/storage-blocked state
 ~~~
+
+## Phase S retention/lifecycle closure
+
+Retention/export policy is no longer deferred. The initial target uses `retain-all` with benchmark-derived storage-pressure warning and **no automatic data deletion**. Explicit space recovery is a maintenance-mode logical archive + whole-database epoch rollover defined in `browser-sql-data-lifecycle-retention.md` / D-038.
+
+Do not rely on row DELETE/VACUUM as a guaranteed quota-recovery mechanism. Market Flow may delete only exact Market-Flow-owned OPFS entries and must never clear the entire Leumi-origin OPFS.

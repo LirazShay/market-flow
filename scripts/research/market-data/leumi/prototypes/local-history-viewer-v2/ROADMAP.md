@@ -358,7 +358,79 @@ Then:
 - point STATUS.json to the first implementation issue;
 - leave enough context for a fresh AI to execute without this planning conversation.
 
-Only then may implementation begin.
+The initial Phase-R audit triggered a deeper pre-implementation red-team review. Implementation remains blocked until the added assurance phases below are complete.
+
+## Planning Phase S — Data lifecycle, retention and archive/rollover
+
+Close retention/export/backup lifecycle:
+
+- retain-all vs automatic deletion;
+- storage-pressure warning;
+- archive semantics;
+- database epoch identity;
+- explicit crash-recoverable rollover;
+- OPFS deletion safety under the Leumi origin;
+- quota recovery without false VACUUM assumptions.
+
+Deliverable: durable lifecycle policy + implementation owner.
+
+## Planning Phase T — Analytical resource isolation and runaway-query safety
+
+Close the gap where an arbitrary long-running analytical query can starve market ingest even though scheduler overlap is prevented.
+
+Plan:
+
+- query admission/resource budgets;
+- timeout/cancellation capability evidence in the exact pinned Wasm API;
+- behavior when cancellation is unavailable;
+- ingest starvation bound;
+- large-result backpressure;
+- query health/block/disable policy.
+
+Deliverable: resource-isolation contract + implementation owner.
+
+## Planning Phase U — Multi-tab ownership and split-brain prevention
+
+Prove how two independent authenticated Leumi tabs cannot create competing SQL Authorities against the same OPFS database.
+
+Plan:
+
+- owner discovery/election;
+- stale-owner detection;
+- takeover after page death;
+- independent-tab Bookmarklet invocation;
+- Viewer-only vs Recorder-owner roles;
+- OPFS exclusivity failure handling.
+
+Deliverable: cross-tab ownership protocol + tests/issues.
+
+## Planning Phase V — Engine/schema upgrade and release compatibility lifecycle
+
+Plan post-cutover upgrades, not only initial pinning:
+
+- DuckDB-Wasm engine upgrade compatibility;
+- storage-version compatibility;
+- schema migrations across app releases;
+- rollback when a newer engine has touched the DB;
+- release manifest compatibility gates;
+- upgrade verification evidence.
+
+Deliverable: upgrade/release lifecycle contract.
+
+## Planning Phase W — Final planning assurance and freeze
+
+Run a final independent planning QA pass:
+
+- mechanical requirements→decision→Issue→test traceability;
+- dependency DAG and hard-gate audit;
+- fresh-AI dry runs against representative Issues (early/core/live/cutover/cleanup);
+- temporary-scaffolding ownership;
+- unresolved-unknown inventory;
+- Issue-body completeness;
+- HOT-context budget/ownership guards;
+- final Fast CI.
+
+Only a green Phase-W planning freeze may hand the next chat to WP-01 implementation.
 
 ## Planning non-goals
 

@@ -425,7 +425,7 @@ observed quota estimate
 projected sessions before chosen warning/retention threshold
 ~~~
 
-Phase M does not select automatic retention or a fixed quota-warning percentage.
+Phase M does not select automatic retention. Phase S now selects retain-all + explicit rollover and keeps the warning threshold as a benchmark-derived byte reserve rather than a fixed quota percentage.
 
 ## 17. Memory gate
 
@@ -570,3 +570,7 @@ parameterized representative data
 + cadence-relative headroom gates
 + deterministic machine-readable evidence
 ~~~
+
+## Phase S storage-lifecycle benchmark additions
+
+Before cutover, benchmark evidence must also quantify: bytes per representative session, variance across payload profiles, archive/export peak working set, fresh rollover candidate size, rollover/reopen latency, post-rollover OPFS usage, and a conservative `storage_warning_reserve_bytes`. The warning threshold is a measured byte reserve, not a hardcoded quota percentage.

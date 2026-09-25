@@ -599,3 +599,8 @@ source missing/null/zero/empty remains recoverable from raw JSON
 ~~~
 
 This model is the input to Phase G ingest/enrichment/atomicity planning.
+
+
+## Phase S lifecycle addition
+
+Every fresh production Browser SQL database owns an opaque `database_epoch_id` stored in schema/runtime metadata. It identifies the active history epoch for diagnostics/archive/rollover semantics. IDs inside one database are not silently merged across epochs. Detailed lifecycle behavior is defined in `browser-sql-data-lifecycle-retention.md`.

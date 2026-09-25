@@ -1086,7 +1086,7 @@ Markdown alone is not the final planning deliverable.
 ~~~text
 Phases A–O
 → 8 implementation milestones
-→ 38 executable work packages
+→ 39 executable work packages
 → explicit hard gates
 → test/verification owner per package
 → live Leumi feasibility before heavy implementation
@@ -1111,3 +1111,42 @@ docs/browser-sql-github-execution-structure.md
 ~~~
 
 Issue state and STATUS.json now drive execution; this planning document remains the durable decomposition contract.
+
+## Post-audit assurance additions
+
+The Phase-R red-team review found a previously deferred storage-lifecycle decision. The implementation graph therefore gains:
+
+### WP-39 — Implement explicit storage lifecycle, archive export and database rollover
+
+**Milestone:** M8
+
+**Depends on:** WP-35
+
+**Scope**
+
+- add database_epoch_id to production schema/runtime metadata;
+- expose benchmark-derived storage-pressure warning without automatic deletion;
+- implement maintenance-mode archive export with bounded memory;
+- implement explicit fresh-epoch rollover with a non-secret crash-recovery journal;
+- preserve active SQL/interval/runtime configuration into the fresh epoch;
+- delete only exact Market-Flow-owned OPFS entries;
+- prove rollover/reopen and storage usage behavior in Chromium;
+
+**Acceptance**
+
+- retain-all is the default and no storage warning silently deletes history;
+- archive generation failure leaves the old production DB authoritative;
+- rollover cannot start with active cycle/query work;
+- proceeding without archive requires explicit irreversible confirmation;
+- successful rollover creates a new database_epoch_id and no old market history is visible in the new live DB;
+- old query-result state is not presented as current after rollover;
+- Market Flow never clears the complete Leumi-origin OPFS;
+- interrupted rollover is recoverable before Recorder readiness;
+
+**Primary verification:** Node lifecycle/state tests + Playwright OPFS/archive/rollover integration + Phase-M storage benchmark evidence
+
+**Exit:** storage growth has an explicit safe lifecycle; cutover no longer depends on an unresolved retention/export policy.
+
+### Dependency update
+
+WP-36 production cutover additionally depends on WP-39.
