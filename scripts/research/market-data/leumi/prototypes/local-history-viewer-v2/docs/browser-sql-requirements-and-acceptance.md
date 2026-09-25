@@ -118,6 +118,12 @@ Unknown             = intentionally deferred to later planning/research
 | DR-50 | Result consumption must use bounded backpressure with no unbounded prefetch/materialization; incomplete resource-cancelled results must never be reported as complete. | Phase T. |
 | DR-51 | Failure to cooperatively preempt analytics must escalate to controlled Worker recovery before a waiting cycle can be acknowledged. | Phase T. |
 | DR-52 | At most one complete validated cycle may wait for SQL persistence; provider collection does not build an unbounded cycle queue behind analytical work. | Phase T. |
+| DR-53 | Exactly one same-storage-context Market Flow V2 runtime may own Recorder/production storage; cross-tab authority is an exclusive Web Lock acquired before storage/provider startup. | Phase U. |
+| DR-54 | The runtime-owner lock name must be stable across releases, DuckDB versions and database epochs so upgrades/rollovers cannot create parallel owners. | Phase U. |
+| DR-55 | A non-owner tab must remain passive and must not open production DuckDB/OPFS or start provider collection. | Phase U. |
+| DR-56 | Ownership correctness must not depend on BroadcastChannel heartbeat, timestamp leases or `navigator.locks.query()` snapshots; those are diagnostic/transport only. | Phase U. |
+| DR-57 | Normal runtime must never use Web Locks `steal:true`; takeover occurs only after browser release of the prior owner lock and subsequent readiness/recovery. | Phase U. |
+| DR-58 | If Web Locks coordination is unavailable in the target Leumi environment, Browser SQL startup is blocked with no weaker election fallback. | Phase U. |
 
 ## 3. Acceptance behaviors
 
@@ -322,6 +328,38 @@ Given one complete validated cycle is already waiting for SQL persistence,
 when the Recorder would otherwise begin another provider cycle,
 
 then collection waits rather than building an unbounded queue.
+
+### AB-24 — cross-tab single owner
+
+Given two independent same-origin Leumi tabs launch Market Flow V2 concurrently,
+
+when both attempt runtime startup,
+
+then exactly one acquires the stable exclusive owner lock and only that tab may open production storage/start Recorder.
+
+### AB-25 — passive second tab
+
+Given another tab already owns the runtime lock,
+
+when Market Flow is invoked in a second tab,
+
+then the second tab fails fast to passive/non-owner state and performs no production DB open or provider collection.
+
+### AB-26 — owner termination takeover
+
+Given the owning page closes/crashes and the browser releases its lock,
+
+when Market Flow is explicitly launched in another same-storage tab,
+
+then the new tab may acquire ownership but must pass OPFS/database readiness/recovery before Recorder starts.
+
+### AB-27 — no forced split-brain takeover
+
+Given the old context is unresponsive but still holds the Web Lock,
+
+when another tab attempts startup,
+
+then it remains non-owner; no heartbeat expiry or `steal:true` overrides the browser-held lock.
 
 ## 4. Assumptions that are not frozen contracts
 

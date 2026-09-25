@@ -216,3 +216,8 @@ engine/browser capability unknown
 ~~~
 
 This phase intentionally stops before answering engine-specific unknowns.
+
+
+## Phase U cross-tab ownership constraint
+
+A page-local singleton is not sufficient. The target requires the secure-context Web Locks API to acquire one stable exclusive `market-flow:local-history-viewer-v2:runtime-owner` lock before any production SQL Worker/OPFS/provider startup. BroadcastChannel/heartbeat/query snapshots never grant ownership, and `steal:true` is forbidden. WP-03 must verify two-tab behavior on the real authenticated Leumi origin.

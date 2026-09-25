@@ -36,7 +36,7 @@ authenticated Leumi page
 
 ## Durable decisions
 
-Browser SQL decisions currently include `D-025` through `D-039`.
+Browser SQL decisions currently include `D-025` through `D-040`.
 
 Key execution source:
 
@@ -136,7 +136,9 @@ Cutover starts a fresh SQL history epoch. No initial legacy-history import, perm
 
 Storage lifecycle: default retain-all; no automatic history deletion. Explicit archive + crash-recoverable DB rollover creates a new database_epoch_id.
 
-Analytical resource isolation: user SQL runs on a disposable analytics connection with bounded pending/streamed execution. Validated ingest immediately preempts analytics; runtime-budget queries are cancelled+suspended; failed cooperative cancellation escalates to controlled Worker reopen. One complete waiting cycle max.
+Analytical resource isolation: user SQL is preemptible; ingest wins; runaway SQL is cancelled/suspended; one complete waiting cycle max.
+
+Cross-tab authority: stable exclusive Web Lock `market-flow:local-history-viewer-v2:runtime-owner` is acquired before Worker/OPFS/provider startup. Second tab is passive; no `steal`, heartbeat lease or BC election. New owner after close/crash must run readiness/recovery.
 
 ## Navigation
 

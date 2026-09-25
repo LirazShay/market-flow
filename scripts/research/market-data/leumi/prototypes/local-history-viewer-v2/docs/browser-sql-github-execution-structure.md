@@ -192,3 +192,8 @@ The post-Phase-R assurance review added canonical WP-39 / Issue #68 under M8. WP
 ## Phase-T extension
 
 Phase T adds WP-40 / Issue #69 under M3 for analytical cancellation/resource isolation. WP-20 / #48 and M3 closure depend on it.
+
+
+## Phase-U extension
+
+Phase U adds WP-41 under M4 for cross-tab runtime ownership with Web Locks. Its canonical GitHub Issue is linked after creation; WP-22 production Runtime Controller orchestration must depend on it.

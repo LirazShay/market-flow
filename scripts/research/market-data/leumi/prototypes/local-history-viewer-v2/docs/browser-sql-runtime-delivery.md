@@ -438,3 +438,7 @@ self-contained Market Flow generated runtime
 + no silent fallback
 + generated runtime manifest
 ~~~
+
+## Phase U multi-tab startup extension
+
+Generated runtime startup order is: local singleton reuse → Web Locks capability → fail-fast exclusive V2 runtime-owner acquisition → only then Worker/OPFS/readiness/Recorder. The ownership lock lifetime wraps the complete runtime and is released on clean shutdown only after Recorder/DB/Worker shutdown. Normal runtime never requests `steal:true` and has no localStorage/IndexedDB/heartbeat fallback.

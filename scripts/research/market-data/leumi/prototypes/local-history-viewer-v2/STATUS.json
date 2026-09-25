@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning-assurance",
-    "substep": "multi-tab-ownership",
-    "title": "Design Browser SQL multi-tab ownership and split-brain prevention",
+    "substep": "engine-schema-upgrade-lifecycle",
+    "title": "Design Browser SQL engine, schema and release upgrade lifecycle",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "planning phases A-T; Phase-R initial audit red-teamed and extended",
-    "inProgress": "phase U multi-tab ownership",
-    "planned": "phase V upgrade/release lifecycle → phase W final planning assurance/freeze"
+    "completed": "planning phases A-U; Phase-R initial audit red-teamed and extended",
+    "inProgress": "phase V engine/schema/release upgrade lifecycle",
+    "planned": "phase W final planning assurance/freeze"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -37,7 +37,7 @@
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
       "milestones": 8,
-      "workPackages": 40,
+      "workPackages": 41,
       "hardGates": 6,
       "criticalEntryGate": "WP-03 live Leumi compatibility PASS blocks WP-05+."
     },
@@ -73,10 +73,8 @@
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
-      "status": "success",
-      "runId": 36127477265,
-      "commit": "2451802d4900b2395fb7e17e6da1ccff44a8092b",
-      "result": "Phase T analytical-resource planning, WP-40/#69 integration, dependency graph, and HOT-context guards verified green."
+      "status": "verification-pending",
+      "result": "Phase-U planning changes awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
@@ -108,17 +106,25 @@
       "upstreamEvidence": "Current upstream exposes pending-query cancelSent/cancelPendingQuery and queryPollingInterval; stream-phase abortion still requires pinned-build connection-recycle proof.",
       "policy": "Validated ingest immediately preempts analytics; hard runtime budget suspends runaway query; cooperative cancellation failure escalates to controlled Worker recovery; one complete waiting cycle maximum.",
       "implementationOwner": "WP-40 / GitHub Issue #69"
+    },
+    "multiTabOwnership": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-multi-tab-ownership.md",
+      "decision": "../../../../../../../docs/project/decisions/D-040.md",
+      "evidence": "Web Locks is same-storage/origin browser coordination; exclusive lock is released on document/agent termination; steal is unsafe for split-brain prevention.",
+      "policy": "Acquire stable exclusive V2 runtime-owner lock before Worker/OPFS/provider startup. Second tab passive. No heartbeat/query/BC authority and no steal.",
+      "implementationOwner": "WP-41 (GitHub Issue to be created/linked in Phase U management update)."
     }
   },
   "next": {
-    "action": "Planning Phase U: design multi-tab ownership and split-brain prevention.",
+    "action": "Planning Phase V: design engine/schema/release upgrade compatibility lifecycle.",
     "steps": [
-      "Define how independent Leumi tabs discover the single active Runtime Controller/SQL Authority owner.",
-      "Define owner lease/heartbeat and stale-owner takeover without relying on BroadcastChannel as authority.",
-      "Define behavior when Bookmarklet is invoked in a second independent tab.",
-      "Define OPFS/DuckDB protection if two tabs race at startup.",
-      "Define Viewer-only/client roles versus Recorder-owner role.",
-      "Add/update execution Issue ownership and gates; do not implement runtime code in this chat."
+      "Define how a future DuckDB-Wasm package/core upgrade is qualified against an existing OPFS database before production use.",
+      "Separate app/runtime version, schema version, DuckDB-Wasm package version and DuckDB core/storage compatibility identities.",
+      "Define pre-upgrade backup/archive/rollback boundary and behavior when a newer runtime has already opened/migrated the DB.",
+      "Define forward-only versus reversible schema migrations and failed-upgrade recovery.",
+      "Define release manifest compatibility gates across runtime/assets/schema/DB epoch.",
+      "Add/update execution Issue ownership and cutover blockers; do not implement runtime code in this chat."
     ]
   },
   "history": {

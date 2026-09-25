@@ -511,3 +511,7 @@ Critical entry rule:
 minimal real-Leumi Worker/Wasm/OPFS probe
 → must pass before heavy dependent Browser SQL implementation proceeds
 ~~~
+
+## Phase U multi-tab ownership verification
+
+Playwright must use two independent same-origin pages/contexts sharing the relevant storage partition to prove one exclusive runtime owner, zero production DB/provider startup in the loser, same-tab repeated-launch reuse, browser release on owner close, readiness before new-owner Recorder start, hidden-tab lock retention, BroadcastChannel-loss non-takeover, blocked behavior when Web Locks unavailable, and absence of `steal:true`. WP-03 additionally performs a sanitized two-tab Web Locks probe on the real authenticated Leumi origin.

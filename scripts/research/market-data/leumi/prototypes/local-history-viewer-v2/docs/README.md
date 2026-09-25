@@ -25,6 +25,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL final plan audit / implementation handoff | [browser-sql-final-plan-audit.md](browser-sql-final-plan-audit.md) |
 | Browser SQL data lifecycle / retention / archive / rollover | [browser-sql-data-lifecycle-retention.md](browser-sql-data-lifecycle-retention.md) |
 | Browser SQL analytical resource isolation / runaway-query safety | [browser-sql-analytical-resource-isolation.md](browser-sql-analytical-resource-isolation.md) |
+| Browser SQL multi-tab ownership / split-brain prevention | [browser-sql-multi-tab-ownership.md](browser-sql-multi-tab-ownership.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
@@ -42,6 +43,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL implementation decomposition durable decision | [D-037](../../../../../../../docs/project/decisions/D-037.md) |
 | Browser SQL data-lifecycle durable decision | [D-038](../../../../../../../docs/project/decisions/D-038.md) |
 | Browser SQL analytical-resource durable decision | [D-039](../../../../../../../docs/project/decisions/D-039.md) |
+| Browser SQL multi-tab ownership durable decision | [D-040](../../../../../../../docs/project/decisions/D-040.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 

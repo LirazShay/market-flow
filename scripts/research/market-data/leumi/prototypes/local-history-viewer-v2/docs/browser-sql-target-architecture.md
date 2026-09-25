@@ -418,3 +418,8 @@ Viewer clients without direct DB ownership
 ~~~
 
 This architecture is now the basis for Phase F relational data-model planning.
+
+
+## Phase U authority gate
+
+The Runtime Controller is now cross-tab singular, not merely page-local. Before constructing SQL Authority Worker it must hold the stable exclusive V2 runtime-owner Web Lock. A second independent tab is passive and never opens production storage. The owner lock covers Recorder + storage authority across shadow, production, rollover and cutover phases.

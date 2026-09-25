@@ -1087,7 +1087,7 @@ Markdown alone is not the final planning deliverable.
 ~~~text
 Phases A–O
 → 8 implementation milestones
-→ 40 executable work packages
+→ 41 executable work packages
 → explicit hard gates
 → test/verification owner per package
 → live Leumi feasibility before heavy implementation
@@ -1191,3 +1191,39 @@ WP-36 production cutover additionally depends on WP-39.
 WP-20 analytical-runtime checkpoint additionally depends on WP-40.
 
 Phase T materialized WP-40 as GitHub Issue #69. WP-20/#48 must not close until WP-40/#69 is complete.
+
+### WP-41 — Implement cross-tab runtime ownership with Web Locks
+
+**Milestone:** M4
+
+**Depends on:** WP-21, WP-03
+
+**Scope**
+
+- add stable exclusive V2 runtime-owner Web Lock acquisition before SQL Worker/OPFS/provider startup;
+- keep same-tab local singleton reuse before lock request;
+- make second independent tab passive when lock is unavailable;
+- hold the lock for full Recorder/storage runtime lifetime and release only after clean shutdown ordering;
+- rely on browser lock release + normal readiness recovery after owner close/crash;
+- prohibit `steal:true` and heartbeat/localStorage/IndexedDB election fallback;
+- add sanitized ownership diagnostics and optional BroadcastChannel owner-presence hints without authority semantics;
+- prove two-tab/race/owner-close/hidden-tab/failure behavior in Chromium;
+
+**Acceptance**
+
+- exactly one racing same-origin tab opens production storage and starts Recorder;
+- losing tab opens no production DB and performs no provider collection;
+- same-tab repeated launch reuses local Controller without self-deadlock;
+- after owner termination, explicit new launch can acquire lock but Recorder waits for readiness/recovery;
+- hidden/background owner is not displaced by heartbeat timeout;
+- BroadcastChannel loss/query snapshots cannot transfer authority;
+- Web Locks unavailable blocks startup with no weaker fallback;
+- normal runtime never uses `steal:true`;
+
+**Primary verification:** Node startup-state tests + Playwright multi-page Web Locks/runtime integration + WP-03 live two-tab synthetic lock probe
+
+**Exit:** V2 has one browser-enforced runtime/Recorder/storage owner across independent same-origin tabs.
+
+### Phase U dependency update
+
+WP-22 Runtime Controller production orchestration additionally depends on WP-41.

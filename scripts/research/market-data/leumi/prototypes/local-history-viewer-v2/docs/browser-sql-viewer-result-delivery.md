@@ -446,3 +446,7 @@ Viewer = detachable same-origin client
 → optimistic query activation across multiple Viewers
 → close/reload/restart recover through re-attachment
 ~~~
+
+## Phase U non-owner tab behavior
+
+Viewer clients do not acquire the V2 runtime-owner lock and never open DuckDB/OPFS. A full runtime launch in a second independent Leumi tab that cannot acquire ownership becomes passive/non-owner; optional BroadcastChannel owner-presence hints may improve UX but are not authority. Database/result state still comes only from the actual Runtime Controller/SQL Authority path.

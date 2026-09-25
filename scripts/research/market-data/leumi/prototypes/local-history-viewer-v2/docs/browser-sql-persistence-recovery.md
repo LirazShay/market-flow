@@ -371,3 +371,8 @@ one origin-scoped OPFS authority
 Retention/export policy is no longer deferred. The initial target uses `retain-all` with benchmark-derived storage-pressure warning and **no automatic data deletion**. Explicit space recovery is a maintenance-mode logical archive + whole-database epoch rollover defined in `browser-sql-data-lifecycle-retention.md` / D-038.
 
 Do not rely on row DELETE/VACUUM as a guaranteed quota-recovery mechanism. Market Flow may delete only exact Market-Flow-owned OPFS entries and must never clear the entire Leumi-origin OPFS.
+
+
+## Phase U owner takeover recovery
+
+Browser release of the cross-tab owner lock after page/agent termination does not imply a clean DB close. Every new owner opens OPFS only after acquiring the lock and executes the normal unclean-session/schema/latest/current/ingest-token/rollover readiness checks before Recorder start. No second tab may inspect/open production DuckDB merely to decide ownership.

@@ -575,3 +575,8 @@ explicit failure scope
 ## Phase T analytical-resource failures
 
 Analytical execution now has explicit cancellation/resource outcomes. `cancelled / ingest_priority` degrades query runtime but leaves the query enabled; `cancelled / runtime_budget` suspends that active query version. Cooperative cancellation that cannot release analytical work inside the preemption budget escalates to blocked + controlled Worker reopen. Only one complete validated cycle may wait during this recovery; Recorder does not start another collection cycle.
+
+
+## Phase U ownership failures
+
+`owner lock unavailable` is a normal passive/non-owner condition when another V2 runtime is active. Web Locks unavailable/SecurityError is `blocked` and prevents production storage/provider startup. A hung old tab that still holds the lock is not force-stolen; user/browser termination of that context is required before another runtime can become owner. Ownership diagnostics/heartbeats never override the lock.
