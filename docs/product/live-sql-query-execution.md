@@ -2,7 +2,7 @@
 
 Market Flow's live opportunity discovery must support a real, user-changeable SQL query as a first-class product capability.
 
-This is a product-level requirement. It does not select the final database engine or process architecture.
+This is a product-level requirement. It fixes the current process boundary as **Browser-only SQL**, while leaving the concrete browser SQL engine and physical design to engineering research/planning.
 
 ## Core behavior
 
@@ -52,7 +52,7 @@ The exact query is intentionally not a product contract. It will evolve frequent
 
 The analytical store must preserve sufficiently rich raw historical market data so future SQL can use fields that were not anticipated when the data was collected.
 
-Derived columns/views may be added for repeated high-value computations, but they must not replace the raw source facts.
+Derived columns/views may be added for repeated high-value computations, but they must not replace raw source facts.
 
 ## Architecture implication
 
@@ -60,10 +60,25 @@ A SQL-capable engine is required for the analytical layer.
 
 IndexedDB by itself is not the target analytical query interface.
 
-The final engine/process choice remains an engineering decision and may be browser-embedded or local/native if it satisfies the product requirement.
+For the current V2 planning cycle, the required boundary is:
+
+~~~text
+authenticated browser
+→ collector
+→ Browser SQL engine
+→ persistent browser SQL database
+→ scheduled SQL
+→ results
+~~~
+
+The concrete Browser SQL engine remains an engineering decision until current capabilities are researched and the design is completed.
+
+localhost / Node / .NET / native database services are not active alternatives in this planning cycle. Reopening that boundary requires a future explicit architecture decision based on evidence that Browser SQL cannot meet a required capability.
 
 ## Security
 
-Authenticated provider collection should remain in the browser unless a separate future requirement changes that boundary.
+Authenticated provider collection remains in the browser.
 
-A local analytical service does not need browser cookies, session tokens or authorization headers merely to receive validated market-data snapshots.
+Repository artifacts must not contain cookies, session tokens, authorization headers, credentials, account numbers or private session data.
+
+Browser SQL planning must preserve that boundary rather than creating a second authentication path.

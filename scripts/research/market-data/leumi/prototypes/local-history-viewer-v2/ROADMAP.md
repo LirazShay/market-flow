@@ -1,287 +1,367 @@
-# Local History Viewer V2 — Roadmap
+# Local History Viewer V2 — Browser SQL Planning Roadmap
 
-This file owns V2 plan, scope and order only. Live progress belongs only in STATUS.json.
+This file owns the planning project's phases, scope, order and major dependencies.
 
-V2 starts from the frozen V1 collector/storage baseline, but the analytical direction is now SQL-first and **browser-first**.
+Live progress and the exact current pointer belong only in `STATUS.json`.
 
-## Product requirement that governs this roadmap
+This roadmap is deliberately a planning roadmap. It is not authorization to implement Browser SQL. The final planning phase will evolve this file into the implementation roadmap only after architecture, contracts, verification strategy and executable GitHub Issues are ready.
 
-The live analytical layer must allow a user-defined SQL query to be changed independently of application code and executed automatically every configured X seconds against coherently committed market data.
+## Fixed planning constraints
 
-The query may use SELECT, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT, window/history logic and cross-security comparisons as supported by the selected SQL engine.
+- Browser-only SQL is a fixed constraint for this planning cycle.
+- Real user-defined SQL is first-class.
+- SQL runs repeatedly at a configurable interval independent from collector cadence.
+- IndexedDB is not the target analytical engine.
+- DuckDB-Wasm + browser persistence is the leading engine candidate, but not yet a verified implementation choice.
+- localhost / Node / .NET / native DuckDB are not active candidates in this planning project.
+- A future non-browser contingency requires a new explicit architecture decision.
+- V1 remains frozen.
+- No implementation begins until this planning project completes.
 
-A valid execution may return zero rows.
-
-IndexedDB is no longer being evaluated as the primary analytical query engine. The prior IndexedDB-primary evaluation plan is preserved under docs/history/ as superseded research.
-
-## Browser-first architecture rule
-
-The preferred path is:
-
-~~~text
-Authenticated Leumi browser
-→ validated complete cycle
-→ browser-resident SQL engine
-→ persistent browser storage
-→ scheduled user-defined SQL
-→ result set
-→ UI / downstream logic
-~~~
-
-The first implementation candidate is DuckDB-Wasm with persistent browser storage such as OPFS where supported by the chosen runtime design.
-
-A localhost/native database is a **fallback path only**.
-
-Do not build, benchmark or operationalize a localhost service in parallel merely as insurance.
-
-Open the localhost/native fallback only when the browser-first path has a demonstrated blocking limitation in at least one required area:
-
-- SQL capability;
-- persistence/reopen correctness;
-- ingest throughput;
-- repeated-query latency;
-- mixed ingest + query behavior;
-- browser memory/resource limits;
-- long-running stability;
-- required concurrency/runtime behavior;
-- another concrete product requirement that cannot be met safely in-browser.
-
-The limitation must be evidenced, not assumed.
-
-## Stage 01 — SQL workload contract
-
-Define the observable contract:
-
-- arbitrary user-owned SQL text;
-- configurable execution interval X seconds;
-- query changes do not require collector/runtime code changes;
-- query runs against coherent committed data only;
-- zero rows is valid;
-- query error is isolated from ingestion;
-- query duration, row count and error are observable;
-- ingestion continues even when a query fails;
-- SQL execution never receives browser authentication secrets unnecessarily.
-
-Deliverable: V2 SQL execution contract and acceptance scenarios.
-
-## Stage 02 — Browser SQL feasibility contract
-
-Research and pin down the browser-only candidate:
+Durable decision:
 
 ~~~text
-Authenticated browser collector
-→ DuckDB-Wasm
-→ persistent browser database
-→ scheduled SQL in browser
+docs/project/decisions/D-025.md
 ~~~
 
-Define exactly what must be proven before implementation:
+## Planning Phase A — Current-state audit
 
-- loading/initialization;
-- persistence and reopen;
-- SQL features required by Stage 01;
-- write/transaction semantics;
-- concurrent or serialized ingest/query behavior;
-- browser memory/storage constraints;
-- worker/runtime requirements if any;
-- failure/recovery boundaries.
+Understand what V1/V2 already prove before designing replacement architecture.
 
-Deliverable: browser-first feasibility checklist and proof plan.
+Deliverables:
 
-## Stage 03 — SQL schema design for browser DuckDB
+- current-state audit;
+- preliminary retain/adapt/replace/remove matrix;
+- gap inventory;
+- stale/contradictory planning inventory.
 
-Design a relational/analytical schema that preserves:
+No implementation.
 
-- canonical SecurityId = String(PaperId or Key);
-- complete raw provider data;
-- cycle/session identity and timestamps;
-- stable snapshot identity;
-- null != 0 != "" != undefined;
-- complete-cycle integrity;
-- efficient current/latest access;
-- efficient historical time-window access;
-- future derived columns without losing raw fields.
+## Planning Phase B — Requirements consolidation
 
-Decide whether current rows are represented by a table, view or SQL query.
+Consolidate:
 
-Deliverable: benchmarkable browser-DuckDB schema.
+- Browser-only SQL;
+- arbitrary user SQL;
+- query interval;
+- committed-data consistency;
+- full raw preservation;
+- canonical IDs;
+- snapshot identity;
+- temporal/horizon needs;
+- LAST change / Deals delta / MID;
+- result/error semantics;
+- query traceability;
+- analytical read-only safety;
+- observability;
+- explicit non-goals.
 
-## Stage 04 — Browser ingest and atomicity design
+Deliverables:
+
+- requirement catalog;
+- end-to-end acceptance scenarios;
+- decision / requirement / assumption / unknown classification.
+
+## Planning Phase C — Browser architecture constraints
 
 Define:
 
-- validated cycle input;
-- one coherent cycle commit;
-- failure behavior;
-- idempotency/retry semantics where needed;
-- whether enrichment happens before insert, in SQL, or through generated/materialized structures;
-- exact boundary between the inherited browser collector and DuckDB-Wasm.
+- Chrome/Chromium on Windows target;
+- origin ownership;
+- same-origin implications;
+- CSP/CORS/module/Worker/WASM constraints;
+- page/tab lifecycle;
+- background throttling;
+- persistence/quota/eviction expectations;
+- security boundary;
+- possible one-writer requirement.
 
-Deliverable: browser ingest contract.
+Deliverable: browser constraint matrix.
 
-## Stage 05 — Scheduled SQL runner design
+## Planning Phase D — External capability research
 
-Define the runtime that:
+Verify current official documentation for:
 
-~~~text
-load active SQL
-→ every X seconds
-→ execute on latest committed DB state
-→ record timing/result/error
-→ publish result set
-~~~
+- DuckDB-Wasm current release/API;
+- OPFS/persistence;
+- Worker architecture;
+- SQL features;
+- transactions/concurrency/locking;
+- reopen/recovery;
+- interruption/cancellation;
+- JSON;
+- Arrow/bulk ingest;
+- EXPLAIN/profiling;
+- browser memory/runtime limitations;
+- package/runtime loading.
 
-Requirements:
+Rules:
 
-- no uncontrolled overlapping executions;
-- configurable interval;
-- deterministic behavior when previous query exceeds interval;
-- query timeout/cancellation strategy if supported/needed;
-- latest successful result remains distinguishable from query failure;
-- query text/version is observable.
+- official documentation first;
+- Verified / Inferred / Unknown;
+- no spike implementation.
 
-Deliverable: scheduler contract.
+Deliverable: capability matrix with references.
 
-## Stage 06 — Synthetic SQL benchmark harness
+## Planning Phase E — Target architecture
 
-Build sanitized deterministic market data at realistic scale.
+Choose browser-only boundaries for:
 
-Measure:
-
-- insert/commit throughput;
-- simple current-universe SELECT;
-- JOIN against recent history;
-- GROUP BY/HAVING;
-- window functions where useful;
-- ORDER BY/LIMIT ranking;
-- repeated scheduled execution;
-- mixed ingest + query;
-- database growth.
-
-Deliverable: reusable browser SQL benchmark harness.
-
-## Stage 07 — Browser DuckDB-Wasm prototype
-
-Build the smallest browser-only spike proving:
-
-- real SQL execution;
-- persistence/reopen behavior;
-- continuous inserts;
-- scheduled queries;
-- realistic result retrieval;
-- browser persistence constraints;
-- memory/stability characteristics;
-- correct behavior under query errors.
-
-Deliverable: measured browser-only evidence.
-
-## Stage 08 — Browser scale and stability verification
-
-Test the browser solution at representative and larger scales.
-
-At minimum measure:
-
-- write/commit median and p95;
-- SQL execution median and p95;
-- mixed workload;
-- one-hour-like history;
-- million-row scale where practical;
-- full-trading-day-like scale where practical;
-- memory/storage observations;
-- restart/reopen;
-- long-running repeated query behavior.
-
-Deliverable: browser-first suitability evidence.
-
-## Stage 09 — Browser-first decision gate
-
-Classify the browser solution as:
-
-~~~text
-Verified sufficient
-or
-Blocked by demonstrated limitation
-~~~
-
-Use Verified / Inferred / Unknown for supporting claims.
-
-If browser DuckDB-Wasm satisfies the required contract with adequate headroom, **do not build the localhost fallback**. Continue directly to normative specs and implementation.
-
-If it fails a required gate, document:
-
-- the exact failing workload/capability;
-- measured magnitude;
-- why simpler browser-side mitigation is insufficient;
-- the minimum property the fallback must provide.
-
-Deliverable: browser-first architecture decision.
-
-## Conditional fallback track — only if Stage 09 blocks browser-first
-
-### Fallback Stage F1 — Local native DuckDB design
-
-~~~text
-Authenticated browser collector
-→ localhost ingest API
-→ native DuckDB file
-→ local SQL scheduler
-~~~
-
-Define only the minimum additional boundary needed to solve the proven browser limitation.
-
-Browser credentials/cookies/session tokens remain in the browser.
-
-### Fallback Stage F2 — Local native DuckDB prototype
-
-Prove:
-
-- browser POST of validated complete cycles;
-- persistent native DuckDB;
-- scheduled arbitrary SQL;
-- result retrieval;
-- process restart/recovery;
-- Windows local operation;
-- the specific capability that failed in-browser.
-
-### Fallback Stage F3 — Focused comparison
-
-Compare browser and localhost only on the workloads that matter to the blocking decision plus operational complexity.
-
-Do not rerun an unnecessary technology contest.
-
-Deliverable: evidence-backed fallback decision.
-
-## Stage 10 — Normative V2 specs
-
-After Stage 09, or after Fallback Stage F3 if fallback was required, update/add V2 specs for:
-
-- SQL storage;
-- ingest;
-- scheduler/query execution;
-- failure/recovery;
+- collector;
+- enrichment;
+- SQL engine/Worker owner;
+- Browser SQL source of truth;
+- scheduler;
 - result delivery;
-- security boundary.
+- viewer;
+- notifications;
+- startup/recovery ownership.
 
-Deliverable: implementation-ready contracts.
+Deliverables:
 
-## Stage 11 — Incremental implementation
+- target architecture diagram;
+- responsibility matrix;
+- sequence flows;
+- durable decisions where justified.
 
-Implement tests-first in natural vertical slices, preserving the frozen V1 reference and reusing only proven components that fit the selected architecture.
+## Planning Phase F — Relational data model
 
-## Stage 12 — Integrated verification and live handoff
+Plan:
 
-Verify:
+- Cycle;
+- Snapshot;
+- universe/security metadata;
+- stable SnapshotId;
+- time model;
+- full raw representation;
+- typed promoted columns;
+- current/latest representation;
+- query definition/execution metadata if needed;
+- horizon/temporal representation;
+- naming/types/units/null semantics;
+- schema versioning.
 
-- browser collection;
-- coherent SQL persistence;
-- scheduled arbitrary SQL;
-- error isolation;
-- recovery;
-- performance headroom;
-- live-provider integration where mocks cannot prove behavior.
+Deliverables:
 
-Leave STATUS.json with the next product/implementation pointer.
+- relational model;
+- typing strategy;
+- raw-vs-column strategy;
+- selected schema direction.
 
-## Non-goals
+## Planning Phase G — Ingest, enrichment and atomicity
 
-This roadmap does not define the final trading formula, thresholds, buy/sell execution or a fixed SQL query. The SQL itself is intentionally user-changeable.
+Plan:
+
+- validated-cycle handoff;
+- bulk ingest;
+- transaction boundary;
+- current/history coherence;
+- enrichment ownership;
+- compute-once/query-many;
+- rollback;
+- query visibility during writes;
+- rebuild/recovery implications.
+
+Deliverables:
+
+- ingest sequence;
+- atomicity/isolation contract;
+- enrichment decision.
+
+## Planning Phase H — SQL execution and scheduler
+
+Plan:
+
+- active query;
+- read-only user SQL boundary;
+- DDL/admin separation;
+- scheduling clock semantics;
+- collector cadence independence;
+- overrun behavior;
+- no uncontrolled overlap;
+- cancellation/timeout;
+- errors;
+- latest execution vs latest successful result;
+- result size/materialization;
+- query versioning.
+
+Deliverable: SQL execution/scheduler contract.
+
+## Planning Phase I — Persistence and recovery
+
+Plan:
+
+- persistent authority;
+- startup/open/reopen;
+- refresh;
+- tab close/reopen;
+- schema upgrade;
+- migration failure;
+- quota exhaustion;
+- corruption;
+- retention;
+- export/backup scope.
+
+Deliverables:
+
+- persistence lifecycle;
+- recovery matrix;
+- schema migration policy.
+
+## Planning Phase J — Runtime delivery and browser integration
+
+Plan:
+
+- WASM/Worker loading;
+- dynamic/module imports;
+- CSP/CORS;
+- asset pinning;
+- caching/integrity;
+- Bookmarklet practicality;
+- alternative browser-only delivery if needed;
+- distribution/update flow.
+
+Deliverable: runtime delivery decision.
+
+## Planning Phase K — Viewer and result delivery
+
+Classify and design:
+
+- retain/adapt/replace existing current/history/diagnostics;
+- result delivery;
+- DB reread vs pushed result;
+- multi-viewer behavior;
+- future SQL editor/input;
+- query/result/error/timing display.
+
+Deliverable: viewer/result architecture.
+
+## Planning Phase L — Testing and verification
+
+Plan:
+
+- pure/unit tests;
+- Playwright Chromium;
+- OPFS/WASM/Worker integration;
+- SQL correctness fixtures;
+- atomicity;
+- refresh/reopen;
+- query failure isolation;
+- live-provider boundary;
+- CI matrix;
+- public behavior contracts.
+
+Deliverable: testing/verification strategy.
+
+## Planning Phase M — Performance and benchmark strategy
+
+Plan workloads:
+
+- current universe SELECT/WHERE/ORDER/LIMIT;
+- current/history JOIN;
+- recent-window aggregation;
+- GROUP BY/HAVING;
+- window functions;
+- cross-security ranking;
+- scheduled SQL;
+- continuous ingest + query;
+- reopen;
+- multi-million rows;
+- WASM/Worker startup;
+- JS↔WASM/result materialization;
+- persistence/commit;
+- memory/DB growth;
+- background and long-running behavior.
+
+Deliverable: benchmark datasets, metrics, run classes and decision gates.
+
+## Planning Phase N — Migration and cutover
+
+Plan:
+
+- isolated Browser SQL proof boundary;
+- temporary coexistence if required;
+- single authority at every point;
+- existing IndexedDB history decision;
+- incremental cutover;
+- rollback boundaries;
+- point where IndexedDB ceases to be authoritative.
+
+Deliverable: migration/cutover sequence.
+
+## Planning Phase O — Failure, security and observability
+
+Plan:
+
+- failure-mode inventory;
+- recovery/integrity expectation per failure;
+- security/secrets boundary;
+- cycle/query/runtime telemetry;
+- DB size/quota visibility;
+- last success/error;
+- debug bundle evolution.
+
+Deliverable: failure/recovery/security/observability matrix.
+
+## Planning Phase P — Implementation decomposition
+
+Only after architecture is coherent, decompose natural vertical implementation slices.
+
+Each future implementation issue must include:
+
+- Purpose / Why;
+- Scope / Non-scope;
+- prerequisites/dependencies;
+- observable behavior;
+- expected artifacts;
+- implementation guidance;
+- data-integrity requirements;
+- tests;
+- verification;
+- acceptance criteria;
+- Definition of Done;
+- risks/traps;
+- references.
+
+Deliverable: reviewed issue drafts and dependency graph.
+
+## Planning Phase Q — GitHub execution structure
+
+Create only after decomposition is reviewed:
+
+- navigation/epic issue;
+- implementation issues;
+- useful milestones;
+- controlled labels;
+- dependency references/sub-issues/checklists where supported;
+- parallelization notes.
+
+ROADMAP remains phase/order ownership, not a duplicate issue list.
+
+## Planning Phase R — Final plan audit and implementation handoff
+
+Audit:
+
+- missing requirements;
+- contradictions;
+- duplicated truth;
+- unowned behavior;
+- missing/circular dependencies;
+- giant/micro issues;
+- missing tests/performance/recovery/security/docs;
+- traceability from product requirement → design/spec → issue → test → verification.
+
+Then:
+
+- finalize target planning artifacts;
+- evolve ROADMAP into the approved implementation phase plan;
+- point STATUS.json to the first implementation issue;
+- leave enough context for a fresh AI to execute without this planning conversation.
+
+Only then may implementation begin.
+
+## Planning non-goals
+
+This planning project does not implement DuckDB-Wasm, OPFS integration, SQL runtime, scheduler, viewer replacement, migration, benchmark harness or production code.
+
+It also does not define the final trading formula, entry/exit execution logic or a fixed analytical query.

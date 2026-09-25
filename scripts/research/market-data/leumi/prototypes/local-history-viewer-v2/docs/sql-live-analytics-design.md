@@ -1,6 +1,6 @@
 # SQL-First LIVE Analytics — Design Direction
 
-This document captures the current V2 architectural direction after the product requirement was clarified.
+This document captures the durable V2 design direction before detailed Browser SQL architecture is finalized.
 
 It contains no operational progress. STATUS.json owns live status.
 
@@ -17,204 +17,151 @@ continuous fresh market data
 → SQL result set
 ~~~
 
-Changing the analytical logic should normally mean changing SQL, not modifying collector or application code.
+Changing analytical logic should normally mean changing SQL, not modifying collector/application code.
 
-This makes a real SQL execution engine a product requirement rather than a developer convenience.
+## Fixed architecture boundary
 
-## Architecture preference: browser first
-
-The default target is a browser-resident SQL architecture.
+Browser-only SQL is a current architecture constraint, not merely a preference.
 
 ~~~text
-Authenticated browser collector
-→ DuckDB-Wasm
-→ persistent browser database
-→ browser SQL scheduler
+Authenticated Leumi browser
+→ Collector
+→ Browser SQL engine
+→ persistent browser SQL database
+→ scheduled SQL
 → results
 ~~~
 
-The design should remain entirely browser-local if it can satisfy the required SQL capability, persistence, throughput, latency, recovery and long-running stability.
-
-A localhost/native process is not a co-equal implementation track. It is a fallback that is opened only after a concrete browser limitation is demonstrated.
-
-This preference is deliberate:
+Durable decision:
 
 ~~~text
-simpler deployment
-+
-fewer moving parts
-+
-existing authenticated browser boundary
-→ try browser first
+docs/project/decisions/D-025.md
 ~~~
+
+A local/native server is outside the active planning scope. Reopening that process boundary later requires a new architecture decision.
+
+## Engine status
+
+Leading candidate:
+
+~~~text
+DuckDB-Wasm
++
+browser persistence
+~~~
+
+It is not yet an implementation commitment.
+
+The planning research phase must verify current official documentation for release/API, persistence/OPFS, SQL features, transactions/concurrency, Worker requirements, cancellation, JSON/Arrow/bulk ingest, memory/runtime limits, loading/package constraints and reopen/recovery.
+
+Another browser SQL engine may be considered only if evidence shows a material advantage.
 
 ## Consequence for IndexedDB
 
-IndexedDB may still be useful as inherited prototype storage, migration input, temporary buffer or fallback evidence source.
+IndexedDB remains the implemented V2 baseline and may temporarily coexist during migration.
 
-It is no longer the target primary analytical engine because IndexedDB itself does not execute SQL and the product should not require translating arbitrary SQL-like logic into custom JavaScript query code.
+It is no longer the target analytical query engine.
 
-The previous IndexedDB-primary investigation is preserved under docs/history/superseded-indexeddb-primary-evaluation/.
+The prior IndexedDB-primary evaluation is preserved under:
 
-## Preserved V1 strengths
+~~~text
+docs/history/superseded-indexeddb-primary-evaluation/
+~~~
 
-The following remain valuable regardless of SQL engine choice:
+The target architecture must eventually have one unambiguous market-history source of truth.
 
-- authenticated provider collection stays in the browser;
-- dynamic universe, no hardcoded security count;
-- canonical SecurityId = String(PaperId or Key);
-- full raw MapHeat and Security records are preserved;
-- complete-cycle validation;
-- no silent partial/corrupt cycle acceptance;
-- null != 0 != "" != undefined;
-- provider semantics are not guessed;
-- V1 remains frozen.
+## Preserved behavior from V1/V2
+
+Strong reuse candidates:
+
+- authenticated browser collection;
+- dynamic universe;
+- no hardcoded universe size;
+- canonical `String(PaperId or Key)`;
+- full raw MapHeat and Security preservation;
+- complete membership validation;
+- complete-cycle handoff;
+- atomic successful-cycle visibility;
+- null/zero/empty/missing distinction;
+- unknown provider semantics are not guessed;
+- one Recorder owner;
+- generated delivery from repository source;
+- behavioral unit + Chromium test discipline.
+
+These are contracts, not a requirement to preserve IndexedDB/BroadcastChannel/Bookmarklet implementation choices.
 
 ## Target conceptual flow
 
 ~~~text
-Authenticated browser tab
-→ collect complete provider cycle
-→ validate requested/received/unique/missing/unexpected
-→ insert one coherent cycle into browser SQL storage
-→ SQL-capable database commits it
-→ scheduler runs current user SQL every X seconds
-→ result rows + timing/error metadata
-→ UI / later decision layer
+authenticated browser
+→ collect complete cycle
+→ validate
+→ enrich where justified
+→ commit coherent cycle to Browser SQL
+→ scheduler executes active SQL every configured interval
+→ results + execution metadata/error
+→ Viewer / SQL console / later decision layer
 ~~~
 
-SQL failure must not corrupt or stop ingestion.
+SQL sees only committed coherent data.
 
-## Primary candidate — Browser DuckDB-Wasm
+Query failure must not stop ingestion or corrupt persistence.
 
-The first candidate to design, prototype and benchmark is:
+## Compute once, query many
+
+For cheap, repeated, high-value facts:
 
 ~~~text
-Collector
-→ DuckDB-Wasm
-→ persistent browser storage
-→ browser SQL scheduler
+compute once
+→ store once
+→ query many
 ~~~
 
-It must prove:
+Core candidates include LAST change, Deals delta after provider semantics are Verified, and MID.
 
-- required SQL syntax/features;
-- persistent reopen semantics;
-- continuous ingest;
-- repeated queries;
-- mixed ingest/query behavior;
-- acceptable memory/resource behavior;
-- long-running stability;
-- recoverable failure behavior.
+Do not precompute every arbitrary cross-time combination.
 
-Do not assume failure from general browser/Wasm limitations. Measure the actual Market Flow workload.
-
-## Conditional fallback — Local native DuckDB
-
-Only if the browser path fails a required gate:
+## Core horizons
 
 ~~~text
-Collector
-→ localhost ingest API
-→ native DuckDB
-→ persistent local .duckdb file
-→ local SQL scheduler
+10s
+20s
+30s
+60s
+90s
+120s
+300s
+600s
 ~~~
 
-The fallback must solve a specific evidenced browser problem.
+Missing historical context remains NULL.
 
-Do not introduce localhost merely for theoretical scalability or future flexibility.
+Natural collection jitter does not require exact millisecond equality.
 
-If fallback is required, preserve the browser authentication boundary:
+## SQL scheduler direction
 
-~~~text
-browser owns authenticated provider session
-localhost receives market-data payload only
-~~~
+The future scheduler must distinguish active SQL, query identity/version, interval, execution start/end, duration, row count, current execution status/error and latest successful result.
 
-## Why DuckDB is the primary SQL family
+No uncontrolled overlapping executions.
 
-The target workload is analytical:
+Collector cadence and SQL cadence remain separate concepts.
 
-- append/repeated ingest of snapshots;
-- scans over recent history;
-- joins;
-- GROUP BY/HAVING;
-- sorting/ranking;
-- windowed analysis;
-- repeated ad-hoc SQL.
+User analytical SQL should be isolated from schema/admin mutation unless a future explicit requirement changes that rule.
 
-DuckDB is therefore the primary family to explore.
+## Physical design still open
 
-SQLite may be used only when a concrete design or benchmark question makes it useful.
+Not yet decided:
 
-## SQL scheduler contract direction
-
-The future scheduler should own:
-
-- active SQL text;
-- query identity/version;
-- interval;
-- execution start/end;
-- duration;
-- result row count;
-- success/error state;
-- latest successful result.
-
-The scheduler must define what happens when query runtime exceeds the interval. The baseline design should avoid uncontrolled overlapping executions.
-
-## SQL and schema evolution
-
-The system should favor stable raw data plus SQL views/queries during exploration.
-
-A likely evolution pattern is:
-
-~~~text
-new analytical idea
-→ write/change SQL
-→ observe results and cost
-→ if a repeated expensive computation is proven valuable
-→ consider persisted/generated/materialized optimization
-~~~
-
-Do not precompute every possible comparison in advance.
-
-## Browser-first fallback gate
-
-Move to localhost/native only after documenting a required browser failure in one or more of:
-
-- SQL capability;
-- persistence/reopen;
-- ingest throughput;
-- query latency;
-- mixed workload;
-- memory/resources;
-- stability;
-- runtime/concurrency behavior;
-- another concrete requirement.
-
-For each failure record:
-
-~~~text
-workload/capability
-→ measured or reproducible failure
-→ attempted simple browser mitigation
-→ why mitigation is insufficient
-→ minimum fallback requirement
-~~~
-
-## Security boundary
-
-The repository is public.
-
-Never place cookies, session tokens, authorization headers, credentials, account numbers or private session data in repository artifacts or analytical payloads.
-
-## Decision rule
-
-The immediate question is:
-
-> Can browser-resident DuckDB-Wasm provide the real SQL, persistence and repeated LIVE query execution Market Flow needs with sufficient correctness and headroom?
-
-Only if the answer is demonstrated to be no do we ask:
-
-> What is the smallest localhost/native fallback that fixes the proven limitation?
+- physical SQL schema;
+- SnapshotId representation;
+- temporal relationship representation;
+- raw JSON vs typed columns;
+- current/latest representation;
+- DB/Worker ownership;
+- result delivery;
+- BroadcastChannel role;
+- runtime packaging;
+- persistence authority details;
+- migration of existing IndexedDB history;
+- retention/export;
+- cancellation/result-size policy.

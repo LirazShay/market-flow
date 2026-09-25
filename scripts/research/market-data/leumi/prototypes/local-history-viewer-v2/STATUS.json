@@ -10,58 +10,60 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "sql-first-01",
-    "substep": "sql-workload-contract",
-    "title": "Define the SQL-first LIVE analytical contract",
+    "stage": "browser-sql-planning",
+    "substep": "requirements-consolidation",
+    "title": "Consolidate Browser SQL requirements and end-to-end acceptance scenarios",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition",
-    "inProgress": "sql-first-01",
-    "planned": "sql-first-02 through sql-first-12; localhost fallback only if browser-first Stage 09 is blocked"
+    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit",
+    "inProgress": "browser-sql-requirements-consolidation",
+    "planned": "browser constraints → official capability research → target architecture → detailed planning → implementation decomposition → GitHub execution structure → final plan audit"
   },
   "currentStage": {
-    "stage": "sql-first-01",
-    "title": "SQL workload contract",
+    "stage": "browser-sql-planning",
+    "title": "Browser SQL migration planning project",
     "status": "in-progress"
   },
-  "activeMiniProject": "sql-live-analytics",
+  "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
     "baselineSource": {
       "sourceWorkstream": "local-history-viewer-v1",
-      "result": "The frozen V1 collector remains the verified browser-only baseline and reference."
+      "result": "V1 remains the frozen verified reference for browser collection, integrity, atomic persistence behavior, viewer recovery and browser runtime patterns."
     },
-    "sqlDirectionChange": {
-      "status": "accepted-product-direction",
-      "decisionDate": "2026-09-25",
-      "requirement": "The analytical layer must execute user-defined SQL automatically every configured X seconds, and changing analytical logic should normally require changing SQL rather than application code.",
-      "consequence": "IndexedDB is no longer the target primary analytical query engine. The prior IndexedDB-primary evaluation plan is archived as superseded.",
-      "activeDesign": "docs/sql-live-analytics-design.md",
-      "benchmarkPlan": "docs/sql-live-engine-benchmark-plan.md",
-      "productRequirement": "../../../../../../../docs/product/live-sql-query-execution.md"
+    "planningBootstrap": {
+      "status": "current-state-audit-complete",
+      "auditedMainCommit": "39afdbf4af6dbb45a9132cd402ef5b37f451c186",
+      "auditArtifact": "docs/browser-sql-current-state-audit.md",
+      "planningRoadmap": "ROADMAP.md",
+      "result": "Current responsibilities, reusable contracts, replaceable implementation choices, stale SQL planning and major unknowns were inventoried before target architecture design."
     },
-    "architecturePreference": {
-      "status": "browser-first",
-      "primary": "DuckDB-Wasm with persistent browser storage",
-      "fallback": "Browser collector to localhost native DuckDB",
-      "fallbackGate": "Do not implement or benchmark localhost in parallel. Open the fallback track only after a required browser capability/performance/persistence/stability limitation is demonstrated.",
-      "sqlite": "Optional only if a concrete design or benchmark question justifies it."
+    "architectureConstraint": {
+      "status": "accepted-browser-only",
+      "decision": "../../../../../../../docs/project/decisions/D-025.md",
+      "productRequirement": "../../../../../../../docs/product/live-sql-query-execution.md",
+      "rule": "Browser SQL is fixed for this planning cycle. localhost/Node/.NET/native database paths are not active candidates or backlog items."
     },
-    "specImpact": "Planning/design direction refined to browser-first. No runtime behavior or normative V2 specification changed in this work unit."
+    "engineSelection": {
+      "status": "not-yet-selected",
+      "leadingCandidate": "DuckDB-Wasm with persistent browser storage",
+      "requiredNextEvidence": "Official capability research follows requirements consolidation and browser-constraint planning."
+    },
+    "specImpact": "No runtime behavior changed. Product/planning/decision documentation now treats Browser-only SQL as the current architecture constraint. Browser SQL normative implementation specs do not exist yet and are intentionally deferred until target design is complete."
   },
   "next": {
-    "action": "Complete SQL-first Stage 01, then evaluate only the browser-first DuckDB-Wasm path.",
+    "action": "Planning Phase B: consolidate Browser SQL requirements and define end-to-end acceptance scenarios.",
     "steps": [
-      "Write observable acceptance scenarios for arbitrary SQL text, configurable X-second execution and 0..N results.",
-      "Define query-error and scheduler-overrun behavior without coupling it to implementation details.",
-      "Define the committed-data consistency boundary visible to SQL.",
-      "Proceed to Stage 02 browser SQL feasibility for DuckDB-Wasm and persistent browser storage.",
-      "Do not start localhost/native DuckDB unless the browser-first decision gate later records a demonstrated blocker."
+      "Extract stable requirements from product docs and the Browser SQL planning brief without creating duplicate authorities.",
+      "Classify material items as fixed decision, design requirement, acceptance behavior, assumption or unknown.",
+      "Define end-to-end acceptance scenarios for committed-cycle visibility, arbitrary SQL replacement, configurable query cadence, 0..N results, query failure isolation, refresh/reopen and raw/NULL preservation.",
+      "Define explicit planning non-goals so trading formula, entry/exit and implementation details stay out of scope.",
+      "Do not start implementation or external capability research beyond what is required to resolve requirement ambiguity."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
     "latestArchive": "docs/history/superseded-indexeddb-primary-evaluation/README.md",
-    "rule": "Superseded architecture/research plans stay discoverable as cold history and do not carry current progress."
+    "rule": "Superseded architecture/research plans remain cold history and do not carry current progress."
   }
 }

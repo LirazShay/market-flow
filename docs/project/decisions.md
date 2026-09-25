@@ -23,7 +23,7 @@ decisions.md
 | [D-005](decisions/D-005.md) | GetSecuritiesData role | Accepted based on observed behavior | leumi-api, securities-data |
 | [D-006](decisions/D-006.md) | Join key | Verified | data, join |
 | [D-007](decisions/D-007.md) | Do not hardcode 561 | Accepted | universe, data-integrity |
-| [D-008](decisions/D-008.md) | Conservative GetSecuritiesData batching | Accepted for current research flow | leumi-api, batching |
+| [D-008](decisions/D-008.md) | Conservative GetSecuritiesData batching | Accepted for current research flow | polling, batching |
 | [D-009](decisions/D-009.md) | Sequential batching is the proven baseline | Accepted until measured otherwise | polling, batching |
 | [D-010](decisions/D-010.md) | null != 0 | Accepted / required | data-model, null-semantics |
 | [D-011](decisions/D-011.md) | Level 1 is nullable | Verified | market-data, order-book |
@@ -40,6 +40,7 @@ decisions.md
 | [D-022](decisions/D-022.md) | Failure-to-learning loop and continuous improvement | Accepted | quality, learning, rca, process, testing |
 | [D-023](decisions/D-023.md) | Progressive context loading with preserved cold history | Accepted | ai-context, navigation, history, efficiency |
 | [D-024](decisions/D-024.md) | Repository self-maintenance is part of every change | Accepted | maintenance, hygiene, source-of-truth, ai-workflow |
+| [D-025](decisions/D-025.md) | Market Flow V2 analytical architecture is Browser-only SQL | Accepted | browser-sql, architecture, local-history-viewer-v2 |
 
 ## Fast lookup
 
@@ -67,6 +68,9 @@ Repository self-maintenance / no-cleanup debt
 
 Local History Viewer V1
 → D-019, D-020
+
+Browser SQL / V2 analytical migration
+→ D-025, D-001, D-021
 ~~~
 
 ## Adding a durable decision

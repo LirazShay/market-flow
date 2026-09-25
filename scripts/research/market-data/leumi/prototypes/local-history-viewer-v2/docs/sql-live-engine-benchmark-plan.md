@@ -1,83 +1,80 @@
-# SQL LIVE Engine — Benchmark Plan
+# Browser SQL LIVE Engine — Benchmark Plan
 
-The benchmark compares SQL-capable candidates under one common workload.
+This document defines benchmark requirements for the Browser SQL planning project.
 
-## Candidates
+It does not implement benchmarks or freeze final thresholds.
 
-Primary:
+## Current architecture scope
 
-1. DuckDB-Wasm + OPFS in browser.
-2. Native DuckDB behind localhost.
+Target: Browser SQL.
 
-Optional control:
+Leading candidate:
 
-3. SQLite only where it answers a concrete design question.
+~~~text
+DuckDB-Wasm + persistent browser storage
+~~~
+
+No localhost/native comparison belongs to the current planning scope.
+
+If another browser SQL engine becomes a serious candidate during official research, use the same workload set for a focused comparison.
 
 ## Dataset tiers
 
-Use sanitized deterministic synthetic data.
+Use sanitized deterministic synthetic data:
 
-Tiers:
-
-- smoke/correctness;
+- small correctness;
 - approximately one-hour-like history;
 - 1M+ rows;
 - 2M+ rows;
-- full-trading-day-like multi-million rows when practical.
+- full-trading-day-like multi-million rows when practical in Chromium.
 
-Universe size and cadence are configuration, never hardcoded invariants.
+Universe size and cadence are configuration, never invariants.
+
+Current planning order of magnitude:
+
+~~~text
+~561 securities observed today
+~5 second collection cadence
+~404k snapshots/hour
+multi-million snapshots/trading day
+~~~
 
 ## Required SQL workloads
 
-### Q1 — Current universe
+1. current-universe SELECT + representative WHERE;
+2. ORDER BY / LIMIT ranking;
+3. current/history temporal join;
+4. recent-window GROUP BY;
+5. HAVING;
+6. useful window functions;
+7. cross-security ranking;
+8. arbitrary active-SQL replacement without code rebuild;
+9. scheduled repeated execution;
+10. intentional successful 0-row result;
+11. intentional query error and isolation;
+12. continuous ingest + commit + scheduled SQL;
+13. reopen/recovery.
 
-Return one latest row per security and apply representative WHERE filters.
+## Browser-specific dimensions
 
-### Q2 — Ranking
+Plan measurement/observation for:
 
-ORDER BY one or several recent metrics with LIMIT.
-
-### Q3 — Recent history join
-
-Join current/latest rows to historical rows for selected time relationships.
-
-### Q4 — Time-window aggregation
-
-GROUP BY SecurityId over a recent period with aggregates.
-
-### Q5 — HAVING
-
-Filter securities by historical aggregate conditions.
-
-### Q6 — Window functions
-
-Use LAG/LEAD/ROW_NUMBER or similar SQL window logic where it naturally expresses temporal analysis.
-
-### Q7 — Cross-security ranking
-
-Rank the current universe relative to other securities.
-
-### Q8 — Arbitrary query change
-
-Swap the active SQL text without restarting/rebuilding the collector.
-
-### Q9 — Scheduled execution
-
-Execute the active SQL every configured interval while data is unchanged.
-
-### Q10 — Mixed live load
-
-Continuous cycle ingest + commit + scheduled SQL.
-
-## Ingest workloads
-
-Measure:
-
-- one full representative cycle insert;
-- atomic commit;
-- repeated cycles;
-- database growth;
-- startup/reopen/recovery.
+- WASM initialization;
+- Worker startup;
+- JS → Arrow/SQL/WASM conversion;
+- bulk ingest;
+- persistence/commit;
+- SQL execution;
+- result materialization;
+- memory;
+- GC effects where observable;
+- DB/storage growth;
+- reopen;
+- refresh;
+- hidden/background behavior;
+- long-running stability;
+- large result sets;
+- concurrent UI/query/ingest.
 
 ## Metrics
 
@@ -86,26 +83,50 @@ Where meaningful:
 - median;
 - p95;
 - max;
-- write/commit duration;
-- SQL execution duration;
-- result materialization duration;
+- sample count;
+- dataset size;
+- insert/enrichment duration;
+- commit duration;
+- query duration;
+- result materialization;
 - end-to-end scheduled-query latency;
-- memory observation;
-- file/storage size;
-- restart/reopen duration.
+- memory observations;
+- DB/storage size;
+- reopen time.
 
-Correctness is asserted before performance.
+Correctness comes before timing interpretation.
 
-## Scheduler evidence
+## Performance interpretation
 
-Verify:
+The LIVE path should have substantial headroom relative to cadence.
 
-- configurable X seconds;
-- no accidental uncontrolled overlap;
-- query failure does not stop ingest;
-- later successful executions recover normally;
-- result metadata identifies query version and execution time.
+Tens of milliseconds to low hundreds are useful goals for central operations, not frozen contracts before benchmark evidence.
+
+A query using most of a five-second interval is not comfortable headroom merely because it finishes before the next nominal tick.
+
+## Run classes
+
+The final plan must distinguish:
+
+~~~text
+Fast CI
+Browser functional CI
+targeted benchmark
+heavy benchmark
+long-running browser verification
+live provider verification
+~~~
+
+Multi-million-row and long-running tests should not run on every commit by default.
 
 ## Decision output
 
-The comparison must end with a table of Verified / Inferred / Unknown findings and select the minimum sufficient architecture, not the most elaborate one.
+Material conclusions use:
+
+~~~text
+Verified
+Inferred
+Unknown
+~~~
+
+The benchmark exists to show whether Browser SQL has adequate correctness/performance/stability headroom and where optimization is actually justified.
