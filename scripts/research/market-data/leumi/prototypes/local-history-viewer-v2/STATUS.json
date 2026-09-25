@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "implementation-decomposition",
-    "title": "Verify Browser SQL implementation decomposition",
-    "status": "verification-pending"
+    "substep": "github-execution-structure",
+    "title": "Create the Browser SQL GitHub execution structure",
+    "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "planning phases A-O",
-    "verificationPending": "phase P implementation decomposition",
-    "planned": "phase Q GitHub execution structure → phase R final plan audit/handoff"
+    "completed": "planning phases A-P",
+    "inProgress": "phase Q GitHub execution structure",
+    "planned": "phase R final plan audit/handoff"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -33,7 +33,7 @@
       "docsIndex": "docs/README.md"
     },
     "implementationDecomposition": {
-      "status": "verification-pending",
+      "status": "complete",
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
       "milestones": 8,
@@ -47,16 +47,14 @@
       "guardPolicy": "Do not raise HOT-context guards; keep detailed completed-phase evidence in phase docs."
     },
     "githubExecutionRequirement": {
-      "status": "required-after-phase-P-verification",
+      "status": "required-now",
       "rule": "Phase Q must create real Issues plus useful milestones/labels/dependencies/parent-child or checklist structure. Markdown alone is insufficient."
     },
     "latestFastCi": {
-      "status": "verification-pending",
-      "failedRunIds": [
-        36123544434,
-        36123623345
-      ],
-      "failure": "Phase P exposed HOT-context STATUS contract regressions: size budget first, then required currentStage/latestArchive fields. Both repaired without weakening guards."
+      "status": "success",
+      "runId": 36123702087,
+      "commit": "2fa4f0741134df7c8d5bb3338a046f6d0a8c7038",
+      "result": "Phase P decomposition and HOT-context repairs verified green."
     },
     "browserCi": {
       "status": "not-required",
@@ -65,14 +63,14 @@
     "specImpact": "No runtime code or normative implemented spec changed."
   },
   "next": {
-    "action": "After Phase P Fast CI is green, advance to Phase Q and create the real GitHub execution structure.",
+    "action": "Planning Phase Q: create the real Browser SQL execution structure in GitHub.",
     "steps": [
-      "Inspect existing labels/milestones/open Issues for reuse.",
-      "Create/reuse 8 milestones and minimal labels.",
-      "Create WP-01..WP-38 executable Issues.",
+      "Inspect existing repository labels/milestones/open Issues for reuse.",
+      "Create/reuse the 8 milestone groups and minimal labels.",
+      "Create executable Issues for WP-01 through WP-38.",
       "Encode dependencies/blockers and supported parent/checklist structure.",
-      "Link planning artifact to GitHub execution objects.",
-      "Update STATUS.json only after structure creation is verified."
+      "Link planning artifacts to the created GitHub execution objects.",
+      "Verify issue/milestone/label coverage before advancing to Phase R."
     ]
   },
   "history": {
@@ -83,6 +81,6 @@
   "currentStage": {
     "stage": "browser-sql-planning",
     "title": "Browser SQL migration planning project",
-    "status": "verification-pending"
+    "status": "in-progress"
   }
 }
