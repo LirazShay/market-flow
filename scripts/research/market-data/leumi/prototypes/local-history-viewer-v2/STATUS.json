@@ -14,7 +14,7 @@
     "substep": "wp-03",
     "title": "Execute Live Gate L-1 on the authenticated Leumi page",
     "issue": 31,
-    "status": "ready"
+    "status": "verification-pending"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
@@ -23,7 +23,7 @@
   },
   "stageSummary": {
     "completed": "Browser SQL planning phases A-W, WP-01 engine identity/manifest foundation, and WP-02 synthetic Browser SQL compatibility probe",
-    "ready": "WP-03 / Issue #31 live authenticated-Leumi gate ready",
+    "ready": "WP-03 / Issue #31 prepared; live authenticated-Leumi verification pending",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
@@ -105,10 +105,18 @@
       "status": "resolved",
       "rootCause": "Initial Chromium run failed at write-commit-checkpoint because JSON string serialization was incorrectly used as SQL string-literal quoting; DuckDB treats double quotes as identifiers.",
       "prevention": "Probe now uses explicit SQL single-quote escaping. The targeted Chromium persistence test remains as regression coverage, and its assertion includes sanitized failedStage output for faster RCA."
+    },
+    "browserSqlLiveGate": {
+      "status": "verification-pending",
+      "issue": 31,
+      "runbook": "docs/browser-sql-live-gate-l1.md",
+      "result": "Pending direct execution on the real authenticated Leumi origin. Deterministic CI cannot satisfy this gate.",
+      "required": "Worker/Wasm/OPFS COMMIT+CHECKPOINT+reopen+page-refresh/relaunch plus two-tab exclusive Web Locks with ifAvailable:true.",
+      "blocker": "WP-05+ remains blocked until all required live capabilities are directly Verified."
     }
   },
   "next": {
-    "action": "Execute WP-03 / GitHub Issue #31 on the real authenticated Leumi page using the exact WP-02 generated probe; verify Worker/Wasm/OPFS/reopen plus two-tab exclusive Web Locks before WP-05+.",
+    "action": "Execute WP-03 / Issue #31 using docs/browser-sql-live-gate-l1.md on the real authenticated Leumi page; record only sanitized results. Do not advance to WP-05+ until the gate passes.",
     "issue": 31,
     "workPackage": "WP-03",
     "rules": [
