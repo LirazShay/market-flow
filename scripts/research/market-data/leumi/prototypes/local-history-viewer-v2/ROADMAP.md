@@ -1,293 +1,226 @@
 # Local History Viewer V2 — Roadmap
 
-This file owns V2 plan, scope and order only.
+This file owns V2 plan, scope and order only. Live progress belongs only in STATUS.json.
 
-Live progress, current stage, verification state and the exact next pointer belong only in STATUS.json.
+V2 starts from the frozen V1 collector/storage baseline, but the analytical direction is now SQL-first.
 
-V2 starts from the frozen V1 implementation but evolves independently. V1 remains a read-only reference.
+## Product requirement that governs this roadmap
 
-## Program principles
+The live analytical layer must allow a user-defined SQL query to be changed independently of application code and executed automatically every configured X seconds against the latest persisted market data.
 
-The V2 IndexedDB investigation follows these rules:
+The query may use SELECT, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT, window/history logic and cross-security comparisons as supported by the selected SQL engine.
 
-- evidence before architecture verdicts;
-- reuse verified V1 behavior instead of rebuilding it without cause;
-- preserve complete raw provider records;
-- preserve complete-cycle validation and atomic successful-cycle persistence;
-- keep IndexedDB as the browser-local source of truth unless evidence justifies changing that boundary;
-- compute cheap, repeatedly useful facts once during ingest;
-- use latest for elimination-first live filtering;
-- read targeted indexed history only for survivors;
-- benchmark before adding workers, caches, SQL engines or a localhost backend;
-- distinguish runtime-performance limits from query/developer ergonomics;
-- use sanitized synthetic benchmark data only.
+A valid execution may return zero rows.
 
-The current product direction is owned by:
+IndexedDB is no longer being evaluated as the primary analytical query engine. The prior IndexedDB-primary evaluation plan is preserved under docs/history/ as superseded research.
+
+## Architecture boundary that remains valuable
+
+The authenticated browser remains the collection boundary unless later evidence requires otherwise:
 
 ~~~text
-docs/product/live-opportunity-discovery.md
+Authenticated Leumi browser
+→ validated complete cycle
+→ SQL-capable storage/analytical engine
+→ scheduled user-defined SQL
+→ result set
+→ UI / downstream logic
 ~~~
 
-The detailed IndexedDB evaluation design is owned by:
+The selected SQL engine and process boundary are not yet frozen.
+
+## Stage 01 — SQL workload contract
+
+Define the observable contract:
+
+- arbitrary user-owned SQL text;
+- configurable execution interval X seconds;
+- query changes do not require collector/runtime code changes;
+- query runs against coherent committed data only;
+- zero rows is valid;
+- query error is isolated from ingestion;
+- query duration, row count and error are observable;
+- ingestion continues even when a query fails;
+- SQL execution never receives browser authentication secrets unnecessarily.
+
+Deliverable: V2 SQL execution contract and acceptance scenarios.
+
+## Stage 02 — SQL engine/process candidates
+
+Evaluate the smallest serious candidates:
+
+### Candidate A — Browser-only DuckDB-Wasm + OPFS
 
 ~~~text
-docs/indexeddb-live-analytics-evaluation.md
-docs/indexeddb-live-analytics-benchmark-plan.md
-docs/indexeddb-live-analytics-decision-framework.md
+Authenticated browser collector
+→ DuckDB-Wasm
+→ persistent OPFS database
+→ scheduled SQL in browser
 ~~~
 
-## Bootstrap — independent V2 baseline
-
-Scope:
-
-- exact copy of the complete V1 workstream as the starting point;
-- preserve V1 unchanged beside V2;
-- isolate V2 IndexedDB, BroadcastChannel, Viewer window/marker and runtime artifact names;
-- create V2-specific Fast CI and Browser CI;
-- verify the inherited baseline after isolation.
-
-## Scope definition — define the new V2 direction
-
-Scope:
-
-- capture the broader product direction;
-- separate stable product requirements from technical hypotheses;
-- identify inherited V1 contracts that remain valuable;
-- define the IndexedDB evaluation question without prematurely selecting a replacement engine.
-
-## IndexedDB Live Analytics Evaluation Program
-
-The stages below define order and scope. They do not imply current completion state.
-
-### Stage 01 — Baseline characterization
-
-Establish the exact V2 starting point:
-
-- current stores, keys and indexes;
-- current successful-cycle transaction boundary;
-- current history/latest read paths;
-- existing storage-growth evidence;
-- existing browser tests that protect persistence and recovery;
-- reusable V1/V2 components;
-- gaps relative to the new analytical requirements.
-
-Deliverable: evidence-backed baseline inventory.
-
-### Stage 02 — Provider semantics audit
-
-Verify the provider fields needed for enrichment, especially LAST, BID1, ASK1, the cumulative deals-count candidate field, collection timestamps and timing semantics.
-
-Classify each material claim as Verified, Inferred or Unknown.
-
-Deliverable: explicit provider-field contract/evidence map.
-
-### Stage 03 — Logical analytical snapshot model
-
-Define the logical V2 row contract without yet freezing a physical schema:
-
-- stable SnapshotId distinct from SecurityId;
-- SecurityId;
-- CycleId / SessionId;
-- collected timestamp;
-- complete raw provider record;
-- core same-row derived values;
-- eight temporal references;
-- eight LAST-change metrics;
-- eight deals-delta metrics;
-- null semantics.
-
-Deliverable: logical model and invariants.
-
-### Stage 04 — Temporal reference semantics and resolution design
-
-Define how the eight horizons resolve to immutable historical snapshot references:
+### Candidate B — Browser collector + localhost native DuckDB
 
 ~~~text
-10s, 20s, 30s, 60s, 90s, 120s, 300s, 600s
+Authenticated browser collector
+→ localhost ingest API
+→ native DuckDB file
+→ local SQL scheduler
 ~~~
 
-Compare simple candidate algorithms and recovery/bootstrap behavior. Avoid a design requiring securityCount × horizonCount random IndexedDB searches per cycle unless benchmarks prove it acceptable.
+### Candidate C — SQLite only if evidence justifies it
 
-Deliverable: reference-resolution contract and candidate algorithms.
+SQLite may be included as a control/reference candidate for transactional/indexed SQL, but the target workload is analytical and should not force equal investment in every engine.
 
-### Stage 05 — Ingest enrichment contract
+Deliverable: shortlist with concrete tradeoffs and benchmark plan.
 
-Define deterministic enrichment behavior for MID, temporal references, LastChange, DealsDelta, unavailable history, invalid/missing provider values and immutable historical context.
+## Stage 03 — SQL schema design
 
-Deliverable: public/pure behavior contract suitable for tests-first implementation.
+Design a relational/analytical schema that preserves:
 
-### Stage 06 — Physical schema and index alternatives
+- canonical SecurityId = String(PaperId or Key);
+- complete raw provider data;
+- cycle/session identity and timestamps;
+- stable snapshot identity;
+- null != 0 != "" != undefined;
+- complete-cycle integrity;
+- efficient current/latest access;
+- efficient historical time-window access;
+- future derived columns without losing raw fields.
 
-Compare the smallest plausible physical designs, including:
+Decide whether current rows are represented by a table, view or SQL query.
 
-- reuse of history/latest/cycles;
-- SnapshotId representation;
-- temporal-reference storage shape;
-- fixed core metric columns versus more generic structures;
-- compound indexes;
-- schema-version migration/rebuild strategy.
+Deliverable: benchmarkable SQL schema candidates.
 
-Do not choose flexibility abstractions without a measured need.
+## Stage 04 — Ingest protocol and atomicity
 
-Deliverable: benchmarkable schema candidates.
+Define:
 
-### Stage 07 — Live query path design
+- browser-to-engine payload;
+- complete-cycle validation boundary;
+- one coherent cycle commit;
+- failure behavior;
+- idempotency/retry semantics where needed;
+- whether enrichment happens before insert, in SQL, or through generated/materialized structures.
 
-Define the intended live path:
+For localhost candidates, credentials/cookies/session tokens must remain in the browser.
+
+Deliverable: ingest contract.
+
+## Stage 05 — Scheduled SQL runner design
+
+Define the runtime that:
 
 ~~~text
-read latest
-→ cheap elimination
-→ rank/filter current universe
-→ targeted indexed history for survivors
-→ aggregate/custom comparisons
-→ final qualification/ranking
+load active SQL
+→ every X seconds
+→ execute on latest committed DB state
+→ record timing/result/error
+→ publish result set
 ~~~
 
-Define representative public workloads, not a final trading formula.
+Requirements:
 
-Deliverable: query-path contract and workload mapping.
+- no overlapping uncontrolled executions;
+- configurable interval;
+- deterministic behavior when previous query exceeds interval;
+- query timeout/cancellation strategy if supported/needed;
+- latest successful result remains distinguishable from query failure;
+- query text/version is observable.
 
-### Stage 08 — Synthetic benchmark harness
+Deliverable: scheduler contract.
 
-Build sanitized deterministic data generation and browser benchmark instrumentation.
+## Stage 06 — Synthetic SQL benchmark harness
 
-Required capabilities:
+Build sanitized deterministic market data at realistic scale.
 
-- configurable universe size;
-- realistic cadence/timestamps;
-- raw-record-like payload shape without private provider data;
-- precomputed fields and references when required;
-- repeatable dataset seeds;
-- median / p95 / max reporting where meaningful;
-- separate setup/load time from measured query time.
+Measure:
 
-Deliverable: reusable benchmark harness.
+- insert/commit throughput;
+- simple current-universe SELECT;
+- JOIN against recent history;
+- GROUP BY/HAVING;
+- window functions where useful;
+- ORDER BY/LIMIT ranking;
+- repeated scheduled execution;
+- mixed ingest + query;
+- database growth.
 
-### Stage 09 — Baseline-scale IndexedDB benchmarks
+Deliverable: reusable SQL benchmark harness.
 
-Measure representative workloads near one hour of data, approximately the 400k-row order of magnitude for the current representative universe/cadence.
+## Stage 07 — Browser DuckDB-Wasm prototype
 
-Measure at least latest read, latest filtering, sorting/ranking, one-security recent history, 5/10/20/50-security recent history and a precomputed historical condition count.
+Build the smallest browser-only spike proving:
 
-Deliverable: first real latency evidence.
+- SQL execution;
+- persistence/reopen behavior;
+- continuous inserts;
+- scheduled queries;
+- realistic result retrieval;
+- OPFS constraints;
+- memory/stability characteristics.
 
-### Stage 10 — Million-row scale benchmarks
+Deliverable: measured browser-only evidence.
 
-Extend to larger stores:
+## Stage 08 — Local native DuckDB prototype
 
-~~~text
-1M+
-2M+
-full-trading-day-like scale when practical
-optional multi-day/heavy local experiment
-~~~
+Build the smallest localhost spike proving:
 
-Do not make normal CI depend on a multi-million-row performance run.
+- browser POST of validated complete cycles;
+- native persistent DuckDB;
+- scheduled arbitrary SQL;
+- result retrieval;
+- process restart/recovery;
+- Windows local operation.
 
-Deliverable: scaling curve and storage observations.
+Deliverable: measured localhost evidence.
 
-### Stage 11 — Write and transaction throughput
+## Stage 09 — Comparative benchmark
 
-Measure one coherent large successful-cycle transaction, a representative full-universe enriched cycle, commit latency and sustained repeated-cycle behavior.
+Compare candidates using the same workloads and datasets.
 
-Deliverable: ingest/write headroom evidence.
+At minimum measure:
 
-### Stage 12 — Temporal-reference and enrichment throughput
+- write/commit median and p95;
+- SQL execution median and p95;
+- mixed workload;
+- full-day-like history scale when practical;
+- memory/storage observations;
+- startup/recovery;
+- complexity and failure modes.
 
-Measure candidate reference-resolution approaches and enrichment cost.
+Deliverable: evidence table.
 
-Key question:
+## Stage 10 — Architecture decision
 
-Can the collector resolve eight historical references and derive the core metrics for the whole current universe with large headroom relative to cadence?
+Select the minimum sufficient SQL architecture.
 
-Include refresh/bootstrap cost when relevant.
+The decision must distinguish:
 
-Deliverable: chosen or rejected reference-resolution approach with numbers.
+- Verified;
+- Inferred;
+- Unknown.
 
-### Stage 13 — Latest elimination and cross-security ranking
+It must explicitly state why the selected solution is preferred for the requirement "change SQL freely and run every X seconds."
 
-Measure repeated live filtering/ranking over the current universe and verify that the elimination-first path reduces later historical work as intended.
+Deliverable: durable architecture decision.
 
-Deliverable: current-universe live-query evidence.
+## Stage 11 — Normative V2 specs
 
-### Stage 14 — Targeted history and arbitrary comparison workloads
+Update/add V2 specs for:
 
-Measure recent history for survivor sets, counts based on persisted LastChange-like fields, direct previous-snapshot lookups, arbitrary cross-snapshot field comparisons and repeated operations over one-hour windows.
+- SQL storage;
+- ingest;
+- scheduler/query execution;
+- failure/recovery;
+- result delivery;
+- security boundary.
 
-Deliverable: targeted-history analytical evidence.
+Deliverable: implementation-ready contracts.
 
-### Stage 15 — Mixed ingest + repeated live-query workload
+## Stage 12 — Incremental implementation
 
-Run ingestion and analytics together.
+Implement tests-first in natural vertical slices, preserving the frozen V1 reference and reusing only proven components that fit the selected architecture.
 
-Representative pattern:
+## Non-goals
 
-~~~text
-ingest current cycle
-+
-persist atomically
-+
-run current live query
-+
-targeted history aggregation
-+
-repeat around the representative cadence
-~~~
-
-Measure contention, latency distribution and stability.
-
-Deliverable: realistic mixed-workload evidence.
-
-### Stage 16 — Recovery, atomicity, memory and browser stability
-
-Verify refresh/reopen bootstrap, immutable temporal references, enriched-cycle atomicity, history/latest coherence, memory observations for targeted JS aggregation, browser storage-size observations and long-running behavior where practical.
-
-Deliverable: operational browser evidence.
-
-### Stage 17 — Architecture decision gate
-
-Classify the evidence and choose the minimum sufficient architecture:
-
-1. IndexedDB + JavaScript analytics;
-2. IndexedDB source of truth + a small analytical layer;
-3. browser collector + localhost engine.
-
-The decision must state which workloads were Verified, which conclusions remain Inferred, what remains Unknown, the exact bottleneck if IndexedDB is rejected, whether the problem is performance or only query ergonomics, and the minimum additional mechanism required.
-
-Deliverable: durable evidence-backed architecture decision.
-
-### Stage 18 — V2 implementation contract and execution plan
-
-Map the approved architecture into V2:
-
-- retained/replaced/removed inherited behavior;
-- affected/new V2 specs;
-- schema/migration plan;
-- tests-first vertical implementation slices;
-- browser verification gates;
-- live verification needs;
-- performance regression strategy.
-
-Deliverable: verified next implementation direction.
-
-## Post-decision implementation track
-
-The exact implementation track is intentionally conditional on Stage 17 evidence. If the selected direction keeps the current V2 browser architecture, the likely order is:
-
-1. schema/version and migration/rebuild mechanism;
-2. SnapshotId + horizon definition owner;
-3. temporal-reference bootstrap/resolution;
-4. pure enrichment functions and unit tests;
-5. enriched atomic cycle persistence;
-6. targeted history/read APIs;
-7. elimination-first analytical pipeline;
-8. candidate/result read model and diagnostics;
-9. performance/regression safeguards;
-10. browser integration and live provider verification.
-
-If Stage 17 selects a hybrid or localhost analytical layer, Stage 18 must replace this tentative sequence with the smallest architecture-specific plan.
-
-## Explicit non-goals
-
-This program does not define final trading strategy, final momentum/ranking formula, buy/sell execution, final thresholds, a final distinct-wave algorithm, WAF/access-control bypass, a mandatory SQL engine or a mandatory Worker architecture.
+This roadmap does not define the final trading formula, thresholds, buy/sell execution or a fixed SQL query. The SQL itself is intentionally user-changeable.

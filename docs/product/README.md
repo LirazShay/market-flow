@@ -24,6 +24,7 @@ Examples:
 ## Current documents
 
 - [live-opportunity-discovery.md](live-opportunity-discovery.md) — initial product direction and requirements for live market opportunity discovery.
+- [live-sql-query-execution.md](live-sql-query-execution.md) — product requirement for user-defined SQL executed automatically every configured interval.
 
 ## Structure rule
 

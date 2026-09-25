@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
   "workstream": "local-history-viewer-v2",
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-25",
   "overallStatus": "in-progress",
   "authority": {
     "operationalProgress": "STATUS.json",
@@ -10,90 +10,55 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "indexeddb-evaluation-01",
-    "substep": "baseline-characterization",
-    "title": "Characterize the current IndexedDB baseline for LIVE analytics",
+    "stage": "sql-first-01",
+    "substep": "sql-workload-contract",
+    "title": "Define the SQL-first LIVE analytical contract",
     "status": "in-progress"
   },
   "stageSummary": {
     "completed": "bootstrap, scope-definition",
-    "inProgress": "indexeddb-evaluation-01",
-    "planned": "indexeddb-evaluation-02 through indexeddb-evaluation-18"
+    "inProgress": "sql-first-01",
+    "planned": "sql-first-02 through sql-first-12"
   },
   "currentStage": {
-    "stage": "indexeddb-evaluation-01",
-    "title": "Baseline characterization",
+    "stage": "sql-first-01",
+    "title": "SQL workload contract",
     "status": "in-progress"
   },
-  "activeMiniProject": "indexeddb-live-analytics-evaluation",
+  "activeMiniProject": "sql-live-analytics",
   "verification": {
     "baselineSource": {
       "sourceWorkstream": "local-history-viewer-v1",
-      "sourceMainCommit": "044546a18e79ac820a246d477340bad8424cab64",
-      "exactCloneCommit": "d0b09913ef6d49359f7560b801cced7af53534a5",
-      "result": "V2 was created first as an exact Git tree clone of the frozen V1 workstream, preserving V1 unchanged."
+      "result": "The frozen V1 collector remains the verified browser-only baseline and reference."
     },
-    "namespaceIsolation": {
-      "status": "complete-browser-ci-verified",
-      "verifiedCommit": "408ff912ed6e1c80c6476a50e39798434d5d5060",
-      "indexedDb": "market-flow-leumi-history-v2",
-      "broadcastChannel": "market-flow-leumi-v2",
-      "viewerWindow": "market-flow-leumi-v2-viewer",
-      "viewerMarker": "market-flow-leumi-v2",
-      "runtimeArtifacts": [
-        "market-flow-v2.runtime.js",
-        "market-flow-v2.bookmarklet.txt"
-      ],
-      "samePageConstraint": "V1 and V2 still share window.MarketFlow* internal globals, so do not inject both into the same page context without refresh. Separate tabs are isolated by persistent/runtime identity."
+    "sqlDirectionChange": {
+      "status": "accepted-product-direction",
+      "decisionDate": "2026-09-25",
+      "requirement": "The analytical layer must execute user-defined SQL automatically every configured X seconds, and changing the analytical logic should normally require changing SQL rather than application code.",
+      "consequence": "IndexedDB is no longer the target primary analytical query engine. The prior IndexedDB-primary evaluation plan is archived as superseded.",
+      "activeDesign": "docs/sql-live-analytics-design.md",
+      "benchmarkPlan": "docs/sql-live-engine-benchmark-plan.md",
+      "productRequirement": "../../../../../../../docs/product/live-sql-query-execution.md"
     },
-    "fastCi": {
-      "runId": 35991326398,
-      "conclusion": "success",
-      "verifiedCommit": "408ff912ed6e1c80c6476a50e39798434d5d5060"
+    "candidateArchitectures": {
+      "browser": "DuckDB-Wasm with persistent OPFS",
+      "localhost": "Browser collector to localhost native DuckDB",
+      "sqlite": "Optional control candidate only if a concrete benchmark/design question justifies it"
     },
-    "browserCi": {
-      "runId": 35991326361,
-      "conclusion": "success",
-      "verifiedCommit": "408ff912ed6e1c80c6476a50e39798434d5d5060",
-      "tests": 56,
-      "passed": 56,
-      "failed": 0,
-      "playwrightSeconds": 28
-    },
-    "bootstrapFailureReview": {
-      "status": "complete",
-      "initialFastCiRunId": 35991077053,
-      "initialBrowserCiRunId": 35991076953,
-      "technicalRootCause": "The first V2 adaptation omitted two inherited HOT-context discoverability phrases and left one viewer-recovery assertion on the V1 marker.",
-      "processCause": "The clone-to-V2 identity pass changed documentation/runtime identity surfaces before systematically preserving every existing guard contract.",
-      "escapeCause": "The exact clone was correct, but V2-specific edits were broader than the initial literal checklist.",
-      "prevention": "Existing context-architecture and Browser regression tests remain the prevention; do not weaken them. Future identity forks should use those guards as the migration checklist.",
-      "promotionDecision": "No new repository-wide rule added; the existing guards already caught the class of error."
-    },
-    "indexedDbEvaluationPlanning": {
-      "status": "plan-established",
-      "baselineMainCommit": "82f363bbd40d7dfa07f41fa0f44c39b4b12dd14c",
-      "roadmap": "ROADMAP.md",
-      "design": "docs/indexeddb-live-analytics-evaluation.md",
-      "benchmarkPlan": "docs/indexeddb-live-analytics-benchmark-plan.md",
-      "decisionFramework": "docs/indexeddb-live-analytics-decision-framework.md",
-      "result": "The V2 workstream now has a staged evidence-first IndexedDB evaluation program from baseline characterization through benchmark-backed architecture decision and V2 implementation planning."
-    },
-    "specImpact": "Planning/design documentation only. No V2 runtime behavior or normative V2 specification changed in this work unit."
+    "specImpact": "Product/architecture direction changed. Runtime and normative V2 specs have not changed yet; SQL-specific normative specs will be created after the architecture candidate is selected."
   },
   "next": {
-    "action": "Execute IndexedDB Evaluation Stage 01: produce the evidence-backed baseline characterization before changing runtime behavior.",
+    "action": "Complete SQL-first Stage 01 before implementing a database engine.",
     "steps": [
-      "Inventory the current storage schema, indexes, persistence transaction and history/latest read paths in exact code terms.",
-      "Map existing unit/Chromium coverage that already proves atomicity, recovery and indexed history behavior.",
-      "Read the inherited storage-growth evidence and extract only measurements relevant to the new workload.",
-      "Create a reuse-versus-gap baseline artifact that classifies findings as Verified, Inferred or Unknown.",
-      "Do not implement SnapshotId, temporal references or enrichment until the baseline characterization is complete."
+      "Write observable acceptance scenarios for arbitrary SQL text, configurable X-second execution and 0..N results.",
+      "Define query-error and scheduler-overrun behavior without coupling it to a specific engine.",
+      "Define the committed-data consistency boundary visible to SQL.",
+      "Then proceed to Stage 02 candidate evaluation: DuckDB-Wasm+OPFS versus localhost native DuckDB."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
-    "latestArchive": "docs/history/v2-bootstrap/2026-09-24-v2-bootstrap.md",
-    "rule": "V1 history inside this cloned tree is inherited cold baseline evidence. New V2 evidence is added separately and read only when needed."
+    "latestArchive": "docs/history/superseded-indexeddb-primary-evaluation/README.md",
+    "rule": "Superseded architecture/research plans stay discoverable as cold history and do not carry current progress."
   }
 }
