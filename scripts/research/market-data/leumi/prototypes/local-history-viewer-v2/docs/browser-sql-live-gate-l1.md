@@ -68,6 +68,23 @@ market-flow:wp03:web-lock-probe
 
 It is not the production runtime-owner lock.
 
+## Deterministic CI preflight
+
+Before live execution, GitHub Actions runs a synthetic authenticated-Leumi-like page in real Chromium. The preflight verifies the browser mechanics that can be proven without credentials:
+
+- injected probe execution on a same-origin synthetic page;
+- Blob Worker creation;
+- exact pinned Worker/Wasm loading;
+- OPFS write, COMMIT, CHECKPOINT and reopen;
+- persisted-marker visibility across two same-origin tabs;
+- page reload/reopen;
+- exclusive Web Lock denial while another tab holds the lock;
+- acquisition after explicit release;
+- browser lock release after owner-tab close;
+- probe-only cleanup.
+
+CI evidence from this preflight is **not** live-origin evidence. For the real authenticated Leumi page these outcomes remain `Inferred` until Part A/Part B below are directly observed there.
+
 ## Part A — Worker/Wasm/OPFS probe
 
 ### A1. Initial run

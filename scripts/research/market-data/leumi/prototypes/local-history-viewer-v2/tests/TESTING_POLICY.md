@@ -135,6 +135,16 @@ Bookmarklet/injected JS
 
 A mock Chromium page cannot substitute for this real-page gate.
 
+Before the live gate, the dedicated synthetic Leumi preflight may exercise the same browser primitives automatically in GitHub Actions:
+
+~~~text
+tests/automation/mock-leumi-authenticated.html
+tests/automation/specs/browser-sql-live-gate-poc.spec.js
+Local History Viewer V2 WP-03 POC CI
+~~~
+
+This deterministic preflight should cover same-origin two-tab Web Locks, Blob Worker, exact pinned Worker/Wasm, OPFS persistence, COMMIT/CHECKPOINT/reopen and probe-only cleanup. Its result is browser-mechanics evidence only and must be classified as Inferred for the real authenticated Leumi origin.
+
 If it fails because of real CSP/origin/browser constraints, dependent implementation work stops and the runtime-delivery architecture must be reconsidered from evidence.
 
 ### Browser SQL CI cadence

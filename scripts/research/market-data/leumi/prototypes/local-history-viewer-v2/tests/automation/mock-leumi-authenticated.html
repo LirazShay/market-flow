@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'"
+    >
+    <title>Market Flow Synthetic Authenticated Leumi Page</title>
+</head>
+<body
+    data-market-flow-provider="leumi-synthetic"
+    data-market-flow-authenticated="synthetic"
+>
+    <main>
+        <h1>Market Flow Synthetic Authenticated Market Page</h1>
+        <p id="mock-leumi-ready">ready</p>
+    </main>
+
+    <script>
+        window.__MARKET_FLOW_SYNTHETIC_LEUMI__ =
+            Object.freeze({
+                provider: "leumi-synthetic",
+                authenticated: true,
+                containsRealSessionData: false
+            });
+    </script>
+</body>
+</html>

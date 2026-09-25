@@ -1,0 +1,56 @@
+name: Local History Viewer V2 WP-03 POC CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/local-history-viewer-v2-wp03-poc-ci.yml"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/browser-sql-probe.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/build-browser-sql-probe.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/duckdb-engine-manifest.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/tests/automation/mock-leumi-authenticated.html"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/tests/automation/specs/browser-sql-live-gate-poc.spec.js"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package-lock.json"
+
+permissions:
+  contents: read
+
+jobs:
+  wp03-poc:
+    name: WP-03 synthetic Leumi Chromium preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+
+    defaults:
+      run:
+        working-directory: scripts/research/market-data/leumi/prototypes/local-history-viewer-v2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Ensure Chromium is installed
+        run: npx playwright install chromium
+
+      - name: Run WP-03 synthetic Leumi preflight
+        run: npx playwright test tests/automation/specs/browser-sql-live-gate-poc.spec.js
+
+      - name: Upload Playwright diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-history-viewer-v2-wp03-poc-playwright
+          path: |
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/playwright-report
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/test-results
+          if-no-files-found: ignore
+          retention-days: 7
