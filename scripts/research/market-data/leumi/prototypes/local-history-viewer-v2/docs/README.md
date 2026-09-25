@@ -27,6 +27,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL analytical resource isolation / runaway-query safety | [browser-sql-analytical-resource-isolation.md](browser-sql-analytical-resource-isolation.md) |
 | Browser SQL multi-tab ownership / split-brain prevention | [browser-sql-multi-tab-ownership.md](browser-sql-multi-tab-ownership.md) |
 | Browser SQL engine/schema/release upgrade lifecycle | [browser-sql-upgrade-release-lifecycle.md](browser-sql-upgrade-release-lifecycle.md) |
+| Browser SQL final planning assurance / freeze | [browser-sql-final-planning-freeze.md](browser-sql-final-planning-freeze.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
@@ -46,6 +47,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL analytical-resource durable decision | [D-039](../../../../../../../docs/project/decisions/D-039.md) |
 | Browser SQL multi-tab ownership durable decision | [D-040](../../../../../../../docs/project/decisions/D-040.md) |
 | Browser SQL engine/schema/release upgrade durable decision | [D-041](../../../../../../../docs/project/decisions/D-041.md) |
+| Browser SQL planning-freeze durable decision | [D-042](../../../../../../../docs/project/decisions/D-042.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 

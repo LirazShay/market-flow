@@ -12,17 +12,18 @@
   "currentFocus": {
     "stage": "browser-sql-planning-assurance",
     "substep": "final-planning-assurance-freeze",
-    "title": "Run final Browser SQL planning assurance and freeze",
-    "status": "in-progress"
+    "title": "Verify final Browser SQL planning freeze",
+    "status": "verification-pending"
   },
   "currentStage": {
     "stage": "browser-sql-planning-assurance",
     "title": "Pre-implementation Browser SQL planning assurance",
-    "status": "in-progress"
+    "status": "verification-pending"
   },
   "stageSummary": {
-    "completed": "planning phases A-V; Phase-R initial audit red-teamed and extended",
-    "inProgress": "phase W final planning assurance/freeze"
+    "completed": "planning phases A-V; Phase-W content/graph/traceability audit complete",
+    "verificationPending": "final Phase-W Fast CI",
+    "planned": "after green freeze, next pointer becomes WP-01 / Issue #29 for a new implementation chat"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -57,73 +58,43 @@
         "first": 29,
         "last": 71,
         "closedDuplicate": 65,
-        "wp37Canonical": 66,
-        "wp39StorageLifecycle": 68,
-        "wp40ResourceIsolation": 69,
-        "wp41MultiTabOwnership": 70,
-        "wp42UpgradeLifecycle": 71
+        "wp37Canonical": 66
       },
-      "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references.",
-      "structuralVerification": "51 open Browser SQL Issues = 1 Master + 8 Epics + 42 unique WPs after Phase-V extension; final full structural audit deferred to Phase W."
+      "structuralVerification": "51 open Browser SQL Issues = 1 Master + 8 Epics + 42 canonical WPs."
     },
-    "finalPlanAudit": {
-      "status": "reopened-by-red-team",
-      "artifact": "docs/browser-sql-final-plan-audit.md",
-      "handoffCandidate": "Blocked until Phase W final freeze."
+    "assuranceAdditions": {
+      "dataLifecycle": "D-038 / WP-39 #68",
+      "analyticalResourceIsolation": "D-039 / WP-40 #69",
+      "multiTabOwnership": "D-040 / WP-41 #70",
+      "upgradeLifecycle": "D-041 / WP-42 #71"
     },
-    "dataLifecycle": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-data-lifecycle-retention.md",
-      "decision": "../../../../../../../docs/project/decisions/D-038.md",
-      "policy": "retain-all by default; benchmark-derived storage warning; no automatic history deletion; explicit logical archive + crash-recoverable fresh database epoch rollover.",
-      "implementationOwner": "WP-39 / GitHub Issue #68"
-    },
-    "analyticalResourceIsolation": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-analytical-resource-isolation.md",
-      "decision": "../../../../../../../docs/project/decisions/D-039.md",
-      "upstreamEvidence": "Current upstream exposes pending-query cancelSent/cancelPendingQuery and queryPollingInterval; stream-phase abortion still requires pinned-build connection-recycle proof.",
-      "policy": "Validated ingest immediately preempts analytics; hard runtime budget suspends runaway query; cooperative cancellation failure escalates to controlled Worker recovery; one complete waiting cycle maximum.",
-      "implementationOwner": "WP-40 / GitHub Issue #69"
-    },
-    "multiTabOwnership": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-multi-tab-ownership.md",
-      "decision": "../../../../../../../docs/project/decisions/D-040.md",
-      "evidence": "Web Locks is same-storage/origin browser coordination; exclusive lock is released on document/agent termination; steal is unsafe for split-brain prevention.",
-      "policy": "Acquire stable exclusive V2 runtime-owner lock before Worker/OPFS/provider startup. Second tab passive. No heartbeat/query/BC authority and no steal.",
-      "implementationOwner": "WP-41 / GitHub Issue #70"
-    },
-    "upgradeLifecycle": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-upgrade-release-lifecycle.md",
-      "decision": "../../../../../../../docs/project/decisions/D-041.md",
-      "evidence": "DuckDB newer→older-file backward compatibility is stronger than old→new-file forward compatibility; Wasm exposes READ_ONLY open and DuckDB exposes explicit storage compatibility controls.",
-      "policy": "Read-only compatibility preflight before write. Persistence-affecting releases migrate side-by-side candidate; old DB remains rollback snapshot. No automatic down migration or reliance on old engine reading newer-written DB.",
-      "implementationOwner": "WP-42 / GitHub Issue #71"
+    "finalPlanningFreeze": {
+      "status": "verification-pending",
+      "artifact": "docs/browser-sql-final-planning-freeze.md",
+      "decision": "../../../../../../../docs/project/decisions/D-042.md",
+      "graph": "42 plan WPs == 42 canonical Issues; sections/dependencies/parents/source-links/Epic rollups/Master gates all clean; DAG acyclic.",
+      "traceability": "FD-01..08, DR-01..66, AB-01..32 and D-025..041 all exist and have valid executable owners.",
+      "unknowns": "All material implementation/live/benchmark unknowns have explicit evidence-producing owners or are explicit non-goals.",
+      "freshAiDryRun": "WP-01,03,11,27,40,41,36,38,42 PASS after Phase-W corrections.",
+      "cleanup": "Probe/shadow/legacy wiring/rollover/cancellation/ownership/upgrade temporary artifacts all have cleanup owners.",
+      "handoffCandidate": "WP-01 / Issue #29 only after final Fast CI is green."
     },
     "latestFastCi": {
-      "status": "success",
-      "runId": 36128787771,
-      "commit": "4a2f5a78c35f611e44cf99a37b45357bd8221007",
-      "result": "Phase V upgrade/release lifecycle planning, WP-42/#71 integration, dependency graph, and HOT-context guards verified green."
+      "status": "verification-pending",
+      "result": "Final Phase-W freeze commit awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
-      "reason": "Planning/docs/Issue-management only; no runtime/browser implementation changed."
+      "reason": "Phase W changes planning/docs/Issue-management only; no runtime/browser implementation changed."
     },
-    "specImpact": "No runtime code or normative implemented spec changed; planning contracts only."
+    "specImpact": "No runtime code or currently implemented normative behavior changed; planning freeze/contracts only."
   },
   "next": {
-    "action": "Planning Phase W: final independent planning assurance and freeze.",
+    "action": "Run final Phase-W Fast CI. If green, close the planning mini-project and set the implementation-ready pointer to WP-01 / Issue #29 for the next chat.",
     "steps": [
-      "Re-run complete requirements→decision→Issue→verification traceability including DR-41..66 and AB-16..32.",
-      "Audit all 42 Work Issues for required body sections, correct dependencies, no cycles and correct hard gates.",
-      "Run fresh-AI dry-run reviews on representative early/core/live/cutover/cleanup Issues.",
-      "Audit unresolved Unknown/Deferred/TBD inventory and ensure every material unknown has an evidence-producing owner or explicit non-goal.",
-      "Audit temporary probe/shadow/candidate/upgrade/rollover cleanup ownership.",
-      "Verify HOT-context budgets, navigation and GitHub execution mapping.",
-      "Run Fast CI. Only a green Phase-W freeze may close this planning chat and hand the next chat to WP-01."
+      "Do not implement WP-01 in this planning chat.",
+      "After green, STATUS becomes the implementation-ready handoff.",
+      "The next chat starts from main and executes Issue #29."
     ]
   },
   "history": {

@@ -12,7 +12,7 @@ This roadmap is deliberately a planning roadmap. It is not authorization to impl
 - Real user-defined SQL is first-class.
 - SQL runs repeatedly at a configurable interval independent from collector cadence.
 - IndexedDB is not the target analytical engine.
-- DuckDB-Wasm + browser persistence is the leading engine candidate, but not yet a verified implementation choice.
+- DuckDB-Wasm + persistent OPFS is the selected target design; exact pinned package/assets and real Leumi suitability remain implementation evidence gates.
 - localhost / Node / .NET / native DuckDB are not active candidates in this planning project.
 - A future non-browser contingency requires a new explicit architecture decision.
 - V1 remains frozen.
@@ -437,3 +437,8 @@ Only a green Phase-W planning freeze may hand the next chat to WP-01 implementat
 This planning project does not implement DuckDB-Wasm, OPFS integration, SQL runtime, scheduler, viewer replacement, migration, benchmark harness or production code.
 
 It also does not define the final trading formula, entry/exit execution logic or a fixed analytical query.
+
+
+## Implementation execution handoff
+
+After the Phase-W freeze is green, execution order is owned by the GitHub Master/Epic/Work-Issue graph documented in `docs/browser-sql-github-execution-structure.md`. The first executable package is WP-01 / Issue #29. Live current/next state remains exclusively in `STATUS.json`.

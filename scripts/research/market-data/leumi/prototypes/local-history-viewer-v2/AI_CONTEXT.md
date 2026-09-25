@@ -1,28 +1,18 @@
 # AI Context — Local History Viewer V2
 
-Compact continuation context only. Live progress/current/next belong only in `STATUS.json`.
+Compact continuation context only. Live current/next belongs only in `STATUS.json`.
 
-Fresh-chat order:
+Fresh chat:
 
 ~~~text
 README.md
 → STATUS.json
 → AI_CONTEXT.md
-→ current Issue/task docs/code/tests/specs only
+→ current GitHub Issue
+→ only docs/tests/specs linked by that Issue
 ~~~
 
-## Baseline vs target
-
-Implemented baseline:
-
-~~~text
-authenticated Leumi page
-→ Recorder
-→ atomic IndexedDB persistence
-→ Viewer rereads IndexedDB
-~~~
-
-Planned target:
+## Target
 
 ~~~text
 authenticated Leumi page
@@ -34,39 +24,36 @@ authenticated Leumi page
 → Viewer client(s)
 ~~~
 
-## Durable decisions
+V1 remains frozen. Browser-only SQL is fixed unless evidence reopens D-025.
 
-Browser SQL decisions currently include `D-025` through `D-041`.
+## Execution baseline
 
-Key execution source:
+Durable decisions: `D-025..D-042`.
 
 ~~~text
-docs/browser-sql-implementation-decomposition.md
+Master #20
+Epics #21..#28
+WP-01..WP-42
 ~~~
 
-It defines 8 implementation groups, 38 work packages and hard gates.
+Mapping: `docs/browser-sql-github-execution-structure.md`.
 
-GitHub execution: Master #20 → Epics #21–#28 → WP Issues #29–#67 (WP-37 canonical #66; #65 duplicate closed). See `docs/browser-sql-github-execution-structure.md`.
+Final assurance: `docs/browser-sql-final-planning-freeze.md`.
 
-## Core contracts
+## Core invariants
 
-Data:
 - security ID = `String(PaperId or Key)`;
 - no hardcoded universe size;
-- preserve full raw MapHeat + Security;
-- preserve `null != 0 != "" != undefined`;
-- one successful cycle has unique `(cycle_id, security_id)`;
-- horizons = 10, 20, 30, 60, 90, 120, 300, 600 seconds;
-- missing history = NULL;
-- DealsDelta remains disabled until reset semantics are Verified.
+- preserve full raw MapHeat + Security and `null != 0 != "" != undefined`;
+- one successful cycle is complete/atomic; no partial latest/history;
+- horizons = 10,20,30,60,90,120,300,600 seconds; missing history = NULL;
+- DealsDelta stays NULL until reset semantics are Verified.
 
 Ingest:
 
 ~~~text
-validated cycle
-→ immutable handoff + stable ingest_token
-→ one bulk operation
-→ SQL enrichment
+validated cycle + ingest_token
+→ bulk SQL enrichment
 → one transaction
 → COMMIT
 → CHECKPOINT
@@ -74,96 +61,67 @@ validated cycle
 ~~~
 
 SQL:
-- immutable query versions;
-- read-only analytical statement classification + DuckDB hardening;
-- independent anchored cadence;
-- no overlap; missed ticks coalesce;
-- cycle commit outranks pending query;
-- latest execution != latest successful execution.
+- immutable query versions; read-only analytical gate + DuckDB hardening;
+- anchored independent cadence; no overlap/catch-up burst;
+- ingest preempts analytics;
+- user SQL runs on disposable analytics connection;
+- runtime-budget query is cancelled/suspended;
+- one complete waiting cycle maximum;
+- cancelled partial row count is never reported complete.
+
+Persistence:
+- one origin-scoped OPFS authority; no destructive auto-reset;
+- retain-all default; no automatic history deletion;
+- explicit archive + crash-recoverable rollover creates new database_epoch_id;
+- quota/durability/schema ambiguity blocks acknowledgement.
+
+Cross-tab:
+- stable exclusive Web Lock `market-flow:local-history-viewer-v2:runtime-owner`;
+- acquire before Worker/OPFS/provider startup;
+- second tab passive; no steal/heartbeat/BC authority.
+
+Upgrade:
+- runtime/package/core/storage/schema identities are separate;
+- compatible runtime-only release uses READ_ONLY preflight;
+- persistence-affecting upgrade uses side-by-side candidate;
+- rollback uses preserved old release + old DB snapshot.
 
 Viewer:
 - never opens DuckDB/OPFS;
-- attach/re-attach gets a full state snapshot;
+- attach/re-attach receives full state snapshot;
 - notifications are hints only;
-- multiple Viewers share one runtime;
-- stale query activation is rejected;
-- result preview is bounded runtime memory.
+- latest execution != latest successful result;
+- preview memory is bounded.
 
-Persistence/recovery:
-- one origin-scoped OPFS authority;
-- no destructive automatic reset;
-- ambiguous retry reconciles ingest_token;
-- unclosed sessions/executions become interrupted;
-- quota/durability/schema failures block or require recovery.
+Security:
+- provider auth stays in authenticated page;
+- no cookies/tokens/auth headers/account/private session data in Worker/Viewer/repo/diagnostics;
+- diagnostics local/sanitized; no remote telemetry baseline.
 
-Health/security:
-- recovery-required > blocked > degraded > healthy;
-- provider auth stays in the authenticated page;
-- no cookies/tokens/auth headers/account data in Worker/Viewer/repo/diagnostics;
-- diagnostics are sanitized/local; no external telemetry baseline.
+## Mandatory evidence gates
 
-## Mandatory live gate
-
-Before heavy Browser SQL authority work:
+Before WP-05+:
 
 ~~~text
-injected JS / Bookmarklet
+WP-03 real authenticated-Leumi probe:
+Bookmarklet/injected JS
 → Blob Worker
-→ exact pinned DuckDB Worker/Wasm
-→ probe OPFS write
-→ COMMIT + CHECKPOINT
-→ refresh/reopen
-→ verify
+→ exact pinned Worker/Wasm
+→ OPFS COMMIT+CHECKPOINT+reopen
+→ two-tab exclusive Web Lock
 ~~~
 
-This must be directly Verified on the real authenticated Leumi page with synthetic data. CI cannot substitute for it.
+CI cannot substitute for live-only evidence.
 
-## Testing
+Testing:
 
 ~~~text
-deterministic logic → Node
+pure deterministic → Node
 Worker/Wasm/OPFS/runtime/Viewer → Playwright Chromium
-real Leumi CSP/origin/provider behavior → live verification
+real Leumi behavior → live verification
+performance/capacity → target Windows/Chrome benchmark
 ~~~
 
-Fast CI is the normal push/PR gate. Browser-dependent numbered implementation checkpoints require full Browser CI.
+Production cutover is blocked by correctness/shadow/security/performance/storage-lifecycle/upgrade gates.
 
-## Performance / cutover
-
-Normal-profile benchmark gates target roughly 4x isolated and 2x mixed cadence headroom; full-session + 2x-session target Windows/Chrome evidence is required before cutover.
-
-Cutover starts a fresh SQL history epoch. No initial legacy-history import, permanent dual-write/read, or silent IndexedDB fallback.
-
-Storage lifecycle: default retain-all; no automatic history deletion. Explicit archive + crash-recoverable DB rollover creates a new database_epoch_id.
-
-Analytical resource isolation: user SQL is preemptible; ingest wins; runaway SQL is cancelled/suspended; one complete waiting cycle max.
-
-Cross-tab authority: stable exclusive Web Lock before Worker/OPFS/provider startup; second tab passive; no steal/heartbeat authority.
-
-Upgrade lifecycle: runtime/package/core/storage/schema are separate identities. Runtime-only compatible release uses read-only preflight. Any persistence-affecting change upgrades a side-by-side candidate; rollback uses preserved old release + old DB snapshot, never old engine on newer-written DB.
-
-## Navigation
-
-Detailed planning/evidence is indexed by:
-
-~~~text
-docs/README.md
-ROADMAP.md
-docs/browser-sql-implementation-decomposition.md
-docs/history/README.md
-~~~
-
-Read only the current Issue/package source docs.
-
-## Implementation ownership
-
-~~~text
-recorder/   authenticated provider collection
-storage/    current IndexedDB baseline; target SQL code lands deliberately
-runtime/    controller/build/Bookmarklet
-viewer/     UI/client
-tests/      Node + Playwright + sanitized fixtures
-specs/      implemented normative contracts
-~~~
-
-V2 remains isolated from frozen V1. Do not modify V1 merely to make V2 easier.
+Read only the current Issue and its linked contracts. Do not preload all planning history.

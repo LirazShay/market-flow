@@ -206,3 +206,8 @@ Phase U adds WP-41 / Issue #70 under M4 for cross-tab runtime ownership with Web
 ## Phase-V extension
 
 Phase V adds WP-42 / Issue #71 under M8 for engine/schema/release upgrade compatibility and rollback. WP-36 / #64 production cutover depends on it.
+
+
+## Final planning freeze
+
+Phase W performs the final 42-WP traceability/DAG/Issue/unknown/cleanup/fresh-AI audit. Durable result: `docs/browser-sql-final-planning-freeze.md` and D-042. After green repository verification, implementation begins from WP-01 / Issue #29.
