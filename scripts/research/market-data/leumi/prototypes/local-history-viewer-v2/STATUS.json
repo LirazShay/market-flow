@@ -14,7 +14,7 @@
     "substep": "wp-02",
     "title": "Build the minimal Browser SQL live-compatibility probe",
     "issue": 30,
-    "status": "ready"
+    "status": "in-progress"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
@@ -23,7 +23,7 @@
   },
   "stageSummary": {
     "completed": "Browser SQL planning phases A-W and WP-01 engine identity/manifest foundation",
-    "ready": "WP-02 / Issue #30",
+    "ready": "WP-02 / Issue #30 in progress",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
@@ -91,7 +91,7 @@
     "specImpact": "Updated runtime-delivery.spec.md for exact DuckDB-Wasm package/core identity and deterministic mvp/eh engine asset-manifest contract."
   },
   "next": {
-    "action": "Execute WP-02 / GitHub Issue #30: build the minimal sanitized Browser SQL live-compatibility probe.",
+    "action": "Complete WP-02 / GitHub Issue #30 with Node artifact checks and Playwright Chromium probe verification; then advance to WP-03 / Issue #31.",
     "issue": 30,
     "workPackage": "WP-02",
     "rules": [
