@@ -181,7 +181,12 @@ test(
             );
 
         expect(
-            first.status
+            first.status,
+            JSON.stringify(
+                first,
+                null,
+                2
+            )
         ).toBe(
             "passed"
         );
