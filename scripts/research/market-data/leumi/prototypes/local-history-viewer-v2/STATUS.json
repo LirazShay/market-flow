@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "requirements-consolidation",
-    "title": "Consolidate Browser SQL requirements and end-to-end acceptance scenarios",
+    "substep": "browser-constraints",
+    "title": "Define browser/platform constraints for the Browser SQL target",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit",
-    "inProgress": "browser-sql-requirements-consolidation",
-    "planned": "browser constraints → official capability research → target architecture → detailed planning → implementation decomposition → GitHub execution structure → final plan audit"
+    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit, browser-sql-requirements-consolidation",
+    "inProgress": "browser-sql-browser-constraints",
+    "planned": "official capability research → target architecture → detailed planning → implementation decomposition → GitHub execution structure → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -38,6 +38,12 @@
       "planningRoadmap": "ROADMAP.md",
       "result": "Current responsibilities, reusable contracts, replaceable implementation choices, stale SQL planning and major unknowns were inventoried before target architecture design."
     },
+    "requirementsConsolidation": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-requirements-and-acceptance.md",
+      "result": "Existing product, decision and inherited-integrity requirements are classified without creating a duplicate authority; end-to-end acceptance behaviors and explicit non-goals are defined.",
+      "acceptanceCoverage": "committed-cycle visibility, failed-cycle isolation, arbitrary SQL replacement, independent configurable cadence, 0..N results, query failure isolation, overrun/no-overlap, refresh/reopen, raw/null preservation, dynamic universe, temporal horizons, cross-security SQL and security boundary"
+    },
     "architectureConstraint": {
       "status": "accepted-browser-only",
       "decision": "../../../../../../../docs/project/decisions/D-025.md",
@@ -47,18 +53,19 @@
     "engineSelection": {
       "status": "not-yet-selected",
       "leadingCandidate": "DuckDB-Wasm with persistent browser storage",
-      "requiredNextEvidence": "Official capability research follows requirements consolidation and browser-constraint planning."
+      "requiredNextEvidence": "Define browser/platform constraints first, then verify official current capability documentation."
     },
-    "specImpact": "No runtime behavior changed. Product/planning/decision documentation now treats Browser-only SQL as the current architecture constraint. Browser SQL normative implementation specs do not exist yet and are intentionally deferred until target design is complete."
+    "specImpact": "No runtime behavior changed. Phase B produced planning synthesis only; existing implementation specs remain baseline contracts until target Browser SQL design is complete."
   },
   "next": {
-    "action": "Planning Phase B: consolidate Browser SQL requirements and define end-to-end acceptance scenarios.",
+    "action": "Planning Phase C: define the browser/platform constraint matrix for Browser SQL.",
     "steps": [
-      "Extract stable requirements from product docs and the Browser SQL planning brief without creating duplicate authorities.",
-      "Classify material items as fixed decision, design requirement, acceptance behavior, assumption or unknown.",
-      "Define end-to-end acceptance scenarios for committed-cycle visibility, arbitrary SQL replacement, configurable query cadence, 0..N results, query failure isolation, refresh/reopen and raw/NULL preservation.",
-      "Define explicit planning non-goals so trading formula, entry/exit and implementation details stay out of scope.",
-      "Do not start implementation or external capability research beyond what is required to resolve requirement ambiguity."
+      "Define the target browser/platform scope (Chrome/Chromium on Windows) without selecting the SQL engine yet.",
+      "Map origin ownership and same-origin implications for the authenticated Leumi page, Viewer and browser persistence.",
+      "Identify CSP/CORS/module/Worker/WASM loading constraints that must be verified later rather than guessed.",
+      "Plan page/tab lifecycle, hidden/background throttling, persistence quota/eviction and security-boundary questions.",
+      "Classify each browser constraint as Verified, Inferred or Unknown and separate platform facts from engine-specific capability questions.",
+      "Do not start DuckDB-Wasm implementation or official engine capability research beyond what is necessary to define the constraint questions."
     ]
   },
   "history": {
