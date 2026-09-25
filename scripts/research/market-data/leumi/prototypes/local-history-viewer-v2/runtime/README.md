@@ -41,6 +41,37 @@ runtime/dist/market-flow-v2.bookmarklet.txt
 
 The dist directory is generated and ignored by Git.
 
+## DuckDB engine asset manifest
+
+Browser SQL engine identity is owned by:
+
+~~~text
+runtime/duckdb-engine-manifest.js
+~~~
+
+Build only the deterministic engine manifest with:
+
+~~~text
+npm run build:engine-manifest
+~~~
+
+Generated file:
+
+~~~text
+runtime/dist/market-flow-v2.duckdb-engine-manifest.json
+~~~
+
+The manifest pins one reviewed engine family:
+
+~~~text
+npm package: @duckdb/duckdb-wasm@1.33.0
+DuckDB core: v1.4.3
+core commit: d1dc88f950d456d72493df452dabdcd13aa413dd
+bundles: mvp + eh
+~~~
+
+Every Worker/Wasm URL contains the exact npm package version. Floating tags such as `latest` / `next`, semver ranges, cross-version Worker/Wasm pairs and flavor-mismatched pairs are rejected by the generator/validator. This file is only the engine identity/asset foundation; it does not instantiate DuckDB or create a SQL authority.
+
 ## Artifact roles
 
 `market-flow-v2.runtime.js` is the readable assembled runtime used for inspection and debugging.
@@ -114,7 +145,7 @@ If stop persistence is still pending, a restart fails clearly rather than creati
 
 ## Verification
 
-Fast tests cover deterministic assembly, compact Bookmarklet generation, exact no-inflation packaging, absence of `%20` encoding, large-runtime packaging, and artifact writing.
+Fast tests cover deterministic assembly, compact Bookmarklet generation, exact no-inflation packaging, absence of `%20` encoding, large-runtime packaging, artifact writing, exact DuckDB package/core identity, deterministic engine-manifest serialization and rejection of floating/version-mismatched engine assets.
 
 Chromium smoke coverage executes the generated Bookmarklet on a clean page with deterministic mocked Leumi endpoints and verifies initial launch, repeated idempotent launch, restart after a clean stop, and the compact artifact contract.
 

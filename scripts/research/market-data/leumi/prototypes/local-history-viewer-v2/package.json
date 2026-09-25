@@ -10,7 +10,11 @@
     "test:browser:smoke": "playwright test tests/automation/specs/harness-smoke.spec.js",
     "test:all": "npm run test:unit && npm run test:browser",
     "build:runtime": "node runtime/build-runtime.js",
+    "build:engine-manifest": "node runtime/duckdb-engine-manifest.js",
     "test:browser:runtime": "npm run build:runtime && playwright test tests/automation/specs/runtime-assembly.spec.js"
+  },
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "1.33.0"
   },
   "devDependencies": {
     "@playwright/test": "1.55.0",
