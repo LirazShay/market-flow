@@ -12,12 +12,13 @@
   "currentFocus": {
     "stage": "browser-sql-planning",
     "substep": "final-plan-audit-handoff",
-    "title": "Audit Browser SQL plan and GitHub execution handoff",
-    "status": "in-progress"
+    "title": "Verify final Browser SQL plan audit and implementation handoff",
+    "status": "verification-pending"
   },
   "stageSummary": {
-    "completed": "planning phases A-Q",
-    "inProgress": "phase R final plan audit/handoff"
+    "completed": "planning phases A-Q; Phase R audit content complete",
+    "verificationPending": "Phase R Fast CI",
+    "planned": "after green verification, planning closes and next pointer becomes WP-01 / Issue #29"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -79,18 +80,25 @@
       "status": "not-required",
       "reason": "Phase P changes planning/docs only; no runtime/browser/test implementation changed."
     },
-    "specImpact": "No runtime code or normative implemented spec changed. Phase Q creates execution-management Issues and navigation only."
+    "specImpact": "No runtime code or normative implemented spec changed. Phase R audits planning/execution management only.",
+    "finalPlanAudit": {
+      "status": "verification-pending",
+      "artifact": "docs/browser-sql-final-plan-audit.md",
+      "structural": "38/38 canonical Work Issues contain all required sections; dependencies exactly match decomposition; graph has no cycles.",
+      "requirements": "FD-01..08, DR-01..40, AB-01..15 and D-025..D-037 all have explicit execution owners.",
+      "correctedDefects": [
+        "Added Target repository areas to all 38 canonical Work Issues.",
+        "Added missing Implementation sequence to canonical WP-37 #66 and WP-38 #67."
+      ],
+      "handoffCandidate": "WP-01 / Issue #29 after Fast CI is green."
+    }
   },
   "next": {
-    "action": "Planning Phase R: final audit and implementation handoff.",
+    "action": "Run Phase R Fast CI. If green, mark planning complete and hand implementation to WP-01 / Issue #29.",
     "steps": [
-      "Audit every planning requirement and durable decision against WP-01..WP-38 coverage.",
-      "Check dependency/gate ordering for gaps, cycles or work that can execute before required evidence.",
-      "Verify Issue bodies contain enough context for a fresh AI without reconstructing this chat.",
-      "Audit temporary probe/shadow/migration cleanup ownership.",
-      "Audit live-Leumi, Browser CI, benchmark and cutover gates.",
-      "Resolve any uncovered requirement or management defect in GitHub/repo.",
-      "Only after the audit is green, close the planning project and point STATUS.json to WP-01 implementation."
+      "Do not start WP-01 before Phase R repository verification is green.",
+      "After green, set planning status complete and leave WP-01 as the next ready implementation package.",
+      "Browser CI is not required for this docs/Issue-management-only audit because runtime/browser implementation did not change."
     ]
   },
   "history": {
@@ -101,6 +109,6 @@
   "currentStage": {
     "stage": "browser-sql-planning",
     "title": "Browser SQL migration planning project",
-    "status": "in-progress"
+    "status": "verification-pending"
   }
 }

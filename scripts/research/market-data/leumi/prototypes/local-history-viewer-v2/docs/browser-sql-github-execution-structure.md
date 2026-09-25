@@ -169,3 +169,12 @@ undefined parent links    = 0
 ~~~
 
 The issue-number mapping above is now the durable execution navigation layer.
+
+
+## Final audit
+
+Phase R audits the complete requirements/decision/Issue coverage and implementation handoff:
+
+~~~text
+docs/browser-sql-final-plan-audit.md
+~~~
