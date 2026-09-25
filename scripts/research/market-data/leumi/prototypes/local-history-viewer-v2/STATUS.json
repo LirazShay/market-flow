@@ -55,13 +55,16 @@
       "executableWorkIssues": {
         "count": 42,
         "first": 29,
+        "last": 71,
         "closedDuplicate": 65,
         "wp37Canonical": 66,
         "wp39StorageLifecycle": 68,
         "wp40ResourceIsolation": 69,
-        "wp41MultiTabOwnership": 70
+        "wp41MultiTabOwnership": 70,
+        "wp42UpgradeLifecycle": 71
       },
-      "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
+      "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references.",
+      "structuralVerification": "51 open Browser SQL Issues = 1 Master + 8 Epics + 42 unique WPs after Phase-V extension; final full structural audit deferred to Phase W."
     },
     "finalPlanAudit": {
       "status": "reopened-by-red-team",
@@ -97,11 +100,11 @@
       "decision": "../../../../../../../docs/project/decisions/D-041.md",
       "evidence": "DuckDB newer→older-file backward compatibility is stronger than old→new-file forward compatibility; Wasm exposes READ_ONLY open and DuckDB exposes explicit storage compatibility controls.",
       "policy": "Read-only compatibility preflight before write. Persistence-affecting releases migrate side-by-side candidate; old DB remains rollback snapshot. No automatic down migration or reliance on old engine reading newer-written DB.",
-      "implementationOwner": "WP-42 (GitHub Issue to be created/linked in Phase V management update)."
+      "implementationOwner": "WP-42 / GitHub Issue #71"
     },
     "latestFastCi": {
       "status": "verification-pending",
-      "result": "Phase-V planning changes awaiting Fast CI."
+      "result": "Phase-V repository and execution-graph integration awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",

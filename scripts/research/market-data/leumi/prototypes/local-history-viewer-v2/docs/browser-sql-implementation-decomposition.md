@@ -1103,7 +1103,7 @@ Phase Q materialized this decomposition into real GitHub Issues.
 ~~~text
 Master: #20
 Epics:  #21..#28
-WP-01..WP-41: see `docs/browser-sql-github-execution-structure.md`
+WP-01..WP-42: see `docs/browser-sql-github-execution-structure.md`
 ~~~
 
 Canonical mapping and the one closed duplicate exception are documented in:
@@ -1270,3 +1270,5 @@ Phase U materialized WP-41 as GitHub Issue #70. WP-22/#50 must not proceed until
 ### Phase V dependency update
 
 WP-36 production cutover additionally depends on WP-42.
+
+Phase V materialized WP-42 as GitHub Issue #71. WP-36/#64 production cutover must not begin until WP-42/#71 is complete.
