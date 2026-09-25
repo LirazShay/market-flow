@@ -18,6 +18,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | runtime delivery / authenticated-browser integration | [browser-sql-runtime-delivery.md](browser-sql-runtime-delivery.md) |
 | Viewer / result-delivery contract | [browser-sql-viewer-result-delivery.md](browser-sql-viewer-result-delivery.md) |
 | Browser SQL testing / verification strategy | [browser-sql-testing-verification-strategy.md](browser-sql-testing-verification-strategy.md) |
+| Browser SQL migration / cutover strategy | [browser-sql-migration-cutover.md](browser-sql-migration-cutover.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
@@ -30,6 +31,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Viewer/result-delivery durable decision | [D-032](../../../../../../../docs/project/decisions/D-032.md) |
 | Browser SQL verification durable decision | [D-033](../../../../../../../docs/project/decisions/D-033.md) |
 | Browser SQL benchmark/headroom durable decision | [D-034](../../../../../../../docs/project/decisions/D-034.md) |
+| Browser SQL migration/cutover durable decision | [D-035](../../../../../../../docs/project/decisions/D-035.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 

@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "migration-cutover",
-    "title": "Design Browser SQL migration and cutover",
+    "substep": "failure-security-observability",
+    "title": "Design Browser SQL failure, security and observability contract",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy",
-    "inProgress": "browser-sql-migration-cutover",
-    "planned": "failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy, migration-cutover",
+    "inProgress": "browser-sql-failure-security-observability",
+    "planned": "implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -49,7 +49,7 @@
       "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
       "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
-    "specImpact": "No runtime code or normative implemented spec changed. Phase M defines benchmark/performance planning only.",
+    "specImpact": "No runtime code or normative implemented spec changed. Phase N defines target migration/cutover planning only.",
     "hotContextBudgetRepair": {
       "status": "complete",
       "cause": "Phase D-L summaries accumulated in AI_CONTEXT.md and broke the 5000-character hot-context guard.",
@@ -74,17 +74,26 @@
       },
       "environment": "Primary decision evidence is representative Windows + Chrome/Chromium; Linux CI timings are regression/trend evidence only.",
       "implementation": "Benchmark harness remains deferred to implementation Issues."
+    },
+    "migrationCutover": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-migration-cutover.md",
+      "decision": "../../../../../../../docs/project/decisions/D-035.md",
+      "authorityTransition": "IndexedDB remains sole authority during optional isolated SQL shadow verification; cutover occurs at an explicit settled-cycle boundary, after which fresh production OPFS is the only active market-history authority.",
+      "legacyHistory": "Initial cutover intentionally does not import IndexedDB history. SQL horizon history starts fresh and warms naturally; the old IndexedDB remains inert as rollback/diagnostic data.",
+      "rollback": "No silent runtime fallback. Explicit rollback preserves OPFS and launches the retained IndexedDB release, accepting a documented gap for the SQL-only interval.",
+      "cleanup": "Legacy IndexedDB and migration scaffolding are not automatically deleted; cleanup happens only after an explicit stabilization decision."
     }
   },
   "next": {
-    "action": "Planning Phase N: design migration and cutover from the current IndexedDB baseline to Browser SQL.",
+    "action": "Planning Phase O: design failure taxonomy, security hardening and observability.",
     "steps": [
-      "Define coexistence phases without allowing two permanent market-history authorities.",
-      "Decide whether existing IndexedDB history is imported, retained read-only as legacy, or intentionally not migrated based on product value and complexity.",
-      "Define cutover prerequisites including live Leumi compatibility, pinned-engine OPFS reopen verification, functional Browser CI and benchmark gates.",
-      "Define rollback/fallback behavior that does not silently switch authorities.",
-      "Define generated runtime/version transition and cleanup of obsolete IndexedDB/Browser SQL migration scaffolding.",
-      "Keep implementation work deferred."
+      "Define failure classes across provider, validation, Worker/bootstrap, SQL, OPFS, scheduler, Viewer and migration boundaries.",
+      "Define which failures are recoverable, retryable, blocking or require explicit user/admin intervention.",
+      "Finalize secret/security boundaries for user SQL, generated artifacts, diagnostics and live verification.",
+      "Define structured diagnostics/health state and minimum observability fields without leaking sensitive session data.",
+      "Define alert/status precedence and how failures remain visible without corrupting latest successful state.",
+      "Define acceptance scenarios that implementation Issues must satisfy."
     ]
   },
   "history": {

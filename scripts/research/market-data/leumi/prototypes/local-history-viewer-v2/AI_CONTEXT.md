@@ -53,9 +53,10 @@ D-031 pinned browser runtime delivery
 D-032 Viewer as detachable Runtime Controller client
 D-033 Node + Chromium + live-Leumi verification
 D-034 cadence-relative performance headroom
+D-035 fresh SQL cutover epoch; no legacy-history import
 ~~~
 
-Files: `../../../../../../../docs/project/decisions/D-025.md` through `D-034.md`.
+Files: `../../../../../../../docs/project/decisions/D-025.md` through `D-035.md`.
 
 ## Core target contracts
 
@@ -131,6 +132,8 @@ Tests protect observable contracts, not private internals. Fast CI is the normal
 
 Performance: correctness first; normal-profile p95 targets retain ~4x isolated and ~2x mixed cadence headroom. Full-session + 2x-session evidence is required before cutover.
 
+Cutover: optional isolated SQL shadow while IndexedDB remains authority; then explicit stop boundary and fresh production OPFS history. No legacy import, permanent dual-write/read, or silent authority fallback.
+
 ## Planning map
 
 ~~~text
@@ -148,6 +151,7 @@ docs/browser-sql-runtime-delivery.md
 docs/browser-sql-viewer-result-delivery.md
 docs/browser-sql-testing-verification-strategy.md
 docs/sql-live-engine-benchmark-plan.md
+docs/browser-sql-migration-cutover.md
 ~~~
 
 Read only current-phase artifacts.
