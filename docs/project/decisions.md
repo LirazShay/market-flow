@@ -49,6 +49,7 @@ decisions.md
 | [D-031](decisions/D-031.md) | Browser SQL delivery keeps Market Flow self-contained and pins external engine assets | Accepted | browser-sql, runtime, bookmarklet, wasm, worker, delivery, csp |
 | [D-032](decisions/D-032.md) | Viewer is a detachable client of one Runtime Controller | Accepted | browser-sql, viewer, results, messaging, multi-viewer |
 | [D-033](decisions/D-033.md) | Browser SQL verification uses Node + Chromium + mandatory live Leumi gates | Accepted | browser-sql, testing, playwright, live-verification, ci |
+| [D-034](decisions/D-034.md) | Browser SQL performance is gated by cadence-relative headroom and full-session evidence | Accepted | browser-sql, performance, benchmark, headroom, chromium |
 
 ## Fast lookup
 
@@ -78,7 +79,7 @@ Local History Viewer V1
 → D-019, D-020
 
 Browser SQL / V2 analytical migration
-→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-032, D-033, D-001, D-021
+→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-032, D-033, D-034, D-001, D-021
 ~~~
 
 ## Adding a durable decision

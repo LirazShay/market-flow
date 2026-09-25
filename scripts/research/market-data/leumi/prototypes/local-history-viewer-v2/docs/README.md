@@ -29,6 +29,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | runtime delivery durable decision | [D-031](../../../../../../../docs/project/decisions/D-031.md) |
 | Viewer/result-delivery durable decision | [D-032](../../../../../../../docs/project/decisions/D-032.md) |
 | Browser SQL verification durable decision | [D-033](../../../../../../../docs/project/decisions/D-033.md) |
+| Browser SQL benchmark/headroom durable decision | [D-034](../../../../../../../docs/project/decisions/D-034.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 

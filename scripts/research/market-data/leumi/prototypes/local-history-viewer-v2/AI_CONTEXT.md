@@ -52,9 +52,10 @@ D-030 checkpointed OPFS durability + idempotent recovery
 D-031 pinned browser runtime delivery
 D-032 Viewer as detachable Runtime Controller client
 D-033 Node + Chromium + live-Leumi verification
+D-034 cadence-relative performance headroom
 ~~~
 
-Files: `../../../../../../../docs/project/decisions/D-025.md` through `D-033.md`.
+Files: `../../../../../../../docs/project/decisions/D-025.md` through `D-034.md`.
 
 ## Core target contracts
 
@@ -127,6 +128,8 @@ real Leumi CSP/origin/provider behavior → live verification
 ~~~
 
 Tests protect observable contracts, not private internals. Fast CI is the normal push/PR gate.
+
+Performance: correctness first; normal-profile p95 targets retain ~4x isolated and ~2x mixed cadence headroom. Full-session + 2x-session evidence is required before cutover.
 
 ## Planning map
 

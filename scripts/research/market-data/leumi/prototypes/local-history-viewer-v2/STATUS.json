@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "performance-benchmark-strategy",
-    "title": "Design Browser SQL performance and benchmark strategy",
+    "substep": "migration-cutover",
+    "title": "Design Browser SQL migration and cutover",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy",
-    "inProgress": "browser-sql-performance-benchmark-strategy",
-    "planned": "migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy",
+    "inProgress": "browser-sql-migration-cutover",
+    "planned": "failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -49,24 +49,42 @@
       "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
       "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
-    "specImpact": "No runtime code or current implementation spec changed. Phase L defines verification planning/policy only.",
+    "specImpact": "No runtime code or normative implemented spec changed. Phase M defines benchmark/performance planning only.",
     "hotContextBudgetRepair": {
-      "status": "verification-pending",
+      "status": "complete",
       "cause": "Phase D-L summaries accumulated in AI_CONTEXT.md and broke the 5000-character hot-context guard.",
       "fix": "AI_CONTEXT.md reduced to compact continuation context; detailed phase content remains in phase artifacts. Guard unchanged.",
       "failedRunId": 36121390846,
-      "aiContextChars": 4187
+      "greenRunId": 36121635383,
+      "aiContextChars": 4187,
+      "prevention": "Do not append phase summaries to HOT context; add only compact references/contracts and let the existing budget guard enforce the limit."
+    },
+    "performanceBenchmarkStrategy": {
+      "status": "complete",
+      "artifact": "docs/sql-live-engine-benchmark-plan.md",
+      "decision": "../../../../../../../docs/project/decisions/D-034.md",
+      "result": "Selected parameterized synthetic Browser SQL benchmarks covering durable ingest+CHECKPOINT, representative SQL, mixed LIVE load, memory, OPFS growth, reopen and hidden/background behavior with full-session and 2x-session capacity evidence.",
+      "normalHeadroomGates": {
+        "isolatedIngestP95MaxCadenceFraction": 0.25,
+        "isolatedQueryP95MaxCadenceFraction": 0.25,
+        "mixedIngestP95MaxCadenceFraction": 0.5,
+        "mixedQueryP95MaxCadenceFraction": 0.5,
+        "coalescedTicks": 0,
+        "overlappingQueries": 0
+      },
+      "environment": "Primary decision evidence is representative Windows + Chrome/Chromium; Linux CI timings are regression/trend evidence only.",
+      "implementation": "Benchmark harness remains deferred to implementation Issues."
     }
   },
   "next": {
-    "action": "Planning Phase M: design performance and benchmark strategy.",
+    "action": "Planning Phase N: design migration and cutover from the current IndexedDB baseline to Browser SQL.",
     "steps": [
-      "Define representative Browser SQL datasets from measured/derived market workload without hardcoding universe size.",
-      "Define ingest, CHECKPOINT, mixed ingest+query, memory and database-growth benchmark scenarios.",
-      "Define representative SQL query classes including current ranking, core-horizon joins/windows and large-result behavior.",
-      "Define benchmark environment/repeatability and what belongs in Chromium versus synthetic offline generation.",
-      "Define pass/fail/headroom criteria tied to configurable cadence rather than intuition.",
-      "Keep benchmark implementation itself deferred until implementation phases."
+      "Define coexistence phases without allowing two permanent market-history authorities.",
+      "Decide whether existing IndexedDB history is imported, retained read-only as legacy, or intentionally not migrated based on product value and complexity.",
+      "Define cutover prerequisites including live Leumi compatibility, pinned-engine OPFS reopen verification, functional Browser CI and benchmark gates.",
+      "Define rollback/fallback behavior that does not silently switch authorities.",
+      "Define generated runtime/version transition and cleanup of obsolete IndexedDB/Browser SQL migration scaffolding.",
+      "Keep implementation work deferred."
     ]
   },
   "history": {
