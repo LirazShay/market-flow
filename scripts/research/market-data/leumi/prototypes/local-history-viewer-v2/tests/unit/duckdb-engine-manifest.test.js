@@ -77,6 +77,44 @@ test(
             first.package.version
         );
 
+        const packageLock =
+            JSON.parse(
+                fs.readFileSync(
+                    path.join(
+                        workstreamRoot,
+                        "package-lock.json"
+                    ),
+                    "utf8"
+                )
+            );
+
+        assert.equal(
+            packageLock
+                .packages[""]
+                .dependencies[
+                    "@duckdb/duckdb-wasm"
+                ],
+            first.package.version
+        );
+
+        assert.equal(
+            packageLock
+                .packages[
+                    "node_modules/@duckdb/duckdb-wasm"
+                ]
+                .version,
+            first.package.version
+        );
+
+        assert.match(
+            packageLock
+                .packages[
+                    "node_modules/@duckdb/duckdb-wasm"
+                ]
+                .integrity,
+            /^sha512-/
+        );
+
         for (
             const bundleName of [
                 "mvp",

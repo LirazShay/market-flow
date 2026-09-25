@@ -14,7 +14,7 @@
     "substep": "wp-01",
     "title": "Pin DuckDB-Wasm and create the engine asset manifest foundation",
     "issue": 29,
-    "status": "in-progress"
+    "status": "verification-pending"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
@@ -23,15 +23,15 @@
   },
   "stageSummary": {
     "completed": "Browser SQL planning phases A-W, including final assurance/freeze",
-    "ready": "WP-01 / Issue #29 in progress",
+    "ready": "WP-01 / Issue #29 implementation complete; Fast CI verification pending",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
   "verification": {
     "engineSelection": {
-      "status": "selected-for-target-design-pending-implementation-verification",
-      "target": "DuckDB-Wasm + persistent OPFS database",
-      "gate": "WP-01 pins exact artifacts; WP-03 real authenticated-Leumi gate must pass before WP-05+."
+      "status": "wp-01-implementation-complete-verification-pending",
+      "target": "@duckdb/duckdb-wasm@1.32.0 / DuckDB core v1.4.3 + deterministic exact mvp/eh asset manifest",
+      "gate": "WP-01 Fast CI must pass before advancing to WP-02; WP-03 real authenticated-Leumi gate remains mandatory before WP-05+."
     },
     "implementationDecomposition": {
       "status": "complete",
@@ -77,19 +77,19 @@
       "upgradeLifecycle": "D-041 / WP-42 #71"
     },
     "latestFastCi": {
-      "status": "success",
-      "runId": 36130196590,
-      "commit": "c8e255c0e494558cc6cc02a9ab5bbe235f2348fe",
-      "result": "Final Phase-W freeze content and context guards green."
+      "status": "pending",
+      "runId": null,
+      "commit": null,
+      "result": "WP-01 final cleaned state awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
-      "reason": "Planning/freeze changes only; no runtime/browser implementation changed."
+      "reason": "WP-01 changes deterministic Node dependency/manifest generation only; Issue #29 requires Node/Fast CI, not browser execution."
     },
-    "specImpact": "No runtime code or currently implemented normative behavior changed during planning freeze."
+    "specImpact": "Updated runtime-delivery.spec.md for exact DuckDB-Wasm package/core identity and deterministic engine asset-manifest contract."
   },
   "next": {
-    "action": "Complete WP-01 / GitHub Issue #29, verify Fast CI, then advance to WP-02 / Issue #30.",
+    "action": "Verify WP-01 / GitHub Issue #29 with Fast CI on the final cleaned state; on PASS close WP-01 and advance STATUS to WP-02 / Issue #30.",
     "issue": 29,
     "workPackage": "WP-01",
     "rules": [

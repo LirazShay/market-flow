@@ -12,6 +12,7 @@ on:
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.md"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package-lock.json"
   pull_request:
     paths:
       - ".github/workflows/local-history-viewer-v2-fast-ci.yml"
@@ -23,6 +24,7 @@ on:
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.md"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json"
       - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package.json"
+      - "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package-lock.json"
 
 permissions:
   contents: read
@@ -46,16 +48,8 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Install test/build dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Upload WP-01 generated lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: wp01-package-lock
-          path: scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/package-lock.json
-          if-no-files-found: error
-          retention-days: 1
+      - name: Install locked test/build dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Run fast unit tests
         run: npm run test:unit
