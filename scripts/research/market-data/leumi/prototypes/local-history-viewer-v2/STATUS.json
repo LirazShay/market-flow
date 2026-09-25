@@ -52,8 +52,11 @@
     },
     "latestFastCi": {
       "status": "verification-pending",
-      "failedRunId": 36123544434,
-      "failure": "STATUS.json exceeded 8000-character HOT-context budget."
+      "failedRunIds": [
+        36123544434,
+        36123623345
+      ],
+      "failure": "Phase P exposed HOT-context STATUS contract regressions: size budget first, then required currentStage/latestArchive fields. Both repaired without weakening guards."
     },
     "browserCi": {
       "status": "not-required",
@@ -74,6 +77,12 @@
   },
   "history": {
     "index": "docs/history/README.md",
-    "rule": "Completed planning rationale stays in phase docs/decisions, not HOT status."
+    "rule": "Completed planning rationale stays in phase docs/decisions, not HOT status.",
+    "latestArchive": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json"
+  },
+  "currentStage": {
+    "stage": "browser-sql-planning",
+    "title": "Browser SQL migration planning project",
+    "status": "verification-pending"
   }
 }
