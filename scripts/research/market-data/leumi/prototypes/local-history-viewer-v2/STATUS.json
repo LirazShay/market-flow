@@ -11,10 +11,10 @@
   },
   "currentFocus": {
     "stage": "browser-sql-implementation",
-    "substep": "wp-01",
-    "title": "Pin DuckDB-Wasm and create the engine asset manifest foundation",
-    "issue": 29,
-    "status": "verification-pending"
+    "substep": "wp-02",
+    "title": "Build the minimal Browser SQL live-compatibility probe",
+    "issue": 30,
+    "status": "ready"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
@@ -22,16 +22,18 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Browser SQL planning phases A-W, including final assurance/freeze",
-    "ready": "WP-01 / Issue #29 implementation complete; Fast CI verification pending",
+    "completed": "Browser SQL planning phases A-W and WP-01 engine identity/manifest foundation",
+    "ready": "WP-02 / Issue #30",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
   "verification": {
     "engineSelection": {
-      "status": "wp-01-implementation-complete-verification-pending",
-      "target": "@duckdb/duckdb-wasm@1.32.0 / DuckDB core v1.4.3 + deterministic exact mvp/eh asset manifest",
-      "gate": "WP-01 Fast CI must pass before advancing to WP-02; WP-03 real authenticated-Leumi gate remains mandatory before WP-05+."
+      "status": "complete",
+      "target": "@duckdb/duckdb-wasm@1.32.0 / DuckDB core v1.4.3 (d1dc88f950d456d72493df452dabdcd13aa413dd)",
+      "manifest": "runtime/duckdb-engine-manifest.js",
+      "lockfileBlobSha": "53177275d91e6910787ffa0abdbed35069dfac73",
+      "gate": "WP-01 Fast verification passed; WP-03 real authenticated-Leumi Worker/Wasm/OPFS/Web-Locks gate remains mandatory before WP-05+."
     },
     "implementationDecomposition": {
       "status": "complete",
@@ -77,26 +79,27 @@
       "upgradeLifecycle": "D-041 / WP-42 #71"
     },
     "latestFastCi": {
-      "status": "pending",
-      "runId": null,
-      "commit": null,
-      "result": "WP-01 final cleaned state awaiting Fast CI."
+      "status": "success",
+      "runId": 36135275006,
+      "commit": "5c7f53fe3a3c508c93630b19fdafe376b84dae92",
+      "result": "WP-01 final code/dependency state PASS. npm ci verified the exact package-lock; the final lockfile matches the CI-generated artifact byte-for-byte by Git blob SHA."
     },
     "browserCi": {
       "status": "not-required",
-      "reason": "WP-01 changes deterministic Node dependency/manifest generation only; Issue #29 requires Node/Fast CI, not browser execution."
+      "reason": "WP-01 implemented deterministic Node dependency/manifest generation only; Issue #29 requires Node/Fast CI. Browser probe verification begins in WP-02."
     },
-    "specImpact": "Updated runtime-delivery.spec.md for exact DuckDB-Wasm package/core identity and deterministic engine asset-manifest contract."
+    "specImpact": "Updated runtime-delivery.spec.md for exact DuckDB-Wasm package/core identity and deterministic mvp/eh engine asset-manifest contract."
   },
   "next": {
-    "action": "Verify WP-01 / GitHub Issue #29 with Fast CI on the final cleaned state; on PASS close WP-01 and advance STATUS to WP-02 / Issue #30.",
-    "issue": 29,
-    "workPackage": "WP-01",
+    "action": "Execute WP-02 / GitHub Issue #30: build the minimal sanitized Browser SQL live-compatibility probe.",
+    "issue": 30,
+    "workPackage": "WP-02",
     "rules": [
-      "Load AGENTS.md → workstream README.md → STATUS.json → AI_CONTEXT.md → Issue #29 → only its linked contracts/tests/code.",
-      "Set STATUS to in-progress when meaningful WP-01 implementation begins.",
-      "Do not skip WP-02/WP-03; WP-03 live PASS is mandatory before WP-05+ heavy implementation.",
-      "Follow tests-first/public-contract verification and update STATUS in the same coherent work unit."
+      "Read Issue #30 and only its linked contracts plus directly relevant runtime/tests/fixtures.",
+      "Set STATUS to in-progress when meaningful WP-02 implementation begins.",
+      "Keep the probe synthetic and separate from production data/database identity; no provider calls, credentials, account data, cookies, tokens or authenticated dumps.",
+      "Use Node artifact checks plus Playwright Chromium probe verification as required by Issue #30.",
+      "Do not skip WP-03; the real authenticated-Leumi live gate must pass before WP-05+ heavy SQL-authority implementation."
     ]
   },
   "history": {
