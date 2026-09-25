@@ -35,6 +35,7 @@ The handoff contains the exact validated universe used by the cycle plus the com
 
 ~~~text
 session/recorder identity
+ingest_token stable across retries
 universe.loadedAtMs
 universe.securityIds
 full raw MapHeat records
@@ -183,7 +184,11 @@ BEGIN
 COMMIT
 ~~~
 
-Only after COMMIT may the Worker acknowledge successful persistence.
+Only after COMMIT may the transaction be considered SQL-visible. Phase I strengthens durable success to COMMIT → CHECKPOINT → acknowledgement and uses ingest_token to reconcile the commit/acknowledgement ambiguity window.
+
+## Idempotent handoff recovery
+
+Each complete-cycle handoff carries a stable ingest_token stored UNIQUE in cycle. A retry of the same matching token reconciles to the existing committed cycle instead of creating duplicate snapshots. Conflicting immutable metadata under the same token is an integrity error.
 
 ## current_universe semantics
 

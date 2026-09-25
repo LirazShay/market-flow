@@ -249,6 +249,7 @@ Minimum logical statuses:
 running
 success
 error
+interrupted
 ~~~
 
 Zero rows is success:
@@ -340,6 +341,8 @@ query_execution = error
 ~~~
 
 A fatal database/Worker failure is a different failure class handled by persistence/recovery and failure-hardening phases.
+
+On reopen, a persisted running execution from a dead prior runtime is classified as interrupted; it is not converted into success/error by guesswork.
 
 ## 17. Security hardening direction
 

@@ -368,3 +368,29 @@ Unknown until pinned-package verification:
 - exact parser/statement-type inspection mechanism exposed to the Browser-Wasm application;
 - exact supported security-setting ordering in the selected DuckDB-Wasm package;
 - hard query interruption/cancellation.
+
+## 2026-09-25 version-surface reconciliation
+
+A later same-day verification found inconsistent official version surfaces:
+
+~~~text
+DuckDB-Wasm documentation: stable client = 1.5.5
+npm @duckdb/duckdb-wasm: latest = 1.33.1-dev57.0; next = 1.33.1-dev64.0
+official OPFS article: dev57 has a persistence regression
+~~~
+
+Do not reconcile these labels by assumption.
+
+Planning rule:
+
+~~~text
+pin exact implementation artifact
+→ record embedded DuckDB core version
+→ run real Chromium OPFS write/CHECKPOINT/reopen tests
+→ only then permit authority cutover
+~~~
+
+Official sources:
+- https://duckdb.org/docs/current/clients/wasm/overview
+- https://www.npmjs.com/package/@duckdb/duckdb-wasm
+- https://duckdb.org/2026/09/18/opfs-wasm

@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "persistence-recovery",
-    "title": "Design Browser SQL persistence, reopen and recovery",
+    "substep": "runtime-delivery-browser-integration",
+    "title": "Design Browser SQL runtime delivery and browser integration",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler",
-    "inProgress": "browser-sql-persistence-recovery",
-    "planned": "runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery",
+    "inProgress": "browser-sql-runtime-delivery-browser-integration",
+    "planned": "viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -27,14 +27,6 @@
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
-    "baselineSource": {
-      "sourceWorkstream": "local-history-viewer-v1",
-      "result": "V1 remains the frozen verified reference for browser collection and integrity behavior."
-    },
-    "requirementsConsolidation": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-requirements-and-acceptance.md"
-    },
     "targetArchitecture": {
       "status": "complete",
       "artifact": "docs/browser-sql-target-architecture.md",
@@ -53,31 +45,38 @@
     "sqlExecutionScheduler": {
       "status": "complete",
       "artifact": "docs/browser-sql-execution-scheduler.md",
-      "decision": "../../../../../../../docs/project/decisions/D-029.md",
-      "result": "Selected immutable query versions, parser-level read-only analytical gate, fixed cadence anchored to activation, no-overlap with missed-tick coalescing, successful-cycle commit priority, streamed result accounting and distinct latest-execution/latest-success semantics.",
-      "safety": "Authoritative DB remains READ_WRITE for ingest; analytical safety uses statement classification plus DuckDB external-access/extension/configuration hardening where verified in pinned Wasm.",
-      "cancellation": "Hard cancellation remains unverified for public DuckDB-Wasm API; baseline uses observability/no-overlap and requires performance headroom rather than pretending timeout interruption exists."
+      "decision": "../../../../../../../docs/project/decisions/D-029.md"
+    },
+    "persistenceRecovery": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-persistence-recovery.md",
+      "decision": "../../../../../../../docs/project/decisions/D-030.md",
+      "result": "Selected one origin-scoped OPFS database, exact pinned/verified DuckDB-Wasm artifact, market-cycle durability boundary COMMIT→CHECKPOINT→acknowledgement, UNIQUE ingest_token reconciliation, explicit persistent/best-effort browser-storage state, non-destructive schema/reopen recovery and explicit storage-blocked behavior.",
+      "sessionRecovery": "Unclosed running recording sessions become interrupted without fabricated stop time; a new session starts after readiness.",
+      "schedulerRecovery": "Active query/version and original cadence anchor are restored; downtime ticks coalesce to at most one pending execution.",
+      "quota": "Quota/storage failures withhold success and block further successful recording; no silent history deletion."
+    },
+    "engineSelection": {
+      "status": "selected-for-target-design-pending-implementation-verification",
+      "target": "DuckDB-Wasm + persistent OPFS database",
+      "versionRule": "Pin exact artifact and prove write/CHECKPOINT/reopen in Chromium; do not trust floating version labels/tags."
     },
     "githubExecutionRequirement": {
       "status": "required-later-phase",
       "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
       "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
-    "engineSelection": {
-      "status": "selected-for-target-design-pending-implementation-verification",
-      "target": "DuckDB-Wasm + persistent OPFS database"
-    },
-    "specImpact": "No runtime code or current implementation spec changed. Phase H defines target SQL execution/scheduler planning contracts only."
+    "specImpact": "No runtime code or current implementation spec changed. Phase I defines target persistence/recovery planning contracts and adds ingest-token recovery identity."
   },
   "next": {
-    "action": "Planning Phase I: design persistence, reopen and recovery.",
+    "action": "Planning Phase J: design runtime delivery and authenticated-browser integration.",
     "steps": [
-      "Define OPFS database identity/origin ownership and startup open/reopen sequence.",
-      "Define CHECKPOINT/durability policy based on current DuckDB-Wasm persistence evidence.",
-      "Define persistent runtime state required to restore Recorder/session/query scheduler safely after refresh.",
-      "Define schema-version migration and failed-upgrade behavior without destructive reset.",
-      "Define recovery after interrupted write/query/Worker/page lifecycle events.",
-      "Define quota/storage-exhaustion behavior and corruption/reopen verification boundaries."
+      "Define how pinned DuckDB-Wasm JS/Worker/Wasm assets are delivered under the authenticated Leumi page constraints.",
+      "Choose the browser-only replacement/extension of the current self-contained Bookmarklet packaging without assuming CSP compatibility.",
+      "Define Runtime Controller and SQL Worker bootstrapping/ownership lifecycle.",
+      "Define feature/capability checks and explicit startup failure behavior.",
+      "Define generated-source/build artifacts and repository ownership without committing implementation dependencies yet.",
+      "Keep Viewer/result messaging details for Phase K."
     ]
   },
   "history": {

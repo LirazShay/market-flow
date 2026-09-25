@@ -133,6 +133,7 @@ Logical columns:
 
 ~~~text
 cycle_id          BIGINT PRIMARY KEY
+ingest_token      VARCHAR NOT NULL UNIQUE
 session_id        BIGINT NOT NULL
 status            VARCHAR NOT NULL
 started_at_ms     BIGINT NOT NULL
@@ -157,6 +158,8 @@ failed
 
 Rules:
 
+- ingest_token is generated before the complete-cycle handoff and remains stable across retries;
+- an existing matching complete ingest_token is an idempotent recovery signal, not a reason to insert duplicate history;
 - successful snapshots exist only for a complete cycle;
 - failed cycles own no successful snapshot rows;
 - unknown diagnostics remain NULL rather than guessed.

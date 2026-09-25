@@ -47,6 +47,7 @@ Durable decision:
 ../../../../../../../docs/project/decisions/D-027.md
 ../../../../../../../docs/project/decisions/D-028.md
 ../../../../../../../docs/project/decisions/D-029.md
+../../../../../../../docs/project/decisions/D-030.md
 ~~~
 
 Selected target boundary:
@@ -121,6 +122,19 @@ immutable query version
 ~~~
 
 Collection cadence and query cadence remain independent. Hard query cancellation is not assumed until verified in the exact pinned DuckDB-Wasm package.
+
+## Selected persistence / recovery contract
+
+~~~text
+one origin-scoped OPFS DuckDB authority
++ exact pinned/verified DuckDB-Wasm artifact
++ market durability = COMMIT → CHECKPOINT → acknowledgement
++ stable UNIQUE ingest_token for ambiguous retry reconciliation
++ explicit persistent/best-effort browser-storage state
++ non-destructive reopen/schema recovery
+~~~
+
+Unclean recording sessions and running query executions are marked interrupted on reopen; active query cadence keeps its original anchor and downtime ticks coalesce to at most one pending execution.
 
 ## Implemented baseline architecture
 
@@ -203,6 +217,9 @@ docs/browser-sql-ingest-enrichment-atomicity.md
 
 docs/browser-sql-execution-scheduler.md
 → immutable query versions, read-only SQL gate, anchored cadence, no-overlap/coalescing and result/failure semantics
+
+docs/browser-sql-persistence-recovery.md
+→ OPFS identity, checkpointed durability acknowledgement, ingest-token reconciliation, reopen/migration/quota recovery
 
 docs/sql-live-analytics-design.md
 → durable design direction
