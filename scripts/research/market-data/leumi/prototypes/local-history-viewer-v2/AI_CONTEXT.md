@@ -45,6 +45,7 @@ Durable decision:
 ../../../../../../../docs/project/decisions/D-025.md
 ../../../../../../../docs/project/decisions/D-026.md
 ../../../../../../../docs/project/decisions/D-027.md
+../../../../../../../docs/project/decisions/D-028.md
 ~~~
 
 Selected target boundary:
@@ -89,6 +90,21 @@ UNIQUE(cycle_id, security_id)
 ~~~
 
 Canonical Market Flow timestamps remain epoch milliseconds. Source missing/null/zero/empty distinctions remain recoverable from raw JSON; promoted SQL NULL alone is not used to infer source presence.
+
+## Selected ingest / atomicity contract
+
+~~~text
+complete validated cycle
+→ immutable handoff with exact validated universe
+→ SQL Authority defensive validation
+→ one bulk cycle operation
+→ set-based temporal/derived enrichment
+→ one SQL transaction
+→ COMMIT
+→ success acknowledgement
+~~~
+
+Temporal predecessor rule for horizon H: choose the latest same-security snapshot with `collected_at_ms <= current.collected_at_ms - H*1000`; if none exists, use NULL. current_universe and latest_snapshot advance only inside the same successful transaction.
 
 ## Implemented baseline architecture
 
@@ -165,6 +181,9 @@ docs/browser-sql-target-architecture.md
 
 docs/browser-sql-relational-data-model.md
 → selected Cycle/Snapshot/security/latest/raw+typed/wide-horizon relational model
+
+docs/browser-sql-ingest-enrichment-atomicity.md
+→ validated-cycle handoff, bulk ingest boundary, enrichment order, temporal predecessor rule and one-transaction commit contract
 
 docs/sql-live-analytics-design.md
 → durable design direction

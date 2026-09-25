@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "ingest-enrichment-atomicity",
-    "title": "Design Browser SQL ingest, enrichment and atomicity",
+    "substep": "sql-execution-scheduler",
+    "title": "Design the Browser SQL execution and scheduler contract",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model",
-    "inProgress": "browser-sql-ingest-enrichment-atomicity",
-    "planned": "SQL scheduler → persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity",
+    "inProgress": "browser-sql-sql-execution-scheduler",
+    "planned": "persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -35,10 +35,6 @@
       "status": "complete",
       "artifact": "docs/browser-sql-requirements-and-acceptance.md"
     },
-    "officialCapabilityResearch": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-official-capability-research.md"
-    },
     "targetArchitecture": {
       "status": "complete",
       "artifact": "docs/browser-sql-target-architecture.md",
@@ -47,16 +43,16 @@
     "relationalDataModel": {
       "status": "complete",
       "artifact": "docs/browser-sql-relational-data-model.md",
-      "decision": "../../../../../../../docs/project/decisions/D-027.md",
-      "result": "Selected security/current_universe/cycle/snapshot/latest_snapshot model with stable BIGINT SnapshotId, canonical string SecurityId, full raw Security JSON, promoted typed core fields, wide core-horizon snapshot links/metrics and latest-as-pointer rather than full-row duplication.",
-      "coreHorizonsSeconds": [10,20,30,60,90,120,300,600],
-      "semanticGuardrails": [
-        "UNIQUE(cycle_id, security_id)",
-        "epoch milliseconds are canonical Market Flow timestamps",
-        "source missing/null/zero/empty distinction remains recoverable from raw JSON",
-        "deals_delta remains unpopulated until provider semantics are verified",
-        "missing horizon history remains NULL"
-      ]
+      "decision": "../../../../../../../docs/project/decisions/D-027.md"
+    },
+    "ingestEnrichmentAtomicity": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-ingest-enrichment-atomicity.md",
+      "decision": "../../../../../../../docs/project/decisions/D-028.md",
+      "result": "Selected immutable complete-cycle handoff, defensive SQL-authority validation, one logical bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances cycle/snapshot/current_universe/latest/session state together.",
+      "temporalRule": "For horizon H choose the latest same-security snapshot with collected_at_ms <= current.collected_at_ms - H*1000; otherwise NULL.",
+      "bulkDirection": "Arrow/equivalent single bulk relation per cycle; no per-security DB RPC contract.",
+      "dealsDelta": "Remains NULL/unpopulated until reset/trading-day semantics of DailyDealsQuantity are explicitly verified."
     },
     "githubExecutionRequirement": {
       "status": "required-later-phase",
@@ -67,17 +63,17 @@
       "status": "selected-for-target-design-pending-implementation-verification",
       "target": "DuckDB-Wasm + persistent OPFS database"
     },
-    "specImpact": "No runtime behavior changed. Phase F fixes planning-level schema direction; current implementation specs remain inherited IndexedDB baseline until migration implementation begins."
+    "specImpact": "No runtime code or current implementation spec changed. Phase G defines target planning contracts only."
   },
   "next": {
-    "action": "Planning Phase G: design ingest, enrichment and atomicity.",
+    "action": "Planning Phase H: design the SQL execution and scheduler contract.",
     "steps": [
-      "Define the validated-cycle handoff contract from Recorder to SQL Authority Worker.",
-      "Choose the planned bulk-ingest boundary without implementing it.",
-      "Define the successful-cycle transaction contents including snapshots, latest pointers and cycle metadata.",
-      "Define enrichment order for typed promotions, horizon-link resolution and derived metrics.",
-      "Define rollback/failure behavior and committed-state visibility to scheduled SQL.",
-      "Define current-universe/latest cleanup semantics when membership changes."
+      "Define active query identity/version and deterministic activation semantics.",
+      "Define read-only analytical SQL boundary and separation from admin/schema SQL.",
+      "Choose scheduler clock semantics independently from collection cadence.",
+      "Define deterministic overrun/no-overlap behavior.",
+      "Define query failure state versus latest successful result.",
+      "Define result materialization/safety behavior and cancellation/timeout handling under currently verified DuckDB-Wasm capabilities."
     ]
   },
   "history": {
