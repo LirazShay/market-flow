@@ -111,6 +111,13 @@ Unknown             = intentionally deferred to later planning/research
 | DR-43 | Destructive history rollover must occur only at a safe maintenance boundary and must leave exactly one provable Browser SQL authority after recovery. | Phase S. |
 | DR-44 | Every production database history epoch must have an observable database_epoch_id; live SQL never silently spans epochs. | Phase S. |
 | DR-45 | Export/backup terminology must be truthful: the initial target may provide logical archive export but must not claim verified restore/backup guarantees that are not implemented. | Phase S. |
+| DR-46 | Arbitrary user analytical SQL must execute through a bounded-yield pending/streaming path that supports proven preemption; whole-result materialization is not the production primitive. | Phase T. |
+| DR-47 | A complete validated cycle waiting for persistence must preempt analytical work immediately and must be committed before any later analytical opportunity. | Phase T. |
+| DR-48 | User analytical SQL must use a disposable analytics connection separate from the trusted ingest/admin connection inside the single SQL Authority Worker. | Phase T. |
+| DR-49 | Analytical executions must have benchmark-derived hard runtime and preemption budgets; a runtime-budget violation suspends that active query version. | Phase T + WP-35 evidence. |
+| DR-50 | Result consumption must use bounded backpressure with no unbounded prefetch/materialization; incomplete resource-cancelled results must never be reported as complete. | Phase T. |
+| DR-51 | Failure to cooperatively preempt analytics must escalate to controlled Worker recovery before a waiting cycle can be acknowledged. | Phase T. |
+| DR-52 | At most one complete validated cycle may wait for SQL persistence; provider collection does not build an unbounded cycle queue behind analytical work. | Phase T. |
 
 ## 3. Acceptance behaviors
 
@@ -275,6 +282,46 @@ Given an archive/candidate/switch failure during explicit rollover,
 when recovery runs,
 
 then Recorder stays stopped until exactly one coherent production epoch is proven, and Market Flow never clears unrelated Leumi-origin OPFS data.
+
+### AB-19 — ingest preempts analytical SQL
+
+Given an analytical query is running,
+
+when a complete validated cycle reaches SQL persistence,
+
+then analytical work is preempted and that cycle commits before any later analytical opportunity.
+
+### AB-20 — runaway query budget
+
+Given an active analytical query exceeds its production runtime budget,
+
+when the budget expires,
+
+then the execution is cancelled, reported separately from SQL error, and the active query version is suspended until explicit user action.
+
+### AB-21 — bounded large-result consumption
+
+Given a query returns a very large result,
+
+when result batches are consumed,
+
+then at most bounded fetch/preview memory is active, and any cancelled execution reports an incomplete row count truthfully rather than silent truncation/success.
+
+### AB-22 — cancellation failure recovery
+
+Given cooperative analytical cancellation cannot release the authority within the preemption budget,
+
+when escalation occurs,
+
+then the SQL Worker is recovered/reopened before the waiting cycle is committed, and the cycle is never acknowledged early.
+
+### AB-23 — bounded pending cycle
+
+Given one complete validated cycle is already waiting for SQL persistence,
+
+when the Recorder would otherwise begin another provider cycle,
+
+then collection waits rather than building an unbounded queue.
 
 ## 4. Assumptions that are not frozen contracts
 

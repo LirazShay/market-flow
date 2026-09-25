@@ -1086,7 +1086,7 @@ Markdown alone is not the final planning deliverable.
 ~~~text
 Phases A–O
 → 8 implementation milestones
-→ 39 executable work packages
+→ 40 executable work packages
 → explicit hard gates
 → test/verification owner per package
 → live Leumi feasibility before heavy implementation
@@ -1150,3 +1150,41 @@ The Phase-R red-team review found a previously deferred storage-lifecycle decisi
 ### Dependency update
 
 WP-36 production cutover additionally depends on WP-39.
+### WP-40 — Implement analytical resource isolation, cancellation and ingest preemption
+
+**Milestone:** M3
+
+**Depends on:** WP-16, WP-17, WP-18
+
+**Scope**
+
+- create a dedicated disposable analytics connection separate from trusted ingest/admin connection;
+- execute user SQL through bounded pending/streamed query slices;
+- prove and use pinned-build pending-query cancellation;
+- abort active result streaming by bounded stop-fetch + analytics-connection recycle;
+- preempt analytics immediately when a complete validated cycle waits;
+- implement benchmark-configured hard query runtime/preemption budgets;
+- suspend query version on runtime-budget cancellation;
+- keep ingest-priority cancellation enabled for later anchored opportunities;
+- implement truthful incomplete row-count metadata and bounded preview/backpressure;
+- escalate failed cancellation to controlled Worker reopen/recovery;
+- suppress new provider collection while one complete cycle waits for SQL persistence;
+
+**Acceptance**
+
+- pending execution can be cancelled in the exact pinned build and the connection remains usable;
+- active stream can be abandoned/recycled safely without corrupting DB authority;
+- waiting validated cycle preempts analytics and commits before later analytical work;
+- only one result fetch is in flight;
+- runtime-budget cancellation suspends active query version;
+- cancelled execution never overwrites latest successful result and incomplete row counts are labeled incomplete;
+- failed cooperative cancellation triggers controlled Worker recovery and never early-acknowledges ingest;
+- no unbounded complete-cycle queue can form behind analytics;
+
+**Primary verification:** Node state/scheduler tests + Playwright real DuckDB-Wasm cancellation/stream/recovery integration + later WP-35 resource benchmarks
+
+**Exit:** arbitrary analytical SQL is resource-isolated so already-running analytics cannot indefinitely starve authoritative market persistence.
+
+### Phase T dependency update
+
+WP-20 analytical-runtime checkpoint additionally depends on WP-40.

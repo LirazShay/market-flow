@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning-assurance",
-    "substep": "analytical-resource-isolation",
-    "title": "Design Browser SQL analytical resource isolation and runaway-query safety",
+    "substep": "multi-tab-ownership",
+    "title": "Design Browser SQL multi-tab ownership and split-brain prevention",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "planning phases A-S; Phase-R initial audit red-teamed and extended",
-    "inProgress": "phase T analytical resource isolation",
-    "planned": "phase U multi-tab ownership → phase V upgrade/release lifecycle → phase W final planning assurance/freeze"
+    "completed": "planning phases A-T; Phase-R initial audit red-teamed and extended",
+    "inProgress": "phase U multi-tab ownership",
+    "planned": "phase V upgrade/release lifecycle → phase W final planning assurance/freeze"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -37,7 +37,7 @@
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
       "milestones": 8,
-      "workPackages": 39,
+      "workPackages": 40,
       "hardGates": 6,
       "criticalEntryGate": "WP-03 live Leumi compatibility PASS blocks WP-05+."
     },
@@ -72,10 +72,8 @@
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
-      "status": "success",
-      "runId": 36126659836,
-      "commit": "54af77ee87ccaeabf6aece13a57e60b41e0ca6b9",
-      "result": "Phase S data-lifecycle planning, WP-39/#68 integration, and HOT-context guards verified green."
+      "status": "verification-pending",
+      "result": "Phase-T planning changes awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
@@ -99,17 +97,25 @@
       "decision": "../../../../../../../docs/project/decisions/D-038.md",
       "policy": "retain-all by default; benchmark-derived storage warning; no automatic history deletion; explicit logical archive + crash-recoverable fresh database epoch rollover.",
       "implementationOwner": "WP-39 / GitHub Issue #68"
+    },
+    "analyticalResourceIsolation": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-analytical-resource-isolation.md",
+      "decision": "../../../../../../../docs/project/decisions/D-039.md",
+      "upstreamEvidence": "Current upstream exposes pending-query cancelSent/cancelPendingQuery and queryPollingInterval; stream-phase abortion still requires pinned-build connection-recycle proof.",
+      "policy": "Validated ingest immediately preempts analytics; hard runtime budget suspends runaway query; cooperative cancellation failure escalates to controlled Worker recovery; one complete waiting cycle maximum.",
+      "implementationOwner": "WP-40 (GitHub Issue to be created/linked in Phase T management update)."
     }
   },
   "next": {
-    "action": "Planning Phase T: close long-running analytical SQL / ingest-starvation resource isolation.",
+    "action": "Planning Phase U: design multi-tab ownership and split-brain prevention.",
     "steps": [
-      "Verify exact pinned DuckDB-Wasm cancellation/interrupt capabilities instead of assuming native DuckDB APIs exist in Wasm.",
-      "Define a bound on how analytical SQL may delay validated-cycle persistence.",
-      "Define query admission/timeout/disable behavior when cancellation is unavailable.",
-      "Define result-stream backpressure/resource limits without silently rewriting user SQL semantics.",
-      "Add/update implementation Work Issue ownership and cutover blockers.",
-      "Do not start implementation in this chat."
+      "Define how independent Leumi tabs discover the single active Runtime Controller/SQL Authority owner.",
+      "Define owner lease/heartbeat and stale-owner takeover without relying on BroadcastChannel as authority.",
+      "Define behavior when Bookmarklet is invoked in a second independent tab.",
+      "Define OPFS/DuckDB protection if two tabs race at startup.",
+      "Define Viewer-only/client roles versus Recorder-owner role.",
+      "Add/update execution Issue ownership and gates; do not implement runtime code in this chat."
     ]
   },
   "history": {

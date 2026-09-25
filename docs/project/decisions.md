@@ -54,6 +54,7 @@ decisions.md
 | [D-036](decisions/D-036.md) | Browser SQL uses scoped failures, worst-active health precedence and sanitized local observability | Accepted | browser-sql, failure, security, observability, health, diagnostics |
 | [D-037](decisions/D-037.md) | Browser SQL implementation follows gate-ordered executable work packages | Accepted | browser-sql, implementation-plan, dependencies, milestones, issues |
 | [D-038](decisions/D-038.md) | Browser SQL storage lifecycle uses retain-all plus explicit archive-and-rollover | Accepted | browser-sql, retention, quota, archive, rollover, opfs |
+| [D-039](decisions/D-039.md) | Browser SQL analytical work is preemptible and cannot indefinitely block market ingest | Accepted | browser-sql, sql, cancellation, scheduler, resource-isolation, ingest |
 
 ## Fast lookup
 
@@ -83,7 +84,7 @@ Local History Viewer V1
 → D-019, D-020
 
 Browser SQL / V2 analytical migration
-→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-032, D-033, D-034, D-035, D-036, D-037, D-038, D-001, D-021
+→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-032, D-033, D-034, D-035, D-036, D-037, D-038, D-039, D-001, D-021
 ~~~
 
 ## Adding a durable decision

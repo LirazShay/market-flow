@@ -571,3 +571,7 @@ explicit failure scope
 + bounded recent incidents + Debug Bundle
 + no external telemetry baseline
 ~~~
+
+## Phase T analytical-resource failures
+
+Analytical execution now has explicit cancellation/resource outcomes. `cancelled / ingest_priority` degrades query runtime but leaves the query enabled; `cancelled / runtime_budget` suspends that active query version. Cooperative cancellation that cannot release analytical work inside the preemption budget escalates to blocked + controlled Worker reopen. Only one complete validated cycle may wait during this recovery; Recorder does not start another collection cycle.

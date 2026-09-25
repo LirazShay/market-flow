@@ -185,3 +185,8 @@ docs/browser-sql-final-plan-audit.md
 ## Phase-S extension
 
 The post-Phase-R assurance review added canonical WP-39 / Issue #68 under M8. WP-39 depends on WP-35 and is an additional blocker of WP-36 production cutover. It closes storage retention/archive/rollover lifecycle before implementation handoff.
+
+
+## Phase-T extension
+
+Phase T adds WP-40 under M3 for analytical cancellation/resource isolation. Its GitHub Issue number is linked after creation; WP-20/M3 closure must depend on it.

@@ -574,3 +574,8 @@ parameterized representative data
 ## Phase S storage-lifecycle benchmark additions
 
 Before cutover, benchmark evidence must also quantify: bytes per representative session, variance across payload profiles, archive/export peak working set, fresh rollover candidate size, rollover/reopen latency, post-rollover OPFS usage, and a conservative `storage_warning_reserve_bytes`. The warning threshold is a measured byte reserve, not a hardcoded quota percentage.
+
+
+## Phase T analytical-resource benchmark additions
+
+Decision-grade WP-35 evidence must measure pending-query cancellation latency, stream-phase analytics-connection disposal/recreation, validated-cycle wait attributable to analytics, huge-result backpressure/memory, hard-runtime-budget cancellation, controlled Worker-recovery fallback, and repeated ingest-priority cancellations. It must select production `analytical_max_runtime_ms`, `analytics_preemption_budget_ms` and query polling/fetch-slice configuration that preserve D-034 mixed-load ingest headroom.

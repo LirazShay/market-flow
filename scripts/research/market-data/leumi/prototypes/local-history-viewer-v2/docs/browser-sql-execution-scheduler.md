@@ -423,3 +423,10 @@ Current planning evidence:
 - DuckDB configuration settings: https://duckdb.org/docs/current/configuration/overview
 
 These sources establish streaming query support and the available DuckDB security/configuration controls. Parser-level statement classification and hard interruption remain implementation-verification items for the exact pinned DuckDB-Wasm package.
+
+
+## Phase T resource-isolation extension
+
+Validated cycle persistence now immediately preempts already-running analytics. User analytical SQL runs on a dedicated disposable analytics connection using bounded pending/streamed execution. Pending execution uses proven cancellation; active result streaming stops fetching and disposes/recreates the analytics connection. If cooperative release misses the benchmark-derived preemption budget, controlled Worker reopen/recovery is required before ingest acknowledgement.
+
+Runtime-budget cancellation suspends the active query version; ingest-priority cancellation does not. Cancelled results never replace latest successful result and use `row_count_complete=false` when only a partial count was consumed. Full contract: `browser-sql-analytical-resource-isolation.md` / D-039.

@@ -36,7 +36,7 @@ authenticated Leumi page
 
 ## Durable decisions
 
-Browser SQL decisions currently include `D-025` through `D-038`.
+Browser SQL decisions currently include `D-025` through `D-039`.
 
 Key execution source:
 
@@ -134,7 +134,9 @@ Normal-profile benchmark gates target roughly 4x isolated and 2x mixed cadence h
 
 Cutover starts a fresh SQL history epoch. No initial legacy-history import, permanent dual-write/read, or silent IndexedDB fallback.
 
-Storage lifecycle: default retain-all; no automatic history deletion. Storage pressure uses benchmark-derived byte reserve. Explicit archive + crash-recoverable database rollover creates a new database_epoch_id and may delete only exact Market-Flow OPFS entries.
+Storage lifecycle: default retain-all; no automatic history deletion. Explicit archive + crash-recoverable DB rollover creates a new database_epoch_id.
+
+Analytical resource isolation: user SQL runs on a disposable analytics connection with bounded pending/streamed execution. Validated ingest immediately preempts analytics; runtime-budget queries are cancelled+suspended; failed cooperative cancellation escalates to controlled Worker reopen. One complete waiting cycle max.
 
 ## Navigation
 

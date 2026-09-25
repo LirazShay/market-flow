@@ -426,3 +426,17 @@ Official references:
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/worker-src
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src
 - https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker
+
+## Phase T current-upstream cancellation evidence
+
+Reviewed 2026-09-25 against current DuckDB-Wasm upstream source. `AsyncDuckDBConnection` exposes `cancelSent()`, which forwards to `cancelPendingQuery()`. The bindings expose configurable `queryPollingInterval`; upstream tests exercise pending-query cancellation and then reuse the connection successfully. The C++ WebDB source shows pending cancellation only applies before an active stream result is established, so stream-phase abortion must be proven separately (planned as stop-fetch + analytics-connection recycle).
+
+Classification: **Verified in current upstream source, not yet Verified in the future exact WP-01 pinned package.** WP-40 must repeat these proofs in real Chromium against the pinned build.
+
+Sources:
+
+- https://github.com/duckdb/duckdb-wasm/blob/main/packages/duckdb-wasm/src/parallel/async_connection.ts
+- https://github.com/duckdb/duckdb-wasm/blob/main/packages/duckdb-wasm/src/parallel/async_bindings.ts
+- https://github.com/duckdb/duckdb-wasm/blob/main/packages/duckdb-wasm/test/bindings.test.ts
+- https://github.com/duckdb/duckdb-wasm/blob/main/lib/src/webdb.cc
+- https://duckdb.org/docs/current/clients/wasm/query
