@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "official-capability-research",
-    "title": "Verify current official Browser SQL and DuckDB-Wasm capabilities",
+    "substep": "target-architecture",
+    "title": "Design the Browser SQL target architecture from verified constraints and capabilities",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit, browser-sql-requirements-consolidation, browser-sql-browser-constraints",
-    "inProgress": "browser-sql-official-capability-research",
-    "planned": "target architecture → detailed planning → implementation decomposition → GitHub execution structure → final plan audit"
+    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit, browser-sql-requirements-consolidation, browser-sql-browser-constraints, browser-sql-official-capability-research",
+    "inProgress": "browser-sql-target-architecture",
+    "planned": "relational model → ingest/atomicity → SQL scheduler → persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -33,9 +33,7 @@
     },
     "planningBootstrap": {
       "status": "current-state-audit-complete",
-      "auditedMainCommit": "39afdbf4af6dbb45a9132cd402ef5b37f451c186",
-      "auditArtifact": "docs/browser-sql-current-state-audit.md",
-      "planningRoadmap": "ROADMAP.md"
+      "auditArtifact": "docs/browser-sql-current-state-audit.md"
     },
     "requirementsConsolidation": {
       "status": "complete",
@@ -43,32 +41,41 @@
     },
     "browserConstraints": {
       "status": "complete",
-      "artifact": "docs/browser-sql-browser-constraints.md",
-      "result": "Chrome/Chromium Windows, origin, security, lifecycle, persistence, loading and concurrency constraints are separated from engine-specific unknowns.",
-      "researchBoundary": "No DuckDB-Wasm/OPFS capability was assumed or selected in Phase C."
+      "artifact": "docs/browser-sql-browser-constraints.md"
+    },
+    "officialCapabilityResearch": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-official-capability-research.md",
+      "researchDate": "2026-09-25",
+      "result": "Official current sources verify in-browser SQL, Worker execution, OPFS persistence capability, Arrow ingestion, required SQL features and documented Wasm constraints. Version-specific OPFS regression, multi-context concurrency, Leumi CSP compatibility, query cancellation and Market Flow-scale performance remain explicit unknowns.",
+      "keyGuardrails": [
+        "Design for the single-threaded Wasm path first; coi threading is conditional and experimental.",
+        "Pin an exact tested duckdb-wasm version; do not float npm latest for persistence-critical use.",
+        "Require CHECKPOINT plus reopen/durability verification before OPFS becomes authoritative.",
+        "Do not assume multi-instance/cross-tab OPFS concurrency.",
+        "Do not depend on hard query cancellation until a Wasm API is verified."
+      ]
     },
     "architectureConstraint": {
       "status": "accepted-browser-only",
-      "decision": "../../../../../../../docs/project/decisions/D-025.md",
-      "productRequirement": "../../../../../../../docs/product/live-sql-query-execution.md",
-      "rule": "Browser SQL is fixed for this planning cycle. localhost/Node/.NET/native database paths are not active candidates or backlog items."
+      "decision": "../../../../../../../docs/project/decisions/D-025.md"
     },
     "engineSelection": {
-      "status": "not-yet-selected",
+      "status": "leading-candidate-supported-by-research-not-yet-implementation-verified",
       "leadingCandidate": "DuckDB-Wasm with persistent browser storage",
-      "requiredNextEvidence": "Current official documentation for persistence, Workers, transactions/concurrency, loading, recovery, cancellation, JSON/Arrow and resource constraints."
+      "note": "Capability research supports proceeding to target architecture. Exact package version and production suitability remain later verification decisions."
     },
-    "specImpact": "No runtime behavior or normative Browser SQL contract changed. Phase C is planning-only."
+    "specImpact": "No runtime behavior or normative Browser SQL spec changed. Phase D is research/planning evidence only."
   },
   "next": {
-    "action": "Planning Phase D: research current official Browser SQL / DuckDB-Wasm capabilities.",
+    "action": "Planning Phase E: design the Browser SQL target architecture.",
     "steps": [
-      "Verify current DuckDB-Wasm browser/Worker architecture and loading model from official documentation.",
-      "Verify persistent browser storage/OPFS support and reopen semantics.",
-      "Verify transactions, connections, concurrency/locking and interruption/cancellation.",
-      "Verify JSON, Arrow/bulk ingest and profiling/EXPLAIN capabilities relevant to Market Flow.",
-      "Verify documented browser/WASM memory/resource constraints and separate them from Leumi-specific unknowns.",
-      "Record Verified / Inferred / Unknown with official references; do not implement a spike."
+      "Choose the simplest single-authority browser topology for Collector, SQL Worker/database owner, scheduler and Viewer/result delivery.",
+      "Design for the single-threaded DuckDB-Wasm baseline; treat coi threading only as optional future optimization.",
+      "Preserve complete-cycle atomic visibility and one authoritative market-history source.",
+      "Decide where query execution and result delivery live without assuming unsupported cross-tab OPFS concurrency.",
+      "Define startup, normal ingest, scheduled query, query failure, Viewer refresh and recovery sequence flows.",
+      "Keep exact relational schema and detailed persistence/scheduler policy for their dedicated later phases."
     ]
   },
   "history": {

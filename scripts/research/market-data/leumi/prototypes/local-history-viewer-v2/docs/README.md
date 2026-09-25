@@ -9,6 +9,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | current-state migration audit | [browser-sql-current-state-audit.md](browser-sql-current-state-audit.md) |
 | consolidated requirements + acceptance scenarios | [browser-sql-requirements-and-acceptance.md](browser-sql-requirements-and-acceptance.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
+| official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |

@@ -129,6 +129,9 @@ docs/browser-sql-requirements-and-acceptance.md
 docs/browser-sql-browser-constraints.md
 → Browser/Windows/Chromium/origin/lifecycle/persistence/loading/concurrency constraints and research questions
 
+docs/browser-sql-official-capability-research.md
+→ current official DuckDB-Wasm/OPFS/Worker/Arrow/memory capability evidence and remaining unknowns
+
 docs/sql-live-analytics-design.md
 → durable design direction
 
