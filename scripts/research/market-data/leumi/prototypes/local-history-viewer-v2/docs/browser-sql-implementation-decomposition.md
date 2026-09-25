@@ -1093,3 +1093,21 @@ Phases A–O
 → explicit shadow/cutover cleanup
 → issue-body contract ready for Phase Q
 ~~~
+
+## GitHub execution structure
+
+Phase Q materialized this decomposition into real GitHub Issues.
+
+~~~text
+Master: #20
+Epics:  #21..#28
+WP-01..WP-38: #29..#67
+~~~
+
+Canonical mapping and the one closed duplicate exception are documented in:
+
+~~~text
+docs/browser-sql-github-execution-structure.md
+~~~
+
+Issue state and STATUS.json now drive execution; this planning document remains the durable decomposition contract.

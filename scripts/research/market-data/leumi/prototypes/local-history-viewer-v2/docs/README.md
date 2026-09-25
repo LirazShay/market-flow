@@ -21,6 +21,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL migration / cutover strategy | [browser-sql-migration-cutover.md](browser-sql-migration-cutover.md) |
 | Browser SQL failure / security / observability contract | [browser-sql-failure-security-observability.md](browser-sql-failure-security-observability.md) |
 | Browser SQL implementation decomposition | [browser-sql-implementation-decomposition.md](browser-sql-implementation-decomposition.md) |
+| Browser SQL GitHub execution structure | [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |

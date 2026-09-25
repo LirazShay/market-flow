@@ -11,14 +11,13 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "github-execution-structure",
-    "title": "Create the Browser SQL GitHub execution structure",
+    "substep": "final-plan-audit-handoff",
+    "title": "Audit Browser SQL plan and GitHub execution handoff",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "planning phases A-P",
-    "inProgress": "phase Q GitHub execution structure",
-    "planned": "phase R final plan audit/handoff"
+    "completed": "planning phases A-Q",
+    "inProgress": "phase R final plan audit/handoff"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -47,8 +46,28 @@
       "guardPolicy": "Do not raise HOT-context guards; keep detailed completed-phase evidence in phase docs."
     },
     "githubExecutionRequirement": {
-      "status": "required-now",
-      "rule": "Phase Q must create real Issues plus useful milestones/labels/dependencies/parent-child or checklist structure. Markdown alone is insufficient."
+      "status": "complete",
+      "source": "docs/browser-sql-github-execution-structure.md",
+      "masterIssue": 20,
+      "epicIssues": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "executableWorkIssues": {
+        "count": 38,
+        "first": 29,
+        "last": 67,
+        "closedDuplicate": 65,
+        "wp37Canonical": 66
+      },
+      "structuralVerification": "47 open Browser SQL Issues = 1 Master + 8 Epics + 38 unique WPs; no missing/duplicate-open WP IDs or placeholder parent links.",
+      "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
       "status": "success",
@@ -60,17 +79,18 @@
       "status": "not-required",
       "reason": "Phase P changes planning/docs only; no runtime/browser/test implementation changed."
     },
-    "specImpact": "No runtime code or normative implemented spec changed."
+    "specImpact": "No runtime code or normative implemented spec changed. Phase Q creates execution-management Issues and navigation only."
   },
   "next": {
-    "action": "Planning Phase Q: create the real Browser SQL execution structure in GitHub.",
+    "action": "Planning Phase R: final audit and implementation handoff.",
     "steps": [
-      "Inspect existing repository labels/milestones/open Issues for reuse.",
-      "Create/reuse the 8 milestone groups and minimal labels.",
-      "Create executable Issues for WP-01 through WP-38.",
-      "Encode dependencies/blockers and supported parent/checklist structure.",
-      "Link planning artifacts to the created GitHub execution objects.",
-      "Verify issue/milestone/label coverage before advancing to Phase R."
+      "Audit every planning requirement and durable decision against WP-01..WP-38 coverage.",
+      "Check dependency/gate ordering for gaps, cycles or work that can execute before required evidence.",
+      "Verify Issue bodies contain enough context for a fresh AI without reconstructing this chat.",
+      "Audit temporary probe/shadow/migration cleanup ownership.",
+      "Audit live-Leumi, Browser CI, benchmark and cutover gates.",
+      "Resolve any uncovered requirement or management defect in GitHub/repo.",
+      "Only after the audit is green, close the planning project and point STATUS.json to WP-01 implementation."
     ]
   },
   "history": {

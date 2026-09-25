@@ -44,7 +44,9 @@ Key execution source:
 docs/browser-sql-implementation-decomposition.md
 ~~~
 
-It defines 8 implementation milestones, 38 issue-ready work packages and hard gates. Phase Q materializes them into GitHub Issues/milestones/labels/dependencies.
+It defines 8 implementation groups, 38 work packages and hard gates.
+
+GitHub execution: Master #20 → Epics #21–#28 → WP Issues #29–#67 (WP-37 canonical #66; #65 duplicate closed). See `docs/browser-sql-github-execution-structure.md`.
 
 ## Core contracts
 
