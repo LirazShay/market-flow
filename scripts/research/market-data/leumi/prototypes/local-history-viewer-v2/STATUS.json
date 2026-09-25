@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "browser-constraints",
-    "title": "Define browser/platform constraints for the Browser SQL target",
+    "substep": "official-capability-research",
+    "title": "Verify current official Browser SQL and DuckDB-Wasm capabilities",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit, browser-sql-requirements-consolidation",
-    "inProgress": "browser-sql-browser-constraints",
-    "planned": "official capability research → target architecture → detailed planning → implementation decomposition → GitHub execution structure → final plan audit"
+    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit, browser-sql-requirements-consolidation, browser-sql-browser-constraints",
+    "inProgress": "browser-sql-official-capability-research",
+    "planned": "target architecture → detailed planning → implementation decomposition → GitHub execution structure → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -35,14 +35,17 @@
       "status": "current-state-audit-complete",
       "auditedMainCommit": "39afdbf4af6dbb45a9132cd402ef5b37f451c186",
       "auditArtifact": "docs/browser-sql-current-state-audit.md",
-      "planningRoadmap": "ROADMAP.md",
-      "result": "Current responsibilities, reusable contracts, replaceable implementation choices, stale SQL planning and major unknowns were inventoried before target architecture design."
+      "planningRoadmap": "ROADMAP.md"
     },
     "requirementsConsolidation": {
       "status": "complete",
-      "artifact": "docs/browser-sql-requirements-and-acceptance.md",
-      "result": "Existing product, decision and inherited-integrity requirements are classified without creating a duplicate authority; end-to-end acceptance behaviors and explicit non-goals are defined.",
-      "acceptanceCoverage": "committed-cycle visibility, failed-cycle isolation, arbitrary SQL replacement, independent configurable cadence, 0..N results, query failure isolation, overrun/no-overlap, refresh/reopen, raw/null preservation, dynamic universe, temporal horizons, cross-security SQL and security boundary"
+      "artifact": "docs/browser-sql-requirements-and-acceptance.md"
+    },
+    "browserConstraints": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-browser-constraints.md",
+      "result": "Chrome/Chromium Windows, origin, security, lifecycle, persistence, loading and concurrency constraints are separated from engine-specific unknowns.",
+      "researchBoundary": "No DuckDB-Wasm/OPFS capability was assumed or selected in Phase C."
     },
     "architectureConstraint": {
       "status": "accepted-browser-only",
@@ -53,19 +56,19 @@
     "engineSelection": {
       "status": "not-yet-selected",
       "leadingCandidate": "DuckDB-Wasm with persistent browser storage",
-      "requiredNextEvidence": "Define browser/platform constraints first, then verify official current capability documentation."
+      "requiredNextEvidence": "Current official documentation for persistence, Workers, transactions/concurrency, loading, recovery, cancellation, JSON/Arrow and resource constraints."
     },
-    "specImpact": "No runtime behavior changed. Phase B produced planning synthesis only; existing implementation specs remain baseline contracts until target Browser SQL design is complete."
+    "specImpact": "No runtime behavior or normative Browser SQL contract changed. Phase C is planning-only."
   },
   "next": {
-    "action": "Planning Phase C: define the browser/platform constraint matrix for Browser SQL.",
+    "action": "Planning Phase D: research current official Browser SQL / DuckDB-Wasm capabilities.",
     "steps": [
-      "Define the target browser/platform scope (Chrome/Chromium on Windows) without selecting the SQL engine yet.",
-      "Map origin ownership and same-origin implications for the authenticated Leumi page, Viewer and browser persistence.",
-      "Identify CSP/CORS/module/Worker/WASM loading constraints that must be verified later rather than guessed.",
-      "Plan page/tab lifecycle, hidden/background throttling, persistence quota/eviction and security-boundary questions.",
-      "Classify each browser constraint as Verified, Inferred or Unknown and separate platform facts from engine-specific capability questions.",
-      "Do not start DuckDB-Wasm implementation or official engine capability research beyond what is necessary to define the constraint questions."
+      "Verify current DuckDB-Wasm browser/Worker architecture and loading model from official documentation.",
+      "Verify persistent browser storage/OPFS support and reopen semantics.",
+      "Verify transactions, connections, concurrency/locking and interruption/cancellation.",
+      "Verify JSON, Arrow/bulk ingest and profiling/EXPLAIN capabilities relevant to Market Flow.",
+      "Verify documented browser/WASM memory/resource constraints and separate them from Leumi-specific unknowns.",
+      "Record Verified / Inferred / Unknown with official references; do not implement a spike."
     ]
   },
   "history": {

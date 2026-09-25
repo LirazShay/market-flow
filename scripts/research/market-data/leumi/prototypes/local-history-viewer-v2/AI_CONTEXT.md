@@ -126,6 +126,9 @@ docs/browser-sql-current-state-audit.md
 docs/browser-sql-requirements-and-acceptance.md
 → consolidated requirements / classifications / end-to-end acceptance behaviors
 
+docs/browser-sql-browser-constraints.md
+→ Browser/Windows/Chromium/origin/lifecycle/persistence/loading/concurrency constraints and research questions
+
 docs/sql-live-analytics-design.md
 → durable design direction
 
