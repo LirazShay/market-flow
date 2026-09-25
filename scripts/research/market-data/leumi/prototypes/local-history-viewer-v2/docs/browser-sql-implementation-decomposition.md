@@ -532,7 +532,7 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Milestone:** M3
 
-**Depends on:** WP-15..WP-19
+**Depends on:** WP-15..WP-19, WP-40
 
 **Scope**
 
@@ -577,7 +577,7 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Milestone:** M4
 
-**Depends on:** WP-21
+**Depends on:** WP-21, WP-41
 
 **Scope**
 
@@ -898,7 +898,7 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Milestone:** M8
 
-**Depends on:** WP-20, WP-29, WP-31, WP-33, WP-35
+**Depends on:** WP-20, WP-29, WP-31, WP-33, WP-35, WP-39, WP-42
 
 **Scope**
 
@@ -1075,7 +1075,7 @@ Phase Q must create the real management layer in GitHub:
 ~~~text
 milestones where useful
 + labels
-+ 38 executable Issues
++ 42 executable Issues
 + dependency/blocker references
 + parent/epic/checklist structure where the available GitHub API supports it
 + navigation from planning docs to the execution structure
@@ -1149,9 +1149,9 @@ The Phase-R red-team review found a previously deferred storage-lifecycle decisi
 
 **Exit:** storage growth has an explicit safe lifecycle; cutover no longer depends on an unresolved retention/export policy.
 
-### Dependency update
+#### Dependency update
 
-WP-36 production cutover additionally depends on WP-39.
+WP-36 production cutover dependency is normalized in the WP-36 `Depends on` field above and includes WP-39.
 ### WP-40 — Implement analytical resource isolation, cancellation and ingest preemption
 
 **Milestone:** M3
@@ -1187,9 +1187,9 @@ WP-36 production cutover additionally depends on WP-39.
 
 **Exit:** arbitrary analytical SQL is resource-isolated so already-running analytics cannot indefinitely starve authoritative market persistence.
 
-### Phase T dependency update
+#### Phase T dependency update
 
-WP-20 analytical-runtime checkpoint additionally depends on WP-40.
+WP-20 analytical-runtime checkpoint dependency is normalized in the WP-20 `Depends on` field above and includes WP-40.
 
 Phase T materialized WP-40 as GitHub Issue #69. WP-20/#48 must not close until WP-40/#69 is complete.
 
@@ -1225,9 +1225,9 @@ Phase T materialized WP-40 as GitHub Issue #69. WP-20/#48 must not close until W
 
 **Exit:** V2 has one browser-enforced runtime/Recorder/storage owner across independent same-origin tabs.
 
-### Phase U dependency update
+#### Phase U dependency update
 
-WP-22 Runtime Controller production orchestration additionally depends on WP-41.
+WP-22 Runtime Controller production orchestration dependency is normalized in the WP-22 `Depends on` field above and includes WP-41.
 
 Phase U materialized WP-41 as GitHub Issue #70. WP-22/#50 must not proceed until WP-41/#70 is complete.
 
@@ -1267,8 +1267,8 @@ Phase U materialized WP-41 as GitHub Issue #70. WP-22/#50 must not proceed until
 
 **Exit:** production Browser SQL has a safe future release/engine/schema upgrade path before initial cutover.
 
-### Phase V dependency update
+#### Phase V dependency update
 
-WP-36 production cutover additionally depends on WP-42.
+WP-36 production cutover dependency is normalized in the WP-36 `Depends on` field above and includes WP-42.
 
 Phase V materialized WP-42 as GitHub Issue #71. WP-36/#64 production cutover must not begin until WP-42/#71 is complete.
