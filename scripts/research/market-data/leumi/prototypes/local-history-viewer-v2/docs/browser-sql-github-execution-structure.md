@@ -81,6 +81,7 @@ Each Epic contains a GitHub checklist of its executable Work Issues.
 | WP-36 | #64 | M8 |
 | WP-37 | #66 | M8 |
 | WP-38 | #67 | M8 |
+| WP-39 | #68 | M8 |
 
 Issue #65 is closed as a duplicate of canonical WP-37 Issue #66 after a connector batch persisted the Issue before returning its result.
 
@@ -118,6 +119,7 @@ The Master and Epic checklists are navigation/roll-up only. They do not replace 
 #57  WP-29  integrated runtime/Viewer checkpoint
 #61  WP-33  shadow/live correctness checkpoint
 #63  WP-35  Windows/Chrome performance gate
+#68  WP-39  storage lifecycle / archive / rollover gate
 #64  WP-36  production authority switch
 #66  WP-37  rollback/roll-forward + live endurance
 #67  WP-38  migration scaffolding removal/final closure
@@ -158,10 +160,10 @@ No manual milestone/label requirement blocks implementation.
 Phase-Q structural verification established:
 
 ~~~text
-open Browser SQL Issues = 47
+open Browser SQL Issues = 48
 Master                    = 1
 Epics                     = 8
-unique executable WPs     = 38
+unique executable WPs     = 39
 missing WP IDs            = 0
 duplicate open WP IDs     = 0
 placeholder Epic links    = 0
@@ -178,3 +180,8 @@ Phase R audits the complete requirements/decision/Issue coverage and implementat
 ~~~text
 docs/browser-sql-final-plan-audit.md
 ~~~
+
+
+## Phase-S extension
+
+The post-Phase-R assurance review added canonical WP-39 / Issue #68 under M8. WP-39 depends on WP-35 and is an additional blocker of WP-36 production cutover. It closes storage retention/archive/rollover lifecycle before implementation handoff.

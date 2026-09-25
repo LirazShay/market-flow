@@ -1,6 +1,8 @@
 # Browser SQL — Final Plan Audit and Implementation Handoff
 
-This is the durable Phase R audit for the Browser SQL migration planning project.
+This is the durable **initial** Phase R audit for the Browser SQL migration planning project.
+
+A later red-team assurance pass found additional material planning gaps before implementation. Therefore the PASS below is historical evidence for the A–R plan, not the final implementation handoff. The post-R assurance phases S–W must complete before the final planning freeze.
 
 It audits the planning contracts and the real GitHub execution graph before implementation handoff.
 
@@ -311,3 +313,8 @@ Pin DuckDB-Wasm and create the engine asset manifest foundation
 ~~~
 
 WP-03 remains the mandatory real-page gate before WP-05+ heavy Browser SQL implementation.
+
+
+## Post-audit assurance extension
+
+The deeper pre-implementation review found that retention/export/backup policy was still deliberately deferred. Phase S closes that gap in `browser-sql-data-lifecycle-retention.md`, D-038 and WP-39/#68. The same review also identified additional assurance topics queued in ROADMAP phases T–W. A new final freeze audit will supersede this initial handoff result.

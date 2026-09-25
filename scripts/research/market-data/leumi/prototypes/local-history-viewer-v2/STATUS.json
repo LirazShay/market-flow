@@ -37,7 +37,7 @@
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
       "milestones": 8,
-      "workPackages": 38,
+      "workPackages": 39,
       "hardGates": 6,
       "criticalEntryGate": "WP-03 live Leumi compatibility PASS blocks WP-05+."
     },
@@ -61,20 +61,19 @@
         28
       ],
       "executableWorkIssues": {
-        "count": 38,
+        "count": 39,
         "first": 29,
-        "last": 67,
+        "last": 68,
         "closedDuplicate": 65,
-        "wp37Canonical": 66
+        "wp37Canonical": 66,
+        "wp39StorageLifecycle": 68
       },
-      "structuralVerification": "47 open Browser SQL Issues = 1 Master + 8 Epics + 38 unique WPs; no missing/duplicate-open WP IDs or placeholder parent links.",
+      "structuralVerification": "48 open Browser SQL Issues = 1 Master + 8 Epics + 39 unique WPs after Phase-S extension; final full structural audit deferred to Phase W.",
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
-      "status": "success",
-      "runId": 36123702087,
-      "commit": "2fa4f0741134df7c8d5bb3338a046f6d0a8c7038",
-      "result": "Phase P decomposition and HOT-context repairs verified green."
+      "status": "verification-pending",
+      "result": "Phase-S repository and execution-graph updates awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
@@ -97,7 +96,7 @@
       "artifact": "docs/browser-sql-data-lifecycle-retention.md",
       "decision": "../../../../../../../docs/project/decisions/D-038.md",
       "policy": "retain-all by default; benchmark-derived storage warning; no automatic history deletion; explicit logical archive + crash-recoverable fresh database epoch rollover.",
-      "implementationOwner": "WP-39 (GitHub Issue to be created/linked in Phase S management update)."
+      "implementationOwner": "WP-39 / GitHub Issue #68"
     }
   },
   "next": {
