@@ -123,6 +123,9 @@ ROADMAP.md
 docs/browser-sql-current-state-audit.md
 → current baseline / retain-replace-gap evidence
 
+docs/browser-sql-requirements-and-acceptance.md
+→ consolidated requirements / classifications / end-to-end acceptance behaviors
+
 docs/sql-live-analytics-design.md
 → durable design direction
 
