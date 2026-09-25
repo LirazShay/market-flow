@@ -49,6 +49,7 @@ Durable decision:
 ../../../../../../../docs/project/decisions/D-029.md
 ../../../../../../../docs/project/decisions/D-030.md
 ../../../../../../../docs/project/decisions/D-031.md
+../../../../../../../docs/project/decisions/D-032.md
 ~~~
 
 Selected target boundary:
@@ -150,6 +151,18 @@ self-contained Market Flow runtime/bookmarklet
 
 Recorder starts only after SQL Authority readiness. Real authenticated-Leumi Bookmarklet/Worker/Wasm/CSP compatibility remains a live-verification gate before cutover.
 
+## Selected Viewer / result-delivery contract
+
+~~~text
+Viewer attach/re-attach
+→ one Runtime Controller bridge
+→ full ViewerStateSnapshot
+→ lightweight stateRevision notifications
+→ resync on every attach/missed-event recovery
+~~~
+
+Viewer never opens DuckDB. Runtime memory holds only a bounded latest-success preview; persisted execution metadata survives restart. Query activation uses expectedActiveQueryVersionId to prevent silent multi-Viewer overwrites.
+
 ## Implemented baseline architecture
 
 ~~~text
@@ -237,6 +250,9 @@ docs/browser-sql-persistence-recovery.md
 
 docs/browser-sql-runtime-delivery.md
 → self-contained Market Flow runtime, bundled DuckDB main JS, pinned Worker/Wasm assets, Blob Worker bootstrap and capability/CSP gate
+
+docs/browser-sql-viewer-result-delivery.md
+→ Viewer attach/re-attach, state snapshots, missed-notification recovery, result preview lifetime and multi-Viewer query-edit concurrency
 
 docs/sql-live-analytics-design.md
 → durable design direction
