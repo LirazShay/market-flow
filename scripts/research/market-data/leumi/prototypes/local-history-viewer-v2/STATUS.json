@@ -74,8 +74,10 @@
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
-      "status": "verification-pending",
-      "result": "Phase-U repository and execution-graph integration awaiting Fast CI."
+      "status": "success",
+      "runId": 36128119733,
+      "commit": "0204bde19c19f00314818ec3e176e7e9be7f0bbe",
+      "result": "Phase U multi-tab ownership planning, WP-41/#70 integration, dependency graph, and HOT-context guards verified green."
     },
     "browserCi": {
       "status": "not-required",
