@@ -440,3 +440,17 @@ Sources:
 - https://github.com/duckdb/duckdb-wasm/blob/main/packages/duckdb-wasm/test/bindings.test.ts
 - https://github.com/duckdb/duckdb-wasm/blob/main/lib/src/webdb.cc
 - https://duckdb.org/docs/current/clients/wasm/query
+
+
+## Phase V storage-version and read-only evidence
+
+Current DuckDB docs state that newer releases are designed to read older database files, while older releases reading files written by newer DuckDB is forward compatibility on a best-effort basis. DuckDB v1.2+ exposes explicit storage-version/compatibility controls and `duckdb_databases()` storage tags. DuckDB-Wasm's current `open()` configuration exposes READ_ONLY/READ_WRITE access modes for OPFS paths. DuckDB also documents whole-database EXPORT/IMPORT and `COPY FROM DATABASE` migration mechanisms.
+
+Planning consequence: rollback must not depend on forward compatibility. Persistence-affecting upgrades use a preserved old DB + side-by-side candidate, and storage compatibility is an explicit release value rather than implicit `latest`.
+
+Sources:
+- https://duckdb.org/docs/current/internals/storage
+- https://duckdb.org/faq
+- https://duckdb.org/docs/current/clients/wasm/instantiation
+- https://duckdb.org/docs/current/sql/statements/export
+- https://duckdb.org/docs/lts/sql/statements/copy

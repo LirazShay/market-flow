@@ -442,3 +442,8 @@ self-contained Market Flow generated runtime
 ## Phase U multi-tab startup extension
 
 Generated runtime startup order is: local singleton reuse → Web Locks capability → fail-fast exclusive V2 runtime-owner acquisition → only then Worker/OPFS/readiness/Recorder. The ownership lock lifetime wraps the complete runtime and is released on clean shutdown only after Recorder/DB/Worker shutdown. Normal runtime never requests `steal:true` and has no localStorage/IndexedDB/heartbeat fallback.
+
+
+## Phase V release compatibility manifest
+
+The generated runtime manifest is a compatibility unit, not only an asset list. It records release/build, exact DuckDB-Wasm package/core/bundle assets, storage_compatibility_target, Market Flow schema/support range and migration_set_id. Startup acquires the Phase-U owner lock, then makes a read-only compatibility decision before any writable DB/provider/scheduler activity. Runtime/Worker/Wasm/migration identities from different releases must never be mixed.

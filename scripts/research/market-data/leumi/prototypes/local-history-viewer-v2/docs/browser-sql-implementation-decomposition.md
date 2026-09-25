@@ -1088,7 +1088,7 @@ Markdown alone is not the final planning deliverable.
 ~~~text
 Phases A–O
 → 8 implementation milestones
-→ 41 executable work packages
+→ 42 executable work packages
 → explicit hard gates
 → test/verification owner per package
 → live Leumi feasibility before heavy implementation
@@ -1230,3 +1230,43 @@ Phase T materialized WP-40 as GitHub Issue #69. WP-20/#48 must not close until W
 WP-22 Runtime Controller production orchestration additionally depends on WP-41.
 
 Phase U materialized WP-41 as GitHub Issue #70. WP-22/#50 must not proceed until WP-41/#70 is complete.
+
+### WP-42 — Implement engine/schema/release upgrade lifecycle and rollback compatibility
+
+**Milestone:** M8
+
+**Depends on:** WP-07, WP-39, WP-41
+
+**Scope**
+
+- extend generated release manifest with runtime/package/core/storage/schema/migration compatibility identities;
+- persist database schema/release/last-writer/storage compatibility metadata;
+- implement read-only compatibility preflight before writable production startup;
+- classify runtime-only compatible releases versus persistence-affecting releases;
+- implement side-by-side candidate creation for engine/storage-target/schema upgrades;
+- apply ordered forward-only schema migrations only to candidate DB;
+- verify candidate CHECKPOINT/reopen/invariants before promotion;
+- promote candidate through crash-recoverable upgrade journal mechanics;
+- retain pre-upgrade DB snapshot and old release for rollback;
+- block older runtime on unsupported newer schema/storage without down migration/reset;
+- prove chosen storage_compatibility_target setting/candidate-copy mechanism in pinned DuckDB-Wasm;
+
+**Acceptance**
+
+- runtime-only identical-persistence release uses read-only preflight before normal reopen;
+- persistence-affecting upgrade never migrates authoritative old production DB in place;
+- failed migration/candidate validation leaves old production snapshot authoritative;
+- unsupported newer schema blocks old runtime without write/reset;
+- storage compatibility target does not silently change with package upgrade;
+- rollback uses old release + old snapshot and never asks old engine to open newer-written DB;
+- upgraded DB remains preserved during rollback for diagnosis/roll-forward;
+- normal software/schema upgrade preserves database_epoch_id;
+- release/Worker/Wasm/schema migration identities cannot be mixed across releases;
+
+**Primary verification:** Node compatibility/migration-state tests + Playwright real OPFS candidate upgrade/rollback/crash recovery + exact pinned DuckDB-Wasm storage/read-only verification
+
+**Exit:** production Browser SQL has a safe future release/engine/schema upgrade path before initial cutover.
+
+### Phase V dependency update
+
+WP-36 production cutover additionally depends on WP-42.

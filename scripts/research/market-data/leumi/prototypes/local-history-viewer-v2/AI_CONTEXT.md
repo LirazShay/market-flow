@@ -36,7 +36,7 @@ authenticated Leumi page
 
 ## Durable decisions
 
-Browser SQL decisions currently include `D-025` through `D-040`.
+Browser SQL decisions currently include `D-025` through `D-041`.
 
 Key execution source:
 
@@ -138,7 +138,9 @@ Storage lifecycle: default retain-all; no automatic history deletion. Explicit a
 
 Analytical resource isolation: user SQL is preemptible; ingest wins; runaway SQL is cancelled/suspended; one complete waiting cycle max.
 
-Cross-tab authority: stable exclusive Web Lock `market-flow:local-history-viewer-v2:runtime-owner` is acquired before Worker/OPFS/provider startup. Second tab is passive; no `steal`, heartbeat lease or BC election. New owner after close/crash must run readiness/recovery.
+Cross-tab authority: stable exclusive Web Lock before Worker/OPFS/provider startup; second tab passive; no steal/heartbeat authority.
+
+Upgrade lifecycle: runtime/package/core/storage/schema are separate identities. Runtime-only compatible release uses read-only preflight. Any persistence-affecting change upgrades a side-by-side candidate; rollback uses preserved old release + old DB snapshot, never old engine on newer-written DB.
 
 ## Navigation
 

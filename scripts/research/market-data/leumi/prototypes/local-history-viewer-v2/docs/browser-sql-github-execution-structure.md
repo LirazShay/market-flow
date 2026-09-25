@@ -199,3 +199,8 @@ Phase T adds WP-40 / Issue #69 under M3 for analytical cancellation/resource iso
 ## Phase-U extension
 
 Phase U adds WP-41 / Issue #70 under M4 for cross-tab runtime ownership with Web Locks. WP-22 / #50 production Runtime Controller orchestration depends on it.
+
+
+## Phase-V extension
+
+Phase V adds WP-42 under M8 for engine/schema/release upgrade compatibility and rollback. Its canonical GitHub Issue is linked after creation; WP-36 production cutover must depend on it.

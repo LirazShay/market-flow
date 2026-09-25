@@ -515,3 +515,8 @@ minimal real-Leumi Worker/Wasm/OPFS probe
 ## Phase U multi-tab ownership verification
 
 Playwright must use two independent same-origin pages/contexts sharing the relevant storage partition to prove one exclusive runtime owner, zero production DB/provider startup in the loser, same-tab repeated-launch reuse, browser release on owner close, readiness before new-owner Recorder start, hidden-tab lock retention, BroadcastChannel-loss non-takeover, blocked behavior when Web Locks unavailable, and absence of `steal:true`. WP-03 additionally performs a sanitized two-tab Web Locks probe on the real authenticated Leumi origin.
+
+
+## Phase V upgrade/release verification
+
+Playwright must cover READ_ONLY startup preflight, runtime-only compatible reopen, side-by-side candidate migration, failed-migration isolation, unsupported-newer-schema blocking, mismatched release/asset manifest rejection, explicit storage-target stability/change, CHECKPOINT/reopen candidate validation, crash at promotion-journal phases, rollback to old release+old snapshot, and preservation of newer DB for roll-forward. The exact pinned Wasm build must prove the chosen candidate copy/export mechanism and storage-compatibility setting.

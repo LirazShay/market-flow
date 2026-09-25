@@ -376,3 +376,8 @@ Do not rely on row DELETE/VACUUM as a guaranteed quota-recovery mechanism. Marke
 ## Phase U owner takeover recovery
 
 Browser release of the cross-tab owner lock after page/agent termination does not imply a clean DB close. Every new owner opens OPFS only after acquiring the lock and executes the normal unclean-session/schema/latest/current/ingest-token/rollover readiness checks before Recorder start. No second tab may inspect/open production DuckDB merely to decide ownership.
+
+
+## Phase V release-upgrade compatibility
+
+Normal startup performs a compatibility decision before writable production use. Runtime-only compatible releases use a READ_ONLY preflight then normal READ_WRITE reopen. Any DuckDB-Wasm/core/storage-target/schema change upgrades a separate candidate DB; the old production DB remains the rollback snapshot. Schema migration never runs in-place on authoritative production and older runtime never down-migrates a newer schema. Full contract: `browser-sql-upgrade-release-lifecycle.md` / D-041.

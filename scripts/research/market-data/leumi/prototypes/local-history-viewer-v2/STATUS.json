@@ -11,14 +11,18 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning-assurance",
-    "substep": "engine-schema-upgrade-lifecycle",
-    "title": "Design Browser SQL engine, schema and release upgrade lifecycle",
+    "substep": "final-planning-assurance-freeze",
+    "title": "Run final Browser SQL planning assurance and freeze",
+    "status": "in-progress"
+  },
+  "currentStage": {
+    "stage": "browser-sql-planning-assurance",
+    "title": "Pre-implementation Browser SQL planning assurance",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "planning phases A-U; Phase-R initial audit red-teamed and extended",
-    "inProgress": "phase V engine/schema/release upgrade lifecycle",
-    "planned": "phase W final planning assurance/freeze"
+    "completed": "planning phases A-V; Phase-R initial audit red-teamed and extended",
+    "inProgress": "phase W final planning assurance/freeze"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
@@ -27,24 +31,12 @@
       "target": "DuckDB-Wasm + persistent OPFS database",
       "gate": "Real authenticated-Leumi WP-03 compatibility probe must pass before WP-05+ heavy implementation."
     },
-    "planningContracts": {
-      "status": "complete-through-phase-O",
-      "decisions": "D-025..D-036",
-      "docsIndex": "docs/README.md"
-    },
     "implementationDecomposition": {
       "status": "complete",
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
-      "milestones": 8,
-      "workPackages": 41,
-      "hardGates": 6,
+      "workPackages": 42,
       "criticalEntryGate": "WP-03 live Leumi compatibility PASS blocks WP-05+."
-    },
-    "contextBudgets": {
-      "aiContext": "4139 < 5000",
-      "status": "compacted after Fast CI found 8454 > 8000",
-      "guardPolicy": "Do not raise HOT-context guards; keep detailed completed-phase evidence in phase docs."
     },
     "githubExecutionRequirement": {
       "status": "complete",
@@ -61,39 +53,20 @@
         28
       ],
       "executableWorkIssues": {
-        "count": 41,
+        "count": 42,
         "first": 29,
-        "last": 70,
         "closedDuplicate": 65,
         "wp37Canonical": 66,
         "wp39StorageLifecycle": 68,
         "wp40ResourceIsolation": 69,
         "wp41MultiTabOwnership": 70
       },
-      "structuralVerification": "50 open Browser SQL Issues = 1 Master + 8 Epics + 41 unique WPs after Phase-U extension; final full structural audit deferred to Phase W.",
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
-    "latestFastCi": {
-      "status": "success",
-      "runId": 36128119733,
-      "commit": "0204bde19c19f00314818ec3e176e7e9be7f0bbe",
-      "result": "Phase U multi-tab ownership planning, WP-41/#70 integration, dependency graph, and HOT-context guards verified green."
-    },
-    "browserCi": {
-      "status": "not-required",
-      "reason": "Phase P changes planning/docs only; no runtime/browser/test implementation changed."
-    },
-    "specImpact": "No runtime code or normative implemented spec changed. Phase R audits planning/execution management only.",
     "finalPlanAudit": {
       "status": "reopened-by-red-team",
       "artifact": "docs/browser-sql-final-plan-audit.md",
-      "structural": "38/38 canonical Work Issues contain all required sections; dependencies exactly match decomposition; graph has no cycles.",
-      "requirements": "FD-01..08, DR-01..40, AB-01..15 and D-025..D-037 all have explicit execution owners.",
-      "correctedDefects": [
-        "Added Target repository areas to all 38 canonical Work Issues.",
-        "Added missing Implementation sequence to canonical WP-37 #66 and WP-38 #67."
-      ],
-      "handoffCandidate": "Blocked until post-R assurance phases S-W complete."
+      "handoffCandidate": "Blocked until Phase W final freeze."
     },
     "dataLifecycle": {
       "status": "complete",
@@ -117,27 +90,40 @@
       "evidence": "Web Locks is same-storage/origin browser coordination; exclusive lock is released on document/agent termination; steal is unsafe for split-brain prevention.",
       "policy": "Acquire stable exclusive V2 runtime-owner lock before Worker/OPFS/provider startup. Second tab passive. No heartbeat/query/BC authority and no steal.",
       "implementationOwner": "WP-41 / GitHub Issue #70"
-    }
+    },
+    "upgradeLifecycle": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-upgrade-release-lifecycle.md",
+      "decision": "../../../../../../../docs/project/decisions/D-041.md",
+      "evidence": "DuckDB newer→older-file backward compatibility is stronger than old→new-file forward compatibility; Wasm exposes READ_ONLY open and DuckDB exposes explicit storage compatibility controls.",
+      "policy": "Read-only compatibility preflight before write. Persistence-affecting releases migrate side-by-side candidate; old DB remains rollback snapshot. No automatic down migration or reliance on old engine reading newer-written DB.",
+      "implementationOwner": "WP-42 (GitHub Issue to be created/linked in Phase V management update)."
+    },
+    "latestFastCi": {
+      "status": "verification-pending",
+      "result": "Phase-V planning changes awaiting Fast CI."
+    },
+    "browserCi": {
+      "status": "not-required",
+      "reason": "Planning/docs/Issue-management only; no runtime/browser implementation changed."
+    },
+    "specImpact": "No runtime code or normative implemented spec changed; planning contracts only."
   },
   "next": {
-    "action": "Planning Phase V: design engine/schema/release upgrade compatibility lifecycle.",
+    "action": "Planning Phase W: final independent planning assurance and freeze.",
     "steps": [
-      "Define how a future DuckDB-Wasm package/core upgrade is qualified against an existing OPFS database before production use.",
-      "Separate app/runtime version, schema version, DuckDB-Wasm package version and DuckDB core/storage compatibility identities.",
-      "Define pre-upgrade backup/archive/rollback boundary and behavior when a newer runtime has already opened/migrated the DB.",
-      "Define forward-only versus reversible schema migrations and failed-upgrade recovery.",
-      "Define release manifest compatibility gates across runtime/assets/schema/DB epoch.",
-      "Add/update execution Issue ownership and cutover blockers; do not implement runtime code in this chat."
+      "Re-run complete requirements→decision→Issue→verification traceability including DR-41..66 and AB-16..32.",
+      "Audit all 42 Work Issues for required body sections, correct dependencies, no cycles and correct hard gates.",
+      "Run fresh-AI dry-run reviews on representative early/core/live/cutover/cleanup Issues.",
+      "Audit unresolved Unknown/Deferred/TBD inventory and ensure every material unknown has an evidence-producing owner or explicit non-goal.",
+      "Audit temporary probe/shadow/candidate/upgrade/rollover cleanup ownership.",
+      "Verify HOT-context budgets, navigation and GitHub execution mapping.",
+      "Run Fast CI. Only a green Phase-W freeze may close this planning chat and hand the next chat to WP-01."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
     "rule": "Completed planning rationale stays in phase docs/decisions, not HOT status.",
     "latestArchive": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json"
-  },
-  "currentStage": {
-    "stage": "browser-sql-planning-assurance",
-    "title": "Pre-implementation Browser SQL planning assurance",
-    "status": "in-progress"
   }
 }

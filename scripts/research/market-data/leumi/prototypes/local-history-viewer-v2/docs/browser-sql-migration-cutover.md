@@ -458,3 +458,8 @@ explicitly close rollback window
 → remove migration scaffolding
 → optional explicit legacy DB deletion
 ~~~
+
+
+## Phase V future release upgrades
+
+Initial cutover is not the only authority transition. After Browser SQL becomes production, persistence-affecting releases use a side-by-side candidate upgrade: preserve pre-upgrade production DB, migrate/verify candidate, promote through a crash-recoverable journal, and keep the old snapshot for rollback. Rollback never opens the newer-written DB with the older engine. Initial production cutover is blocked until this lifecycle is implemented/Browser-verified.

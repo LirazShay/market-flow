@@ -124,6 +124,14 @@ Unknown             = intentionally deferred to later planning/research
 | DR-56 | Ownership correctness must not depend on BroadcastChannel heartbeat, timestamp leases or `navigator.locks.query()` snapshots; those are diagnostic/transport only. | Phase U. |
 | DR-57 | Normal runtime must never use Web Locks `steal:true`; takeover occurs only after browser release of the prior owner lock and subsequent readiness/recovery. | Phase U. |
 | DR-58 | If Web Locks coordination is unavailable in the target Leumi environment, Browser SQL startup is blocked with no weaker election fallback. | Phase U. |
+| DR-59 | Runtime release, DuckDB-Wasm package/core, DuckDB storage compatibility and Market Flow schema versions must be tracked as separate compatibility identities. | Phase V. |
+| DR-60 | Production startup must make a compatibility decision before any writable DB open/migration/provider/scheduler activity; read-only preflight is the baseline. | Phase V. |
+| DR-61 | Any engine/package/storage-target/schema change must upgrade a side-by-side candidate DB rather than migrate the authoritative production DB in place. | Phase V. |
+| DR-62 | Market Flow must not silently opt into DuckDB `latest` storage format; storage_compatibility_target is explicit and changes only through a verified migration. | Phase V. |
+| DR-63 | Application schema migrations are ordered forward-only candidate migrations; unsupported newer schema blocks older runtime without automatic downgrade/reset. | Phase V. |
+| DR-64 | Rollback must use the preserved old release + pre-upgrade DB snapshot and must not depend on old DuckDB opening a newer-written database. | Phase V. |
+| DR-65 | Upgrade promotion must be crash-recoverable and preserve exactly one provable production authority before Recorder resumes. | Phase V. |
+| DR-66 | Generated runtime, Worker/Wasm assets, schema/migration identity and DB compatibility metadata must belong to one coherent release manifest. | Phase V. |
 
 ## 3. Acceptance behaviors
 
@@ -360,6 +368,46 @@ Given the old context is unresponsive but still holds the Web Lock,
 when another tab attempts startup,
 
 then it remains non-owner; no heartbeat expiry or `steal:true` overrides the browser-held lock.
+
+### AB-28 — compatible runtime-only release
+
+Given the new release has the same persistence tuple as the current DB,
+
+when startup runs,
+
+then it performs read-only compatibility preflight before reopening the production DB read-write.
+
+### AB-29 — persistence-affecting upgrade isolation
+
+Given an engine/storage-target/schema change,
+
+when upgrade runs,
+
+then the old production DB remains untouched as rollback snapshot while migration and verification occur only on a side-by-side candidate.
+
+### AB-30 — newer schema blocks older runtime
+
+Given an older retained runtime encounters a production DB with a newer unsupported Market Flow schema,
+
+when startup preflight runs,
+
+then startup blocks without write, reset or automatic downgrade.
+
+### AB-31 — rollback does not rely on forward compatibility
+
+Given a newer release was promoted and rollback is required,
+
+when rollback executes,
+
+then the old release is paired with its preserved pre-upgrade DB snapshot, while the newer DB remains preserved separately.
+
+### AB-32 — verified candidate promotion
+
+Given a persistence-affecting candidate passed migrations, CHECKPOINT, reopen and integrity verification,
+
+when promotion completes,
+
+then exactly that candidate becomes production and Recorder resumes only after compatibility/readiness is re-proven.
 
 ## 4. Assumptions that are not frozen contracts
 

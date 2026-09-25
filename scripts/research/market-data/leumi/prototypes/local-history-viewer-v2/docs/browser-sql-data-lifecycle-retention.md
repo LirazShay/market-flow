@@ -353,3 +353,7 @@ default = retain-all
 + database_epoch_id visibility
 + no false backup guarantee
 ~~~
+
+## Phase V reuse for software upgrades
+
+The Phase-S candidate/journal concepts are also reused for persistence-affecting software/schema/engine upgrades, but a normal software upgrade preserves `database_epoch_id`; only history-retention rollover creates a new epoch. Upgrade rollback selects a preserved pre-upgrade snapshot rather than asking an old DuckDB engine to open a newer-written DB.
