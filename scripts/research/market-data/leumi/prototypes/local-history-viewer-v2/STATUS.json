@@ -80,16 +80,13 @@
     },
     "latestFastCi": {
       "status": "success",
-      "runId": 36139339378,
-      "commit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
-      "result": "WP-02 final implementation state PASS."
+      "runId": 36140304889,
+      "commit": "92a8423d2ab77b6043d78e763a6139ac89c2c7ed",
+      "result": "WP-03 live-gate runbook/status preparation PASS."
     },
     "browserCi": {
-      "status": "success-targeted",
-      "runId": 36139339586,
-      "commit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
-      "result": "WP-02 targeted Chromium probe harness PASS.",
-      "fullBrowserCi": "not-required-by-Issue-30; WP-02 required Node artifact checks + targeted Playwright Chromium probe harness."
+      "status": "not-required-for-wp03-preparation",
+      "reason": "This work unit changed only live-verification documentation and STATUS. The WP-03 acceptance gate itself is live authenticated-Leumi verification."
     },
     "specImpact": "Updated runtime-delivery.spec.md and runtime/README.md for the synthetic Browser SQL compatibility-probe contract, generated artifacts, sanitized stage reporting, probe-only OPFS identity and cleanup boundary.",
     "browserSqlProbe": {
@@ -110,6 +107,8 @@
       "status": "verification-pending",
       "issue": 31,
       "runbook": "docs/browser-sql-live-gate-l1.md",
+      "preparationCommit": "92a8423d2ab77b6043d78e763a6139ac89c2c7ed",
+      "preparationFastCiRunId": 36140304889,
       "result": "Pending direct execution on the real authenticated Leumi origin. Deterministic CI cannot satisfy this gate.",
       "required": "Worker/Wasm/OPFS COMMIT+CHECKPOINT+reopen+page-refresh/relaunch plus two-tab exclusive Web Locks with ifAvailable:true.",
       "blocker": "WP-05+ remains blocked until all required live capabilities are directly Verified."
