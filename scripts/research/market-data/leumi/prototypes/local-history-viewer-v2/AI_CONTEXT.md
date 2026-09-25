@@ -46,6 +46,7 @@ Durable decision:
 ../../../../../../../docs/project/decisions/D-026.md
 ../../../../../../../docs/project/decisions/D-027.md
 ../../../../../../../docs/project/decisions/D-028.md
+../../../../../../../docs/project/decisions/D-029.md
 ~~~
 
 Selected target boundary:
@@ -105,6 +106,21 @@ complete validated cycle
 ~~~
 
 Temporal predecessor rule for horizon H: choose the latest same-security snapshot with `collected_at_ms <= current.collected_at_ms - H*1000`; if none exists, use NULL. current_universe and latest_snapshot advance only inside the same successful transaction.
+
+## Selected SQL execution / scheduler contract
+
+~~~text
+immutable query version
+→ parser-level read-only analytical gate
+→ fixed cadence anchored to activation
+→ no overlapping query executions
+→ missed ticks coalesce
+→ validated cycle commit outranks pending query
+→ streamed result accounting
+→ latest execution kept distinct from latest successful execution
+~~~
+
+Collection cadence and query cadence remain independent. Hard query cancellation is not assumed until verified in the exact pinned DuckDB-Wasm package.
 
 ## Implemented baseline architecture
 
@@ -184,6 +200,9 @@ docs/browser-sql-relational-data-model.md
 
 docs/browser-sql-ingest-enrichment-atomicity.md
 → validated-cycle handoff, bulk ingest boundary, enrichment order, temporal predecessor rule and one-transaction commit contract
+
+docs/browser-sql-execution-scheduler.md
+→ immutable query versions, read-only SQL gate, anchored cadence, no-overlap/coalescing and result/failure semantics
 
 docs/sql-live-analytics-design.md
 → durable design direction

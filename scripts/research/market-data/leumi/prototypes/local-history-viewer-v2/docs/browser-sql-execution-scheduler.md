@@ -408,3 +408,15 @@ immutable SQL version
 → streamed result accounting
 → distinct latest-execution / latest-success state
 ~~~
+
+## 21. Official references
+
+Current planning evidence:
+
+- DuckDB-Wasm query API: https://duckdb.org/docs/current/clients/wasm/query
+- DuckDB-Wasm instantiation/access mode: https://duckdb.org/docs/current/clients/wasm/instantiation
+- DuckDB security overview: https://duckdb.org/docs/current/operations_manual/securing_duckdb/overview
+- DuckDB extension security: https://duckdb.org/docs/current/operations_manual/securing_duckdb/securing_extensions
+- DuckDB configuration settings: https://duckdb.org/docs/current/configuration/overview
+
+These sources establish streaming query support and the available DuckDB security/configuration controls. Parser-level statement classification and hard interruption remain implementation-verification items for the exact pinned DuckDB-Wasm package.

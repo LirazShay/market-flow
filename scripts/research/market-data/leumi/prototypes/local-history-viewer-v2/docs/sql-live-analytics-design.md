@@ -154,7 +154,7 @@ Phase E selected one dedicated SQL Authority Worker owning DuckDB-Wasm + the per
 
 Durable decision: `../../../../../../../docs/project/decisions/D-026.md`.
 
-Phase F selects a snapshot-centric schema with full raw JSON, a small promoted typed set, wide core-horizon link/metric columns and a latest_snapshot pointer table. Phase G now selects one immutable validated-cycle handoff, one bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances current_universe/latest_snapshot only at commit. Scheduler policy, persistence lifecycle and Viewer transport remain later planning work.
+Phase F selects a snapshot-centric schema with full raw JSON, a small promoted typed set, wide core-horizon link/metric columns and a latest_snapshot pointer table. Phase G selects one immutable validated-cycle handoff, one bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances current_universe/latest_snapshot only at commit. Phase H now selects immutable query versions, a parser-level read-only analytical boundary, fixed anchored cadence, no-overlap/coalescing, ingest priority and distinct latest-execution/latest-success state. Persistence lifecycle and Viewer transport remain later planning work.
 
 ## Physical design still open
 

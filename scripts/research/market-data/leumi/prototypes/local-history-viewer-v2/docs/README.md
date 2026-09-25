@@ -13,12 +13,14 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
 | selected Browser SQL relational data model | [browser-sql-relational-data-model.md](browser-sql-relational-data-model.md) |
 | ingest / enrichment / atomicity plan | [browser-sql-ingest-enrichment-atomicity.md](browser-sql-ingest-enrichment-atomicity.md) |
+| SQL execution / scheduler contract | [browser-sql-execution-scheduler.md](browser-sql-execution-scheduler.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
 | single SQL authority durable decision | [D-026](../../../../../../../docs/project/decisions/D-026.md) |
 | relational schema durable decision | [D-027](../../../../../../../docs/project/decisions/D-027.md) |
 | atomic ingest durable decision | [D-028](../../../../../../../docs/project/decisions/D-028.md) |
+| SQL scheduler durable decision | [D-029](../../../../../../../docs/project/decisions/D-029.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 

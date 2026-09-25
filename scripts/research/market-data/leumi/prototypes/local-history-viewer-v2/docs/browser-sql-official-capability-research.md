@@ -342,3 +342,29 @@ Leumi runtime compatibility                  = Unknown until later live/browser 
 ~~~
 
 No implementation spike was created in this phase.
+
+
+## Analytical SQL security controls
+
+Verified in current official DuckDB documentation:
+
+- database open configuration exposes READ_ONLY / READ_WRITE access modes;
+- enable_external_access=false disables external file/network-style data access paths such as COPY and read_csv/read_parquet/read_json from external sources;
+- extension autoinstall/autoload can be disabled;
+- community extensions can be disabled;
+- configuration can be locked after trusted setup.
+
+Important Market Flow consequence:
+
+~~~text
+the authoritative database must remain READ_WRITE for ingest
+→ database-level READ_ONLY mode alone cannot protect user analytical SQL
+→ use application-level parsed statement classification
+  + DuckDB hardening controls
+~~~
+
+Unknown until pinned-package verification:
+
+- exact parser/statement-type inspection mechanism exposed to the Browser-Wasm application;
+- exact supported security-setting ordering in the selected DuckDB-Wasm package;
+- hard query interruption/cancellation.

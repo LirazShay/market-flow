@@ -44,6 +44,7 @@ decisions.md
 | [D-026](decisions/D-026.md) | Browser SQL uses one dedicated SQL Authority Worker | Accepted | browser-sql, duckdb-wasm, opfs, worker, architecture |
 | [D-027](decisions/D-027.md) | Browser SQL uses snapshot-centric wide core-horizon schema | Accepted | browser-sql, schema, snapshot, horizons, data-model |
 | [D-028](decisions/D-028.md) | Validated cycles commit atomically after SQL-side enrichment | Accepted | browser-sql, ingest, atomicity, enrichment, transactions |
+| [D-029](decisions/D-029.md) | Analytical SQL uses immutable versions and a non-overlapping anchored scheduler | Accepted | browser-sql, scheduler, query-runtime, sql-safety, versioning |
 
 ## Fast lookup
 
@@ -73,7 +74,7 @@ Local History Viewer V1
 → D-019, D-020
 
 Browser SQL / V2 analytical migration
-→ D-025, D-026, D-027, D-028, D-001, D-021
+→ D-025, D-026, D-027, D-028, D-029, D-001, D-021
 ~~~
 
 ## Adding a durable decision

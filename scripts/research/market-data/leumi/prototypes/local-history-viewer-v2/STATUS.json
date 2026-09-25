@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "sql-execution-scheduler",
-    "title": "Design the Browser SQL execution and scheduler contract",
+    "substep": "persistence-recovery",
+    "title": "Design Browser SQL persistence, reopen and recovery",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity",
-    "inProgress": "browser-sql-sql-execution-scheduler",
-    "planned": "persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler",
+    "inProgress": "browser-sql-persistence-recovery",
+    "planned": "runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -48,11 +48,15 @@
     "ingestEnrichmentAtomicity": {
       "status": "complete",
       "artifact": "docs/browser-sql-ingest-enrichment-atomicity.md",
-      "decision": "../../../../../../../docs/project/decisions/D-028.md",
-      "result": "Selected immutable complete-cycle handoff, defensive SQL-authority validation, one logical bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances cycle/snapshot/current_universe/latest/session state together.",
-      "temporalRule": "For horizon H choose the latest same-security snapshot with collected_at_ms <= current.collected_at_ms - H*1000; otherwise NULL.",
-      "bulkDirection": "Arrow/equivalent single bulk relation per cycle; no per-security DB RPC contract.",
-      "dealsDelta": "Remains NULL/unpopulated until reset/trading-day semantics of DailyDealsQuantity are explicitly verified."
+      "decision": "../../../../../../../docs/project/decisions/D-028.md"
+    },
+    "sqlExecutionScheduler": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-execution-scheduler.md",
+      "decision": "../../../../../../../docs/project/decisions/D-029.md",
+      "result": "Selected immutable query versions, parser-level read-only analytical gate, fixed cadence anchored to activation, no-overlap with missed-tick coalescing, successful-cycle commit priority, streamed result accounting and distinct latest-execution/latest-success semantics.",
+      "safety": "Authoritative DB remains READ_WRITE for ingest; analytical safety uses statement classification plus DuckDB external-access/extension/configuration hardening where verified in pinned Wasm.",
+      "cancellation": "Hard cancellation remains unverified for public DuckDB-Wasm API; baseline uses observability/no-overlap and requires performance headroom rather than pretending timeout interruption exists."
     },
     "githubExecutionRequirement": {
       "status": "required-later-phase",
@@ -63,17 +67,17 @@
       "status": "selected-for-target-design-pending-implementation-verification",
       "target": "DuckDB-Wasm + persistent OPFS database"
     },
-    "specImpact": "No runtime code or current implementation spec changed. Phase G defines target planning contracts only."
+    "specImpact": "No runtime code or current implementation spec changed. Phase H defines target SQL execution/scheduler planning contracts only."
   },
   "next": {
-    "action": "Planning Phase H: design the SQL execution and scheduler contract.",
+    "action": "Planning Phase I: design persistence, reopen and recovery.",
     "steps": [
-      "Define active query identity/version and deterministic activation semantics.",
-      "Define read-only analytical SQL boundary and separation from admin/schema SQL.",
-      "Choose scheduler clock semantics independently from collection cadence.",
-      "Define deterministic overrun/no-overlap behavior.",
-      "Define query failure state versus latest successful result.",
-      "Define result materialization/safety behavior and cancellation/timeout handling under currently verified DuckDB-Wasm capabilities."
+      "Define OPFS database identity/origin ownership and startup open/reopen sequence.",
+      "Define CHECKPOINT/durability policy based on current DuckDB-Wasm persistence evidence.",
+      "Define persistent runtime state required to restore Recorder/session/query scheduler safely after refresh.",
+      "Define schema-version migration and failed-upgrade behavior without destructive reset.",
+      "Define recovery after interrupted write/query/Worker/page lifecycle events.",
+      "Define quota/storage-exhaustion behavior and corruption/reopen verification boundaries."
     ]
   },
   "history": {
