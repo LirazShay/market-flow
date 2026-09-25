@@ -82,6 +82,7 @@ Each Epic contains a GitHub checklist of its executable Work Issues.
 | WP-37 | #66 | M8 |
 | WP-38 | #67 | M8 |
 | WP-39 | #68 | M8 |
+| WP-40 | #69 | M3 |
 
 Issue #65 is closed as a duplicate of canonical WP-37 Issue #66 after a connector batch persisted the Issue before returning its result.
 
@@ -115,6 +116,7 @@ The Master and Epic checklists are navigation/roll-up only. They do not replace 
 ~~~text
 #31  WP-03  real authenticated-Leumi feasibility gate
 #42  WP-14  SQL authority checkpoint
+#69  WP-40  analytical cancellation/resource-isolation gate
 #48  WP-20  analytical SQL checkpoint
 #57  WP-29  integrated runtime/Viewer checkpoint
 #61  WP-33  shadow/live correctness checkpoint
@@ -160,10 +162,10 @@ No manual milestone/label requirement blocks implementation.
 Phase-Q structural verification established:
 
 ~~~text
-open Browser SQL Issues = 48
+open Browser SQL Issues = 49
 Master                    = 1
 Epics                     = 8
-unique executable WPs     = 39
+unique executable WPs     = 40
 missing WP IDs            = 0
 duplicate open WP IDs     = 0
 placeholder Epic links    = 0
@@ -189,4 +191,4 @@ The post-Phase-R assurance review added canonical WP-39 / Issue #68 under M8. WP
 
 ## Phase-T extension
 
-Phase T adds WP-40 under M3 for analytical cancellation/resource isolation. Its GitHub Issue number is linked after creation; WP-20/M3 closure must depend on it.
+Phase T adds WP-40 / Issue #69 under M3 for analytical cancellation/resource isolation. WP-20 / #48 and M3 closure depend on it.

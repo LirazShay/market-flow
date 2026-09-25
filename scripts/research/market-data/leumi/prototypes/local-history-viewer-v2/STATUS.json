@@ -61,19 +61,20 @@
         28
       ],
       "executableWorkIssues": {
-        "count": 39,
+        "count": 40,
         "first": 29,
-        "last": 68,
+        "last": 69,
         "closedDuplicate": 65,
         "wp37Canonical": 66,
-        "wp39StorageLifecycle": 68
+        "wp39StorageLifecycle": 68,
+        "wp40ResourceIsolation": 69
       },
-      "structuralVerification": "48 open Browser SQL Issues = 1 Master + 8 Epics + 39 unique WPs after Phase-S extension; final full structural audit deferred to Phase W.",
+      "structuralVerification": "49 open Browser SQL Issues = 1 Master + 8 Epics + 40 unique WPs after Phase-T extension; final full structural audit deferred to Phase W.",
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
       "status": "verification-pending",
-      "result": "Phase-T planning changes awaiting Fast CI."
+      "result": "Phase-T repository and execution-graph integration awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
@@ -104,7 +105,7 @@
       "decision": "../../../../../../../docs/project/decisions/D-039.md",
       "upstreamEvidence": "Current upstream exposes pending-query cancelSent/cancelPendingQuery and queryPollingInterval; stream-phase abortion still requires pinned-build connection-recycle proof.",
       "policy": "Validated ingest immediately preempts analytics; hard runtime budget suspends runaway query; cooperative cancellation failure escalates to controlled Worker recovery; one complete waiting cycle maximum.",
-      "implementationOwner": "WP-40 (GitHub Issue to be created/linked in Phase T management update)."
+      "implementationOwner": "WP-40 / GitHub Issue #69"
     }
   },
   "next": {
