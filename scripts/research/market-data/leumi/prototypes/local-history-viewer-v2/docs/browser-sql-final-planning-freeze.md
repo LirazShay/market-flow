@@ -272,6 +272,7 @@ Phase W found and corrected:
 3. old Phase-B/E/H wording still said `deferred/not selected/no cancellation` after later phases resolved those items;
 4. WP-03 did not explicitly own the live two-tab Web Locks probe added by Phase U;
 5. WP-35 did not explicitly own storage-lifecycle and analytical-preemption measurements added by Phases S/T.
+6. final AI_CONTEXT compaction removed the required cold-history discovery pointer; Fast CI caught it and the pointer was restored without weakening HOT-context limits.
 
 Prevention: final freeze requires machine-auditable decomposition, Issue/source parity and fresh-AI dry runs.
 

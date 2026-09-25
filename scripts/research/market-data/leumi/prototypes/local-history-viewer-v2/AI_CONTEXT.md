@@ -125,3 +125,5 @@ performance/capacity → target Windows/Chrome benchmark
 Production cutover is blocked by correctness/shadow/security/performance/storage-lifecycle/upgrade gates.
 
 Read only the current Issue and its linked contracts. Do not preload all planning history.
+
+Cold rationale/history remains discoverable at `docs/history/README.md`; read it only when current Issue evidence is insufficient.

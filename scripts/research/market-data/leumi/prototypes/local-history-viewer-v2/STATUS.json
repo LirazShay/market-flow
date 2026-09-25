@@ -81,7 +81,10 @@
     },
     "latestFastCi": {
       "status": "verification-pending",
-      "result": "Final Phase-W freeze commit awaiting Fast CI."
+      "failedRunId": 36130087064,
+      "failure": "AI_CONTEXT compaction removed required docs/history/README.md discoverability pointer.",
+      "fix": "Restored one cold-history index pointer; guards unchanged.",
+      "result": "Freeze-fix commit awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
