@@ -11,10 +11,10 @@
   },
   "currentFocus": {
     "stage": "browser-sql-implementation",
-    "substep": "wp-02",
-    "title": "Build the minimal Browser SQL live-compatibility probe",
-    "issue": 30,
-    "status": "in-progress"
+    "substep": "wp-03",
+    "title": "Execute Live Gate L-1 on the authenticated Leumi page",
+    "issue": 31,
+    "status": "ready"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Browser SQL planning phases A-W and WP-01 engine identity/manifest foundation",
-    "ready": "WP-02 / Issue #30 in progress",
+    "completed": "Browser SQL planning phases A-W, WP-01 engine identity/manifest foundation, and WP-02 synthetic Browser SQL compatibility probe",
+    "ready": "WP-03 / Issue #31 live authenticated-Leumi gate ready",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
@@ -80,26 +80,43 @@
     },
     "latestFastCi": {
       "status": "success",
-      "runId": 36135275006,
-      "commit": "5c7f53fe3a3c508c93630b19fdafe376b84dae92",
-      "result": "WP-01 final code/dependency state PASS. npm ci verified the exact package-lock; the final lockfile matches the CI-generated artifact byte-for-byte by Git blob SHA."
+      "runId": 36139339378,
+      "commit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
+      "result": "WP-02 final implementation state PASS."
     },
     "browserCi": {
-      "status": "not-required",
-      "reason": "WP-01 implemented deterministic Node dependency/manifest generation only; Issue #29 requires Node/Fast CI. Browser probe verification begins in WP-02."
+      "status": "success-targeted",
+      "runId": 36139339586,
+      "commit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
+      "result": "WP-02 targeted Chromium probe harness PASS.",
+      "fullBrowserCi": "not-required-by-Issue-30; WP-02 required Node artifact checks + targeted Playwright Chromium probe harness."
     },
-    "specImpact": "Updated runtime-delivery.spec.md for exact DuckDB-Wasm package/core identity and deterministic mvp/eh engine asset-manifest contract."
+    "specImpact": "Updated runtime-delivery.spec.md and runtime/README.md for the synthetic Browser SQL compatibility-probe contract, generated artifacts, sanitized stage reporting, probe-only OPFS identity and cleanup boundary.",
+    "browserSqlProbe": {
+      "status": "complete",
+      "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
+      "fastCiRunId": 36139339378,
+      "fastCiResult": "PASS — deterministic probe artifact/build checks green.",
+      "chromiumRunId": 36139339586,
+      "chromiumResult": "PASS — real Chromium verified Blob Worker, exact pinned Worker/Wasm loading, OPFS open, synthetic write, COMMIT, CHECKPOINT, Worker teardown/reopen, marker verification, probe-only cleanup, and sanitized blocked-Worker failure classification.",
+      "liveLeumi": "pending WP-03; deterministic Chromium does not prove authenticated-Leumi CSP/origin/Web-Locks behavior."
+    },
+    "wp02FailureReview": {
+      "status": "resolved",
+      "rootCause": "Initial Chromium run failed at write-commit-checkpoint because JSON string serialization was incorrectly used as SQL string-literal quoting; DuckDB treats double quotes as identifiers.",
+      "prevention": "Probe now uses explicit SQL single-quote escaping. The targeted Chromium persistence test remains as regression coverage, and its assertion includes sanitized failedStage output for faster RCA."
+    }
   },
   "next": {
-    "action": "Complete WP-02 / GitHub Issue #30 with Node artifact checks and Playwright Chromium probe verification; then advance to WP-03 / Issue #31.",
-    "issue": 30,
-    "workPackage": "WP-02",
+    "action": "Execute WP-03 / GitHub Issue #31 on the real authenticated Leumi page using the exact WP-02 generated probe; verify Worker/Wasm/OPFS/reopen plus two-tab exclusive Web Locks before WP-05+.",
+    "issue": 31,
+    "workPackage": "WP-03",
     "rules": [
-      "Read Issue #30 and only its linked contracts plus directly relevant runtime/tests/fixtures.",
-      "Set STATUS to in-progress when meaningful WP-02 implementation begins.",
-      "Keep the probe synthetic and separate from production data/database identity; no provider calls, credentials, account data, cookies, tokens or authenticated dumps.",
-      "Use Node artifact checks plus Playwright Chromium probe verification as required by Issue #30.",
-      "Do not skip WP-03; the real authenticated-Leumi live gate must pass before WP-05+ heavy SQL-authority implementation."
+      "Read Issue #31 and only its linked contracts plus the exact generated WP-02 probe.",
+      "Record only sanitized capability outcomes; never persist cookies, tokens, headers, account data, HAR files or private screenshots.",
+      "Verify injected JS, Blob Worker, exact pinned Worker/Wasm, OPFS write + COMMIT + CHECKPOINT + refresh/relaunch/reopen on the real authenticated Leumi origin.",
+      "Verify the synthetic exclusive Web Lock across two authenticated same-origin tabs with ifAvailable:true; never use steal:true or weaker heartbeat/localStorage/IndexedDB authority fallbacks.",
+      "Classify material outcomes Verified / Inferred / Unknown. WP-05+ remains blocked unless WP-03 passes."
     ]
   },
   "history": {
