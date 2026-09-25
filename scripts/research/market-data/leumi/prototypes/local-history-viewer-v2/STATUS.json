@@ -11,113 +11,69 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "github-execution-structure",
-    "title": "Create the Browser SQL GitHub execution structure",
-    "status": "in-progress"
+    "substep": "implementation-decomposition",
+    "title": "Verify Browser SQL implementation decomposition",
+    "status": "verification-pending"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy, migration-cutover, failure-security-observability, implementation-decomposition",
-    "inProgress": "browser-sql-github-execution-structure",
-    "planned": "final plan audit and implementation handoff"
-  },
-  "currentStage": {
-    "stage": "browser-sql-planning",
-    "title": "Browser SQL migration planning project",
-    "status": "in-progress"
+    "completed": "planning phases A-O",
+    "verificationPending": "phase P implementation decomposition",
+    "planned": "phase Q GitHub execution structure → phase R final plan audit/handoff"
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
-    "viewerResultDelivery": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-viewer-result-delivery.md",
-      "decision": "../../../../../../../docs/project/decisions/D-032.md"
-    },
-    "testingVerificationStrategy": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-testing-verification-strategy.md",
-      "decision": "../../../../../../../docs/project/decisions/D-033.md",
-      "result": "Mapped Browser SQL contracts to Node deterministic tests, real Chromium Worker/Wasm/OPFS/runtime/Viewer integration tests and authenticated-Leumi live verification for real page CSP/origin/provider behavior.",
-      "criticalLiveGate": "Before heavy Browser SQL implementation, prove on the real authenticated Leumi page with synthetic data: injected JS/Bookmarklet → Blob Worker → pinned DuckDB Worker/Wasm → OPFS write+COMMIT+CHECKPOINT → refresh/reopen.",
-      "ci": "Fast Node CI remains normal push/PR gate; targeted Chromium is used during browser TDD/debugging; full Browser CI is required for browser-dependent Stage closure and runtime publication."
-    },
     "engineSelection": {
       "status": "selected-for-target-design-pending-implementation-verification",
-      "target": "DuckDB-Wasm + persistent OPFS database"
+      "target": "DuckDB-Wasm + persistent OPFS database",
+      "gate": "Real authenticated-Leumi WP-03 compatibility probe must pass before WP-05+ heavy implementation."
     },
-    "githubExecutionRequirement": {
-      "status": "required-now",
-      "rule": "Phase Q must create the real GitHub management layer: executable Issues plus useful milestones/labels/dependencies/parent-child or checklist structure supported by the API. Markdown alone is insufficient.",
-      "source": "docs/browser-sql-implementation-decomposition.md"
-    },
-    "specImpact": "No runtime code or normative implemented spec changed. Phase P decomposes the planned target into future implementation work only.",
-    "hotContextBudgetRepair": {
-      "status": "complete",
-      "cause": "Phase D-L summaries accumulated in AI_CONTEXT.md and broke the 5000-character hot-context guard.",
-      "fix": "AI_CONTEXT.md reduced to compact continuation context; detailed phase content remains in phase artifacts. Guard unchanged.",
-      "failedRunId": 36121390846,
-      "greenRunId": 36121635383,
-      "aiContextChars": 4187,
-      "prevention": "Do not append phase summaries to HOT context; add only compact references/contracts and let the existing budget guard enforce the limit."
-    },
-    "performanceBenchmarkStrategy": {
-      "status": "complete",
-      "artifact": "docs/sql-live-engine-benchmark-plan.md",
-      "decision": "../../../../../../../docs/project/decisions/D-034.md",
-      "result": "Selected parameterized synthetic Browser SQL benchmarks covering durable ingest+CHECKPOINT, representative SQL, mixed LIVE load, memory, OPFS growth, reopen and hidden/background behavior with full-session and 2x-session capacity evidence.",
-      "normalHeadroomGates": {
-        "isolatedIngestP95MaxCadenceFraction": 0.25,
-        "isolatedQueryP95MaxCadenceFraction": 0.25,
-        "mixedIngestP95MaxCadenceFraction": 0.5,
-        "mixedQueryP95MaxCadenceFraction": 0.5,
-        "coalescedTicks": 0,
-        "overlappingQueries": 0
-      },
-      "environment": "Primary decision evidence is representative Windows + Chrome/Chromium; Linux CI timings are regression/trend evidence only.",
-      "implementation": "Benchmark harness remains deferred to implementation Issues."
-    },
-    "migrationCutover": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-migration-cutover.md",
-      "decision": "../../../../../../../docs/project/decisions/D-035.md",
-      "authorityTransition": "IndexedDB remains sole authority during optional isolated SQL shadow verification; cutover occurs at an explicit settled-cycle boundary, after which fresh production OPFS is the only active market-history authority.",
-      "legacyHistory": "Initial cutover intentionally does not import IndexedDB history. SQL horizon history starts fresh and warms naturally; the old IndexedDB remains inert as rollback/diagnostic data.",
-      "rollback": "No silent runtime fallback. Explicit rollback preserves OPFS and launches the retained IndexedDB release, accepting a documented gap for the SQL-only interval.",
-      "cleanup": "Legacy IndexedDB and migration scaffolding are not automatically deleted; cleanup happens only after an explicit stabilization decision."
-    },
-    "failureSecurityObservability": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-failure-security-observability.md",
-      "decision": "../../../../../../../docs/project/decisions/D-036.md",
-      "healthPrecedence": "recovery-required > blocked > degraded > healthy; lifecycle remains separate from health.",
-      "retryPolicy": "No generic retry engine. Provider/validation retry at normal cycle cadence; query execution at scheduler cadence; Viewer resyncs; Worker gets one controlled reopen; durability/quota/schema/CSP classes block or require explicit recovery.",
-      "security": "Provider auth remains page-owned. Diagnostics/artifacts exclude cookies, auth headers, session tokens, account numbers, raw authenticated payloads, full SQL text and arbitrary result rows by default.",
-      "observability": "Reuse purpose-specific session/cycle/query records plus bounded sanitized in-memory incidents and an extended Debug Bundle; no external telemetry or unbounded generic event-log baseline."
+    "planningContracts": {
+      "status": "complete-through-phase-O",
+      "decisions": "D-025..D-036",
+      "docsIndex": "docs/README.md"
     },
     "implementationDecomposition": {
-      "status": "complete",
+      "status": "verification-pending",
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
       "milestones": 8,
       "workPackages": 38,
       "hardGates": 6,
-      "criticalEntryGate": "WP-03 real authenticated-Leumi compatibility PASS blocks WP-05+ heavy Browser SQL authority implementation.",
-      "issueRule": "Each WP-01..WP-38 is intended to become one executable GitHub Issue in Phase Q with dependencies, acceptance, test layer, verification and cleanup."
-    }
+      "criticalEntryGate": "WP-03 live Leumi compatibility PASS blocks WP-05+."
+    },
+    "contextBudgets": {
+      "aiContext": "4139 < 5000",
+      "status": "compacted after Fast CI found 8454 > 8000",
+      "guardPolicy": "Do not raise HOT-context guards; keep detailed completed-phase evidence in phase docs."
+    },
+    "githubExecutionRequirement": {
+      "status": "required-after-phase-P-verification",
+      "rule": "Phase Q must create real Issues plus useful milestones/labels/dependencies/parent-child or checklist structure. Markdown alone is insufficient."
+    },
+    "latestFastCi": {
+      "status": "verification-pending",
+      "failedRunId": 36123544434,
+      "failure": "STATUS.json exceeded 8000-character HOT-context budget."
+    },
+    "browserCi": {
+      "status": "not-required",
+      "reason": "Phase P changes planning/docs only; no runtime/browser/test implementation changed."
+    },
+    "specImpact": "No runtime code or normative implemented spec changed."
   },
   "next": {
-    "action": "Planning Phase Q: create the real Browser SQL execution structure in GitHub.",
+    "action": "After Phase P Fast CI is green, advance to Phase Q and create the real GitHub execution structure.",
     "steps": [
-      "Inspect existing repository labels/milestones/open Issues to reuse rather than duplicate management objects.",
-      "Create the 8 Browser SQL milestones where useful.",
-      "Create/reuse the minimal label set from the decomposition.",
-      "Create executable Issues for WP-01 through WP-38 with source-contract links, scope, non-goals, dependencies, acceptance criteria, tests, verification gates, SPEC/docs impact and cleanup.",
-      "Encode blocker/dependency relationships and parent/epic/checklist structure using the GitHub API capabilities actually available.",
-      "Add navigation from the planning artifact to the created GitHub execution structure and update STATUS.json only after creation is verified."
+      "Inspect existing labels/milestones/open Issues for reuse.",
+      "Create/reuse 8 milestones and minimal labels.",
+      "Create WP-01..WP-38 executable Issues.",
+      "Encode dependencies/blockers and supported parent/checklist structure.",
+      "Link planning artifact to GitHub execution objects.",
+      "Update STATUS.json only after structure creation is verified."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
-    "latestArchive": "docs/history/superseded-indexeddb-primary-evaluation/README.md",
-    "rule": "Superseded architecture/research plans remain cold history and do not carry current progress."
+    "rule": "Completed planning rationale stays in phase docs/decisions, not HOT status."
   }
 }
