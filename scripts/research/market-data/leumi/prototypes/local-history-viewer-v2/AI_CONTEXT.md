@@ -1,10 +1,6 @@
 # AI Context — Local History Viewer V2
 
-Compact continuation context only. Live progress/current/next belong only in:
-
-~~~text
-STATUS.json
-~~~
+Compact continuation context only. Live progress/current/next belong only in `STATUS.json`.
 
 Fresh-chat order:
 
@@ -15,82 +11,70 @@ README.md
 → current task docs/code/tests/specs only
 ~~~
 
-Cold history remains discoverable at:
-
-~~~text
-docs/history/README.md
-~~~
+Cold history: `docs/history/README.md`.
 
 ## Baseline vs target
 
-Implemented baseline is still the inherited IndexedDB V2 runtime:
+Implemented baseline:
 
 ~~~text
 authenticated Leumi page
 → Recorder
-→ validated complete cycle
+→ validated cycle
 → atomic IndexedDB persistence
 → metadata-only BroadcastChannel
 → Viewer rereads IndexedDB
 ~~~
 
-Active planning target is Browser-only SQL:
+Planning target:
 
 ~~~text
 authenticated Leumi page
-→ Recorder / Collector
+→ Recorder
 → Runtime Controller
 → one SQL Authority Worker
-   → DuckDB-Wasm
-   → persistent OPFS DuckDB
-   → atomic ingest
-   → SQL scheduler/execution
+   → DuckDB-Wasm + persistent OPFS
+   → atomic ingest + SQL scheduler
 → Viewer client(s)
 ~~~
 
-Production Browser SQL implementation must not begin until planning reaches implementation handoff.
+No Browser SQL implementation until planning reaches implementation handoff.
 
 ## Durable decisions
 
 ~~~text
-D-025 Browser-only SQL boundary
+D-025 Browser-only SQL
 D-026 one SQL Authority Worker
 D-027 snapshot-centric relational model
 D-028 atomic enriched cycle ingest
 D-029 immutable SQL versions + anchored non-overlapping scheduler
-D-030 OPFS checkpointed durability + idempotent recovery
+D-030 checkpointed OPFS durability + idempotent recovery
 D-031 pinned browser runtime delivery
 D-032 Viewer as detachable Runtime Controller client
-D-033 Node + Chromium + live-Leumi verification layers
+D-033 Node + Chromium + live-Leumi verification
 ~~~
 
-Decision files:
-
-~~~text
-../../../../../../../docs/project/decisions/D-025.md ... D-033.md
-~~~
+Files: `../../../../../../../docs/project/decisions/D-025.md` through `D-033.md`.
 
 ## Core target contracts
 
 Data:
-
-- canonical security ID = `String(PaperId or Key)`;
+- security ID = `String(PaperId or Key)`;
 - no hardcoded universe size;
-- preserve full raw MapHeat + full raw Security;
+- preserve full raw MapHeat + Security;
 - preserve `null != 0 != "" != undefined`;
-- snapshot identity is separate from security identity;
-- one successful cycle has `UNIQUE(cycle_id, security_id)`;
-- latest is a pointer to authoritative snapshot history;
-- core horizons: 10, 20, 30, 60, 90, 120, 300, 600 seconds;
-- missing horizon history stays NULL;
-- DealsDelta stays disabled until provider reset semantics are verified.
+- `UNIQUE(cycle_id, security_id)`;
+- latest points to authoritative history;
+- horizons: 10, 20, 30, 60, 90, 120, 300, 600 seconds;
+- unavailable history = NULL;
+- DealsDelta disabled until reset semantics are verified.
 
 Ingest:
 
 ~~~text
-complete validated cycle
+validated cycle
 → immutable handoff
-→ defensive authority validation
+→ authority validation
 → one bulk operation
 → SQL enrichment
 → one transaction
@@ -99,32 +83,28 @@ complete validated cycle
 → acknowledgement
 ~~~
 
-Every handoff carries stable UNIQUE `ingest_token` for retry/recovery reconciliation.
+Stable UNIQUE `ingest_token` handles ambiguous retries.
 
 SQL:
-
-- user analysis changes by immutable query version, not application rebuild;
-- analytical SQL is read-only via statement classification + DuckDB hardening;
-- cadence is anchored and independent from collection cadence;
-- no overlapping queries; missed ticks coalesce;
-- validated cycle commit outranks pending analytical execution;
-- latest execution and latest successful execution stay distinct;
-- hard cancellation is not assumed until proven in pinned Wasm.
+- analysis changes by immutable query version;
+- user SQL is read-only via statement classification + DuckDB hardening;
+- query cadence is independent and anchored;
+- no overlap; missed ticks coalesce;
+- cycle commit outranks pending query;
+- latest execution != latest successful execution;
+- do not assume hard cancellation until pinned Wasm proves it.
 
 Viewer:
-
-- Viewer never opens DuckDB/OPFS;
-- attach/re-attach obtains a full state snapshot;
-- notifications are hints, not authority;
+- never opens DuckDB/OPFS;
+- attach gets full state snapshot;
+- notifications are hints only;
 - multiple Viewers share one runtime;
-- stale SQL editor activation is rejected optimistically;
-- bounded result preview is runtime memory; execution metadata persists.
+- stale SQL editor activation is rejected;
+- result preview is bounded runtime memory; execution metadata persists.
 
 ## Browser/runtime gate
 
-Planned delivery keeps Market Flow code self-contained while exact pinned DuckDB Worker/Wasm assets are loaded through the selected browser bootstrap.
-
-Before heavy Browser SQL implementation, live authenticated-Leumi verification must prove with synthetic data:
+Before heavy Browser SQL implementation, real authenticated-Leumi verification with synthetic data must prove:
 
 ~~~text
 injected JS / Bookmarklet
@@ -136,17 +116,17 @@ injected JS / Bookmarklet
 → reopen + verify
 ~~~
 
-CI cannot substitute for this real-page CSP/origin proof.
+CI cannot substitute for real-page CSP/origin proof.
 
 ## Testing
 
 ~~~text
-pure deterministic logic → Node
+deterministic logic → Node
 Worker/Wasm/OPFS/runtime/Viewer → Playwright Chromium
 real Leumi CSP/origin/provider behavior → live verification
 ~~~
 
-Tests protect observable contracts, not private internals. Fast CI is the normal push/PR gate; Browser CI is used for browser-dependent final states and Stage closure.
+Tests protect observable contracts, not private internals. Fast CI is the normal push/PR gate.
 
 ## Planning map
 
@@ -167,29 +147,18 @@ docs/browser-sql-testing-verification-strategy.md
 docs/sql-live-engine-benchmark-plan.md
 ~~~
 
-Read only the current-phase artifact(s) from this list.
+Read only current-phase artifacts.
 
-## V2 isolation / implementation map
-
-Browser identities:
-
-~~~text
-IndexedDB baseline: market-flow-leumi-history-v2
-channel:            market-flow-leumi-v2
-viewer window:      market-flow-leumi-v2-viewer
-runtime:            market-flow-v2.*
-~~~
-
-Code ownership:
+## Implementation map / isolation
 
 ~~~text
 recorder/   provider collection
-storage/    implemented IndexedDB baseline
-messaging/  implemented BroadcastChannel baseline
-viewer/     implemented Viewer baseline
+storage/    current IndexedDB baseline
+messaging/  current BroadcastChannel baseline
+viewer/     current Viewer baseline
 runtime/    generated runtime/Bookmarklet
-tests/      Node + Playwright + fixtures
-specs/      implemented baseline contracts
+tests/      Node + Playwright
+specs/      current implemented contracts
 ~~~
 
-Do not modify frozen V1 merely to make V2 easier.
+V2 identities remain isolated from frozen V1. Do not modify V1 merely to make V2 easier.

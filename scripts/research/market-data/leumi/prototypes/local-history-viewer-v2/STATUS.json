@@ -52,9 +52,10 @@
     "specImpact": "No runtime code or current implementation spec changed. Phase L defines verification planning/policy only.",
     "hotContextBudgetRepair": {
       "status": "verification-pending",
-      "cause": "Phase D-L planning summaries accumulated in AI_CONTEXT.md until Fast CI context-loading guard failed: 10163 > 5000 characters.",
-      "fix": "Restore AI_CONTEXT.md to compact continuation context and keep detailed planning in phase artifacts; do not raise the guard.",
-      "failedRunId": 36121390846
+      "cause": "Phase D-L summaries accumulated in AI_CONTEXT.md and broke the 5000-character hot-context guard.",
+      "fix": "AI_CONTEXT.md reduced to compact continuation context; detailed phase content remains in phase artifacts. Guard unchanged.",
+      "failedRunId": 36121390846,
+      "aiContextChars": 4187
     }
   },
   "next": {
