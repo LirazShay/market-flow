@@ -154,17 +154,12 @@ Phase E selected one dedicated SQL Authority Worker owning DuckDB-Wasm + the per
 
 Durable decision: `../../../../../../../docs/project/decisions/D-026.md`.
 
-Detailed schema, transaction statements, scheduler policy, persistence lifecycle and Viewer transport remain later planning work.
+Phase F now selects a snapshot-centric schema with full raw JSON, a small promoted typed set, wide core-horizon link/metric columns and a latest_snapshot pointer table. Transaction statements, scheduler policy, persistence lifecycle and Viewer transport remain later planning work.
 
 ## Physical design still open
 
 Not yet decided:
 
-- physical SQL schema;
-- SnapshotId representation;
-- temporal relationship representation;
-- raw JSON vs typed columns;
-- current/latest representation;
 - result delivery;
 - BroadcastChannel role;
 - runtime packaging;

@@ -44,6 +44,7 @@ Durable decision:
 ~~~text
 ../../../../../../../docs/project/decisions/D-025.md
 ../../../../../../../docs/project/decisions/D-026.md
+../../../../../../../docs/project/decisions/D-027.md
 ~~~
 
 Selected target boundary:
@@ -66,6 +67,28 @@ DuckDB-Wasm + OPFS is now the selected planning target inside a single dedicated
 localhost / Node / .NET / native database architecture is outside the current planning scope. Reopening that boundary requires a future explicit architecture decision.
 
 This workstream is currently in a planning-only project. Do not implement Browser SQL until STATUS/ROADMAP advance to implementation handoff.
+
+## Selected relational model
+
+~~~text
+security + current_universe
+cycle
+snapshot
+  + full raw Security JSON
+  + promoted typed analytical fields
+  + prev_H_snapshot_id / last_change_H_pct / deals_delta_H for core horizons
+latest_snapshot → pointer to authoritative snapshot
+~~~
+
+Canonical IDs:
+
+~~~text
+security_id = VARCHAR / String(PaperId or Key)
+snapshot_id = stable BIGINT surrogate
+UNIQUE(cycle_id, security_id)
+~~~
+
+Canonical Market Flow timestamps remain epoch milliseconds. Source missing/null/zero/empty distinctions remain recoverable from raw JSON; promoted SQL NULL alone is not used to infer source presence.
 
 ## Implemented baseline architecture
 
@@ -139,6 +162,9 @@ docs/browser-sql-official-capability-research.md
 
 docs/browser-sql-target-architecture.md
 → selected single-authority Worker topology and startup/ingest/query/recovery flows
+
+docs/browser-sql-relational-data-model.md
+→ selected Cycle/Snapshot/security/latest/raw+typed/wide-horizon relational model
 
 docs/sql-live-analytics-design.md
 → durable design direction

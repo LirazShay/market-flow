@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "relational-data-model",
-    "title": "Design the Browser SQL relational data model",
+    "substep": "ingest-enrichment-atomicity",
+    "title": "Design Browser SQL ingest, enrichment and atomicity",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture",
-    "inProgress": "browser-sql-relational-data-model",
-    "planned": "ingest/atomicity → SQL scheduler → persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model",
+    "inProgress": "browser-sql-ingest-enrichment-atomicity",
+    "planned": "SQL scheduler → persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -35,10 +35,6 @@
       "status": "complete",
       "artifact": "docs/browser-sql-requirements-and-acceptance.md"
     },
-    "browserConstraints": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-browser-constraints.md"
-    },
     "officialCapabilityResearch": {
       "status": "complete",
       "artifact": "docs/browser-sql-official-capability-research.md"
@@ -46,26 +42,42 @@
     "targetArchitecture": {
       "status": "complete",
       "artifact": "docs/browser-sql-target-architecture.md",
-      "decision": "../../../../../../../docs/project/decisions/D-026.md",
-      "result": "Selected one dedicated SQL Authority Worker owning DuckDB-Wasm, the persistent OPFS database, successful-cycle writes, active SQL scheduling and query execution. Recorder remains provider/validation owner; Viewer windows are read-only clients without direct authoritative DB handles.",
-      "baseline": "single-threaded DuckDB-Wasm; coi threading is optional future optimization only"
+      "decision": "../../../../../../../docs/project/decisions/D-026.md"
+    },
+    "relationalDataModel": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-relational-data-model.md",
+      "decision": "../../../../../../../docs/project/decisions/D-027.md",
+      "result": "Selected security/current_universe/cycle/snapshot/latest_snapshot model with stable BIGINT SnapshotId, canonical string SecurityId, full raw Security JSON, promoted typed core fields, wide core-horizon snapshot links/metrics and latest-as-pointer rather than full-row duplication.",
+      "coreHorizonsSeconds": [10,20,30,60,90,120,300,600],
+      "semanticGuardrails": [
+        "UNIQUE(cycle_id, security_id)",
+        "epoch milliseconds are canonical Market Flow timestamps",
+        "source missing/null/zero/empty distinction remains recoverable from raw JSON",
+        "deals_delta remains unpopulated until provider semantics are verified",
+        "missing horizon history remains NULL"
+      ]
+    },
+    "githubExecutionRequirement": {
+      "status": "required-later-phase",
+      "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
+      "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
     "engineSelection": {
       "status": "selected-for-target-design-pending-implementation-verification",
-      "target": "DuckDB-Wasm + persistent OPFS database",
-      "version": "not yet pinned; exact tested package version is deferred to implementation/runtime planning"
+      "target": "DuckDB-Wasm + persistent OPFS database"
     },
-    "specImpact": "No runtime behavior changed. Phase E creates a durable target-architecture decision; existing implementation specs still describe the inherited IndexedDB baseline until implementation migration begins."
+    "specImpact": "No runtime behavior changed. Phase F fixes planning-level schema direction; current implementation specs remain inherited IndexedDB baseline until migration implementation begins."
   },
   "next": {
-    "action": "Planning Phase F: design the relational Browser SQL data model.",
+    "action": "Planning Phase G: design ingest, enrichment and atomicity.",
     "steps": [
-      "Define Cycle, Snapshot and universe/security entities and their identities.",
-      "Define stable SnapshotId and timestamp semantics without hardcoding universe size.",
-      "Choose raw-provider preservation strategy versus typed promoted analytical columns.",
-      "Define current/latest representation and core-horizon temporal relationship model.",
-      "Define SQL types, units and null/missing semantics.",
-      "Define schema-version ownership without entering migration implementation yet."
+      "Define the validated-cycle handoff contract from Recorder to SQL Authority Worker.",
+      "Choose the planned bulk-ingest boundary without implementing it.",
+      "Define the successful-cycle transaction contents including snapshots, latest pointers and cycle metadata.",
+      "Define enrichment order for typed promotions, horizon-link resolution and derived metrics.",
+      "Define rollback/failure behavior and committed-state visibility to scheduled SQL.",
+      "Define current-universe/latest cleanup semantics when membership changes."
     ]
   },
   "history": {
