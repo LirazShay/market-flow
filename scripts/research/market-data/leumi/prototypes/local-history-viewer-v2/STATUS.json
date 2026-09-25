@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "implementation-decomposition",
-    "title": "Decompose Browser SQL target into implementation work packages",
+    "substep": "github-execution-structure",
+    "title": "Create the Browser SQL GitHub execution structure",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy, migration-cutover, failure-security-observability",
-    "inProgress": "browser-sql-implementation-decomposition",
-    "planned": "GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy, migration-cutover, failure-security-observability, implementation-decomposition",
+    "inProgress": "browser-sql-github-execution-structure",
+    "planned": "final plan audit and implementation handoff"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -45,11 +45,11 @@
       "target": "DuckDB-Wasm + persistent OPFS database"
     },
     "githubExecutionRequirement": {
-      "status": "required-later-phase",
-      "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
-      "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
+      "status": "required-now",
+      "rule": "Phase Q must create the real GitHub management layer: executable Issues plus useful milestones/labels/dependencies/parent-child or checklist structure supported by the API. Markdown alone is insufficient.",
+      "source": "docs/browser-sql-implementation-decomposition.md"
     },
-    "specImpact": "No runtime code or normative implemented spec changed. Phase O defines target failure/security/observability planning only.",
+    "specImpact": "No runtime code or normative implemented spec changed. Phase P decomposes the planned target into future implementation work only.",
     "hotContextBudgetRepair": {
       "status": "complete",
       "cause": "Phase D-L summaries accumulated in AI_CONTEXT.md and broke the 5000-character hot-context guard.",
@@ -92,17 +92,27 @@
       "retryPolicy": "No generic retry engine. Provider/validation retry at normal cycle cadence; query execution at scheduler cadence; Viewer resyncs; Worker gets one controlled reopen; durability/quota/schema/CSP classes block or require explicit recovery.",
       "security": "Provider auth remains page-owned. Diagnostics/artifacts exclude cookies, auth headers, session tokens, account numbers, raw authenticated payloads, full SQL text and arbitrary result rows by default.",
       "observability": "Reuse purpose-specific session/cycle/query records plus bounded sanitized in-memory incidents and an extended Debug Bundle; no external telemetry or unbounded generic event-log baseline."
+    },
+    "implementationDecomposition": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-implementation-decomposition.md",
+      "decision": "../../../../../../../docs/project/decisions/D-037.md",
+      "milestones": 8,
+      "workPackages": 38,
+      "hardGates": 6,
+      "criticalEntryGate": "WP-03 real authenticated-Leumi compatibility PASS blocks WP-05+ heavy Browser SQL authority implementation.",
+      "issueRule": "Each WP-01..WP-38 is intended to become one executable GitHub Issue in Phase Q with dependencies, acceptance, test layer, verification and cleanup."
     }
   },
   "next": {
-    "action": "Planning Phase P: decompose the Browser SQL target into implementation work packages.",
+    "action": "Planning Phase Q: create the real Browser SQL execution structure in GitHub.",
     "steps": [
-      "Convert Phases A-O contracts into ordered implementation work packages without creating GitHub Issues yet.",
-      "Place the real authenticated-Leumi compatibility probe before heavy dependent Browser SQL implementation.",
-      "Define package boundaries, prerequisites, public acceptance criteria, test layer and verification gate for each package.",
-      "Separate implementation, migration/shadow, benchmark and cutover work so temporary scaffolding has explicit removal tasks.",
-      "Keep package size small enough that later GitHub Issues are executable by a fresh AI without reconstructing the planning chat.",
-      "Use the decomposition as the input to Phase Q, where Issues/milestones/labels/dependency structure will be created in GitHub."
+      "Inspect existing repository labels/milestones/open Issues to reuse rather than duplicate management objects.",
+      "Create the 8 Browser SQL milestones where useful.",
+      "Create/reuse the minimal label set from the decomposition.",
+      "Create executable Issues for WP-01 through WP-38 with source-contract links, scope, non-goals, dependencies, acceptance criteria, tests, verification gates, SPEC/docs impact and cleanup.",
+      "Encode blocker/dependency relationships and parent/epic/checklist structure using the GitHub API capabilities actually available.",
+      "Add navigation from the planning artifact to the created GitHub execution structure and update STATUS.json only after creation is verified."
     ]
   },
   "history": {

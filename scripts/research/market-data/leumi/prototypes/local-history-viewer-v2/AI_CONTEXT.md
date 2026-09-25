@@ -8,10 +8,8 @@ Fresh-chat order:
 README.md
 → STATUS.json
 → AI_CONTEXT.md
-→ current task docs/code/tests/specs only
+→ current Issue/task docs/code/tests/specs only
 ~~~
-
-Cold history: `docs/history/README.md`.
 
 ## Baseline vs target
 
@@ -20,13 +18,11 @@ Implemented baseline:
 ~~~text
 authenticated Leumi page
 → Recorder
-→ validated cycle
 → atomic IndexedDB persistence
-→ metadata-only BroadcastChannel
 → Viewer rereads IndexedDB
 ~~~
 
-Planning target:
+Planned target:
 
 ~~~text
 authenticated Leumi page
@@ -38,46 +34,35 @@ authenticated Leumi page
 → Viewer client(s)
 ~~~
 
-No Browser SQL implementation until planning reaches implementation handoff.
-
 ## Durable decisions
 
+Browser SQL decisions are `D-025` through `D-037`.
+
+Key execution source:
+
 ~~~text
-D-025 Browser-only SQL
-D-026 one SQL Authority Worker
-D-027 snapshot-centric relational model
-D-028 atomic enriched cycle ingest
-D-029 immutable SQL versions + anchored non-overlapping scheduler
-D-030 checkpointed OPFS durability + idempotent recovery
-D-031 pinned browser runtime delivery
-D-032 Viewer as detachable Runtime Controller client
-D-033 Node + Chromium + live-Leumi verification
-D-034 cadence-relative performance headroom
-D-035 fresh SQL cutover epoch; no legacy-history import
-D-036 scoped failures + worst-active health + sanitized diagnostics
+docs/browser-sql-implementation-decomposition.md
 ~~~
 
-Files: `../../../../../../../docs/project/decisions/D-025.md` through `D-036.md`.
+It defines 8 implementation milestones, 38 issue-ready work packages and hard gates. Phase Q materializes them into GitHub Issues/milestones/labels/dependencies.
 
-## Core target contracts
+## Core contracts
 
 Data:
 - security ID = `String(PaperId or Key)`;
 - no hardcoded universe size;
 - preserve full raw MapHeat + Security;
 - preserve `null != 0 != "" != undefined`;
-- `UNIQUE(cycle_id, security_id)`;
-- latest points to authoritative history;
-- horizons: 10, 20, 30, 60, 90, 120, 300, 600 seconds;
-- unavailable history = NULL;
-- DealsDelta disabled until reset semantics are verified.
+- one successful cycle has unique `(cycle_id, security_id)`;
+- horizons = 10, 20, 30, 60, 90, 120, 300, 600 seconds;
+- missing history = NULL;
+- DealsDelta remains disabled until reset semantics are Verified.
 
 Ingest:
 
 ~~~text
 validated cycle
-→ immutable handoff
-→ authority validation
+→ immutable handoff + stable ingest_token
 → one bulk operation
 → SQL enrichment
 → one transaction
@@ -86,40 +71,50 @@ validated cycle
 → acknowledgement
 ~~~
 
-Stable UNIQUE `ingest_token` handles ambiguous retries.
-
 SQL:
-- analysis changes by immutable query version;
-- user SQL is read-only via statement classification + DuckDB hardening;
-- query cadence is independent and anchored;
+- immutable query versions;
+- read-only analytical statement classification + DuckDB hardening;
+- independent anchored cadence;
 - no overlap; missed ticks coalesce;
 - cycle commit outranks pending query;
-- latest execution != latest successful execution;
-- do not assume hard cancellation until pinned Wasm proves it.
+- latest execution != latest successful execution.
 
 Viewer:
 - never opens DuckDB/OPFS;
-- attach gets full state snapshot;
+- attach/re-attach gets a full state snapshot;
 - notifications are hints only;
 - multiple Viewers share one runtime;
-- stale SQL editor activation is rejected;
-- result preview is bounded runtime memory; execution metadata persists.
+- stale query activation is rejected;
+- result preview is bounded runtime memory.
 
-## Browser/runtime gate
+Persistence/recovery:
+- one origin-scoped OPFS authority;
+- no destructive automatic reset;
+- ambiguous retry reconciles ingest_token;
+- unclosed sessions/executions become interrupted;
+- quota/durability/schema failures block or require recovery.
 
-Before heavy Browser SQL implementation, real authenticated-Leumi verification with synthetic data must prove:
+Health/security:
+- recovery-required > blocked > degraded > healthy;
+- provider auth stays in the authenticated page;
+- no cookies/tokens/auth headers/account data in Worker/Viewer/repo/diagnostics;
+- diagnostics are sanitized/local; no external telemetry baseline.
+
+## Mandatory live gate
+
+Before heavy Browser SQL authority work:
 
 ~~~text
 injected JS / Bookmarklet
 → Blob Worker
-→ pinned DuckDB Worker/Wasm
-→ OPFS write
+→ exact pinned DuckDB Worker/Wasm
+→ probe OPFS write
 → COMMIT + CHECKPOINT
-→ refresh/relaunch
-→ reopen + verify
+→ refresh/reopen
+→ verify
 ~~~
 
-CI cannot substitute for real-page CSP/origin proof.
+This must be directly Verified on the real authenticated Leumi page with synthetic data. CI cannot substitute for it.
 
 ## Testing
 
@@ -129,47 +124,36 @@ Worker/Wasm/OPFS/runtime/Viewer → Playwright Chromium
 real Leumi CSP/origin/provider behavior → live verification
 ~~~
 
-Tests protect observable contracts, not private internals. Fast CI is the normal push/PR gate.
+Fast CI is the normal push/PR gate. Browser-dependent numbered implementation checkpoints require full Browser CI.
 
-Performance: correctness first; normal-profile p95 targets retain ~4x isolated and ~2x mixed cadence headroom. Full-session + 2x-session evidence is required before cutover.
+## Performance / cutover
 
-Cutover: isolated SQL shadow may verify while IndexedDB remains authority; production switches explicitly to fresh OPFS with no legacy import or silent fallback.
+Normal-profile benchmark gates target roughly 4x isolated and 2x mixed cadence headroom; full-session + 2x-session target Windows/Chrome evidence is required before cutover.
 
-Health: scoped failures; recovery-required > blocked > degraded > healthy. Diagnostics are local/sanitized; no external telemetry baseline.
+Cutover starts a fresh SQL history epoch. No initial legacy-history import, permanent dual-write/read, or silent IndexedDB fallback. Legacy IndexedDB remains inert until explicit cleanup.
 
-## Planning map
+## Navigation
+
+Detailed planning/evidence is indexed by:
 
 ~~~text
+docs/README.md
 ROADMAP.md
-docs/browser-sql-current-state-audit.md
-docs/browser-sql-requirements-and-acceptance.md
-docs/browser-sql-browser-constraints.md
-docs/browser-sql-official-capability-research.md
-docs/browser-sql-target-architecture.md
-docs/browser-sql-relational-data-model.md
-docs/browser-sql-ingest-enrichment-atomicity.md
-docs/browser-sql-execution-scheduler.md
-docs/browser-sql-persistence-recovery.md
-docs/browser-sql-runtime-delivery.md
-docs/browser-sql-viewer-result-delivery.md
-docs/browser-sql-testing-verification-strategy.md
-docs/sql-live-engine-benchmark-plan.md
-docs/browser-sql-migration-cutover.md
-docs/browser-sql-failure-security-observability.md
+docs/browser-sql-implementation-decomposition.md
+docs/history/README.md
 ~~~
 
-Read only current-phase artifacts.
+Read only the current Issue/package source docs.
 
-## Implementation map / isolation
+## Implementation ownership
 
 ~~~text
-recorder/   provider collection
-storage/    current IndexedDB baseline
-messaging/  current BroadcastChannel baseline
-viewer/     current Viewer baseline
-runtime/    generated runtime/Bookmarklet
-tests/      Node + Playwright
-specs/      current implemented contracts
+recorder/   authenticated provider collection
+storage/    current IndexedDB baseline; target SQL code lands deliberately
+runtime/    controller/build/Bookmarklet
+viewer/     UI/client
+tests/      Node + Playwright + sanitized fixtures
+specs/      implemented normative contracts
 ~~~
 
-V2 identities remain isolated from frozen V1. Do not modify V1 merely to make V2 easier.
+V2 remains isolated from frozen V1. Do not modify V1 merely to make V2 easier.
