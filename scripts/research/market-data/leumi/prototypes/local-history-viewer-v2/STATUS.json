@@ -61,20 +61,21 @@
         28
       ],
       "executableWorkIssues": {
-        "count": 40,
+        "count": 41,
         "first": 29,
-        "last": 69,
+        "last": 70,
         "closedDuplicate": 65,
         "wp37Canonical": 66,
         "wp39StorageLifecycle": 68,
-        "wp40ResourceIsolation": 69
+        "wp40ResourceIsolation": 69,
+        "wp41MultiTabOwnership": 70
       },
-      "structuralVerification": "49 open Browser SQL Issues = 1 Master + 8 Epics + 40 unique WPs after Phase-T extension; final full structural audit deferred to Phase W.",
+      "structuralVerification": "50 open Browser SQL Issues = 1 Master + 8 Epics + 41 unique WPs after Phase-U extension; final full structural audit deferred to Phase W.",
       "apiLimitation": "Connected GitHub tools do not expose mutation actions to create Milestones, repository Labels, or native sub-issue relationships; hierarchy uses Epics/checklists/direct blocker references."
     },
     "latestFastCi": {
       "status": "verification-pending",
-      "result": "Phase-U planning changes awaiting Fast CI."
+      "result": "Phase-U repository and execution-graph integration awaiting Fast CI."
     },
     "browserCi": {
       "status": "not-required",
@@ -113,7 +114,7 @@
       "decision": "../../../../../../../docs/project/decisions/D-040.md",
       "evidence": "Web Locks is same-storage/origin browser coordination; exclusive lock is released on document/agent termination; steal is unsafe for split-brain prevention.",
       "policy": "Acquire stable exclusive V2 runtime-owner lock before Worker/OPFS/provider startup. Second tab passive. No heartbeat/query/BC authority and no steal.",
-      "implementationOwner": "WP-41 (GitHub Issue to be created/linked in Phase U management update)."
+      "implementationOwner": "WP-41 / GitHub Issue #70"
     }
   },
   "next": {

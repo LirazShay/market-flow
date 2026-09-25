@@ -991,6 +991,7 @@ WP-01
 → WP-40
 → WP-20
 → WP-21
+→ WP-41
 → WP-22
 → WP-23
 → WP-24 LIVE PASS
@@ -1102,7 +1103,7 @@ Phase Q materialized this decomposition into real GitHub Issues.
 ~~~text
 Master: #20
 Epics:  #21..#28
-WP-01..WP-40: see `docs/browser-sql-github-execution-structure.md`
+WP-01..WP-41: see `docs/browser-sql-github-execution-structure.md`
 ~~~
 
 Canonical mapping and the one closed duplicate exception are documented in:
@@ -1227,3 +1228,5 @@ Phase T materialized WP-40 as GitHub Issue #69. WP-20/#48 must not close until W
 ### Phase U dependency update
 
 WP-22 Runtime Controller production orchestration additionally depends on WP-41.
+
+Phase U materialized WP-41 as GitHub Issue #70. WP-22/#50 must not proceed until WP-41/#70 is complete.
