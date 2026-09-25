@@ -25,7 +25,7 @@ V2 was created from an exact Git tree clone of the frozen V1 workstream. V1 is p
 ../local-history-viewer-v1/
 ~~~
 
-Treat inherited V1 code/tests/specs as the starting baseline. Do not assume the old V1 backlog defines V2 requirements.
+Treat inherited V1 code/tests/specs as the implemented starting baseline. Do not assume the old V1 backlog defines V2 requirements.
 
 Historical rationale remains discoverable from:
 
@@ -35,7 +35,34 @@ docs/history/README.md
 
 Read cold history only when the current task needs it.
 
-## Baseline architecture
+## Current planning target
+
+The implemented runtime is still the inherited IndexedDB baseline, but the active **planning target** is Browser-only SQL.
+
+Durable decision:
+
+~~~text
+../../../../../../../docs/project/decisions/D-025.md
+~~~
+
+Target boundary:
+
+~~~text
+authenticated Leumi browser
+→ Collector
+→ Browser SQL engine
+→ persistent browser SQL database
+→ scheduled user-defined SQL
+→ results
+~~~
+
+DuckDB-Wasm is the leading browser-engine candidate, not yet a verified/selected implementation.
+
+localhost / Node / .NET / native database architecture is outside the current planning scope. Reopening that boundary requires a future explicit architecture decision.
+
+This workstream is currently in a planning-only project. Do not implement Browser SQL until STATUS/ROADMAP advance to implementation handoff.
+
+## Implemented baseline architecture
 
 ~~~text
 authenticated Leumi browser tab
@@ -58,7 +85,7 @@ runtime        market-flow-v2.runtime.js
 bookmarklet    market-flow-v2.bookmarklet.txt
 ~~~
 
-The internal browser globals are still inherited as `window.MarketFlow*`. V1 and V2 must not both be injected into the same browsing context without refresh. Concurrent use in separate tabs is compatible with the isolated persistent namespaces above.
+The internal browser globals are still inherited as `window.MarketFlow*`. V1 and V2 must not both be injected into the same browsing context without refresh. Separate tabs remain isolated by persistent/runtime identity.
 
 ## Inherited critical invariants
 
@@ -72,7 +99,7 @@ Until V2 deliberately changes a contract:
 - complete-cycle validation precedes persistence;
 - successful cycle persistence is atomic across `cycles + history + latest + meta`;
 - API / validation / DB failure must not leave partial `latest` or `history`;
-- IndexedDB remains source of truth and BroadcastChannel remains notification-only.
+- IndexedDB remains source of truth and BroadcastChannel remains notification-only **for the currently implemented baseline until an intentionally specified migration changes authority**.
 
 ## Implementation map
 
@@ -83,13 +110,29 @@ messaging/  BroadcastChannel contract
 viewer/     current/history UI + diagnostics
 runtime/    generated runtime + Bookmarklet
 debug/      sanitized Debug Bundle
-specs/      durable contracts
+specs/      implemented baseline contracts
 tests/      unit + Playwright + fixtures
+~~~
+
+## Planning map
+
+~~~text
+ROADMAP.md
+→ planning phases/order
+
+docs/browser-sql-current-state-audit.md
+→ current baseline / retain-replace-gap evidence
+
+docs/sql-live-analytics-design.md
+→ durable design direction
+
+docs/sql-live-engine-benchmark-plan.md
+→ benchmark planning requirements
 ~~~
 
 ## V2 change rule
 
-For each V2 behavior change:
+For future V2 behavior changes:
 
 ~~~text
 requirement / observable contract
@@ -99,5 +142,7 @@ requirement / observable contract
 → required verification
 → STATUS.json update
 ~~~
+
+During the current planning project, documentation/research/design may change, but production/runtime implementation must not begin.
 
 Do not modify frozen V1 merely to make V2 development easier.
