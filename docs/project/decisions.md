@@ -41,6 +41,7 @@ decisions.md
 | [D-023](decisions/D-023.md) | Progressive context loading with preserved cold history | Accepted | ai-context, navigation, history, efficiency |
 | [D-024](decisions/D-024.md) | Repository self-maintenance is part of every change | Accepted | maintenance, hygiene, source-of-truth, ai-workflow |
 | [D-025](decisions/D-025.md) | Market Flow V2 analytical architecture is Browser-only SQL | Accepted | browser-sql, architecture, local-history-viewer-v2 |
+| [D-026](decisions/D-026.md) | Browser SQL uses one dedicated SQL Authority Worker | Accepted | browser-sql, duckdb-wasm, opfs, worker, architecture |
 
 ## Fast lookup
 
@@ -70,7 +71,7 @@ Local History Viewer V1
 → D-019, D-020
 
 Browser SQL / V2 analytical migration
-→ D-025, D-001, D-021
+→ D-025, D-026, D-001, D-021
 ~~~
 
 ## Adding a durable decision

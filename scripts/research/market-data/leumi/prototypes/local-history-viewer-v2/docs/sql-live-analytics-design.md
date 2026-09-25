@@ -148,6 +148,14 @@ Collector cadence and SQL cadence remain separate concepts.
 
 User analytical SQL should be isolated from schema/admin mutation unless a future explicit requirement changes that rule.
 
+## Selected runtime topology
+
+Phase E selected one dedicated SQL Authority Worker owning DuckDB-Wasm + the persistent OPFS database, successful-cycle writes, active SQL scheduling and query execution. Viewer windows are read-only clients through the runtime bridge and do not open independent authoritative DB handles.
+
+Durable decision: `../../../../../../../docs/project/decisions/D-026.md`.
+
+Detailed schema, transaction statements, scheduler policy, persistence lifecycle and Viewer transport remain later planning work.
+
 ## Physical design still open
 
 Not yet decided:
@@ -157,7 +165,6 @@ Not yet decided:
 - temporal relationship representation;
 - raw JSON vs typed columns;
 - current/latest representation;
-- DB/Worker ownership;
 - result delivery;
 - BroadcastChannel role;
 - runtime packaging;

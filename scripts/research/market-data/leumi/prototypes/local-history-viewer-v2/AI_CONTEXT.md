@@ -43,20 +43,25 @@ Durable decision:
 
 ~~~text
 ../../../../../../../docs/project/decisions/D-025.md
+../../../../../../../docs/project/decisions/D-026.md
 ~~~
 
-Target boundary:
+Selected target boundary:
 
 ~~~text
-authenticated Leumi browser
-→ Collector
-→ Browser SQL engine
-→ persistent browser SQL database
-→ scheduled user-defined SQL
-→ results
+authenticated Leumi page
+→ Recorder / Collector
+→ Runtime Controller
+→ dedicated SQL Authority Worker
+   → DuckDB-Wasm
+   → persistent OPFS DuckDB database
+   → atomic successful-cycle commits
+   → active SQL scheduler + query execution
+→ Runtime Controller
+→ Viewer client(s)
 ~~~
 
-DuckDB-Wasm is the leading browser-engine candidate, not yet a verified/selected implementation.
+DuckDB-Wasm + OPFS is now the selected planning target inside a single dedicated SQL Authority Worker. Exact package version and implementation suitability remain later verification work.
 
 localhost / Node / .NET / native database architecture is outside the current planning scope. Reopening that boundary requires a future explicit architecture decision.
 
@@ -131,6 +136,9 @@ docs/browser-sql-browser-constraints.md
 
 docs/browser-sql-official-capability-research.md
 → current official DuckDB-Wasm/OPFS/Worker/Arrow/memory capability evidence and remaining unknowns
+
+docs/browser-sql-target-architecture.md
+→ selected single-authority Worker topology and startup/ingest/query/recovery flows
 
 docs/sql-live-analytics-design.md
 → durable design direction

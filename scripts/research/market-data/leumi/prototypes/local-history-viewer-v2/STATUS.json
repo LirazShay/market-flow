@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "target-architecture",
-    "title": "Design the Browser SQL target architecture from verified constraints and capabilities",
+    "substep": "relational-data-model",
+    "title": "Design the Browser SQL relational data model",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, browser-sql-current-state-audit, browser-sql-requirements-consolidation, browser-sql-browser-constraints, browser-sql-official-capability-research",
-    "inProgress": "browser-sql-target-architecture",
-    "planned": "relational model → ingest/atomicity → SQL scheduler → persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture",
+    "inProgress": "browser-sql-relational-data-model",
+    "planned": "ingest/atomicity → SQL scheduler → persistence/recovery → runtime delivery → viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -29,11 +29,7 @@
   "verification": {
     "baselineSource": {
       "sourceWorkstream": "local-history-viewer-v1",
-      "result": "V1 remains the frozen verified reference for browser collection, integrity, atomic persistence behavior, viewer recovery and browser runtime patterns."
-    },
-    "planningBootstrap": {
-      "status": "current-state-audit-complete",
-      "auditArtifact": "docs/browser-sql-current-state-audit.md"
+      "result": "V1 remains the frozen verified reference for browser collection and integrity behavior."
     },
     "requirementsConsolidation": {
       "status": "complete",
@@ -45,37 +41,31 @@
     },
     "officialCapabilityResearch": {
       "status": "complete",
-      "artifact": "docs/browser-sql-official-capability-research.md",
-      "researchDate": "2026-09-25",
-      "result": "Official current sources verify in-browser SQL, Worker execution, OPFS persistence capability, Arrow ingestion, required SQL features and documented Wasm constraints. Version-specific OPFS regression, multi-context concurrency, Leumi CSP compatibility, query cancellation and Market Flow-scale performance remain explicit unknowns.",
-      "keyGuardrails": [
-        "Design for the single-threaded Wasm path first; coi threading is conditional and experimental.",
-        "Pin an exact tested duckdb-wasm version; do not float npm latest for persistence-critical use.",
-        "Require CHECKPOINT plus reopen/durability verification before OPFS becomes authoritative.",
-        "Do not assume multi-instance/cross-tab OPFS concurrency.",
-        "Do not depend on hard query cancellation until a Wasm API is verified."
-      ]
+      "artifact": "docs/browser-sql-official-capability-research.md"
     },
-    "architectureConstraint": {
-      "status": "accepted-browser-only",
-      "decision": "../../../../../../../docs/project/decisions/D-025.md"
+    "targetArchitecture": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-target-architecture.md",
+      "decision": "../../../../../../../docs/project/decisions/D-026.md",
+      "result": "Selected one dedicated SQL Authority Worker owning DuckDB-Wasm, the persistent OPFS database, successful-cycle writes, active SQL scheduling and query execution. Recorder remains provider/validation owner; Viewer windows are read-only clients without direct authoritative DB handles.",
+      "baseline": "single-threaded DuckDB-Wasm; coi threading is optional future optimization only"
     },
     "engineSelection": {
-      "status": "leading-candidate-supported-by-research-not-yet-implementation-verified",
-      "leadingCandidate": "DuckDB-Wasm with persistent browser storage",
-      "note": "Capability research supports proceeding to target architecture. Exact package version and production suitability remain later verification decisions."
+      "status": "selected-for-target-design-pending-implementation-verification",
+      "target": "DuckDB-Wasm + persistent OPFS database",
+      "version": "not yet pinned; exact tested package version is deferred to implementation/runtime planning"
     },
-    "specImpact": "No runtime behavior or normative Browser SQL spec changed. Phase D is research/planning evidence only."
+    "specImpact": "No runtime behavior changed. Phase E creates a durable target-architecture decision; existing implementation specs still describe the inherited IndexedDB baseline until implementation migration begins."
   },
   "next": {
-    "action": "Planning Phase E: design the Browser SQL target architecture.",
+    "action": "Planning Phase F: design the relational Browser SQL data model.",
     "steps": [
-      "Choose the simplest single-authority browser topology for Collector, SQL Worker/database owner, scheduler and Viewer/result delivery.",
-      "Design for the single-threaded DuckDB-Wasm baseline; treat coi threading only as optional future optimization.",
-      "Preserve complete-cycle atomic visibility and one authoritative market-history source.",
-      "Decide where query execution and result delivery live without assuming unsupported cross-tab OPFS concurrency.",
-      "Define startup, normal ingest, scheduled query, query failure, Viewer refresh and recovery sequence flows.",
-      "Keep exact relational schema and detailed persistence/scheduler policy for their dedicated later phases."
+      "Define Cycle, Snapshot and universe/security entities and their identities.",
+      "Define stable SnapshotId and timestamp semantics without hardcoding universe size.",
+      "Choose raw-provider preservation strategy versus typed promoted analytical columns.",
+      "Define current/latest representation and core-horizon temporal relationship model.",
+      "Define SQL types, units and null/missing semantics.",
+      "Define schema-version ownership without entering migration implementation yet."
     ]
   },
   "history": {
