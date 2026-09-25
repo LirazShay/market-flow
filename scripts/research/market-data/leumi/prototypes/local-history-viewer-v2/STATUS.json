@@ -14,16 +14,16 @@
     "substep": "wp-01",
     "title": "Pin DuckDB-Wasm and create the engine asset manifest foundation",
     "issue": 29,
-    "status": "ready"
+    "status": "in-progress"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
     "title": "Execute frozen Browser SQL implementation plan",
-    "status": "ready"
+    "status": "in-progress"
   },
   "stageSummary": {
     "completed": "Browser SQL planning phases A-W, including final assurance/freeze",
-    "ready": "WP-01 / Issue #29",
+    "ready": "WP-01 / Issue #29 in progress",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
@@ -89,7 +89,7 @@
     "specImpact": "No runtime code or currently implemented normative behavior changed during planning freeze."
   },
   "next": {
-    "action": "Start a new implementation chat from main and execute WP-01 / GitHub Issue #29.",
+    "action": "Complete WP-01 / GitHub Issue #29, verify Fast CI, then advance to WP-02 / Issue #30.",
     "issue": 29,
     "workPackage": "WP-01",
     "rules": [
