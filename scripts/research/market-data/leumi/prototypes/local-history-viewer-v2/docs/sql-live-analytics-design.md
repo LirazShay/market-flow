@@ -154,7 +154,7 @@ Phase E selected one dedicated SQL Authority Worker owning DuckDB-Wasm + the per
 
 Durable decision: `../../../../../../../docs/project/decisions/D-026.md`.
 
-Phase F selects a snapshot-centric schema with full raw JSON, a small promoted typed set, wide core-horizon link/metric columns and a latest_snapshot pointer table. Phase G selects one immutable validated-cycle handoff, one bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances current_universe/latest_snapshot only at commit. Phase H now selects immutable query versions, a parser-level read-only analytical boundary, fixed anchored cadence, no-overlap/coalescing, ingest priority and distinct latest-execution/latest-success state. Phase I now selects one origin-scoped OPFS authority, COMMIT → CHECKPOINT → acknowledgement for durable market cycles, ingest-token reconciliation and non-destructive reopen/schema/quota recovery. Viewer transport remains later planning work.
+Phase F selects a snapshot-centric schema with full raw JSON, a small promoted typed set, wide core-horizon link/metric columns and a latest_snapshot pointer table. Phase G selects one immutable validated-cycle handoff, one bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances current_universe/latest_snapshot only at commit. Phase H now selects immutable query versions, a parser-level read-only analytical boundary, fixed anchored cadence, no-overlap/coalescing, ingest priority and distinct latest-execution/latest-success state. Phase I selects one origin-scoped OPFS authority, COMMIT → CHECKPOINT → acknowledgement for durable market cycles, ingest-token reconciliation and non-destructive reopen/schema/quota recovery. Phase J now selects a generated self-contained Market Flow runtime with bundled pinned DuckDB main JS, exact versioned external Worker/Wasm assets, Blob Worker bootstrap under the page origin and an explicit CSP/capability gate. Viewer transport remains later planning work.
 
 ## Physical design still open
 
@@ -162,7 +162,6 @@ Not yet decided:
 
 - result delivery;
 - BroadcastChannel role;
-- runtime packaging;
 - migration of existing IndexedDB history;
 - retention/export;
 - cancellation/result-size policy.

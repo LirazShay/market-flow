@@ -46,6 +46,7 @@ decisions.md
 | [D-028](decisions/D-028.md) | Validated cycles commit atomically after SQL-side enrichment | Accepted | browser-sql, ingest, atomicity, enrichment, transactions |
 | [D-029](decisions/D-029.md) | Analytical SQL uses immutable versions and a non-overlapping anchored scheduler | Accepted | browser-sql, scheduler, query-runtime, sql-safety, versioning |
 | [D-030](decisions/D-030.md) | OPFS durability uses checkpointed batches and idempotent recovery | Accepted | browser-sql, opfs, persistence, recovery, checkpoint, idempotency |
+| [D-031](decisions/D-031.md) | Browser SQL delivery keeps Market Flow self-contained and pins external engine assets | Accepted | browser-sql, runtime, bookmarklet, wasm, worker, delivery, csp |
 
 ## Fast lookup
 
@@ -75,7 +76,7 @@ Local History Viewer V1
 → D-019, D-020
 
 Browser SQL / V2 analytical migration
-→ D-025, D-026, D-027, D-028, D-029, D-030, D-001, D-021
+→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-001, D-021
 ~~~
 
 ## Adding a durable decision

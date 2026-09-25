@@ -394,3 +394,35 @@ Official sources:
 - https://duckdb.org/docs/current/clients/wasm/overview
 - https://www.npmjs.com/package/@duckdb/duckdb-wasm
 - https://duckdb.org/2026/09/18/opfs-wasm
+## Runtime-delivery evidence carried into Phase J
+
+Current official DuckDB-Wasm deployment/instantiation documentation verifies:
+
+- the main library can be bundled with the application;
+- mvp and eh Worker/Wasm bundles can be selected by browser capability;
+- the documented CDN pattern creates a Blob Worker wrapper that imports the remote Worker asset;
+- Worker and Wasm locations are explicit bundle configuration;
+- coi is optional and requires cross-origin isolation.
+
+Current MDN CSP/Worker documentation verifies:
+
+- worker-src controls Worker source locations with fallback to child-src/script-src/default-src;
+- blob: Workers require CSP permission for blob: where a restrictive policy applies;
+- WebAssembly execution can be restricted by script-src and wasm-unsafe-eval policy;
+- Blob Worker URLs inherit the creating document origin.
+
+Planning consequence:
+
+~~~text
+bundle Market Flow + DuckDB main JS
+→ load exact pinned Worker/Wasm assets
+→ prove Worker/Wasm/OPFS in actual page before READY
+→ fail explicitly when policy blocks a required capability
+~~~
+
+Official references:
+- https://duckdb.org/docs/current/clients/wasm/instantiation
+- https://duckdb.org/docs/current/clients/wasm/deploying_duckdb_wasm
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/worker-src
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src
+- https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker

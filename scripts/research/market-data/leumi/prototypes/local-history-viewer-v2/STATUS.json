@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "runtime-delivery-browser-integration",
-    "title": "Design Browser SQL runtime delivery and browser integration",
+    "substep": "viewer-result-delivery",
+    "title": "Design Browser SQL Viewer and result-delivery contract",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery",
-    "inProgress": "browser-sql-runtime-delivery-browser-integration",
-    "planned": "viewer/results → testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration",
+    "inProgress": "browser-sql-viewer-result-delivery",
+    "planned": "testing → benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -32,29 +32,18 @@
       "artifact": "docs/browser-sql-target-architecture.md",
       "decision": "../../../../../../../docs/project/decisions/D-026.md"
     },
-    "relationalDataModel": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-relational-data-model.md",
-      "decision": "../../../../../../../docs/project/decisions/D-027.md"
-    },
-    "ingestEnrichmentAtomicity": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-ingest-enrichment-atomicity.md",
-      "decision": "../../../../../../../docs/project/decisions/D-028.md"
-    },
-    "sqlExecutionScheduler": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-execution-scheduler.md",
-      "decision": "../../../../../../../docs/project/decisions/D-029.md"
-    },
     "persistenceRecovery": {
       "status": "complete",
       "artifact": "docs/browser-sql-persistence-recovery.md",
-      "decision": "../../../../../../../docs/project/decisions/D-030.md",
-      "result": "Selected one origin-scoped OPFS database, exact pinned/verified DuckDB-Wasm artifact, market-cycle durability boundary COMMIT→CHECKPOINT→acknowledgement, UNIQUE ingest_token reconciliation, explicit persistent/best-effort browser-storage state, non-destructive schema/reopen recovery and explicit storage-blocked behavior.",
-      "sessionRecovery": "Unclosed running recording sessions become interrupted without fabricated stop time; a new session starts after readiness.",
-      "schedulerRecovery": "Active query/version and original cadence anchor are restored; downtime ticks coalesce to at most one pending execution.",
-      "quota": "Quota/storage failures withhold success and block further successful recording; no silent history deletion."
+      "decision": "../../../../../../../docs/project/decisions/D-030.md"
+    },
+    "runtimeDelivery": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-runtime-delivery.md",
+      "decision": "../../../../../../../docs/project/decisions/D-031.md",
+      "result": "Selected self-contained Market Flow generated runtime/Bookmarklet with bundled pinned DuckDB main JS, exact versioned external mvp/eh Worker+Wasm assets, Blob SQL Worker under page origin, explicit capability/CSP preflight and no silent engine/authority fallback.",
+      "buildDirection": "Current source concatenation evolves later into deterministic bundling capable of resolving the pinned DuckDB main JS package; generated runtime + Bookmarklet + inspection manifest remain derived artifacts.",
+      "liveGate": "Real authenticated-Leumi Bookmarklet, blob Worker, remote Worker asset, Wasm compile/fetch and OPFS compatibility remain explicit live-verification requirements before cutover."
     },
     "engineSelection": {
       "status": "selected-for-target-design-pending-implementation-verification",
@@ -66,17 +55,17 @@
       "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
       "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
-    "specImpact": "No runtime code or current implementation spec changed. Phase I defines target persistence/recovery planning contracts and adds ingest-token recovery identity."
+    "specImpact": "No runtime code or current implementation spec changed. Phase J defines target runtime delivery/browser-integration planning contracts only."
   },
   "next": {
-    "action": "Planning Phase J: design runtime delivery and authenticated-browser integration.",
+    "action": "Planning Phase K: design Viewer and result delivery.",
     "steps": [
-      "Define how pinned DuckDB-Wasm JS/Worker/Wasm assets are delivered under the authenticated Leumi page constraints.",
-      "Choose the browser-only replacement/extension of the current self-contained Bookmarklet packaging without assuming CSP compatibility.",
-      "Define Runtime Controller and SQL Worker bootstrapping/ownership lifecycle.",
-      "Define feature/capability checks and explicit startup failure behavior.",
-      "Define generated-source/build artifacts and repository ownership without committing implementation dependencies yet.",
-      "Keep Viewer/result messaging details for Phase K."
+      "Define Viewer attachment/re-attachment to one Runtime Controller without direct DuckDB ownership.",
+      "Define result/status/error message contracts and recovery when notifications are missed.",
+      "Define SQL editor/query activation control surface boundaries without implementing UI.",
+      "Define latest execution, latest successful result, truncation and diagnostics presentation contracts.",
+      "Define multi-Viewer behavior and Viewer close/reopen semantics.",
+      "Keep detailed tests for Phase L."
     ]
   },
   "history": {

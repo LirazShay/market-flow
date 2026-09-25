@@ -48,6 +48,7 @@ Durable decision:
 ../../../../../../../docs/project/decisions/D-028.md
 ../../../../../../../docs/project/decisions/D-029.md
 ../../../../../../../docs/project/decisions/D-030.md
+../../../../../../../docs/project/decisions/D-031.md
 ~~~
 
 Selected target boundary:
@@ -136,6 +137,19 @@ one origin-scoped OPFS DuckDB authority
 
 Unclean recording sessions and running query executions are marked interrupted on reopen; active query cadence keeps its original anchor and downtime ticks coalesce to at most one pending execution.
 
+## Selected runtime delivery contract
+
+~~~text
+self-contained Market Flow runtime/bookmarklet
++ bundled pinned DuckDB main JS
++ exact versioned external mvp/eh Worker + Wasm assets
++ Blob SQL Worker under the authenticated page origin
++ explicit CSP/capability preflight
++ no silent fallback/version switching
+~~~
+
+Recorder starts only after SQL Authority readiness. Real authenticated-Leumi Bookmarklet/Worker/Wasm/CSP compatibility remains a live-verification gate before cutover.
+
 ## Implemented baseline architecture
 
 ~~~text
@@ -220,6 +234,9 @@ docs/browser-sql-execution-scheduler.md
 
 docs/browser-sql-persistence-recovery.md
 → OPFS identity, checkpointed durability acknowledgement, ingest-token reconciliation, reopen/migration/quota recovery
+
+docs/browser-sql-runtime-delivery.md
+→ self-contained Market Flow runtime, bundled DuckDB main JS, pinned Worker/Wasm assets, Blob Worker bootstrap and capability/CSP gate
 
 docs/sql-live-analytics-design.md
 → durable design direction

@@ -15,6 +15,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | ingest / enrichment / atomicity plan | [browser-sql-ingest-enrichment-atomicity.md](browser-sql-ingest-enrichment-atomicity.md) |
 | SQL execution / scheduler contract | [browser-sql-execution-scheduler.md](browser-sql-execution-scheduler.md) |
 | OPFS persistence / reopen / recovery contract | [browser-sql-persistence-recovery.md](browser-sql-persistence-recovery.md) |
+| runtime delivery / authenticated-browser integration | [browser-sql-runtime-delivery.md](browser-sql-runtime-delivery.md) |
 | SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
 | Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
 | Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
@@ -23,6 +24,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | atomic ingest durable decision | [D-028](../../../../../../../docs/project/decisions/D-028.md) |
 | SQL scheduler durable decision | [D-029](../../../../../../../docs/project/decisions/D-029.md) |
 | persistence/recovery durable decision | [D-030](../../../../../../../docs/project/decisions/D-030.md) |
+| runtime delivery durable decision | [D-031](../../../../../../../docs/project/decisions/D-031.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 
