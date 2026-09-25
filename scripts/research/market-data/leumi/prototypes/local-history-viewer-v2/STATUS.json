@@ -10,36 +10,36 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-planning-assurance",
-    "substep": "final-planning-assurance-freeze",
-    "title": "Verify final Browser SQL planning freeze",
-    "status": "verification-pending"
+    "stage": "browser-sql-implementation",
+    "substep": "wp-01",
+    "title": "Pin DuckDB-Wasm and create the engine asset manifest foundation",
+    "issue": 29,
+    "status": "ready"
   },
   "currentStage": {
-    "stage": "browser-sql-planning-assurance",
-    "title": "Pre-implementation Browser SQL planning assurance",
-    "status": "verification-pending"
+    "stage": "browser-sql-implementation",
+    "title": "Execute frozen Browser SQL implementation plan",
+    "status": "ready"
   },
   "stageSummary": {
-    "completed": "planning phases A-V; Phase-W content/graph/traceability audit complete",
-    "verificationPending": "final Phase-W Fast CI",
-    "planned": "after green freeze, next pointer becomes WP-01 / Issue #29 for a new implementation chat"
+    "completed": "Browser SQL planning phases A-W, including final assurance/freeze",
+    "ready": "WP-01 / Issue #29",
+    "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
-  "activeMiniProject": "browser-sql-migration-planning",
+  "activeMiniProject": "browser-sql-implementation",
   "verification": {
     "engineSelection": {
       "status": "selected-for-target-design-pending-implementation-verification",
       "target": "DuckDB-Wasm + persistent OPFS database",
-      "gate": "Real authenticated-Leumi WP-03 compatibility probe must pass before WP-05+ heavy implementation."
+      "gate": "WP-01 pins exact artifacts; WP-03 real authenticated-Leumi gate must pass before WP-05+."
     },
     "implementationDecomposition": {
       "status": "complete",
       "artifact": "docs/browser-sql-implementation-decomposition.md",
       "decision": "../../../../../../../docs/project/decisions/D-037.md",
-      "workPackages": 42,
-      "criticalEntryGate": "WP-03 live Leumi compatibility PASS blocks WP-05+."
+      "workPackages": 42
     },
-    "githubExecutionRequirement": {
+    "githubExecutionStructure": {
       "status": "complete",
       "source": "docs/browser-sql-github-execution-structure.md",
       "masterIssue": 20,
@@ -59,8 +59,16 @@
         "last": 71,
         "closedDuplicate": 65,
         "wp37Canonical": 66
-      },
-      "structuralVerification": "51 open Browser SQL Issues = 1 Master + 8 Epics + 42 canonical WPs."
+      }
+    },
+    "finalPlanningFreeze": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-final-planning-freeze.md",
+      "decision": "../../../../../../../docs/project/decisions/D-042.md",
+      "verifiedCommit": "c8e255c0e494558cc6cc02a9ab5bbe235f2348fe",
+      "fastCiRunId": 36130196590,
+      "result": "PASS — 42-plan/42-Issue graph, dependency DAG, required Issue sections, source links, Epic/Master rollups, FD/DR/AB/decision traceability, unknown ownership, cleanup ownership and fresh-AI dry runs verified.",
+      "defectsCaught": "Phase W corrected dependency-source drift, parser-hostile headings, stale deferred wording, missing WP-03 Web Locks live responsibility, missing WP-35 S/T benchmark responsibility, and restored cold-history discoverability caught by CI."
     },
     "assuranceAdditions": {
       "dataLifecycle": "D-038 / WP-39 #68",
@@ -68,36 +76,27 @@
       "multiTabOwnership": "D-040 / WP-41 #70",
       "upgradeLifecycle": "D-041 / WP-42 #71"
     },
-    "finalPlanningFreeze": {
-      "status": "verification-pending",
-      "artifact": "docs/browser-sql-final-planning-freeze.md",
-      "decision": "../../../../../../../docs/project/decisions/D-042.md",
-      "graph": "42 plan WPs == 42 canonical Issues; sections/dependencies/parents/source-links/Epic rollups/Master gates all clean; DAG acyclic.",
-      "traceability": "FD-01..08, DR-01..66, AB-01..32 and D-025..041 all exist and have valid executable owners.",
-      "unknowns": "All material implementation/live/benchmark unknowns have explicit evidence-producing owners or are explicit non-goals.",
-      "freshAiDryRun": "WP-01,03,11,27,40,41,36,38,42 PASS after Phase-W corrections.",
-      "cleanup": "Probe/shadow/legacy wiring/rollover/cancellation/ownership/upgrade temporary artifacts all have cleanup owners.",
-      "handoffCandidate": "WP-01 / Issue #29 only after final Fast CI is green."
-    },
     "latestFastCi": {
-      "status": "verification-pending",
-      "failedRunId": 36130087064,
-      "failure": "AI_CONTEXT compaction removed required docs/history/README.md discoverability pointer.",
-      "fix": "Restored one cold-history index pointer; guards unchanged.",
-      "result": "Freeze-fix commit awaiting Fast CI."
+      "status": "success",
+      "runId": 36130196590,
+      "commit": "c8e255c0e494558cc6cc02a9ab5bbe235f2348fe",
+      "result": "Final Phase-W freeze content and context guards green."
     },
     "browserCi": {
       "status": "not-required",
-      "reason": "Phase W changes planning/docs/Issue-management only; no runtime/browser implementation changed."
+      "reason": "Planning/freeze changes only; no runtime/browser implementation changed."
     },
-    "specImpact": "No runtime code or currently implemented normative behavior changed; planning freeze/contracts only."
+    "specImpact": "No runtime code or currently implemented normative behavior changed during planning freeze."
   },
   "next": {
-    "action": "Run final Phase-W Fast CI. If green, close the planning mini-project and set the implementation-ready pointer to WP-01 / Issue #29 for the next chat.",
-    "steps": [
-      "Do not implement WP-01 in this planning chat.",
-      "After green, STATUS becomes the implementation-ready handoff.",
-      "The next chat starts from main and executes Issue #29."
+    "action": "Start a new implementation chat from main and execute WP-01 / GitHub Issue #29.",
+    "issue": 29,
+    "workPackage": "WP-01",
+    "rules": [
+      "Load AGENTS.md → workstream README.md → STATUS.json → AI_CONTEXT.md → Issue #29 → only its linked contracts/tests/code.",
+      "Set STATUS to in-progress when meaningful WP-01 implementation begins.",
+      "Do not skip WP-02/WP-03; WP-03 live PASS is mandatory before WP-05+ heavy implementation.",
+      "Follow tests-first/public-contract verification and update STATUS in the same coherent work unit."
     ]
   },
   "history": {
