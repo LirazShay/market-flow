@@ -18,7 +18,7 @@
   "stageSummary": {
     "completed": "bootstrap, scope-definition",
     "inProgress": "sql-first-01",
-    "planned": "sql-first-02 through sql-first-12"
+    "planned": "sql-first-02 through sql-first-12; localhost fallback only if browser-first Stage 09 is blocked"
   },
   "currentStage": {
     "stage": "sql-first-01",
@@ -34,26 +34,29 @@
     "sqlDirectionChange": {
       "status": "accepted-product-direction",
       "decisionDate": "2026-09-25",
-      "requirement": "The analytical layer must execute user-defined SQL automatically every configured X seconds, and changing the analytical logic should normally require changing SQL rather than application code.",
+      "requirement": "The analytical layer must execute user-defined SQL automatically every configured X seconds, and changing analytical logic should normally require changing SQL rather than application code.",
       "consequence": "IndexedDB is no longer the target primary analytical query engine. The prior IndexedDB-primary evaluation plan is archived as superseded.",
       "activeDesign": "docs/sql-live-analytics-design.md",
       "benchmarkPlan": "docs/sql-live-engine-benchmark-plan.md",
       "productRequirement": "../../../../../../../docs/product/live-sql-query-execution.md"
     },
-    "candidateArchitectures": {
-      "browser": "DuckDB-Wasm with persistent OPFS",
-      "localhost": "Browser collector to localhost native DuckDB",
-      "sqlite": "Optional control candidate only if a concrete benchmark/design question justifies it"
+    "architecturePreference": {
+      "status": "browser-first",
+      "primary": "DuckDB-Wasm with persistent browser storage",
+      "fallback": "Browser collector to localhost native DuckDB",
+      "fallbackGate": "Do not implement or benchmark localhost in parallel. Open the fallback track only after a required browser capability/performance/persistence/stability limitation is demonstrated.",
+      "sqlite": "Optional only if a concrete design or benchmark question justifies it."
     },
-    "specImpact": "Product/architecture direction changed. Runtime and normative V2 specs have not changed yet; SQL-specific normative specs will be created after the architecture candidate is selected."
+    "specImpact": "Planning/design direction refined to browser-first. No runtime behavior or normative V2 specification changed in this work unit."
   },
   "next": {
-    "action": "Complete SQL-first Stage 01 before implementing a database engine.",
+    "action": "Complete SQL-first Stage 01, then evaluate only the browser-first DuckDB-Wasm path.",
     "steps": [
       "Write observable acceptance scenarios for arbitrary SQL text, configurable X-second execution and 0..N results.",
-      "Define query-error and scheduler-overrun behavior without coupling it to a specific engine.",
+      "Define query-error and scheduler-overrun behavior without coupling it to implementation details.",
       "Define the committed-data consistency boundary visible to SQL.",
-      "Then proceed to Stage 02 candidate evaluation: DuckDB-Wasm+OPFS versus localhost native DuckDB."
+      "Proceed to Stage 02 browser SQL feasibility for DuckDB-Wasm and persistent browser storage.",
+      "Do not start localhost/native DuckDB unless the browser-first decision gate later records a demonstrated blocker."
     ]
   },
   "history": {

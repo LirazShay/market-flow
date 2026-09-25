@@ -21,6 +21,33 @@ Changing the analytical logic should normally mean changing SQL, not modifying c
 
 This makes a real SQL execution engine a product requirement rather than a developer convenience.
 
+## Architecture preference: browser first
+
+The default target is a browser-resident SQL architecture.
+
+~~~text
+Authenticated browser collector
+→ DuckDB-Wasm
+→ persistent browser database
+→ browser SQL scheduler
+→ results
+~~~
+
+The design should remain entirely browser-local if it can satisfy the required SQL capability, persistence, throughput, latency, recovery and long-running stability.
+
+A localhost/native process is not a co-equal implementation track. It is a fallback that is opened only after a concrete browser limitation is demonstrated.
+
+This preference is deliberate:
+
+~~~text
+simpler deployment
++
+fewer moving parts
++
+existing authenticated browser boundary
+→ try browser first
+~~~
+
 ## Consequence for IndexedDB
 
 IndexedDB may still be useful as inherited prototype storage, migration input, temporary buffer or fallback evidence source.
@@ -49,7 +76,7 @@ The following remain valuable regardless of SQL engine choice:
 Authenticated browser tab
 → collect complete provider cycle
 → validate requested/received/unique/missing/unexpected
-→ send/insert one coherent cycle
+→ insert one coherent cycle into browser SQL storage
 → SQL-capable database commits it
 → scheduler runs current user SQL every X seconds
 → result rows + timing/error metadata
@@ -58,33 +85,33 @@ Authenticated browser tab
 
 SQL failure must not corrupt or stop ingestion.
 
-## Serious architecture candidates
+## Primary candidate — Browser DuckDB-Wasm
 
-### Browser-only
+The first candidate to design, prototype and benchmark is:
 
 ~~~text
 Collector
 → DuckDB-Wasm
-→ OPFS persistent database
+→ persistent browser storage
 → browser SQL scheduler
 ~~~
 
-Advantages to prove:
+It must prove:
 
-- no local server installation;
-- data remains in browser-local environment;
-- real SQL;
-- simple deployment boundary.
-
-Risks to measure:
-
-- Wasm memory/browser limits;
-- persistence/OPFS maturity;
-- same-origin/runtime integration;
+- required SQL syntax/features;
+- persistent reopen semantics;
+- continuous ingest;
+- repeated queries;
+- mixed ingest/query behavior;
+- acceptable memory/resource behavior;
 - long-running stability;
-- query concurrency with continuous inserts.
+- recoverable failure behavior.
 
-### Local native engine
+Do not assume failure from general browser/Wasm limitations. Measure the actual Market Flow workload.
+
+## Conditional fallback — Local native DuckDB
+
+Only if the browser path fails a required gate:
 
 ~~~text
 Collector
@@ -94,23 +121,18 @@ Collector
 → local SQL scheduler
 ~~~
 
-Advantages to prove:
+The fallback must solve a specific evidenced browser problem.
 
-- native engine performance;
-- ordinary local file persistence;
-- fewer browser memory limits;
-- easier long-running process/control;
-- stronger future extensibility.
+Do not introduce localhost merely for theoretical scalability or future flexibility.
 
-Costs to measure:
+If fallback is required, preserve the browser authentication boundary:
 
-- installation/startup process;
-- localhost protocol;
-- extra process lifecycle;
-- security boundary;
-- packaging/updates.
+~~~text
+browser owns authenticated provider session
+localhost receives market-data payload only
+~~~
 
-## Why DuckDB is the primary engine family to evaluate
+## Why DuckDB is the primary SQL family
 
 The target workload is analytical:
 
@@ -122,9 +144,9 @@ The target workload is analytical:
 - windowed analysis;
 - repeated ad-hoc SQL.
 
-DuckDB is therefore the primary candidate family.
+DuckDB is therefore the primary family to explore.
 
-SQLite remains a possible comparison/control when indexed point/range access or operational simplicity warrants it, but it is not automatically co-equal for this analytical workload.
+SQLite may be used only when a concrete design or benchmark question makes it useful.
 
 ## SQL scheduler contract direction
 
@@ -139,7 +161,7 @@ The future scheduler should own:
 - success/error state;
 - latest successful result.
 
-The scheduler must define what happens when query runtime exceeds the interval. The default design should avoid uncontrolled overlapping executions.
+The scheduler must define what happens when query runtime exceeds the interval. The baseline design should avoid uncontrolled overlapping executions.
 
 ## SQL and schema evolution
 
@@ -157,23 +179,42 @@ new analytical idea
 
 Do not precompute every possible comparison in advance.
 
-## Security boundary
+## Browser-first fallback gate
 
-The repository is public and the local analytical engine does not need Leumi credentials.
+Move to localhost/native only after documenting a required browser failure in one or more of:
 
-For a localhost design:
+- SQL capability;
+- persistence/reopen;
+- ingest throughput;
+- query latency;
+- mixed workload;
+- memory/resources;
+- stability;
+- runtime/concurrency behavior;
+- another concrete requirement.
+
+For each failure record:
 
 ~~~text
-browser owns authenticated provider session
-localhost receives sanitized market-data payload only
+workload/capability
+→ measured or reproducible failure
+→ attempted simple browser mitigation
+→ why mitigation is insufficient
+→ minimum fallback requirement
 ~~~
 
-Never move cookies/session tokens/authorization headers into repository files or local API payloads unless an explicit future requirement proves it necessary.
+## Security boundary
+
+The repository is public.
+
+Never place cookies, session tokens, authorization headers, credentials, account numbers or private session data in repository artifacts or analytical payloads.
 
 ## Decision rule
 
-The next architecture decision is no longer "Can IndexedDB do analytics?"
+The immediate question is:
 
-It is:
+> Can browser-resident DuckDB-Wasm provide the real SQL, persistence and repeated LIVE query execution Market Flow needs with sufficient correctness and headroom?
 
-> Which SQL-capable execution architecture gives us the simplest reliable way to ingest continuous market snapshots and execute arbitrary user-defined SQL every X seconds with sufficient headroom?
+Only if the answer is demonstrated to be no do we ask:
+
+> What is the smallest localhost/native fallback that fixes the proven limitation?

@@ -2,11 +2,11 @@
 
 This file owns V2 plan, scope and order only. Live progress belongs only in STATUS.json.
 
-V2 starts from the frozen V1 collector/storage baseline, but the analytical direction is now SQL-first.
+V2 starts from the frozen V1 collector/storage baseline, but the analytical direction is now SQL-first and **browser-first**.
 
 ## Product requirement that governs this roadmap
 
-The live analytical layer must allow a user-defined SQL query to be changed independently of application code and executed automatically every configured X seconds against the latest persisted market data.
+The live analytical layer must allow a user-defined SQL query to be changed independently of application code and executed automatically every configured X seconds against coherently committed market data.
 
 The query may use SELECT, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT, window/history logic and cross-security comparisons as supported by the selected SQL engine.
 
@@ -14,20 +14,39 @@ A valid execution may return zero rows.
 
 IndexedDB is no longer being evaluated as the primary analytical query engine. The prior IndexedDB-primary evaluation plan is preserved under docs/history/ as superseded research.
 
-## Architecture boundary that remains valuable
+## Browser-first architecture rule
 
-The authenticated browser remains the collection boundary unless later evidence requires otherwise:
+The preferred path is:
 
 ~~~text
 Authenticated Leumi browser
 → validated complete cycle
-→ SQL-capable storage/analytical engine
+→ browser-resident SQL engine
+→ persistent browser storage
 → scheduled user-defined SQL
 → result set
 → UI / downstream logic
 ~~~
 
-The selected SQL engine and process boundary are not yet frozen.
+The first implementation candidate is DuckDB-Wasm with persistent browser storage such as OPFS where supported by the chosen runtime design.
+
+A localhost/native database is a **fallback path only**.
+
+Do not build, benchmark or operationalize a localhost service in parallel merely as insurance.
+
+Open the localhost/native fallback only when the browser-first path has a demonstrated blocking limitation in at least one required area:
+
+- SQL capability;
+- persistence/reopen correctness;
+- ingest throughput;
+- repeated-query latency;
+- mixed ingest + query behavior;
+- browser memory/resource limits;
+- long-running stability;
+- required concurrency/runtime behavior;
+- another concrete product requirement that cannot be met safely in-browser.
+
+The limitation must be evidenced, not assumed.
 
 ## Stage 01 — SQL workload contract
 
@@ -45,35 +64,31 @@ Define the observable contract:
 
 Deliverable: V2 SQL execution contract and acceptance scenarios.
 
-## Stage 02 — SQL engine/process candidates
+## Stage 02 — Browser SQL feasibility contract
 
-Evaluate the smallest serious candidates:
-
-### Candidate A — Browser-only DuckDB-Wasm + OPFS
+Research and pin down the browser-only candidate:
 
 ~~~text
 Authenticated browser collector
 → DuckDB-Wasm
-→ persistent OPFS database
+→ persistent browser database
 → scheduled SQL in browser
 ~~~
 
-### Candidate B — Browser collector + localhost native DuckDB
+Define exactly what must be proven before implementation:
 
-~~~text
-Authenticated browser collector
-→ localhost ingest API
-→ native DuckDB file
-→ local SQL scheduler
-~~~
+- loading/initialization;
+- persistence and reopen;
+- SQL features required by Stage 01;
+- write/transaction semantics;
+- concurrent or serialized ingest/query behavior;
+- browser memory/storage constraints;
+- worker/runtime requirements if any;
+- failure/recovery boundaries.
 
-### Candidate C — SQLite only if evidence justifies it
+Deliverable: browser-first feasibility checklist and proof plan.
 
-SQLite may be included as a control/reference candidate for transactional/indexed SQL, but the target workload is analytical and should not force equal investment in every engine.
-
-Deliverable: shortlist with concrete tradeoffs and benchmark plan.
-
-## Stage 03 — SQL schema design
+## Stage 03 — SQL schema design for browser DuckDB
 
 Design a relational/analytical schema that preserves:
 
@@ -89,22 +104,20 @@ Design a relational/analytical schema that preserves:
 
 Decide whether current rows are represented by a table, view or SQL query.
 
-Deliverable: benchmarkable SQL schema candidates.
+Deliverable: benchmarkable browser-DuckDB schema.
 
-## Stage 04 — Ingest protocol and atomicity
+## Stage 04 — Browser ingest and atomicity design
 
 Define:
 
-- browser-to-engine payload;
-- complete-cycle validation boundary;
+- validated cycle input;
 - one coherent cycle commit;
 - failure behavior;
 - idempotency/retry semantics where needed;
-- whether enrichment happens before insert, in SQL, or through generated/materialized structures.
+- whether enrichment happens before insert, in SQL, or through generated/materialized structures;
+- exact boundary between the inherited browser collector and DuckDB-Wasm.
 
-For localhost candidates, credentials/cookies/session tokens must remain in the browser.
-
-Deliverable: ingest contract.
+Deliverable: browser ingest contract.
 
 ## Stage 05 — Scheduled SQL runner design
 
@@ -120,7 +133,7 @@ load active SQL
 
 Requirements:
 
-- no overlapping uncontrolled executions;
+- no uncontrolled overlapping executions;
 - configurable interval;
 - deterministic behavior when previous query exceeds interval;
 - query timeout/cancellation strategy if supported/needed;
@@ -145,68 +158,102 @@ Measure:
 - mixed ingest + query;
 - database growth.
 
-Deliverable: reusable SQL benchmark harness.
+Deliverable: reusable browser SQL benchmark harness.
 
 ## Stage 07 — Browser DuckDB-Wasm prototype
 
 Build the smallest browser-only spike proving:
 
-- SQL execution;
+- real SQL execution;
 - persistence/reopen behavior;
 - continuous inserts;
 - scheduled queries;
 - realistic result retrieval;
-- OPFS constraints;
-- memory/stability characteristics.
+- browser persistence constraints;
+- memory/stability characteristics;
+- correct behavior under query errors.
 
 Deliverable: measured browser-only evidence.
 
-## Stage 08 — Local native DuckDB prototype
+## Stage 08 — Browser scale and stability verification
 
-Build the smallest localhost spike proving:
-
-- browser POST of validated complete cycles;
-- native persistent DuckDB;
-- scheduled arbitrary SQL;
-- result retrieval;
-- process restart/recovery;
-- Windows local operation.
-
-Deliverable: measured localhost evidence.
-
-## Stage 09 — Comparative benchmark
-
-Compare candidates using the same workloads and datasets.
+Test the browser solution at representative and larger scales.
 
 At minimum measure:
 
 - write/commit median and p95;
 - SQL execution median and p95;
 - mixed workload;
-- full-day-like history scale when practical;
+- one-hour-like history;
+- million-row scale where practical;
+- full-trading-day-like scale where practical;
 - memory/storage observations;
-- startup/recovery;
-- complexity and failure modes.
+- restart/reopen;
+- long-running repeated query behavior.
 
-Deliverable: evidence table.
+Deliverable: browser-first suitability evidence.
 
-## Stage 10 — Architecture decision
+## Stage 09 — Browser-first decision gate
 
-Select the minimum sufficient SQL architecture.
+Classify the browser solution as:
 
-The decision must distinguish:
+~~~text
+Verified sufficient
+or
+Blocked by demonstrated limitation
+~~~
 
-- Verified;
-- Inferred;
-- Unknown.
+Use Verified / Inferred / Unknown for supporting claims.
 
-It must explicitly state why the selected solution is preferred for the requirement "change SQL freely and run every X seconds."
+If browser DuckDB-Wasm satisfies the required contract with adequate headroom, **do not build the localhost fallback**. Continue directly to normative specs and implementation.
 
-Deliverable: durable architecture decision.
+If it fails a required gate, document:
 
-## Stage 11 — Normative V2 specs
+- the exact failing workload/capability;
+- measured magnitude;
+- why simpler browser-side mitigation is insufficient;
+- the minimum property the fallback must provide.
 
-Update/add V2 specs for:
+Deliverable: browser-first architecture decision.
+
+## Conditional fallback track — only if Stage 09 blocks browser-first
+
+### Fallback Stage F1 — Local native DuckDB design
+
+~~~text
+Authenticated browser collector
+→ localhost ingest API
+→ native DuckDB file
+→ local SQL scheduler
+~~~
+
+Define only the minimum additional boundary needed to solve the proven browser limitation.
+
+Browser credentials/cookies/session tokens remain in the browser.
+
+### Fallback Stage F2 — Local native DuckDB prototype
+
+Prove:
+
+- browser POST of validated complete cycles;
+- persistent native DuckDB;
+- scheduled arbitrary SQL;
+- result retrieval;
+- process restart/recovery;
+- Windows local operation;
+- the specific capability that failed in-browser.
+
+### Fallback Stage F3 — Focused comparison
+
+Compare browser and localhost only on the workloads that matter to the blocking decision plus operational complexity.
+
+Do not rerun an unnecessary technology contest.
+
+Deliverable: evidence-backed fallback decision.
+
+## Stage 10 — Normative V2 specs
+
+After Stage 09, or after Fallback Stage F3 if fallback was required, update/add V2 specs for:
 
 - SQL storage;
 - ingest;
@@ -217,9 +264,23 @@ Update/add V2 specs for:
 
 Deliverable: implementation-ready contracts.
 
-## Stage 12 — Incremental implementation
+## Stage 11 — Incremental implementation
 
 Implement tests-first in natural vertical slices, preserving the frozen V1 reference and reusing only proven components that fit the selected architecture.
+
+## Stage 12 — Integrated verification and live handoff
+
+Verify:
+
+- browser collection;
+- coherent SQL persistence;
+- scheduled arbitrary SQL;
+- error isolation;
+- recovery;
+- performance headroom;
+- live-provider integration where mocks cannot prove behavior.
+
+Leave STATUS.json with the next product/implementation pointer.
 
 ## Non-goals
 
