@@ -23,7 +23,7 @@
   },
   "stageSummary": {
     "completed": "Browser SQL planning phases A-W, WP-01 engine identity/manifest foundation, and WP-02 synthetic Browser SQL compatibility probe",
-    "ready": "WP-03 / Issue #31 prepared; live authenticated-Leumi verification pending",
+    "ready": "WP-03 synthetic Chromium preflight complete; live authenticated-Leumi verification pending",
     "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
   },
   "activeMiniProject": "browser-sql-implementation",
@@ -80,15 +80,18 @@
     },
     "latestFastCi": {
       "status": "success",
-      "runId": 36140304889,
-      "commit": "92a8423d2ab77b6043d78e763a6139ac89c2c7ed",
-      "result": "WP-03 live-gate runbook/status preparation PASS."
+      "runId": 36147110049,
+      "commit": "081fd2ecef7f435063d1cdd1f20cb2254efec1a7",
+      "result": "PASS — WP-03 synthetic Leumi preflight test/harness changes passed Fast CI."
     },
     "browserCi": {
-      "status": "not-required-for-wp03-preparation",
-      "reason": "This work unit changed only live-verification documentation and STATUS. The WP-03 acceptance gate itself is live authenticated-Leumi verification."
+      "status": "success-targeted",
+      "runId": 36147109942,
+      "commit": "081fd2ecef7f435063d1cdd1f20cb2254efec1a7",
+      "result": "PASS — dedicated WP-03 synthetic Leumi Chromium preflight verified compatible-CSP Worker/Wasm/OPFS COMMIT+CHECKPOINT+reopen, same-origin cross-tab persistence, exclusive Web Locks, release-after-explicit-release, release-on-owner-tab-close, probe-only cleanup, and a negative CSP case classified at wasm-instantiate.",
+      "fullBrowserCi": "not-required-for-this-work-unit; no production/runtime browser behavior changed, and the added/modified Playwright tests ran in their native targeted Chromium layer."
     },
-    "specImpact": "Updated runtime-delivery.spec.md and runtime/README.md for the synthetic Browser SQL compatibility-probe contract, generated artifacts, sanitized stage reporting, probe-only OPFS identity and cleanup boundary.",
+    "specImpact": "No normative runtime behavior change. Added deterministic synthetic WP-03 live-gate preflight coverage plus testing-policy/runbook clarification; the authenticated-Leumi live gate contract is unchanged.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -109,13 +112,25 @@
       "runbook": "docs/browser-sql-live-gate-l1.md",
       "preparationCommit": "92a8423d2ab77b6043d78e763a6139ac89c2c7ed",
       "preparationFastCiRunId": 36140304889,
-      "result": "Pending direct execution on the real authenticated Leumi origin. Deterministic CI cannot satisfy this gate.",
+      "result": "Synthetic Chromium preflight PASS; direct execution on the real authenticated Leumi origin is still required. Deterministic CI cannot satisfy this gate.",
       "required": "Worker/Wasm/OPFS COMMIT+CHECKPOINT+reopen+page-refresh/relaunch plus two-tab exclusive Web Locks with ifAvailable:true.",
-      "blocker": "WP-05+ remains blocked until all required live capabilities are directly Verified."
+      "blocker": "WP-05+ remains blocked until all required live capabilities are directly Verified on the authenticated Leumi origin.",
+      "syntheticCiPreflight": {
+        "status": "complete",
+        "commit": "081fd2ecef7f435063d1cdd1f20cb2254efec1a7",
+        "runId": 36147109942,
+        "result": "PASS — real Chromium synthetic same-origin preflight covers Browser SQL mechanics and Web Locks without credentials.",
+        "authenticatedLeumiClassification": "Inferred only. CI cannot prove the real authenticated Leumi CSP/origin/session environment."
+      }
+    },
+    "wp03PocFailureReview": {
+      "status": "resolved",
+      "rootCause": "The first synthetic CSP model allowed jsDelivr only as connect-src, so DuckDB Worker importScripts was blocked at worker-asset-load. After that was corrected, the model still omitted WebAssembly compilation permission and correctly failed at wasm-instantiate. A later red was a test-contract mismatch because cleanup also returns error:null.",
+      "prevention": "The CI preflight now keeps a compatible synthetic CSP with the exact pinned CDN import and wasm-unsafe-eval, plus a negative CSP fixture that intentionally omits Wasm compilation permission and must fail at wasm-instantiate. Cleanup asserts the complete observable result including error:null."
     }
   },
   "next": {
-    "action": "Execute WP-03 / Issue #31 using docs/browser-sql-live-gate-l1.md on the real authenticated Leumi page; record only sanitized results. Do not advance to WP-05+ until the gate passes.",
+    "action": "Execute the remaining live-only portion of WP-03 / Issue #31 using docs/browser-sql-live-gate-l1.md on the real authenticated Leumi page. Synthetic Chromium preflight is green; record only sanitized live results and do not advance to WP-05+ until the gate passes.",
     "issue": 31,
     "workPackage": "WP-03",
     "rules": [
