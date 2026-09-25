@@ -50,6 +50,7 @@ Durable decision:
 ../../../../../../../docs/project/decisions/D-030.md
 ../../../../../../../docs/project/decisions/D-031.md
 ../../../../../../../docs/project/decisions/D-032.md
+../../../../../../../docs/project/decisions/D-033.md
 ~~~
 
 Selected target boundary:
@@ -163,6 +164,16 @@ Viewer attach/re-attach
 
 Viewer never opens DuckDB. Runtime memory holds only a bounded latest-success preview; persisted execution metadata survives restart. Query activation uses expectedActiveQueryVersionId to prevent silent multi-Viewer overwrites.
 
+## Selected Browser SQL verification contract
+
+~~~text
+Node = deterministic logic
+Chromium = Worker/Wasm/OPFS/runtime/Viewer semantics
+Live Leumi = actual authenticated page CSP/origin/provider compatibility
+~~~
+
+Before heavy Browser SQL implementation proceeds, a minimal live probe must prove Bookmarklet/injected JS → Blob Worker → pinned DuckDB Worker/Wasm → OPFS write/CHECKPOINT → refresh/reopen on the real authenticated Leumi page using synthetic data only.
+
 ## Implemented baseline architecture
 
 ~~~text
@@ -253,6 +264,9 @@ docs/browser-sql-runtime-delivery.md
 
 docs/browser-sql-viewer-result-delivery.md
 → Viewer attach/re-attach, state snapshots, missed-notification recovery, result preview lifetime and multi-Viewer query-edit concurrency
+
+docs/browser-sql-testing-verification-strategy.md
+→ Node/Chromium/live verification ownership, fixtures, CI cadence and mandatory early authenticated-Leumi compatibility probe
 
 docs/sql-live-analytics-design.md
 → durable design direction

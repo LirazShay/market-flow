@@ -95,3 +95,54 @@ tests/E2E_DEBUGGING.md
 ~~~
 
 If a meaningful unexpected failure occurs, apply the repository Failure Review / continuous-improvement rules before closing the incident.
+
+## Browser SQL planning target
+
+Durable strategy:
+
+~~~text
+../docs/browser-sql-testing-verification-strategy.md
+~~~
+
+Browser SQL keeps the existing three-layer rule:
+
+~~~text
+pure deterministic behavior
+→ Node unit tests
+
+Worker / Wasm / OPFS / DOM / runtime / Viewer integration
+→ Playwright + real Chromium
+
+authenticated Leumi CSP/origin/provider behavior
+→ explicit live verification
+~~~
+
+### Mandatory implementation-entry live gate
+
+Before heavy Browser SQL implementation depends on the selected page-runtime delivery, run the minimal authenticated-Leumi compatibility probe defined by the strategy.
+
+It must prove with synthetic data only:
+
+~~~text
+Bookmarklet/injected JS
+→ Blob Worker
+→ pinned DuckDB Worker/Wasm
+→ OPFS test database
+→ write + COMMIT + CHECKPOINT
+→ refresh/relaunch
+→ reopen + verify
+~~~
+
+A mock Chromium page cannot substitute for this real-page gate.
+
+If it fails because of real CSP/origin/browser constraints, dependent implementation work stops and the runtime-delivery architecture must be reconsidered from evidence.
+
+### Browser SQL CI cadence
+
+Fast CI remains the normal push/PR gate.
+
+Use targeted Chromium during browser TDD/debugging.
+
+Full Browser CI is required on final browser-dependent Stage state and before publishing a generated runtime.
+
+Correctness CI must remain small/deterministic; benchmark-scale data belongs to the dedicated performance benchmark plan.

@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "testing-verification-strategy",
-    "title": "Design Browser SQL testing and verification strategy",
+    "substep": "performance-benchmark-strategy",
+    "title": "Design Browser SQL performance and benchmark strategy",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery",
-    "inProgress": "browser-sql-testing-verification-strategy",
-    "planned": "benchmark strategy → migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy",
+    "inProgress": "browser-sql-performance-benchmark-strategy",
+    "planned": "migration → failure/security/observability → implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -27,18 +27,18 @@
   },
   "activeMiniProject": "browser-sql-migration-planning",
   "verification": {
-    "runtimeDelivery": {
-      "status": "complete",
-      "artifact": "docs/browser-sql-runtime-delivery.md",
-      "decision": "../../../../../../../docs/project/decisions/D-031.md"
-    },
     "viewerResultDelivery": {
       "status": "complete",
       "artifact": "docs/browser-sql-viewer-result-delivery.md",
-      "decision": "../../../../../../../docs/project/decisions/D-032.md",
-      "result": "Selected detachable same-origin Viewer clients of one Runtime Controller, full ViewerStateSnapshot on attach/re-attach, notification-as-hint semantics, runtimeInstanceId/stateRevision synchronization, bounded in-memory latest-success preview and optimistic query activation across multiple Viewer clients.",
-      "previewPersistence": "Execution metadata persists; arbitrary result preview payload does not. After runtime restart Viewer reports preview unavailable until a new successful execution.",
-      "multiViewer": "Multiple Viewer clients share one runtime/SQL authority; stale query editors are rejected through expectedActiveQueryVersionId rather than silently overwriting newer SQL."
+      "decision": "../../../../../../../docs/project/decisions/D-032.md"
+    },
+    "testingVerificationStrategy": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-testing-verification-strategy.md",
+      "decision": "../../../../../../../docs/project/decisions/D-033.md",
+      "result": "Mapped Browser SQL contracts to Node deterministic tests, real Chromium Worker/Wasm/OPFS/runtime/Viewer integration tests and authenticated-Leumi live verification for real page CSP/origin/provider behavior.",
+      "criticalLiveGate": "Before heavy Browser SQL implementation, prove on the real authenticated Leumi page with synthetic data: injected JS/Bookmarklet → Blob Worker → pinned DuckDB Worker/Wasm → OPFS write+COMMIT+CHECKPOINT → refresh/reopen.",
+      "ci": "Fast Node CI remains normal push/PR gate; targeted Chromium is used during browser TDD/debugging; full Browser CI is required for browser-dependent Stage closure and runtime publication."
     },
     "engineSelection": {
       "status": "selected-for-target-design-pending-implementation-verification",
@@ -49,17 +49,17 @@
       "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
       "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
-    "specImpact": "No runtime code or current implementation spec changed. Phase K defines target Viewer/result-delivery planning contracts only."
+    "specImpact": "No runtime code or current implementation spec changed. Phase L defines verification planning/policy only."
   },
   "next": {
-    "action": "Planning Phase L: design the Browser SQL testing and verification strategy.",
+    "action": "Planning Phase M: design performance and benchmark strategy.",
     "steps": [
-      "Map each Browser SQL public contract to the cheapest valid test layer.",
-      "Define pure Node tests for deterministic IDs/state/scheduler/classification/recovery logic.",
-      "Define Playwright Chromium coverage for Worker/Wasm/OPFS/runtime/Viewer integration and reopen behavior.",
-      "Define live authenticated-Leumi verification gates that mocks cannot prove.",
-      "Define CI split/cadence so Browser CI does not run unnecessarily on every small change.",
-      "Define test fixtures for complete/partial cycles, query failures, persistence ambiguity, CSP/capability failures and multi-Viewer behavior."
+      "Define representative Browser SQL datasets from measured/derived market workload without hardcoding universe size.",
+      "Define ingest, CHECKPOINT, mixed ingest+query, memory and database-growth benchmark scenarios.",
+      "Define representative SQL query classes including current ranking, core-horizon joins/windows and large-result behavior.",
+      "Define benchmark environment/repeatability and what belongs in Chromium versus synthetic offline generation.",
+      "Define pass/fail/headroom criteria tied to configurable cadence rather than intuition.",
+      "Keep benchmark implementation itself deferred until implementation phases."
     ]
   },
   "history": {
