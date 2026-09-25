@@ -75,7 +75,7 @@ runtime/dist/market-flow-v2.duckdb-engine-manifest.json
 The reviewed engine identity is:
 
 ~~~text
-npm package: @duckdb/duckdb-wasm@1.33.0
+npm package: @duckdb/duckdb-wasm@1.32.0
 DuckDB core: v1.4.3
 DuckDB core commit: d1dc88f950d456d72493df452dabdcd13aa413dd
 ~~~

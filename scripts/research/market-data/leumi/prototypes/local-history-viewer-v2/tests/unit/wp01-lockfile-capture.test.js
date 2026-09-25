@@ -38,14 +38,14 @@ test(
                 .dependencies[
                     "@duckdb/duckdb-wasm"
                 ],
-            "1.33.0"
+            "1.32.0"
         );
 
         assert.equal(
             lock.packages[
                 "node_modules/@duckdb/duckdb-wasm"
             ].version,
-            "1.33.0"
+            "1.32.0"
         );
 
         console.log(

@@ -44,7 +44,7 @@ test(
                 name:
                     "@duckdb/duckdb-wasm",
                 version:
-                    "1.33.0"
+                    "1.32.0"
             }
         );
 
@@ -90,14 +90,14 @@ test(
 
             assert.equal(
                 bundle.mainModule.includes(
-                    "@duckdb/duckdb-wasm@1.33.0/dist/"
+                    "@duckdb/duckdb-wasm@1.32.0/dist/"
                 ),
                 true
             );
 
             assert.equal(
                 bundle.mainWorker.includes(
-                    "@duckdb/duckdb-wasm@1.33.0/dist/"
+                    "@duckdb/duckdb-wasm@1.32.0/dist/"
                 ),
                 true
             );
@@ -130,8 +130,8 @@ test(
             const packageVersion of [
                 "latest",
                 "next",
-                "^1.33.0",
-                "~1.33.0",
+                "^1.32.0",
+                "~1.32.0",
                 "1.33",
                 "1.33.x"
             ]
@@ -171,8 +171,8 @@ test(
                 .mvp
                 .mainWorker
                 .replace(
-                    "@1.33.0/",
-                    "@1.32.0/"
+                    "@1.32.0/",
+                    "@1.31.0/"
                 );
 
         assert.throws(

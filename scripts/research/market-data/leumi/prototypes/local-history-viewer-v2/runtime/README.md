@@ -64,7 +64,7 @@ runtime/dist/market-flow-v2.duckdb-engine-manifest.json
 The manifest pins one reviewed engine family:
 
 ~~~text
-npm package: @duckdb/duckdb-wasm@1.33.0
+npm package: @duckdb/duckdb-wasm@1.32.0
 DuckDB core: v1.4.3
 core commit: d1dc88f950d456d72493df452dabdcd13aa413dd
 bundles: mvp + eh

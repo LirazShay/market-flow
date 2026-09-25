@@ -8,7 +8,7 @@ const path =
 const packageName =
     "@duckdb/duckdb-wasm";
 const packageVersion =
-    "1.33.0";
+    "1.32.0";
 const duckdbCoreVersion =
     "1.4.3";
 const duckdbCoreCommit =
