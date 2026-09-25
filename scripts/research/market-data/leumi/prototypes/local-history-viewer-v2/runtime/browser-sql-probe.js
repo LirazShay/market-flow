@@ -115,6 +115,28 @@
         return false;
     }
 
+    function sqlStringLiteral(
+        value
+    ) {
+        if (
+            typeof value !==
+                "string"
+        ) {
+            throw new TypeError(
+                "SQL literal value must be a string."
+            );
+        }
+
+        return (
+            "'" +
+            value.replace(
+                /'/g,
+                "''"
+            ) +
+            "'"
+        );
+    }
+
     function createWorkerClient(
         worker,
         timeoutMs
@@ -690,7 +712,7 @@
                 "INSERT INTO " +
                     tableName +
                     " VALUES (" +
-                    JSON.stringify(
+                    sqlStringLiteral(
                         config
                             .syntheticMarker
                     ) +
@@ -739,7 +761,7 @@
             await runQuery(
                 session,
                 "SELECT " +
-                    JSON.stringify(
+                    sqlStringLiteral(
                         config
                             .syntheticMarker
                     ) +
@@ -748,7 +770,7 @@
                     "SELECT 1 FROM " +
                     tableName +
                     " WHERE marker = " +
-                    JSON.stringify(
+                    sqlStringLiteral(
                         config
                             .syntheticMarker
                     ) +
