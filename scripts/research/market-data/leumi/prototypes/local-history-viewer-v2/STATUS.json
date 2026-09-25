@@ -11,14 +11,14 @@
   },
   "currentFocus": {
     "stage": "browser-sql-planning",
-    "substep": "failure-security-observability",
-    "title": "Design Browser SQL failure, security and observability contract",
+    "substep": "implementation-decomposition",
+    "title": "Decompose Browser SQL target into implementation work packages",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy, migration-cutover",
-    "inProgress": "browser-sql-failure-security-observability",
-    "planned": "implementation decomposition → GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
+    "completed": "bootstrap, scope-definition, current-state-audit, requirements-consolidation, browser-constraints, official-capability-research, target-architecture, relational-data-model, ingest-enrichment-atomicity, sql-execution-scheduler, persistence-recovery, runtime-delivery-browser-integration, viewer-result-delivery, testing-verification-strategy, performance-benchmark-strategy, migration-cutover, failure-security-observability",
+    "inProgress": "browser-sql-implementation-decomposition",
+    "planned": "GitHub execution structure with actual Issues/milestones/labels/dependencies → final plan audit"
   },
   "currentStage": {
     "stage": "browser-sql-planning",
@@ -49,7 +49,7 @@
       "rule": "The planning project must end with real executable GitHub Issues and, where supported/useful, milestones, labels and dependency/parent-child structure. Markdown planning alone is not the final deliverable.",
       "plannedPhases": "P implementation decomposition, Q GitHub execution structure, R final plan audit"
     },
-    "specImpact": "No runtime code or normative implemented spec changed. Phase N defines target migration/cutover planning only.",
+    "specImpact": "No runtime code or normative implemented spec changed. Phase O defines target failure/security/observability planning only.",
     "hotContextBudgetRepair": {
       "status": "complete",
       "cause": "Phase D-L summaries accumulated in AI_CONTEXT.md and broke the 5000-character hot-context guard.",
@@ -83,17 +83,26 @@
       "legacyHistory": "Initial cutover intentionally does not import IndexedDB history. SQL horizon history starts fresh and warms naturally; the old IndexedDB remains inert as rollback/diagnostic data.",
       "rollback": "No silent runtime fallback. Explicit rollback preserves OPFS and launches the retained IndexedDB release, accepting a documented gap for the SQL-only interval.",
       "cleanup": "Legacy IndexedDB and migration scaffolding are not automatically deleted; cleanup happens only after an explicit stabilization decision."
+    },
+    "failureSecurityObservability": {
+      "status": "complete",
+      "artifact": "docs/browser-sql-failure-security-observability.md",
+      "decision": "../../../../../../../docs/project/decisions/D-036.md",
+      "healthPrecedence": "recovery-required > blocked > degraded > healthy; lifecycle remains separate from health.",
+      "retryPolicy": "No generic retry engine. Provider/validation retry at normal cycle cadence; query execution at scheduler cadence; Viewer resyncs; Worker gets one controlled reopen; durability/quota/schema/CSP classes block or require explicit recovery.",
+      "security": "Provider auth remains page-owned. Diagnostics/artifacts exclude cookies, auth headers, session tokens, account numbers, raw authenticated payloads, full SQL text and arbitrary result rows by default.",
+      "observability": "Reuse purpose-specific session/cycle/query records plus bounded sanitized in-memory incidents and an extended Debug Bundle; no external telemetry or unbounded generic event-log baseline."
     }
   },
   "next": {
-    "action": "Planning Phase O: design failure taxonomy, security hardening and observability.",
+    "action": "Planning Phase P: decompose the Browser SQL target into implementation work packages.",
     "steps": [
-      "Define failure classes across provider, validation, Worker/bootstrap, SQL, OPFS, scheduler, Viewer and migration boundaries.",
-      "Define which failures are recoverable, retryable, blocking or require explicit user/admin intervention.",
-      "Finalize secret/security boundaries for user SQL, generated artifacts, diagnostics and live verification.",
-      "Define structured diagnostics/health state and minimum observability fields without leaking sensitive session data.",
-      "Define alert/status precedence and how failures remain visible without corrupting latest successful state.",
-      "Define acceptance scenarios that implementation Issues must satisfy."
+      "Convert Phases A-O contracts into ordered implementation work packages without creating GitHub Issues yet.",
+      "Place the real authenticated-Leumi compatibility probe before heavy dependent Browser SQL implementation.",
+      "Define package boundaries, prerequisites, public acceptance criteria, test layer and verification gate for each package.",
+      "Separate implementation, migration/shadow, benchmark and cutover work so temporary scaffolding has explicit removal tasks.",
+      "Keep package size small enough that later GitHub Issues are executable by a fresh AI without reconstructing the planning chat.",
+      "Use the decomposition as the input to Phase Q, where Issues/milestones/labels/dependency structure will be created in GitHub."
     ]
   },
   "history": {

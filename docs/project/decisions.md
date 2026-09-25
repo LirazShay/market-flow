@@ -51,6 +51,7 @@ decisions.md
 | [D-033](decisions/D-033.md) | Browser SQL verification uses Node + Chromium + mandatory live Leumi gates | Accepted | browser-sql, testing, playwright, live-verification, ci |
 | [D-034](decisions/D-034.md) | Browser SQL performance is gated by cadence-relative headroom and full-session evidence | Accepted | browser-sql, performance, benchmark, headroom, chromium |
 | [D-035](decisions/D-035.md) | Browser SQL cutover starts a fresh authority epoch without importing legacy IndexedDB history | Accepted | browser-sql, migration, cutover, indexeddb, rollback |
+| [D-036](decisions/D-036.md) | Browser SQL uses scoped failures, worst-active health precedence and sanitized local observability | Accepted | browser-sql, failure, security, observability, health, diagnostics |
 
 ## Fast lookup
 
@@ -80,7 +81,7 @@ Local History Viewer V1
 → D-019, D-020
 
 Browser SQL / V2 analytical migration
-→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-032, D-033, D-034, D-035, D-001, D-021
+→ D-025, D-026, D-027, D-028, D-029, D-030, D-031, D-032, D-033, D-034, D-035, D-036, D-001, D-021
 ~~~
 
 ## Adding a durable decision
