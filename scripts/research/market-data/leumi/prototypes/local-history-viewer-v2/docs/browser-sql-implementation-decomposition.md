@@ -144,11 +144,16 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 - run the exact generated probe on the real authenticated Leumi page;
 - record only sanitized capability outcomes;
 - verify injected JS, Blob Worker, pinned Worker/Wasm, OPFS write, COMMIT, CHECKPOINT, refresh/relaunch and reopen;
+- verify Web Locks availability using a synthetic Market-Flow probe lock;
+- verify two authenticated same-origin tabs cannot simultaneously hold the same exclusive synthetic lock with `ifAvailable:true`;
+- verify another tab can acquire the synthetic lock only after the first owner releases/closes it; never use `steal:true`;
 - classify every material result Verified/Inferred/Unknown;
 
 **Acceptance**
 
 - all required Browser SQL capabilities are directly Verified on the real page before dependent heavy work;
+- exclusive two-tab Web Lock behavior is directly Verified on the real authenticated origin;
+- no `steal:true` or weaker ownership fallback is required;
 - no cookies, headers, tokens, account data, HAR or private screenshots are persisted;
 - failure blocks WP-05 onward and records the exact capability that failed;
 
@@ -881,6 +886,9 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 - run normal isolated and mixed-load headroom benchmarks;
 - run representative full-session and 2x-session capacity/stress;
 - measure storage growth, reopen and hidden/background behavior;
+- measure bytes/session variance, archive/export working-set, rollover candidate size/latency and derive `storage_warning_reserve_bytes`;
+- measure pending-query cancellation latency, stream-phase analytics-connection recycle latency, ingest wait caused by analytics, huge-result memory/backpressure and Worker-recovery fallback;
+- select evidence-based `analytical_max_runtime_ms`, `analytics_preemption_budget_ms` and query polling/fetch-slice configuration;
 - classify conclusions Verified/Inferred/Unknown;
 
 **Acceptance**
@@ -889,6 +897,8 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 - normal coalesced ticks and query overlap are zero;
 - full-session/2x-session complete without OOM/corruption/quota/backlog failure;
 - target Windows/Chrome evidence is retained as the production performance proof;
+- storage-warning reserve is evidence-based rather than a hardcoded quota percentage;
+- analytical cancellation/preemption budgets preserve mixed-load ingest headroom;
 
 **Primary verification:** Heavy benchmark + target environment evidence
 
