@@ -43,6 +43,20 @@ The threaded `coi` bundle is not part of the required architecture and may only 
 
 ## 2. Authority model
 
+### Collection contract continuity
+
+The SQL migration does not redefine the working provider acquisition contract.
+
+~~~text
+authenticated Leumi page
+→ MapHeat2 dynamic universe
+→ sequential GetSecuritiesData chunks
+→ exact complete-cycle validation
+→ same validated-cycle content handed to the SQL boundary
+~~~
+
+Provider endpoints/request semantics/raw field meanings are not changed merely because persistence changes. Full raw MapHeat and Security records, canonical IDs and null/zero/empty/missing distinctions remain preserved.
+
 ### Market-history authority
 
 The persistent Browser SQL database owned by the SQL Authority Worker is the target authoritative market-history store.
@@ -71,6 +85,14 @@ This avoids assuming unverified multi-instance or cross-tab OPFS semantics.
 ### Viewer authority
 
 Viewer state is presentation state only.
+
+The product has three Viewer surfaces over the same authority:
+
+1. Current Universe — V1-derived latest/all-securities bank-data browsing;
+2. Security Detail/History — V1-derived single-security drill-down/history;
+3. Dynamic SQL Scanner — separate user-SQL + interval + result-grid surface.
+
+The third surface is additive and does not replace the first two.
 
 Viewer windows do not become a second source of truth and do not open independent authoritative DuckDB/OPFS handles in the baseline architecture.
 
