@@ -561,12 +561,6 @@ Tests cover:
 - SecurityId drill-down;
 - recovery of active definition.
 
-## CAP-VER-07 — automation-first engineering verification [CORRECTNESS]
-
-Everything technically provable in GitHub Actions, Node, Chromium, deterministic mocks or fault-injection harnesses is automated rather than delegated to the user.
-
-Temporary POC tests/workflows may be created to prove implementation hypotheses and removed afterward unless they protect a durable contract or regression.
-
 ## CAP-VER-06 — realistic performance evidence [CORRECTNESS]
 
 Before claiming the intended live cadence is sustainable, benchmark the representative mixed workload:
@@ -576,6 +570,12 @@ collection + atomic ingest + history/enrichment where enabled + repeated analyti
 ~~~
 
 Correctness tests do not substitute for capacity evidence.
+
+## CAP-VER-07 — automation-first engineering verification [CORRECTNESS]
+
+Everything technically provable in GitHub Actions, Node, Chromium, deterministic mocks or fault-injection harnesses is automated rather than delegated to the user.
+
+Temporary POC tests/workflows may be created to prove implementation hypotheses and removed afterward unless they protect a durable contract or regression.
 
 ---
 
