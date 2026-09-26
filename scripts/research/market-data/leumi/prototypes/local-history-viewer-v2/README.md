@@ -34,6 +34,21 @@ MapHeat2
 
 This architecture is inherited as the starting baseline, not a restriction on future V2 design.
 
+## V2 product continuity
+
+V2 does not redesign the working Leumi provider path merely because storage changes. The authenticated MapHeat2 → sequential GetSecuritiesData → exact complete-cycle validation contract and full raw data semantics remain the collection baseline.
+
+The target change is:
+
+~~~text
+same validated complete cycle
+→ DuckDB-Wasm / OPFS SQL authority instead of IndexedDB
+→ preserve Current Universe + Security Detail/History
+→ add a separate Dynamic SQL Scanner
+~~~
+
+The product authority is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`; durable decision D-043 owns this boundary.
+
 ## V1 / V2 isolation
 
 V2 has its own browser data/runtime identities:
