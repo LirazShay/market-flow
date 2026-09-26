@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-a-product-capability-decomposition",
-    "title": "Re-baseline D-043 execution plan from the product backward",
+    "substep": "pass-b-existing-wp-necessity-audit",
+    "title": "Classify the existing Browser SQL work packages against the independent product capability map",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,11 +22,11 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "D-043 product contract synchronized and guarded; existing WP-01/WP-02 evidence remains valid.",
-    "ready": "Plan re-baseline audit #72 opened. Existing 42-WP graph is now an audit input, not an assumption.",
-    "blockedAfterEntry": "Further implementation progression, including advancing beyond the pending WP-03 live gate, is paused until the re-baseline audit determines the corrected execution graph."
+    "completed": "Pass A product capability decomposition completed independently from the existing WP graph.",
+    "ready": "Capability map now distinguishes CORE, ANALYTICAL, CORRECTNESS and CONDITIONAL needs across collector, SQL authority, three Viewer surfaces, analytics, runtime, verification and lifecycle.",
+    "blockedAfterEntry": "Implementation progression remains paused while Pass B classifies every existing WP as KEEP/REORDER/SPLIT/MERGE/DEFER/REMOVE/REPLACE."
   },
-  "activeMiniProject": "browser-sql-implementation",
+  "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
     "engineSelection": {
       "status": "complete",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only re-baseline opened under Issue #72 after D-043. No runtime behavior changed. Existing WP-03 remains verification-pending rather than complete/failed; downstream package order is under audit.",
+    "specImpact": "Pass A planning artifact added: docs/browser-sql-product-capability-map.md. No runtime/spec behavior changed; no existing WP graph mutation yet.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass A: derive the complete V2 product/capability tree independently from the existing WP list, including preserved V1 behavior, SQL persistence, three Viewer surfaces, Scanner lifecycle, verification and only justified operational hardening.",
+    "action": "Execute Issue #72 Pass B: classify every existing WP-01..WP-42 against the independent capability map as KEEP/REORDER/SPLIT/MERGE/DEFER/REMOVE/REPLACE with explicit rationale and capability coverage.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
-      "Do not preserve a current WP merely because it already exists.",
-      "Do not add/remove/reorder Issues until the independent product capability map exposes the required work.",
-      "Treat WP-01/WP-02 verified evidence as reusable facts, not as proof that the downstream graph is correct.",
-      "Keep WP-03 open and verification-pending while the plan audit decides its exact place in the corrected graph.",
-      "Classify future work by current product necessity, correctness/security need, coupling and verification boundary."
+      "Audit every WP; do not skip already-completed WP-01/WP-02, but treat their evidence separately from downstream-plan validity.",
+      "Do not create/delete/reorder canonical Issues during Pass B; produce the classification first.",
+      "Identify packages that mix product capabilities with optional mechanisms or unrelated concerns.",
+      "Distinguish initial V2 necessity from later analytical/operational hardening.",
+      "Keep WP-03 open and verification-pending until the corrected graph is materialized in a later pass."
     ]
   },
   "history": {
