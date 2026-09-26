@@ -539,6 +539,8 @@ Worker/Wasm/OPFS/Viewer/window/ownership behavior is verified in real Chromium r
 
 Real-origin behavior that CI cannot prove is directly verified with sanitized evidence.
 
+The live artifact must self-verify its assertions and emit explicit PASS/FAIL evidence. The user is not a manual test executor; any unavoidable participation is limited to crossing the authenticated-session boundary.
+
 This includes:
 
 - engine/Worker/Wasm/OPFS compatibility;
@@ -558,6 +560,12 @@ Tests cover:
 - dynamic result schema;
 - SecurityId drill-down;
 - recovery of active definition.
+
+## CAP-VER-07 — automation-first engineering verification [CORRECTNESS]
+
+Everything technically provable in GitHub Actions, Node, Chromium, deterministic mocks or fault-injection harnesses is automated rather than delegated to the user.
+
+Temporary POC tests/workflows may be created to prove implementation hypotheses and removed afterward unless they protect a durable contract or regression.
 
 ## CAP-VER-06 — realistic performance evidence [CORRECTNESS]
 
