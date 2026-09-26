@@ -28,7 +28,7 @@ V1 remains frozen. Browser-only SQL is fixed unless evidence reopens D-025.
 
 ## Execution baseline
 
-Durable decisions: `D-025..D-042`.
+Durable decisions: `D-025..D-043`.
 
 ~~~text
 Master #20
@@ -39,6 +39,16 @@ WP-01..WP-42
 Mapping: `docs/browser-sql-github-execution-structure.md`.
 
 Final assurance: `docs/browser-sql-final-planning-freeze.md`.
+
+## Product continuity
+
+- provider/API acquisition remains the proven V1 contract unless separate evidence requires change: authenticated page, MapHeat2 dynamic universe, sequential GetSecuritiesData, exact complete-cycle validation;
+- V2 changes the successful-cycle persistence authority to DuckDB-Wasm/OPFS; it does not invent different market data;
+- Viewer target has three surfaces: Current Universe, Security Detail/History, and a separate Dynamic SQL Scanner with user SQL + configurable interval;
+- SQL Scanner is additive; it does not replace the two V1-derived browsing surfaces;
+- no trading/order-execution workflow is in this scope.
+
+Product authority: `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md` / D-043.
 
 ## Core invariants
 
