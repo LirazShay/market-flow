@@ -1237,3 +1237,287 @@ Arbitrary joins across full historical rows and aggregation/ranking must remain 
 ## Finding C4-10 — distinct-wave detection stays out until semantics exist
 
 Do not encode an undefined analytical concept into persistence.
+
+
+---
+
+# Pass C5 — Missing performance/capacity executable ownership
+
+## C5-01 — Benchmark foundation and result schema
+
+Create one small reusable benchmark foundation early: deterministic seeded data generation, workload parameters, environment capture, percentile/statistics helpers, correctness counters and machine-readable result artifacts.
+
+It should be reusable by persistence, enrichment, reads, Scanner and final capacity work rather than recreated in each phase.
+
+## C5-02 — Raw SQL persistence baseline benchmark
+
+Before enrichment or Scanner, measure the minimum V1-on-SQL durable cycle path:
+
+~~~text
+validated cycle handoff
+→ staging
+→ atomic raw/current/history commit
+→ CHECKPOINT
+→ durable acknowledgement
+~~~
+
+Measure service time, bytes/cycle, bytes/snapshot, CHECKPOINT cost, reopen cost and growth as row count increases. This becomes the baseline against which later enrichment cost is compared.
+
+## C5-03 — Trusted read-contract benchmark
+
+Own performance evidence for application reads separately from arbitrary Scanner SQL.
+
+Measure at representative and large history sizes:
+- Current Universe read;
+- selected-security current/detail read;
+- first history page;
+- continuation/load-older;
+- equal-timestamp cursor cases;
+- Viewer resync snapshot/read sequence.
+
+These reads must remain comfortably interactive without history-wide scans.
+
+## C5-04 — Current Universe rendering/read split
+
+Separate DB/read latency from browser rendering latency. Benchmark both enough to identify whether a slowdown comes from SQL, Controller transport or DOM/table rendering.
+
+Do not optimize SQL if the measured bottleneck is UI rendering, and vice versa.
+
+## C5-05 — History pagination scale gate
+
+Prove that bounded cursor paging remains stable as one security accumulates large history.
+
+Measure latency versus history depth, continuation stability, memory/DOM size, and absence of query plans that degrade into full-history materialization.
+
+## C5-06 — CHECKPOINT policy benchmark owner
+
+Per-cycle CHECKPOINT is a correctness policy today, but its cost must be measured explicitly on growing databases.
+
+Compare COMMIT and CHECKPOINT costs separately and together. If the policy becomes too expensive, that triggers a durability-design decision; implementation may not silently weaken the boundary.
+
+## C5-07 — Enrichment incremental-cost benchmark
+
+Own comparative runs:
+
+~~~text
+raw persistence baseline
+vs predecessor links
+vs predecessor links + selected metrics
+vs additional promoted/indexed fields
+~~~
+
+Measure write latency, storage amplification, CHECKPOINT cost, reopen impact and query-speed benefit. This is the gate used by C4 persist-vs-query decisions.
+
+## C5-08 — Scanner query-suite benchmark owner
+
+Define a representative Scanner suite independent of any final trading formula:
+- current filters;
+- ORDER BY/LIMIT ranking;
+- temporal joins;
+- GROUP BY/HAVING;
+- window functions;
+- raw future-field access;
+- bounded recent-history scan;
+- zero-row success;
+- large result.
+
+Record query service time, rows/bytes, result materialization/streaming cost, memory and cancellation behavior where applicable.
+
+## C5-09 — Scanner result-delivery strategy benchmark
+
+Before freezing Arrow streaming, full-row counting, paging or preview materialization, compare the simplest viable strategies against realistic result sizes.
+
+Decide from evidence:
+- materialize all small results;
+- stream large results;
+- preview row/byte caps;
+- whether exact full row count is affordable/necessary;
+- how truncation/completeness is reported.
+
+No silent SQL LIMIT may be introduced as a performance shortcut.
+
+## C5-10 — Mixed ingest/query contention benchmark
+
+Once Scanner exists, run continuous cycle ingest and repeated analytical SQL together.
+
+Measure:
+- ingest wait caused by analytics;
+- query lateness;
+- backlog trend;
+- cancellation/preemption need;
+- memory under large results;
+- connection recycle/recovery cost;
+- correctness counters.
+
+Use this evidence to select the minimum resource-isolation mechanism rather than precommitting to the old WP-40 design.
+
+## C5-11 — Cadence-relative headroom decision
+
+Performance gates should be expressed primarily relative to configured collection/query cadence rather than fixed milliseconds.
+
+Candidate ratios from the old plan may be used as starting hypotheses, but final thresholds must be justified by measured normal workload and product needs.
+
+Every run records actual universe size, collection cadence, query cadence and dataset size; no hardcoded 561 assumption enters correctness logic.
+
+## C5-12 — Storage-growth and quota-capacity owner
+
+Measure actual OPFS growth using representative and large payload profiles.
+
+Record:
+- bytes/snapshot;
+- bytes/cycle;
+- bytes/session;
+- growth slope;
+- usage/quota estimate;
+- reopen time versus DB size;
+- CHECKPOINT/WAL effects where observable.
+
+This evidence decides whether archive/rollover must be promoted from conditional to initial-release work.
+
+Do not choose a retention or rollover mechanism before measured need.
+
+## C5-13 — Memory-capacity owner
+
+Measure JS heap/Wasm/ArrayBuffer/browser-process memory where reliably observable, plus crash/OOM outcomes.
+
+Required questions:
+- does memory stabilize after warm-up?;
+- does Viewer paging remain bounded?;
+- do large Scanner results remain bounded?;
+- do cancelled/disposed query resources actually return to a stable level?;
+- can representative full-session and stress datasets complete without renderer/Worker failure?
+
+Unavailable memory APIs are reported as unavailable, never invented.
+
+## C5-14 — Reopen/recovery growth benchmark
+
+Measure Worker/runtime reopen and SQL readiness as DB size grows.
+
+Track:
+- DB open;
+- WAL/recovery;
+- readiness checks;
+- current/latest validation;
+- history read readiness;
+- Scanner-state recovery only when Scanner ships.
+
+There is no need to freeze a startup SLA now, but pathological growth must be detected before cutover.
+
+## C5-15 — Hidden/background-tab behavior experiment
+
+Browser throttling is an environmental risk and needs focused evidence.
+
+Classify hidden/background behavior as:
+
+~~~text
+Verified acceptable
+Degraded but observable
+Unsupported for continuous recording
+~~~
+
+This should be an automated Chromium/Windows experiment where possible, with live-origin confirmation only if browser policy depends on the actual page/session.
+
+## C5-16 — Linux-versus-Windows benchmark interpretation
+
+Linux GitHub-hosted Chromium provides repeatable trend/regression evidence.
+
+Windows GitHub Actions provides target-OS comparative evidence.
+
+Neither should be presented as verified performance on the user's exact hardware. Every performance claim carries environment metadata.
+
+## C5-17 — Performance regression policy
+
+Not every benchmark should gate every commit.
+
+Define classes:
+
+~~~text
+micro/targeted trend
+checkpoint benchmark
+heavy capacity
+pre-cutover full-session/stress
+~~~
+
+Set regression thresholds only where runner noise and sample size make them meaningful. A noisy one-off wall-clock number must not create flaky CI.
+
+## C5-18 — Benchmark correctness-first invariant
+
+Every performance run must carry correctness assertions. A fast run fails if it violates atomicity, committed-state reads, idempotency, no-overlap, raw/null semantics or recovery invariants.
+
+Benchmark code is not exempt from product correctness.
+
+## C5-19 — Optimization experiment ownership
+
+Any proposed optimization follows:
+
+~~~text
+baseline workload
+→ identify dominant measured cost
+→ smallest optimization
+→ rerun same workload
+→ compare correctness + performance
+→ keep or revert
+~~~
+
+Temporary optimization POCs are removed unless they become durable regression infrastructure.
+
+## C5-20 — Final representative capacity gate
+
+Before production cutover, run the actual shipped system shape:
+
+~~~text
+collection-shaped ingest
++ durable persistence
++ shipped enrichment
++ trusted Current/Detail reads
++ shipped Scanner workload
++ Viewer consumption
++ reopen/recovery
+~~~
+
+Use representative full-session and safety-margin stress data.
+
+Required outcomes:
+- no correctness violations;
+- no unbounded backlog;
+- no unexplained monotonic memory growth;
+- no storage/runtime errors;
+- acceptable cadence headroom;
+- storage fits observed target-browser constraints with explicit margin;
+- reopen remains operational.
+
+This is the final capacity proof, not the first time performance is measured.
+
+# C5 findings
+
+## Finding C5-01 — performance is distributed decision evidence
+
+The rewritten plan should not have one late benchmark milestone. Each expensive design choice gets a local benchmark gate, then the system gets one final capacity gate.
+
+## Finding C5-02 — raw persistence baseline must exist before enrichment
+
+Without a raw baseline, the project cannot quantify what temporal links/metrics actually cost.
+
+## Finding C5-03 — trusted product reads and Scanner SQL are separate workloads
+
+Current/Detail performance must remain reliable even if arbitrary analytical queries are complex.
+
+## Finding C5-04 — result-delivery mechanism must be benchmark-selected
+
+Streaming, exact full-row counting and preview strategy are implementation choices, not product truths.
+
+## Finding C5-05 — resource isolation depth depends on measured contention
+
+Protecting ingest is mandatory; cancellation/preemption/recycle complexity should be added only to the extent benchmarks prove it necessary.
+
+## Finding C5-06 — storage measurements decide lifecycle scope
+
+Archive/rollover remains conditional until measured session growth/quota risk justifies it.
+
+## Finding C5-07 — performance evidence is environment-qualified
+
+Linux CI, Windows Actions, live origin and exact user hardware are different evidence classes.
+
+## Finding C5-08 — final capacity gate uses only shipped features
+
+Do not benchmark hypothetical machinery as a cutover prerequisite. Capacity proof reflects the corrected product that actually exists.
