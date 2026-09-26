@@ -963,3 +963,457 @@ These checks must not be delegated to the user.
 Pass B2 records classification only.
 
 The full backlog must be audited before replacement Issues/dependencies are materialized.
+
+
+---
+
+# Pass B3 — WP-15 through WP-20
+
+## WP-15 — Implement query-definition/version/execution persistence
+
+**Current Issue:** #43  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Why the capability remains
+
+The Dynamic SQL Scanner needs durable state for at least:
+
+- active SQL text/definition;
+- active repeat interval;
+- activation state;
+- restart/reopen recovery;
+- distinction between latest execution and latest successful execution where surfaced.
+
+Those are real Scanner product requirements.
+
+### Problem in current package
+
+The current WP assumes a fairly rich persistence model up front:
+
+~~~text
+query_definition
+immutable query_version
+active_query_state
+query_execution
+~~~
+
+and treats immutable version history as if it were itself a product requirement.
+
+The product requires correct active/draft/restart/result semantics. It does not inherently require a permanent immutable history record for every SQL edit.
+
+### Proposed split
+
+#### Scanner durable configuration/lifecycle state [CORE]
+
+Persist only what is required to recover the product truthfully:
+
+- active SQL definition or exact active SQL snapshot;
+- active interval;
+- activation timestamp/anchor only if the chosen scheduler semantics need it;
+- active/suspended state;
+- latest execution identity/status as required by the UI;
+- latest successful execution identity as required by the UI.
+
+#### Execution/version audit history [JUSTIFY LATER]
+
+Keep richer immutable query-version/execution history only if needed for:
+
+- exact result attribution;
+- diagnostics;
+- recovery correctness;
+- benchmark/observability;
+- future saved-query/history functionality.
+
+If exact attribution can be achieved more simply by storing the executed SQL/hash/snapshot with each execution, do not build generalized query-version history merely because the old architecture selected it.
+
+### Capability coverage
+
+- CAP-SCN-01
+- CAP-SCN-02
+- CAP-SCN-03
+- CAP-SCN-11
+- CAP-VER-05
+
+### Sequencing consequence
+
+All of this moves into the Dynamic SQL Scanner mini-project and must not block V1-on-SQL parity.
+
+---
+
+## WP-16 — Implement analytical SQL safety classification and DuckDB hardening
+
+**Current Issue:** #44  
+**State:** open  
+**Classification:** KEEP + REORDER
+
+### Why
+
+Once arbitrary user SQL exists, a hard read-only analytical boundary is non-negotiable.
+
+The Scanner must not be able to:
+
+- mutate authoritative market data;
+- execute trusted migration/admin paths;
+- enable unintended external/file/network surfaces;
+- weaken engine hardening.
+
+### What remains valid
+
+- parsed/engine-backed statement classification rather than prefix-only regex;
+- one result-producing analytical statement where that remains the chosen product contract;
+- DDL/DML/admin/config/transaction rejection;
+- trusted migration/admin SQL on a separate application path;
+- pinned-build external-access/extension/configuration hardening.
+
+### Scope boundary
+
+This work belongs only when user-defined SQL is introduced.
+
+It is not a prerequisite for the V1 Current Universe or Security Detail/History surfaces because those use trusted application-owned read contracts, not arbitrary user SQL.
+
+### Capability coverage
+
+- CAP-SCN-04
+- CAP-RUN-05
+- CAP-VER-05
+- CAP-VER-03
+
+---
+
+## WP-17 — Implement streamed analytical query execution and result-state semantics
+
+**Current Issue:** #45  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Core behavior that must remain
+
+The Scanner needs:
+
+- execute the active user SQL against committed state;
+- SELECT/JOIN/GROUP BY/HAVING/window/ranking support where the engine supports the required contract;
+- dynamic result schema;
+- zero rows = successful result;
+- query errors isolated from market ingestion;
+- latest execution distinct from latest successful result;
+- timing/status/row-count metadata sufficient for the product;
+- bounded UI delivery when necessary.
+
+### Problem in current package
+
+The current WP also commits early to a specific large-result implementation:
+
+~~~text
+stream Arrow result batches
+count every full result row
+materialize only bounded Viewer preview
+~~~
+
+Streaming may be the correct implementation, but it is an optimization/mechanism, not the primary product contract.
+
+It should be selected from evidence about:
+
+- actual Scanner result sizes;
+- DuckDB-Wasm behavior;
+- memory use;
+- UI preview requirements;
+- cancellation/preemption strategy;
+- benchmark data.
+
+### Proposed split
+
+#### Core Scanner query execution/result semantics
+
+Implement the observable Scanner contract first.
+
+#### Large-result delivery strategy
+
+Choose streaming/materialization/paging/truncation behavior through focused Chromium POCs and benchmarks.
+
+If preview is bounded, truncation/completeness must be explicit; no silent SQL rewrite/LIMIT is allowed.
+
+### Capability coverage
+
+- CAP-SCN-06
+- CAP-SCN-07
+- CAP-SCN-08
+- CAP-SCN-09
+- CAP-VER-05
+- CAP-VER-06 for large-result strategy
+
+---
+
+## WP-18 — Implement anchored non-overlapping scheduler and DB-operation priority
+
+**Current Issue:** #46  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Core behavior that must remain
+
+The product requires:
+
+- Scanner interval independent from collection cadence;
+- repeated execution;
+- no overlapping execution of one active Scanner;
+- deterministic overrun behavior;
+- query reads only coherent committed state.
+
+These are Scanner lifecycle contracts.
+
+### What is not yet a product requirement
+
+The old WP fixes several implementation decisions at once:
+
+- activation-anchored cadence;
+- coalesced missed ticks;
+- one pending opportunity;
+- explicit DB-operation priority model;
+- ingest priority over pending analytics.
+
+Some of these are likely good engineering choices, but they need to be justified against actual runtime behavior and benchmark evidence.
+
+The product requirement is deterministic, non-overlapping repeated execution that does not damage ingestion—not a particular scheduler algorithm.
+
+### Proposed split
+
+#### Scanner repeat scheduler [CORE]
+
+Own:
+
+- user interval;
+- activation/start semantics;
+- one active execution maximum;
+- deterministic overrun/missed-tick policy;
+- clean stop/change/replace behavior.
+
+#### Ingest-vs-analytics resource policy [CORRECTNESS/PERFORMANCE]
+
+Own separately with the resource-isolation work:
+
+- whether waiting ingest preempts active analytics;
+- connection separation;
+- cancellation;
+- hard runtime budgets;
+- backpressure;
+- queue bounds.
+
+Those behaviors should be driven by measured contention, not hidden inside the basic scheduler package.
+
+### Capability coverage
+
+Core scheduler:
+
+- CAP-SCN-02
+- CAP-SCN-03
+- CAP-SCN-05
+- CAP-SCN-06
+- CAP-VER-05
+
+Resource policy:
+
+- CAP-VER-06
+- runtime correctness under mixed workload
+
+### Sequencing consequence
+
+Scheduler belongs inside the Scanner mini-project.
+
+Resource isolation must not automatically become an early prerequisite until Pass B/F audits WP-40 and benchmark evidence.
+
+---
+
+## WP-19 — Implement query/scheduler restart recovery
+
+**Current Issue:** #47  
+**State:** open  
+**Classification:** MERGE + REORDER
+
+### Why
+
+The behavior is required:
+
+- active Scanner definition survives restart as defined;
+- stale running execution becomes interrupted/unknown rather than guessed success;
+- latest successful result identity survives;
+- restart does not create a burst of missed executions.
+
+### Why a separate package may be artificial
+
+Much of WP-19 is the runtime behavior of the durable Scanner state already owned conceptually by the corrected WP-15 replacement:
+
+~~~text
+persist active Scanner lifecycle state
++
+restore it truthfully after restart
+~~~
+
+Treating persistence and its recovery as unrelated work risks duplicating state-machine ownership.
+
+### Proposed merge
+
+Create one coherent **Scanner durable lifecycle and restart recovery** package owning:
+
+- active SQL;
+- active interval;
+- active/suspended status;
+- scheduler restart state required by the chosen cadence policy;
+- interrupted execution recovery;
+- latest-success preservation.
+
+Scheduler calculation itself can remain separately testable, but durable state ownership/recovery should have one owner.
+
+### Capability coverage
+
+- CAP-SCN-03
+- CAP-SCN-11
+- CAP-RUN-04
+- CAP-VER-05
+
+---
+
+## WP-20 — Close analytical SQL runtime checkpoint
+
+**Current Issue:** #48  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Problem in current package
+
+The current checkpoint declares the analytical runtime complete **before Viewer/product integration**, while also requiring WP-40 resource isolation/cancellation/preemption.
+
+This mixes two different proof goals:
+
+1. a headless Scanner engine can safely execute and schedule user SQL;
+2. the complete Dynamic SQL Scanner product is usable, observable and robust under real mixed workload.
+
+It also risks making advanced resource isolation a mandatory blocker before evidence establishes which mechanisms are required.
+
+### Proposed split
+
+#### Scanner core-engine checkpoint
+
+Automatically prove:
+
+- durable active Scanner state;
+- safe analytical SQL boundary;
+- user SQL executes against committed state;
+- zero-row/error/latest-success semantics;
+- non-overlap and deterministic interval behavior;
+- restart recovery;
+- Fast CI + focused/full Chromium as appropriate.
+
+This is a headless/internal integration checkpoint.
+
+#### Final Dynamic SQL Scanner product checkpoint
+
+Occurs only after the later Viewer/UI packages are integrated and proves:
+
+~~~text
+editable SQL
++ interval controls
++ active/draft lifecycle
++ dynamic result grid
++ status/errors/timing
++ SecurityId drill-down
++ restart/reopen
++ mixed ingest/query behavior
+~~~
+
+Resource-isolation/cancellation/hard-budget mechanisms belong here only to the extent Pass B/F + benchmark evidence prove they are required for correctness/capacity.
+
+### Capability coverage
+
+Core engine:
+
+- CAP-SCN-01 through CAP-SCN-09
+- CAP-SCN-11
+- CAP-VER-05
+
+Final product checkpoint additionally:
+
+- CAP-SCN-10
+- Viewer Scanner contracts
+- CAP-VER-06 where performance is release-relevant
+
+### Re-baseline consequence
+
+The current WP-20 must not remain the sole definition of Scanner completion.
+
+---
+
+# B3 cross-package findings
+
+## Finding B3-01 — Dynamic SQL is one separate mini-project
+
+The current WP-15..20 set should move out of the path to V1-on-SQL parity.
+
+A corrected conceptual Scanner sequence is:
+
+~~~text
+Scanner durable lifecycle/configuration
+→ analytical SQL safety boundary
+→ core user-query execution/result semantics
+→ repeat scheduler
+→ restart recovery
+→ core-engine checkpoint
+→ Viewer editor/controls/result grid
+→ final Scanner product checkpoint
+~~~
+
+The exact placement relative to the enrichment mini-project is finalized in Pass D/E.
+
+## Finding B3-02 — Preserve contracts, re-justify mechanisms
+
+Several current choices are plausible but should not be mistaken for product requirements:
+
+~~~text
+immutable version table for every SQL edit
+Arrow streaming as the mandatory result strategy
+full result row counting in every case
+activation-anchored cadence
+specific pending-tick coalescing algorithm
+hard cancellation/preemption before benchmark evidence
+~~~
+
+The re-baseline should retain the observable behavior and choose mechanisms through focused POCs/benchmarks.
+
+## Finding B3-03 — Scanner persistence and restart recovery need one state owner
+
+The old WP-15 and WP-19 divide one durable lifecycle across schema creation and later recovery.
+
+The corrected plan should have one owner for the persisted Scanner state machine and its reopen semantics.
+
+## Finding B3-04 — Scheduler and resource isolation are different concerns
+
+Basic repeat/no-overlap semantics are product requirements.
+
+Cancellation, connection recycling, ingest preemption and hard budgets are resource-management mechanisms whose required depth must be established separately.
+
+## Finding B3-05 — Scanner completion needs both engine and product checkpoints
+
+A headless analytical engine checkpoint is useful.
+
+It cannot replace the final user-facing Scanner checkpoint containing the editor, interval controls, dynamic grid, errors/status and drill-down behavior.
+
+## Finding B3-06 — automation-first verification applies throughout
+
+Scanner work should use:
+
+- Node state/scheduler policy tests;
+- real Chromium SQL/security/restart tests;
+- synthetic query fixtures;
+- temporary large-result/cancellation/performance POCs;
+- fault injection;
+- benchmark evidence.
+
+Only durable public-contract regressions should remain permanently.
+
+No automatable Scanner verification should be delegated to the user.
+
+## Finding B3-07 — no implementation or canonical graph mutation yet
+
+Pass B3 records planning classifications only.
+
+Canonical Issue replacement/reordering waits until the full audit is complete.
