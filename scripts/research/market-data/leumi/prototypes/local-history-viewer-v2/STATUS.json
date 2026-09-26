@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-b2-audit-wp-08-through-wp-14",
-    "title": "Audit SQL recovery, ingest, atomicity and enrichment packages against the V1-on-SQL-first product sequence",
+    "substep": "pass-b3-audit-wp-15-through-wp-20",
+    "title": "Audit analytical SQL runtime packages as a separate Dynamic SQL Scanner mini-project",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A capability map and Pass B1 classification of WP-01..WP-07 completed.",
-    "ready": "B1 keeps WP-01/02/05/06, splits WP-03/04/07, and establishes minimal V1-on-SQL foundation before enrichment/Scanner complexity.",
+    "completed": "Pass A capability map plus Pass B1 (WP-01..07) and Pass B2 (WP-08..14) classifications completed.",
+    "ready": "B2 separates the minimum SQL persistence foundation from temporal enrichment and identifies the WP-13→WP-12 dependency as artificial.",
     "blockedAfterEntry": "Implementation remains paused; Pass B must finish classifying the full existing WP graph before canonical Issues/order are rewritten."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: WP-01..WP-07 classified in the re-baseline audit; no product/runtime implementation or canonical Issue graph mutation.",
+    "specImpact": "Planning-only: WP-08..WP-14 classified; persistence foundation separated from enrichment; no product/runtime implementation or canonical Issue graph mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,14 +130,14 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass B2: audit WP-08..WP-14, separating minimum V1-on-SQL recovery/atomic persistence from analytical horizon/enrichment work and identifying artificial dependencies.",
+    "action": "Execute Issue #72 Pass B3: audit WP-15..WP-20 as the Dynamic SQL Scanner analytical-runtime mini-project, checking which pieces are truly required, over-coupled or should be split/deferred.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical WP Issues/order during Pass B; classify first.",
-      "Prefer V1-on-SQL parity before temporal/enrichment unless a dependency is proven.",
-      "Keep atomicity, idempotency, raw-source preservation and recovery correctness non-negotiable.",
+      "Treat Dynamic SQL Scanner as a separate mini-project after V1-on-SQL parity unless a dependency is proven.",
+      "Do not let scheduler/query-state complexity block the basic Current/History product slice.",
       "Automate every verification that GitHub Actions/Node/Chromium/mocks/fault injection can prove."
     ]
   },
