@@ -4,6 +4,8 @@ This is the durable **initial** Phase R audit for the Browser SQL migration plan
 
 A later red-team assurance pass found additional material planning gaps before implementation. Therefore the PASS below is historical evidence for the A–R plan, not the final implementation handoff. The post-R assurance phases S–W must complete before the final planning freeze.
 
+A still later permitted post-freeze product amendment, D-043, clarifies collection continuity and the three Viewer surfaces. D-043 plus the final Phase-W freeze/amendment traceability supersede any older UI/collector ambiguity in this Phase-R document.
+
 It audits the planning contracts and the real GitHub execution graph before implementation handoff.
 
 Audit basis:
