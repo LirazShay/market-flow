@@ -1072,3 +1072,168 @@ user launches self-verifying artifact
 ~~~
 
 The user is not the manual QA engine.
+
+
+---
+
+# Pass C4 — Missing analytical enrichment executable ownership
+
+## C4-01 — Enrichment requirement-selection matrix
+
+Create an explicit decision owner for every candidate persisted relationship/metric. Record: analytical question enabled, consumers, reuse frequency, dynamic-query feasibility/cost, ingest cost, storage cost, semantic certainty, correctness risk, and decision = persist / query-time / defer / reject.
+
+Candidates include SnapshotId, predecessor links, LAST-change horizons, DealsDelta horizons, MID and promoted BID/ASK/LAST/deal-count fields. Nothing is persisted merely because it appeared in the old schema draft.
+
+## C4-02 — Provider-field semantic evidence gates
+
+Every promoted/derived source field needs Verified / Inferred / Unknown semantics evidence. At minimum cover LastKnownRate, DailyDealsQuantity, BuyLimit1, SellLimit1 and later promoted fields.
+
+DailyDealsQuantity availability does not prove reset/session semantics. DealsDelta remains disabled/NULL until reset behavior is Verified.
+
+## C4-03 — Canonical horizon-set decision owner
+
+Deliberately decide the initial V2 core horizon set from the current candidates: 10s, 20s, 30s, 60s, 90s, 120s, 300s, 600s.
+
+Decide which horizons need persistent predecessor links, which need persisted metrics, and keep one canonical definition used by schema, ingest, tests and SQL examples.
+
+## C4-04 — Temporal predecessor-selection semantics owner
+
+Explicitly confirm or replace the old at-or-before rule before permanent encoding.
+
+Resolve: at-or-before vs nearest, strict older-than-current rule, irregular gaps, cross-session boundaries, possible maximum-gap policy, equal-timestamp tie-breaking, and index/query strategy.
+
+No predecessor is fabricated when no acceptable historical row exists.
+
+## C4-05 — Persist-vs-query-time decision per enrichment
+
+Persist when a fact is frequently reused, cheap to compute, semantically stable, and its query-time cost justifies storage/write cost.
+
+Prefer dynamic SQL for uncommon/experimental comparisons that are easy to express through full historical rows and links.
+
+## C4-06 — Minimum typed-promotion decision
+
+Re-evaluate the old promoted set: last_rate, daily_deals_quantity, bid1, ask1, mid.
+
+For each field define provider mapping, SQL type, invalid source behavior, raw-presence semantics, query/read consumer, and benchmark evidence that promotion is worthwhile. Raw Security JSON remains preserved.
+
+## C4-07 — Derived-metric formula contract
+
+For LAST change define unit, formula, source fields, NULL conditions, zero-denominator behavior and precision expectations.
+
+For DealsDelta define formula only after reset/day semantics are Verified, including cross-session/day behavior.
+
+For MID verify whether positive bid/ask is an actual product/data rule or merely an old implementation assumption. Never reinterpret zero/null without evidence.
+
+## C4-08 — Horizon warm-up and missing-history contract
+
+Unavailable history means predecessor NULL and derived metric NULL. Prove partial warm-up cases explicitly so Scanner/Viewer can distinguish missing analytical history from numeric zero.
+
+## C4-09 — Concrete enrichment schema evolution
+
+After choices are proven, create a deliberate schema evolution from the already-working V1-on-SQL schema. Add only selected predecessor structures, selected derived metrics, justified promoted fields, required indexes and one schema-version bump.
+
+Do not build the generalized future-upgrade platform here.
+
+## C4-10 — Existing SQL-history backfill/rebuild decision
+
+By enrichment time, V1-on-SQL may already contain raw history. Choose explicitly among: backfill old SQL rows, enrich only post-upgrade rows, or rebuild a fresh development/test DB before production cutover.
+
+Never silently present raw-only historical rows as fully enriched.
+
+## C4-11 — Enrichment rebuildability contract
+
+Guarantee that raw snapshots + SecurityId + SnapshotId + collection timestamps + verified promoted values are enough to rebuild selected predecessor links and metrics.
+
+Derived values remain rebuildable performance aids, not irrecoverable source facts.
+
+## C4-12 — Enrichment atomicity integration
+
+Extend the already-proven raw persistence foundation. Any selected enrichment declared part of the committed analytical snapshot must commit atomically with the cycle/current/latest state or not appear at all.
+
+Enrichment failure must not create a partially enriched successful cycle.
+
+## C4-13 — Set-based enrichment implementation proof
+
+Use focused Chromium POCs to compare simple set-based approaches for predecessor resolution, selected metric calculation and latest/current synchronization while avoiding per-security JS-to-SQL round trips.
+
+Choose the simplest approach with adequate measured headroom.
+
+## C4-14 — Enrichment benchmark decision gate
+
+Before schema freeze compare at least: baseline raw persistence; raw + predecessor links; raw + predecessor links + selected metrics.
+
+Measure ingest latency, CHECKPOINT impact, DB growth, reopen impact, projected session storage, representative query benefit and mixed-load headroom.
+
+Persist only enrichments whose benefit justifies their cost.
+
+## C4-15 — Analytical SQL ergonomics contract
+
+Define stable SQL-facing names, types and units for selected promoted fields, predecessor references, derived metrics and any convenience views exposed to Scanner users.
+
+Do not hide semantics. Example: if 0.5 means +0.5%, document it explicitly. Full raw-row access remains available.
+
+## C4-16 — Enrichment exposure to Current/Detail
+
+After correctness/performance is green, decide per selected metric whether it is Scanner-only, Current Universe, Detail/History or diagnostics-only.
+
+Do not dump every derived column into the browsing UI. Surfaced fields need formatting/null semantics and UI/public-contract tests.
+
+## C4-17 — Cross-time arbitrary-comparison capability proof
+
+Prove representative SQL such as current ASK1 vs historical BID1, current BID1 vs historical ASK1, and historical MID vs current LAST. The physical model must preserve analytical freedom beyond precomputed metrics.
+
+## C4-18 — Historical aggregation capability proof
+
+Prove recent-window filtering, per-security aggregation, GROUP BY/HAVING, cross-security ranking and window functions needed for product-level analytical capability. These are capability tests, not a frozen trading formula.
+
+## C4-19 — Qualifying-window versus distinct-wave boundary
+
+Keep distinct-wave detection out of initial enrichment until a durable wave definition exists. Qualifying snapshots/windows are not the same as distinct events.
+
+## C4-20 — Enrichment checkpoint owner
+
+Create a standalone checkpoint proving selected semantics, schema evolution, historical/backfill decision, atomic integration, deterministic correctness, SQL usability and measured performance/storage headroom.
+
+Evidence should include Node formula/policy tests, Chromium DuckDB integration, warm-up/NULL cases, predecessor correctness, arbitrary cross-time queries, benchmark artifacts and full Browser CI.
+
+# C4 findings
+
+## Finding C4-01 — enrichment is a decision pipeline, not a predefined column list
+
+Analytical need → semantic proof → dynamic SQL experiment → benchmark → persist/query decision → concrete schema evolution → correctness/performance checkpoint.
+
+## Finding C4-02 — the old eight-horizon wide schema is a candidate, not an entitlement
+
+The current horizon list is strong product input, but the persisted subset/shape must be deliberately selected.
+
+## Finding C4-03 — stable SnapshotId is more foundational than any derived metric
+
+Snapshot identity/history ordering can exist in the minimum SQL model; temporal links and derived metrics are later analytical additions.
+
+## Finding C4-04 — DealsDelta requires a separate provider-semantics gate
+
+Availability is not semantic proof. Reset/session/day behavior must be Verified before subtraction is durable.
+
+## Finding C4-05 — benchmark precedes enrichment schema freeze
+
+Measure write/storage/query tradeoffs before committing millions of rows to a physical design.
+
+## Finding C4-06 — earlier SQL history needs an explicit enrichment-state story
+
+Backfill, raw-only, or deliberate pre-production rebuild must be explicit. No silent mixed semantics.
+
+## Finding C4-07 — enrichment remains rebuildable derived state
+
+Raw source facts remain the durable foundation.
+
+## Finding C4-08 — Viewer exposure is selective
+
+Persistence does not automatically imply a Current Universe column.
+
+## Finding C4-09 — analytical flexibility must survive precomputation
+
+Arbitrary joins across full historical rows and aggregation/ranking must remain possible.
+
+## Finding C4-10 — distinct-wave detection stays out until semantics exist
+
+Do not encode an undefined analytical concept into persistence.
