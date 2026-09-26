@@ -36,7 +36,7 @@ This architecture is inherited as the starting baseline, not a restriction on fu
 
 ## V2 product continuity
 
-V2 does not redesign the working Leumi provider path merely because storage changes. The authenticated MapHeat2 → sequential GetSecuritiesData → exact complete-cycle validation contract and full raw data semantics remain the collection baseline.
+V2 preserves the V1-proven Leumi provider/data acquisition contract; it does not redesign that collector merely because storage changes. The authenticated MapHeat2 → sequential GetSecuritiesData → exact complete-cycle validation contract and full raw data semantics remain the collection baseline.
 
 The target change is:
 
