@@ -1094,3 +1094,668 @@ This DAG is provisional until:
 - Pass E defines the mini-project implementation/checkpoint detail;
 - Pass F re-justifies lifecycle/hardening scope;
 - Pass G materializes the canonical GitHub Issues/Epics/guards.
+
+
+---
+
+# Pass D2 — Critical-path and gate analysis
+
+## 15. Precision note: this is a topological gate analysis, not a duration CPM
+
+The provisional nodes do not yet have reliable implementation-duration estimates.
+
+Therefore D2 does **not** claim a mathematically unique Critical Path Method result.
+
+It identifies instead:
+
+- hard technical gates;
+- deliberate product-order gates;
+- checkpoint/evidence gates;
+- soft sequencing;
+- redundant dependencies;
+- parallel work fronts.
+
+Pass E may later estimate relative size, but no fake schedule precision is introduced here.
+
+## 16. Gate classes
+
+~~~text
+HARD-TECH
+= downstream behavior cannot be implemented/trusted safely without the predecessor
+
+HARD-PRODUCT
+= deliberate product sequencing chosen for this V2, even if engineering could technically overlap
+
+CHECKPOINT
+= implementation may progress in parallel, but the downstream product truth cannot be declared until the checkpoint passes
+
+SOFT
+= useful sequencing/rework reduction only; safe parallelism exists
+
+REDUNDANT
+= already implied transitively by another dependency
+
+CONDITIONAL
+= becomes hard only if evidence activates the branch
+~~~
+
+## 17. Main gating spine
+
+Ignoring soft/redundant edges, the mandatory product spine is approximately:
+
+~~~text
+real-origin SQL premise
+→ minimum SQL authority
+→ validated-cycle persistence
+→ durability/recovery
+→ V1 SQL reads + Viewer surfaces + live provider proof
+→ V1-on-SQL checkpoint
+→ enrichment decision/implementation/checkpoint
+→ Scanner engine/product
+→ final three-surface integration
+→ final capacity
+→ live endurance
+→ cutover
+→ cleanup
+~~~
+
+Several branches feed this spine in parallel:
+
+~~~text
+collector characterization
+benchmark infrastructure
+runtime packaging
+Current + Detail UI
+cross-tab ownership
+~~~
+
+The longest branch in elapsed time cannot be known until implementation size is estimated.
+
+## 18. Early-foundation dependency audit
+
+### ND-01 → ND-02
+
+**Classification: SOFT / candidate split.**
+
+Collector characterization can help create the fixture/oracle corpus while the reusable verification foundation is being built.
+
+The current ND-01 scope is slightly too broad because it already claims "initial V1 parity oracles", which logically depend on characterization.
+
+D3 should consider splitting:
+
+~~~text
+minimal verification infrastructure
+→ evidence schema / sanitization / harness primitives
+
+collector characterization
+→ contributes V1 fixtures/oracles
+
+shared parity corpus
+→ grows from both
+~~~
+
+Avoid serializing characterization behind a fully finished verification platform.
+
+### ND-01 → ND-03
+
+**Classification: HARD-TECH for the self-verifying evidence format/sanitization, but only a minimal ND-01 subset is required.**
+
+The live gate should use standard evidence/redaction machinery.
+
+It should not wait for Scanner/future fixture infrastructure.
+
+### ND-03 → ND-04
+
+**Classification: HARD-TECH for heavy production SQL-runtime implementation.**
+
+The real authenticated origin must prove Worker/Wasm/OPFS viability before the project commits deeply to the runtime design.
+
+However, this gate does not prohibit:
+
+- interface design;
+- schema planning;
+- Node tests;
+- synthetic Chromium harness work.
+
+It blocks the production dependency on the unverified runtime premise, not all engineering thought.
+
+## 19. Persistence-foundation dependency audit
+
+### ND-02 + ND-04 → ND-05
+
+**Classification: HARD-TECH.**
+
+Bulk staging/handoff must know both:
+
+- the characterized V1 cycle contract;
+- the actual SQL Authority boundary.
+
+### ND-05 → ND-06 → ND-07
+
+**Classification: HARD-TECH.**
+
+This is the core storage correctness chain:
+
+~~~text
+valid handoff
+→ atomic commit
+→ durable acknowledgement/retry recovery
+~~~
+
+### ND-01 → ND-07
+
+**Classification: REDUNDANT.**
+
+ND-07 already receives ND-01 transitively through ND-05/ND-04/ND-02.
+
+The explicit edge is documentation-only and should disappear from the executable DAG.
+
+### ND-07 → ND-08
+
+**Classification: CHECKPOINT.**
+
+The persistence checkpoint must pass before storage authority is declared proven.
+
+Other non-dependent work may begin while checkpoint verification is running, but no later checkpoint may treat storage correctness as proven before ND-08 is green.
+
+## 20. Runtime/read/Viewer parallelism
+
+### ND-07 → ND-09
+
+**Classification: SOFT / candidate relaxation.**
+
+Deterministic runtime packaging infrastructure can begin once the production SQL runtime shape exists in ND-04.
+
+The **final packaged artifact** must contain the later durable implementation, but build-system work need not wait for ND-07.
+
+D3 should either:
+
+- change ND-09 implementation-start dependency to ND-04; or
+- split packaging infrastructure from final package verification.
+
+### ND-07 → ND-11
+
+**Classification: SOFT-STRONG / candidate relaxation to ND-06.**
+
+Trusted read contracts require coherent committed raw/current/history data.
+
+They do not intrinsically require the final CHECKPOINT-before-acknowledgement policy.
+
+Implementation can begin after ND-06 atomic persistence.
+
+V1 product checkpoint still depends on ND-07/ND-08 for durability.
+
+### ND-02 → ND-13 / ND-14
+
+**Classification: REDUNDANT.**
+
+Current and Detail receive the collector/data contract transitively through the SQL persistence/read path.
+
+Their direct implementation concern is:
+
+~~~text
+trusted reads
++ Viewer shell
+~~~
+
+Collector characterization belongs in parity/checkpoint evidence, not as a direct UI build dependency.
+
+### ND-11 + ND-12 → ND-13 and ND-14
+
+**Classification: HARD-TECH.**
+
+Both user-facing surfaces need trusted reads and the shared runtime/Viewer shell.
+
+### ND-13 and ND-14
+
+**Parallel work front.**
+
+Current Universe and Security Detail/History should be built/tested concurrently once ND-11/ND-12 are stable.
+
+Neither should block the other except for shared-shell contract changes.
+
+## 21. Recorder/live-provider dependency audit
+
+### ND-02 + ND-07 + ND-09 → ND-10
+
+The semantic dependencies are hard, but some explicit edges are transitively redundant depending on D3 packaging changes.
+
+The real required truth is:
+
+~~~text
+characterized collector
++ durable SQL ingest contract
++ production-shaped runtime
+→ Recorder→SQL integration
+~~~
+
+### ND-10 → ND-15
+
+**Classification: HARD-TECH.**
+
+L-2 cannot prove provider continuity before the integrated candidate exists.
+
+### ND-09 and ND-01 → ND-15
+
+**Classification: REDUNDANT if ND-10 already requires the production runtime/evidence machinery.**
+
+Keep these as traceability references in docs, not executable dependency edges.
+
+## 22. V1-on-SQL checkpoint
+
+### ND-08 + ND-10 + ND-13 + ND-14 + ND-15 → ND-16
+
+**Classification: HARD-PRODUCT + CHECKPOINT.**
+
+This is intentionally strict.
+
+ND-16 is the boundary where the project proves:
+
+~~~text
+storage migration
++ inherited provider behavior
++ Current
++ Detail/History
+= V1 product on SQL
+~~~
+
+Enrichment does not start before this checkpoint.
+
+This is a deliberate product-order gate, not merely technical convenience.
+
+## 23. Benchmark-foundation timing
+
+### Current ND-17 dependency on ND-08 + ND-11 + ND-01
+
+**Classification: mixed; node should be decomposed logically.**
+
+The benchmark **harness** can begin very early.
+
+The benchmark **measurements** have different readiness points:
+
+~~~text
+benchmark framework
+→ after minimal verification infrastructure
+
+raw persistence baseline
+→ after ND-06/ND-07
+
+trusted-read baseline
+→ after ND-11
+
+Viewer render split
+→ after ND-13/ND-14
+~~~
+
+D3 should prevent ND-17 from becoming one large late gate.
+
+For ND-18, only the enrichment-relevant baselines need to be green.
+
+## 24. Enrichment path
+
+### ND-16 + enrichment-relevant ND-17 evidence → ND-18
+
+**Classification: HARD-PRODUCT.**
+
+This preserves the user-selected order:
+
+~~~text
+first prove V1-on-SQL
+then decide/add enrichment
+~~~
+
+### ND-18 → ND-19 → ND-20
+
+**Classification: HARD-TECH/CHECKPOINT.**
+
+The sequence is:
+
+~~~text
+select semantics/shape
+→ implement schema/enrichment
+→ prove correctness + measured value
+~~~
+
+### ND-20 → ND-21
+
+**Classification: HARD-TECH for exposure of enriched data.**
+
+No derived metric should be surfaced in Current/Detail before its correctness/performance checkpoint.
+
+ND-21 may legitimately resolve to a documented no-op.
+
+## 25. Scanner entry gate
+
+### ND-21 → ND-22
+
+**Classification: HARD-PRODUCT / soft technically.**
+
+Technically, Scanner engine work could begin immediately after ND-20.
+
+The current edge preserves the user's preferred sequence:
+
+~~~text
+prove enrichment
+→ decide/expose any useful enriched browsing fields
+→ only then begin the separate Scanner mini-project
+~~~
+
+Because ND-21 may be a no-op, this should not become a large artificial delay.
+
+D3 should retain the ordering intent while keeping ND-21 narrowly scoped.
+
+### ND-12 → ND-22
+
+**Classification: SOFT / likely unnecessary for headless Scanner lifecycle.**
+
+ND-22 mainly owns SQL contract and durable lifecycle.
+
+It needs the SQL authority, not the Viewer shell.
+
+The Viewer shell becomes relevant at ND-26.
+
+This edge is a candidate for removal in D3.
+
+## 26. Scanner internal criticality
+
+### ND-22 → ND-23 → ND-24 → ND-25
+
+**Classification: HARD-TECH/CHECKPOINT.**
+
+This is the headless Scanner-engine spine:
+
+~~~text
+lifecycle/SQL contract
+→ safe truthful execution
+→ scheduling/resource safety
+→ engine checkpoint
+~~~
+
+### ND-17 → ND-24
+
+**Classification: depends on benchmark subset, not whole ND-17.**
+
+ND-24 needs mixed-load/result-strategy evidence, not every persistence/read benchmark.
+
+D3 should model benchmark evidence by named prerequisite/output rather than one monolithic node.
+
+### ND-25 → ND-26
+
+**Classification: SOFT / deliberate rework-reduction, not technical necessity.**
+
+Editor/grid implementation can begin once ND-22/ND-23 contracts are stable, while scheduling/resource work continues.
+
+Safer parallel pattern:
+
+~~~text
+ND-22/23 contracts
+├→ ND-24/25 engine path
+└→ ND-26 UI path
+          │
+          └──────┐
+                 ▼
+               ND-27
+~~~
+
+ND-27, not ND-26 start, should require the engine checkpoint.
+
+This can shorten the Scanner mini-project without weakening its product checkpoint.
+
+### ND-14 → ND-27
+
+**Classification: HARD-TECH for drill-down reuse, but already long-complete by then.**
+
+## 27. Cross-tab ownership timing
+
+### Current ND-16 → ND-28
+
+**Classification: SOFT / too late.**
+
+Cross-tab ownership implementation depends mainly on:
+
+- runtime ownership boundary from ND-04/ND-09;
+- verification/live-gate infrastructure.
+
+It does **not** require completed V1 product parity.
+
+Recommended D3 start point:
+
+~~~text
+ND-04 or ND-09
+→ ND-28 implementation/Chromium ownership proof
+~~~
+
+Its final PASS is required only before ND-29/final production integration.
+
+This work can therefore run in parallel with V1 product, enrichment and Scanner work.
+
+## 28. Final integration
+
+### ND-21 + ND-27 + ND-28 → ND-29
+
+**Classification: HARD-PRODUCT.**
+
+ND-29 proves the actual shipped three-surface runtime under single-owner behavior.
+
+If ND-21 is a no-op, its completion is still an explicit product decision, not missing work.
+
+## 29. Capacity and conditional-branch reintegration
+
+### ND-29 → ND-30
+
+**Classification: HARD-TECH/CHECKPOINT.**
+
+Final capacity must run on the integrated shipped shape.
+
+### Important defect in D1 conditional lifecycle flow
+
+D1 currently lets ND-30 decide whether archive/rollover is needed, while CND-02 only has to finish before ND-32.
+
+That is insufficient.
+
+If ND-30 activates a shipped conditional mechanism such as archive/rollover:
+
+~~~text
+ND-30 initial capacity assessment
+→ CND-02 implementation
+→ rerun affected capacity/correctness verification
+→ only then ND-31 live endurance
+~~~
+
+A system changed after capacity testing must not reuse stale capacity evidence.
+
+D3 should model either:
+
+- ND-30A assessment + ND-30B final capacity; or
+- explicit "re-run ND-30 after activated branch" semantics.
+
+### CND-03 advanced Scanner hardening
+
+Already correctly rejoins before ND-25.
+
+If ND-24 evidence activates advanced preemption/cancellation, the engine checkpoint waits for it.
+
+### CND-01 shadow verification
+
+If activated, shadow is temporary verification machinery.
+
+It must:
+
+- produce its evidence;
+- have explicit keep/remove disposition;
+- not remain accidentally in the production candidate;
+- complete/clean up before final candidate integration/endurance as appropriate.
+
+It should not alter the authority model.
+
+### CND-04 future upgrade framework
+
+Remains outside the initial critical path.
+
+## 30. Final release gates
+
+### ND-30 final capacity → ND-31 live endurance
+
+**Classification: HARD-PRODUCT.**
+
+Live endurance should exercise the final candidate after any capacity-driven mechanism changes.
+
+### ND-31 → ND-32 cutover
+
+**Classification: HARD-PRODUCT.**
+
+Production authority is not switched before final live evidence.
+
+### ND-28 → ND-32
+
+**Classification: REDUNDANT if ND-29 requires ND-28 and ND-31 requires ND-29.**
+
+Keep ownership as a cutover acceptance criterion, but remove the duplicate executable edge.
+
+### ND-32 → ND-33
+
+**Classification: HARD-PRODUCT.**
+
+Final cleanup follows successful cutover/rollback proof.
+
+## 31. Revised parallel work fronts
+
+### Front A — after minimum verification bootstrap
+
+~~~text
+collector characterization
+real-origin SQL feasibility
+benchmark-harness scaffolding
+~~~
+
+can progress substantially in parallel.
+
+### Front B — after atomic SQL persistence
+
+~~~text
+durability/recovery
+trusted reads
+runtime packaging
+~~~
+
+can overlap where contracts are already stable.
+
+### Front C — after trusted reads + shell
+
+~~~text
+Current Universe
+Detail/History
+read/render benchmarks
+~~~
+
+run in parallel.
+
+### Front D — after V1-on-SQL parity
+
+~~~text
+enrichment mini-project
+cross-tab ownership
+~~~
+
+run in parallel.
+
+### Front E — during Scanner
+
+Once lifecycle/execution contracts are stable:
+
+~~~text
+scheduler/resource engine work
+Scanner editor/grid work
+cross-tab/final-runtime hardening
+~~~
+
+can overlap, converging at Scanner/final integration checkpoints.
+
+## 32. Topological blocker hierarchy
+
+### Earliest hard blocker
+
+~~~text
+ND-03 real-origin SQL feasibility
+~~~
+
+If the target origin rejects the selected Browser SQL delivery primitives, the Browser SQL architecture must reopen before heavy implementation.
+
+### First implementation correctness blocker
+
+~~~text
+ND-07 / ND-08 durable SQL persistence proof
+~~~
+
+Without this, V1 product migration has no trustworthy authority.
+
+### First product blocker
+
+~~~text
+ND-16 V1-on-SQL parity checkpoint
+~~~
+
+Without this, enrichment/Scanner work is deliberately not allowed to become the active product path.
+
+### Analytical blocker
+
+~~~text
+ND-20 enrichment checkpoint
+~~~
+
+Without this, selected analytical schema cannot be treated as stable Scanner input.
+
+### Scanner blocker
+
+~~~text
+ND-25 engine checkpoint + ND-27 product checkpoint
+~~~
+
+### Production blocker
+
+~~~text
+ND-29 integration
+→ final ND-30 capacity
+→ ND-31 live endurance
+→ ND-32 cutover
+~~~
+
+## 33. D2 candidate edge changes for Pass D3
+
+Pass D3 should validate and, if confirmed, apply at least these simplifications:
+
+1. split/minimize ND-01 so collector characterization does not wait for an oversized verification platform;
+2. remove redundant ND-01 → ND-07;
+3. allow ND-09 packaging infrastructure to start from ND-04 rather than ND-07;
+4. allow ND-11 trusted-read implementation to start after ND-06 rather than ND-07;
+5. remove direct ND-02 edges from ND-13/ND-14;
+6. remove redundant ND-09/ND-01 edges from ND-15 where transitive;
+7. decompose ND-17 benchmark readiness by workload instead of one monolithic dependency;
+8. likely remove ND-12 → ND-22 for headless Scanner lifecycle;
+9. allow ND-26 Scanner UI work to overlap the ND-24/ND-25 engine path after contracts are stable;
+10. move ND-28 cross-tab ownership start earlier than ND-16;
+11. remove redundant ND-28 → ND-32 executable edge;
+12. repair ND-30/CND-02 reintegration so any capacity-driven shipped change is re-benchmarked before live endurance.
+
+## 34. D2 completion result
+
+The new DAG remains product-first, but its implementation can be materially more parallel than D1's first conservative draft.
+
+The corrected shape is:
+
+~~~text
+hard gates protect truth
+checkpoints protect product claims
+soft work overlaps
+conditional mechanisms rejoin before evidence that depends on them
+~~~
+
+No downstream stage is accelerated by weakening:
+
+- provider continuity;
+- atomicity/durability;
+- V1 parity;
+- enrichment correctness;
+- Scanner safety;
+- single ownership;
+- final capacity/live proof.
