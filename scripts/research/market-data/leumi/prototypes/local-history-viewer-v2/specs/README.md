@@ -4,13 +4,17 @@ The files in this directory are the durable observable contracts inherited from 
 
 They describe the **currently implemented V2 baseline behavior**, not the future Browser SQL target.
 
-Browser SQL is currently a planning target governed by:
+Browser SQL is currently a planning/implementation target governed by:
 
 ~~~text
 ../ROADMAP.md
 ../STATUS.json
 ../../../../../../../docs/project/decisions/D-025.md
+../../../../../../../docs/project/decisions/D-043.md
+../../../../../../../docs/product/local-history-viewer-v2-product-shape.md
 ~~~
+
+D-043 is target behavior, not a claim that the inherited V1-backed specs already implement the three-surface SQL design. As WP-23..WP-29 change observable behavior, the affected V2 specs must be evolved in the same implementation batch.
 
 When V2 intentionally changes runtime behavior:
 
