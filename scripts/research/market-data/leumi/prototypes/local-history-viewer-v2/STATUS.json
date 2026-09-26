@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-e1-v1-on-sql-mini-project-plan",
-    "title": "Write the V1-on-SQL mini-project implementation manual from the normalized dependency graph",
+    "substep": "pass-e2-v1-parity-verification-plan",
+    "title": "Define the dedicated V1↔V2 parity verification plan and oracle strategy for the V1-on-SQL checkpoint",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, and Pass D1-D3 completed.",
-    "ready": "The replacement DAG is normalized: redundant edges removed, benchmark work decomposed, Scanner UI parallelism enabled, ownership moved earlier, and conditional changes require re-verification before downstream evidence.",
-    "blockedAfterEntry": "Implementation remains paused; Pass E must turn the normalized graph into executable mini-project manuals before canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1 V1-on-SQL implementation manual completed.",
+    "ready": "E1 provides behavior/tests-first implementation instructions from verification bootstrap through SQL persistence, runtime/read migration, Current/Detail, L-2 and the ND-16 product checkpoint.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E continues with detailed checkpoint/evidence manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: D3 normalized dependency graph is now the effective provisional dependency authority; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: V1-on-SQL implementation manual added and indexed; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass E1: write the V1-on-SQL mini-project implementation manual covering verification bootstrap, collector characterization, real-origin gate, SQL persistence, runtime packaging, Recorder integration, trusted reads, Current/Detail surfaces, live L-2 and the V1 parity checkpoint.",
+    "action": "Execute Issue #72 Pass E2: define the dedicated V1↔V2 parity verification plan, including fixture/oracle ownership, observable comparison model, Current/Detail/history/sorting/null/failure scenarios, parity result schema and rules for resolving expected-vs-actual disagreements.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Use the D3 normalized dependency table as the dependency authority.",
-      "Write behavior/tests/evidence first and include exact checkpoint exit criteria.",
-      "Keep enrichment and Scanner explicitly outside the V1-on-SQL mini-project except for interfaces they consume later."
+      "Compare public observable contracts, never storage internals.",
+      "Use one sanitized deterministic scenario corpus across V1 expectations and V2 SQL-backed behavior.",
+      "Make parity failures diagnosable by contract area and distinguish implementation defect from oracle/spec defect."
     ]
   },
   "history": {
