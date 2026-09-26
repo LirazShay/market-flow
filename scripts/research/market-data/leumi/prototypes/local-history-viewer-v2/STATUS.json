@@ -10,21 +10,21 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-implementation",
-    "substep": "wp-03",
-    "title": "Execute Live Gate L-1 on the authenticated Leumi page",
-    "issue": 31,
-    "status": "verification-pending"
+    "stage": "browser-sql-plan-rebaseline",
+    "substep": "pass-a-product-capability-decomposition",
+    "title": "Re-baseline D-043 execution plan from the product backward",
+    "issue": 72,
+    "status": "in-progress"
   },
   "currentStage": {
-    "stage": "browser-sql-implementation",
-    "title": "Execute frozen Browser SQL implementation plan",
+    "stage": "browser-sql-plan-rebaseline",
+    "title": "Re-audit the Browser SQL package set, scope and dependency order after D-043",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Browser SQL planning phases A-W, WP-01 engine identity/manifest foundation, and WP-02 synthetic Browser SQL compatibility probe",
-    "ready": "WP-03 synthetic Chromium preflight PASS; live authenticated-Leumi verification pending",
-    "blockedAfterEntry": "WP-05+ heavy SQL-authority implementation remains blocked until WP-03 live Leumi gate passes"
+    "completed": "D-043 product contract synchronized and guarded; existing WP-01/WP-02 evidence remains valid.",
+    "ready": "Plan re-baseline audit #72 opened. Existing 42-WP graph is now an audit input, not an assumption.",
+    "blockedAfterEntry": "Further implementation progression, including advancing beyond the pending WP-03 live gate, is paused until the re-baseline audit determines the corrected execution graph."
   },
   "activeMiniProject": "browser-sql-implementation",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "D-043 audit synchronized the 42-WP graph, product/planning/decision/spec routing and cutover gates; Fast guard + docs/product CI watch added. No runtime/browser behavior changed.",
+    "specImpact": "Planning-only re-baseline opened under Issue #72 after D-043. No runtime behavior changed. Existing WP-03 remains verification-pending rather than complete/failed; downstream package order is under audit.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Run the remaining live-only WP-03 / Issue #31 checks on the authenticated Leumi page using docs/browser-sql-live-gate-l1.md; record sanitized results only.",
-    "issue": 31,
-    "workPackage": "WP-03",
+    "action": "Execute Issue #72 Pass A: derive the complete V2 product/capability tree independently from the existing WP list, including preserved V1 behavior, SQL persistence, three Viewer surfaces, Scanner lifecycle, verification and only justified operational hardening.",
+    "issue": 72,
+    "workPackage": "PLAN-REBASELINE",
     "rules": [
-      "Read Issue #31 and only its linked contracts plus the exact generated WP-02 probe.",
-      "Record only sanitized capability outcomes; never persist cookies, tokens, headers, account data, HAR files or private screenshots.",
-      "Verify injected JS, Blob Worker, exact pinned Worker/Wasm, OPFS write + COMMIT + CHECKPOINT + refresh/relaunch/reopen on the real authenticated Leumi origin.",
-      "Verify the synthetic exclusive Web Lock across two authenticated same-origin tabs with ifAvailable:true; never use steal:true or weaker heartbeat/localStorage/IndexedDB authority fallbacks.",
-      "Classify material outcomes Verified / Inferred / Unknown. WP-05+ remains blocked unless WP-03 passes."
+      "Do not preserve a current WP merely because it already exists.",
+      "Do not add/remove/reorder Issues until the independent product capability map exposes the required work.",
+      "Treat WP-01/WP-02 verified evidence as reusable facts, not as proof that the downstream graph is correct.",
+      "Keep WP-03 open and verification-pending while the plan audit decides its exact place in the corrected graph.",
+      "Classify future work by current product necessity, correctness/security need, coupling and verification boundary."
     ]
   },
   "history": {
