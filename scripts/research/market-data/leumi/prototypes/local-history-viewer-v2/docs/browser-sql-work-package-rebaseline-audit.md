@@ -485,3 +485,481 @@ Temporal predecessor columns, derived metrics and Scanner/query-state schema sho
 Pass B records planning conclusions only.
 
 Canonical Issue rewrites, dependency changes and replacement packages wait until the later materialization pass after the entire backlog and missing-work audit are complete.
+
+
+---
+
+# Pass B2 — WP-08 through WP-14
+
+## WP-08 — Implement startup readiness and unclean-runtime recovery
+
+**Current Issue:** #36  
+**State:** open  
+**Classification:** KEEP
+
+### Why
+
+Startup/readiness/recovery is part of the minimum trustworthy V1-on-SQL authority.
+
+A persisted SQL database is not usable merely because it can reopen. Before the Recorder writes again, the runtime must know that:
+
+- schema/state is readable;
+- current/latest invariants are coherent;
+- stale prior runtime/session state is classified truthfully;
+- unresolved recovery blocks writes rather than resetting or guessing.
+
+### Capability coverage
+
+- CAP-DB-03
+- CAP-RUN-04
+- CAP-LIFE-01
+- CAP-VER-03
+
+### Scope correction
+
+Keep the package focused on the **minimum V1-on-SQL authority state**.
+
+Do not make readiness depend on Scanner state, horizon enrichment, query scheduler state or generalized future-upgrade machinery.
+
+### Sequencing consequence
+
+This remains early, immediately after the minimum persistent schema/reopen foundation.
+
+---
+
+## WP-09 — Implement immutable validated-cycle handoff and defensive authority validation
+
+**Current Issue:** #37  
+**State:** open  
+**Classification:** KEEP
+
+### Why
+
+This is one of the most important D-043 boundaries.
+
+The V2 SQL system must consume the same validated complete-cycle market facts already produced by the proven V1 collector.
+
+The handoff is the seam that lets us change persistence without redesigning provider acquisition.
+
+### What must remain
+
+- exact dynamic-universe membership;
+- full raw MapHeat;
+- full raw Security;
+- canonical SecurityId;
+- source timing evidence;
+- null/zero/empty/missing distinctions;
+- rejection of partial/duplicate/missing/unexpected data;
+- stable ingest-token identity across retry.
+
+### Capability coverage
+
+- CAP-COL-01 through CAP-COL-05
+- CAP-COL-07
+- CAP-DB-06 foundation
+- CAP-VER-01
+
+### Sequencing consequence
+
+This belongs in the V1-on-SQL mini-project before any enrichment.
+
+Its automated verification should include V1-derived characterization fixtures so SQL handoff equivalence is proved rather than assumed.
+
+---
+
+## WP-10 — Implement one-cycle bulk staging and verified typed promotion
+
+**Current Issue:** #38  
+**State:** open  
+**Classification:** SPLIT
+
+### Problem in current package
+
+The current WP combines two concerns with different reasons and timing:
+
+1. **efficient one-cycle transport/staging of the complete validated V1 facts**;
+2. **selection/promotion of typed analytical columns**.
+
+Bulk staging is a fundamental ingest-mechanics concern.
+
+Typed promotion is a data-model/product/query concern and should be introduced only where a current read/analysis need justifies it.
+
+The current fixed promotion list:
+
+~~~text
+LastKnownRate
+DailyDealsQuantity
+BuyLimit1
+SellLimit1
+~~~
+
+does not itself represent full V1 Viewer parity and should not silently become the canonical analytical schema merely because it was chosen in an earlier architecture phase.
+
+### Proposed split
+
+#### Early package — complete-cycle bulk staging
+
+Own:
+
+- one validated cycle transferred as a bounded bulk unit;
+- full raw source preservation;
+- no per-security page↔Worker RPC loop;
+- exact source-value distinctions;
+- round-trip verification in real DuckDB/Chromium.
+
+This is required before atomic cycle persistence.
+
+#### Later/need-driven typed projections
+
+Typed columns/projections are added based on their actual consumers:
+
+- minimum V1 Current/Detail read efficiency;
+- later enrichment;
+- later Dynamic SQL performance.
+
+The plan should first decide whether V1 parity reads can use raw JSON directly, a V1-compatible typed projection, or a small promoted set justified by benchmark/read ergonomics.
+
+Do not promote fields merely because they are available.
+
+### Capability coverage
+
+Early staging:
+
+- CAP-DB-05 foundation
+- CAP-DB-08 raw queryability
+- CAP-VER-03
+
+Typed promotion:
+
+- CAP-DB-07 where needed for product reads
+- CAP-AN-06
+- CAP-VER-06 performance evidence
+
+### Re-baseline consequence
+
+WP-10 should not survive as one early package with a preselected mixed-purpose promotion list.
+
+---
+
+## WP-11 — Implement atomic successful-cycle persistence and current/latest synchronization
+
+**Current Issue:** #39  
+**State:** open  
+**Classification:** KEEP
+
+### Why
+
+This is the core persistence contract for V1-on-SQL.
+
+The minimum SQL authority must atomically advance:
+
+~~~text
+cycle
+history snapshots
+security/raw MapHeat catalog
+current universe
+latest/current pointers
+session/cycle metadata
+~~~
+
+or expose none of the attempted successful cycle.
+
+### Capability coverage
+
+- CAP-DB-05
+- CAP-COL-07
+- CAP-CUR-01 foundation
+- CAP-DET-02 foundation
+- CAP-VER-03
+
+### Important boundary
+
+Atomic persistence must work **without temporal enrichment**.
+
+Later enrichment may join the same transaction if product correctness requires derived values to be part of the successful analytical snapshot, but that is a later mini-project decision.
+
+The foundation itself must prove raw/current/history atomicity first.
+
+### Verification
+
+This deserves durable Chromium failure-injection regression coverage:
+
+- fail before transaction;
+- fail during snapshot insertion;
+- fail before COMMIT;
+- dynamic universe remove/add;
+- prior committed state remains intact.
+
+---
+
+## WP-12 — Implement temporal predecessor links and core persisted enrichment
+
+**Current Issue:** #40  
+**State:** open  
+**Classification:** REORDER
+
+### Why it remains required
+
+The product direction still requires:
+
+- stable historical predecessor references;
+- canonical 10/20/30/60/90/120/300/600s horizons;
+- persisted LAST-change metrics;
+- selected cheap verified same-row metrics;
+- deal deltas only after provider semantics are proven.
+
+So this is not obsolete work.
+
+### Why it must move
+
+None of the following requires WP-12:
+
+- preserving V1 provider collection;
+- storing a complete raw SQL cycle;
+- Current Universe parity;
+- Security Detail/History parity;
+- durable acknowledgement/idempotency.
+
+Making temporal enrichment a prerequisite for the first V1-on-SQL slice increases complexity before we have proved the storage replacement itself.
+
+### New conceptual home
+
+WP-12 belongs to the separate **analytical data/enrichment mini-project** after V1-on-SQL parity.
+
+Before implementation, that mini-project should re-evaluate:
+
+- which horizons remain worth persisting;
+- predecessor algorithm;
+- which metrics are persisted versus computed dynamically;
+- storage cost;
+- ingest cost;
+- query benefit;
+- mixed-workload performance.
+
+### Capability coverage
+
+- CAP-AN-02 through CAP-AN-08
+- CAP-VER-06
+
+### Re-baseline consequence
+
+Keep the requirement, move the work.
+
+Do not let WP-12 block V1-on-SQL parity.
+
+---
+
+## WP-13 — Implement CHECKPOINT-before-ack durability and ingest-token reconciliation
+
+**Current Issue:** #41  
+**State:** open  
+**Classification:** KEEP + REORDER
+
+### Why
+
+Durable acknowledgement and idempotent retry are correctness properties of the basic SQL storage replacement.
+
+They are not analytical enrichment features.
+
+The product must never say a cycle succeeded and then create duplicate history because acknowledgement was lost.
+
+### Current dependency defect
+
+Current dependency:
+
+~~~text
+WP-11 atomic persistence
++
+WP-12 temporal enrichment
+→ WP-13 durability/idempotency
+~~~
+
+The WP-12 dependency is artificial for the V1-on-SQL foundation.
+
+Correct conceptual dependency:
+
+~~~text
+validated handoff
+→ atomic raw/current/history persistence
+→ durability / acknowledgement / retry reconciliation
+~~~
+
+Temporal enrichment can later inherit the already-proven durable transaction/retry boundary.
+
+### Capability coverage
+
+- CAP-DB-06
+- CAP-DB-03 recovery semantics
+- CAP-RUN-04
+- CAP-VER-03
+
+### Verification
+
+Permanent fault-injection coverage should prove at least:
+
+~~~text
+COMMIT succeeds
+→ acknowledgement is lost
+→ reopen/retry same ingest token
+→ exactly one durable cycle
+~~~
+
+and the CHECKPOINT-uncertain branch must remain explicit.
+
+### Re-baseline consequence
+
+Keep this package but move it before enrichment and remove WP-12 as a prerequisite in the later canonical graph.
+
+---
+
+## WP-14 — Close SQL-authority ingest/recovery integration checkpoint
+
+**Current Issue:** #42  
+**State:** open  
+**Classification:** SPLIT
+
+### Problem in current package
+
+The current M2 checkpoint requires WP-08..WP-13, which means it combines:
+
+- basic SQL authority readiness/recovery;
+- exact V1-cycle handoff;
+- bulk ingest;
+- atomic raw/current/history persistence;
+- durability/idempotency;
+- temporal enrichment.
+
+That prevents us from obtaining an early verified storage-replacement checkpoint.
+
+It also labels the checkpoint as ready for analytical runtime work before the V1 Current/History product slice has been proven.
+
+### Proposed split
+
+#### Foundation checkpoint — SQL persistence parity
+
+Verify automatically:
+
+- persistent reopen/readiness;
+- exact V1 validated-cycle handoff;
+- complete raw preservation;
+- atomic history/current/latest;
+- durable acknowledgement;
+- idempotent retry;
+- dynamic universe behavior;
+- null/zero/empty/missing semantics;
+- Fast CI + full Chromium integration.
+
+This checkpoint excludes temporal enrichment.
+
+It proves:
+
+~~~text
+same validated V1 market cycle
+→ trustworthy persistent SQL authority
+~~~
+
+It does **not yet** prove the Viewer product.
+
+#### Later enrichment checkpoint
+
+After enrichment design/benchmark/implementation, separately prove:
+
+- predecessor selection;
+- horizon NULL/warm-up;
+- derived-value correctness;
+- enrichment transaction semantics;
+- performance headroom.
+
+#### Later V1-on-SQL product checkpoint
+
+A distinct later checkpoint must prove:
+
+~~~text
+same collector
+→ SQL durable authority
+→ Current Universe
+→ Security Detail/History
+~~~
+
+This will require WPs/read-contract/Viewer work audited later.
+
+### Capability coverage
+
+Foundation checkpoint:
+
+- CAP-COL-04/05/07
+- CAP-DB-03/04/05/06
+- CAP-VER-01/03/07
+
+Enrichment checkpoint:
+
+- CAP-AN-* relevant capabilities
+- CAP-VER-06
+
+### Re-baseline consequence
+
+The old M2 closure should not survive as one checkpoint.
+
+---
+
+# B2 cross-package findings
+
+## Finding B2-01 — V1-on-SQL persistence has a coherent minimum
+
+The minimum trustworthy persistence chain is now:
+
+~~~text
+minimum persistent schema
+→ startup readiness/recovery
+→ immutable V1 validated-cycle handoff
+→ complete-cycle bulk staging
+→ atomic raw/current/history persistence
+→ CHECKPOINT/ack/idempotent retry
+→ persistence foundation checkpoint
+~~~
+
+Temporal enrichment is not part of that chain.
+
+## Finding B2-02 — WP-12 currently creates an artificial dependency wall
+
+Temporal horizons and derived metrics are analytically important, but they should not block:
+
+- durable acknowledgement;
+- retry reconciliation;
+- initial SQL persistence checkpoint;
+- later Current/History parity.
+
+## Finding B2-03 — typed promotion must be consumer-driven
+
+The old WP-10 promotion list is an implementation choice, not a complete product contract.
+
+The corrected plan must identify:
+
+~~~text
+consumer/read need
+→ required typed projection
+→ benchmark/correctness evidence
+→ persist/promote only when justified
+~~~
+
+Full raw source preservation remains mandatory regardless.
+
+## Finding B2-04 — persistence checkpoint and product checkpoint are different
+
+A green SQL persistence foundation proves the storage authority.
+
+It does not prove the user-facing V1 replacement.
+
+The corrected plan must later include a separate product checkpoint for Current Universe + Security Detail/History parity.
+
+## Finding B2-05 — automated fault injection is first-class implementation evidence
+
+Atomicity/durability/retry behavior should be proven in GitHub Actions/Chromium through explicit fault injection.
+
+These checks must not be delegated to the user.
+
+## Finding B2-06 — no implementation or canonical graph mutation yet
+
+Pass B2 records classification only.
+
+The full backlog must be audited before replacement Issues/dependencies are materialized.
