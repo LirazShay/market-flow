@@ -1759,3 +1759,323 @@ No downstream stage is accelerated by weakening:
 - Scanner safety;
 - single ownership;
 - final capacity/live proof.
+
+
+---
+
+# Pass D3 — Normalized dependency DAG
+
+## 35. D3 authority
+
+This section defines the effective provisional dependency graph after D3.
+
+Where a D1 dependency conflicts with this section, D3 wins. Earlier D1/D2 material remains rationale/history.
+
+The node IDs remain planning IDs only and are not final GitHub Issue numbers.
+
+## 36. Verification foundation is narrowed
+
+D1 ND-01 was too broad because it mixed evidence/sanitization infrastructure, provider fixture creation, V1 parity oracle content and later fault-injection families.
+
+Effective ND-01 becomes the minimal reusable verification core:
+- machine-readable evidence identity/result schema;
+- artifact redaction/security scanning;
+- Verified / Inferred / Unknown classification;
+- public-boundary test-harness conventions;
+- CI evidence classes;
+- temporary-POC disposition rule.
+
+Provider-specific characterization fixtures/oracles are owned by ND-02 and later parity work. This allows ND-02 and ND-03 to progress in parallel after the small verification core exists.
+
+## 37. Effective direct dependency table
+
+Only direct executable dependencies are listed here. Transitive traceability belongs in documentation, not duplicate DAG edges.
+
+| Node | Effective direct predecessors | D3 change |
+|---|---|---|
+| ND-01 Verification core | PRE-01, PRE-02 | narrowed scope |
+| ND-02 V1 collector characterization | none of ND-01.. | no longer waits for oversized verification platform; uses frozen V1 source + sanitized fixtures |
+| ND-03 real-origin SQL feasibility | ND-01, PRE-01, PRE-02 | unchanged hard premise gate |
+| ND-04 SQL Authority + minimum schema | ND-03 | removed redundant ND-01 |
+| ND-05 validated-cycle handoff/staging | ND-02, ND-04 | unchanged real seam |
+| ND-06 atomic raw persistence | ND-05 | unchanged |
+| ND-07 durability/ack/idempotent recovery | ND-06 | removed redundant ND-01 |
+| ND-08 persistence checkpoint | ND-07 | unchanged |
+| ND-09 production runtime packaging | ND-04 | can start before durability is complete |
+| ND-10 Recorder→SQL integration | ND-02, ND-07, ND-09 | unchanged semantic requirements |
+| ND-11 trusted SQL reads | ND-06 | can begin after coherent COMMIT semantics; does not wait for final durability policy |
+| ND-12 shared Viewer shell/bridge/health | ND-09, ND-11 | unchanged |
+| ND-13 Current Universe | ND-11, ND-12 | removed redundant ND-02 |
+| ND-14 Detail/History | ND-11, ND-12 | removed redundant ND-02 |
+| ND-15 live provider compatibility L-2 | ND-10 | removed transitive ND-09/ND-01 |
+| ND-16 V1-on-SQL checkpoint | ND-08, ND-13, ND-14, ND-15 | removed redundant ND-10 |
+| ND-17A benchmark harness | ND-01 | split from old monolithic ND-17 |
+| ND-17B raw persistence/storage/reopen baseline | ND-07, ND-17A | enrichment-relevant baseline |
+| ND-17C trusted-read baseline | ND-11, ND-17A | independent product-read baseline |
+| ND-17D Viewer render/read split baseline | ND-13, ND-14, ND-17A | not an enrichment gate |
+| ND-18 enrichment selection/semantic gates | ND-16, ND-17B | no wait on unrelated Viewer-render benchmark |
+| ND-19 enrichment schema/implementation | ND-18 | unchanged |
+| ND-20 enrichment checkpoint | ND-19 | benchmark evidence produced/consumed inside mini-project using ND-17A/B foundation |
+| ND-21 selective enriched UI exposure | ND-20, ND-13, ND-14 | may be explicit no-op |
+| ND-22 Scanner SQL contract/lifecycle | ND-20 | removed ND-12 and ND-21 as headless start gates |
+| ND-23 safe execution/result model | ND-22 | unchanged |
+| ND-24 scheduler/resource safety | ND-23 | focused mixed-load benchmark is part of this unit using existing benchmark harness |
+| ND-25 Scanner engine checkpoint | ND-24, any activated CND-03 | conditional hardening rejoins here |
+| ND-26 Scanner editor/grid | ND-23, ND-12 | can overlap ND-24/ND-25 |
+| ND-27 Scanner product checkpoint/integration | ND-25, ND-26, ND-14 | engine + UI + shared Detail converge here |
+| ND-28 cross-tab production ownership | ND-09 | moved much earlier; no V1-parity dependency |
+| ND-29 final three-surface integration | ND-21, ND-27, ND-28 | unchanged convergence |
+| ND-30A integrated capacity assessment | ND-29, ND-17A, ND-17C, ND-17D | identifies required pre-cutover conditional mechanisms |
+| ND-30B final capacity verification | ND-30A, every conditional branch activated by ND-30A | always verifies the post-change candidate |
+| ND-31 live endurance L-3 | ND-30B | never uses stale pre-change capacity evidence |
+| ND-32 cutover + initial rollback/roll-forward | ND-31 | removed redundant direct ND-28 edge |
+| ND-33 final cleanup | ND-32 | unchanged |
+
+## 38. Benchmark decomposition
+
+The old ND-17 is replaced by named benchmark outputs rather than one all-or-nothing milestone.
+
+### ND-17A — benchmark harness
+
+Can begin early. Owns deterministic seeded datasets, workload parameters, environment capture, percentile/statistics helpers, correctness counters and machine-readable results.
+
+### ND-17B — raw persistence/storage/reopen baseline
+
+Runs when ND-07 exists and provides raw cycle service time, COMMIT/CHECKPOINT cost, storage growth, reopen growth and the baseline for enrichment-cost comparison.
+
+This is the benchmark dependency needed by ND-18.
+
+### ND-17C — trusted-read baseline
+
+Runs when ND-11 exists and provides Current read, Detail read, history first page/continuation and scale behavior.
+
+It contributes to final capacity but does not block enrichment selection.
+
+### ND-17D — Viewer read/render split
+
+Runs after ND-13/ND-14 and separates SQL/read latency, Controller transport and browser rendering.
+
+It is a product-performance baseline, not a schema-design blocker.
+
+## 39. Scanner parallelism is now explicit
+
+D1 serialized engine checkpoint → editor/grid. The effective Scanner graph is:
+
+~~~text
+ND-22 lifecycle/SQL contract
+        ↓
+ND-23 execution/result contract
+      ┌───────────────┐
+      ▼               ▼
+ND-24 scheduler/   ND-26 editor/grid
+resource work          │
+      ▼                │
+ [CND-03?]             │
+      ▼                │
+ND-25 engine           │
+checkpoint             │
+      └───────┬────────┘
+              ▼
+            ND-27
+      Scanner product
+        checkpoint
+~~~
+
+This preserves the engine checkpoint while allowing UI work against stable contracts.
+
+ND-26 may use deterministic/mock runtime states while ND-24 is still proving real scheduling/resource behavior.
+
+## 40. Cross-tab ownership moves off the late critical path
+
+Effective start:
+
+~~~text
+ND-09 production-shaped runtime
+→ ND-28 ownership implementation + Chromium/live ownership proof
+~~~
+
+ND-28 can run in parallel with V1 Current/Detail completion, enrichment and Scanner. Its PASS is required at ND-29.
+
+## 41. Conditional branch reintegration
+
+### CND-01 — shadow verification fallback
+
+Activation point: ND-16 cannot establish required migration/provider parity because a material live uncertainty remains.
+
+~~~text
+ND-16 evidence gap
+→ CND-01 temporary shadow verification
+→ capture evidence
+→ remove/retire temporary shadow machinery unless explicitly retained
+→ rerun ND-16
+~~~
+
+Shadow does not become a permanent authority mode.
+
+### CND-02 — archive/export/rollover
+
+Activation point: ND-30A measured storage/capacity evidence shows retain-all cannot meet initial-V2 operating needs.
+
+~~~text
+ND-30A
+→ CND-02 implementation + correctness tests
+→ ND-30B rerun final capacity on changed candidate
+→ ND-31
+~~~
+
+### CND-03 — advanced Scanner preemption/cancellation
+
+Activation point: ND-24 mixed-load evidence shows baseline resource safety is insufficient.
+
+~~~text
+ND-24 evidence
+→ CND-03 smallest required hardening
+→ focused re-benchmark/correctness
+→ ND-25
+~~~
+
+### CND-04 — generalized future upgrade lifecycle
+
+Remains outside initial V2. No initial-V2 node depends on it.
+
+## 42. Effective normalized graph
+
+~~~text
+PRE-01 ─┐
+PRE-02 ─┴─→ ND-01 ──────────────→ ND-03
+                                  │
+ND-02 ───────────────────┐        ▼
+                         └──────→ ND-04
+                                   │
+                                   ▼
+                                 ND-05
+                                   │
+                                   ▼
+                                 ND-06
+                           ┌───────┴────────┐
+                           ▼                ▼
+                         ND-07            ND-11
+                    ┌──────┼──────┐         │
+                    ▼      ▼      ▼         ▼
+                  ND-08  ND-09  ND-17B    ND-17C
+                           │                 │
+                    ┌──────┴──────┐          │
+                    ▼             ▼          │
+                  ND-10          ND-12       │
+                    │          ┌──┴──┐        │
+                    ▼          ▼     ▼        │
+                  ND-15      ND-13 ND-14 ─→ ND-17D
+                    │          └──┬──┘
+                    └──────┬──────┘
+                           ▼
+                         ND-16
+                           │
+                           ▼
+                         ND-18
+                           │
+                           ▼
+                         ND-19
+                           │
+                           ▼
+                         ND-20
+                      ┌────┴────┐
+                      ▼         ▼
+                    ND-21     ND-22
+                                │
+                                ▼
+                              ND-23
+                          ┌─────┴─────┐
+                          ▼           ▼
+                        ND-24       ND-26
+                          │           │
+                    [CND-03?]         │
+                          │           │
+                          ▼           │
+                        ND-25         │
+                          └─────┬─────┘
+                                ▼
+                              ND-27
+
+ND-09 ─→ ND-28 ─────────────────────┐
+                                    │
+ND-21 ───────────────────────────────┼→ ND-29
+ND-27 ───────────────────────────────┘
+                                       │
+                                       ▼
+                                     ND-30A
+                                       │
+                            [CND-02 / other?]
+                                       │
+                                       ▼
+                                     ND-30B
+                                       │
+                                       ▼
+                                     ND-31
+                                       │
+                                       ▼
+                                     ND-32
+                                       │
+                                       ▼
+                                     ND-33
+~~~
+
+ND-17A benchmark harness starts from ND-01 and feeds ND-17B/C/D plus focused benchmark work inside ND-20/ND-24/ND-30A/B.
+
+For readability, the diagram omits some direct convergence edges already defined in the table.
+
+## 43. Hard product-order constraints intentionally retained
+
+D3 does not optimize away these deliberate boundaries:
+
+~~~text
+ND-16 V1-on-SQL parity
+→ ND-18/19/20 enrichment
+
+ND-20 enrichment checkpoint
+→ ND-22 Scanner mini-project
+
+ND-27 Scanner product checkpoint
++ ND-28 production ownership
++ ND-21 enrichment exposure decision
+→ ND-29 final integration
+
+ND-30B final post-change capacity
+→ ND-31 live endurance
+→ ND-32 cutover
+~~~
+
+These are intentional product/correctness gates, not accidental serialization.
+
+## 44. Removed artificial/redundant dependencies
+
+D3 removes or relaxes:
+1. oversized verification foundation before collector characterization;
+2. ND-01 → ND-04 duplicate edge;
+3. ND-01 → ND-07;
+4. ND-07 → ND-09 as packaging-start gate;
+5. ND-07 → ND-11 as trusted-read-start gate;
+6. ND-02 → ND-13;
+7. ND-02 → ND-14;
+8. ND-09 → ND-15 duplicate through ND-10;
+9. ND-01 → ND-15 as transitive;
+10. monolithic ND-17 blocking unrelated work;
+11. ND-12 → ND-22;
+12. ND-21 → ND-22;
+13. ND-25 → ND-26 as UI-start gate;
+14. ND-16 → ND-28;
+15. ND-28 → ND-32 as duplicate edge.
+
+## 45. D3 consistency rules for later materialization
+
+When Pass G creates canonical Issues/guards:
+- only direct dependencies from the normalized table become executable dependency edges;
+- transitive source/capability traceability stays in Issue text/docs, not duplicate blockers;
+- conditional branches are absent from the mandatory path until activated by their named evidence gate;
+- any conditional mechanism that changes the release candidate invalidates downstream evidence that depends on the changed surface;
+- checkpoints may not reuse stale evidence after dependent code/schema/runtime changes.
+
+## 46. Pass D completion result
+
+Pass D now yields a dependency graph that is product-first, less serial, explicit about real hard gates, explicit about intentional product-order gates, benchmark-aware without one giant performance milestone, safe against stale capacity evidence, and free of the main redundant edges identified in D2.
+
+The next planning phase can define mini-project implementation manuals from this normalized graph rather than from the old 42-WP structure.
