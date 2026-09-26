@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-d3-remove-artificial-dependencies",
-    "title": "Apply and validate dependency simplifications so the provisional DAG keeps only real gates and intentional product-order constraints",
+    "substep": "pass-e1-v1-on-sql-mini-project-plan",
+    "title": "Write the V1-on-SQL mini-project implementation manual from the normalized dependency graph",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1 replacement DAG and Pass D2 critical-path/gate analysis completed.",
-    "ready": "D2 distinguishes hard technical/product/checkpoint gates from soft/redundant dependencies and identifies parallel work fronts plus one conditional-capacity reintegration defect.",
-    "blockedAfterEntry": "Implementation remains paused; Pass D3 must simplify the provisional DAG before mini-project planning or canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, and Pass D1-D3 completed.",
+    "ready": "The replacement DAG is normalized: redundant edges removed, benchmark work decomposed, Scanner UI parallelism enabled, ownership moved earlier, and conditional changes require re-verification before downstream evidence.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E must turn the normalized graph into executable mini-project manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: D2 critical-path/gate analysis appended to the replacement DAG; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: D3 normalized dependency graph is now the effective provisional dependency authority; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass D3: validate and apply removal/splitting of artificial/redundant dependencies in the provisional ND graph, including benchmark decomposition, earlier ownership work, Scanner UI overlap and conditional capacity re-verification.",
+    "action": "Execute Issue #72 Pass E1: write the V1-on-SQL mini-project implementation manual covering verification bootstrap, collector characterization, real-origin gate, SQL persistence, runtime packaging, Recorder integration, trusted reads, Current/Detail surfaces, live L-2 and the V1 parity checkpoint.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Remove only dependencies shown to be redundant/soft; preserve deliberate V1-on-SQL→enrichment→Scanner product-order gates.",
-      "Ensure conditional branches rejoin before any evidence/checkpoint invalidated by their implementation.",
-      "Prefer simpler DAG edges over duplicate traceability edges; keep traceability in docs instead."
+      "Use the D3 normalized dependency table as the dependency authority.",
+      "Write behavior/tests/evidence first and include exact checkpoint exit criteria.",
+      "Keep enrichment and Scanner explicitly outside the V1-on-SQL mini-project except for interfaces they consume later."
     ]
   },
   "history": {
