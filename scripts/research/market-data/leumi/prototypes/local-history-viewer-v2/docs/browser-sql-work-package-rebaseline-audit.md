@@ -1,0 +1,487 @@
+# Browser SQL V2 — Work-Package Re-baseline Audit
+
+## Role
+
+This is the Pass-B classification ledger for Issue #72.
+
+It compares the existing WP graph against the independent product capability map.
+
+It is a planning artifact only. It does not itself mutate the canonical GitHub execution graph, implementation order or product runtime.
+
+Classification vocabulary:
+
+~~~text
+KEEP
+REORDER
+SPLIT
+MERGE
+DEFER
+REMOVE
+REPLACE
+~~~
+
+A package may receive a primary classification plus a secondary sequencing note.
+
+Product capability authority:
+
+~~~text
+browser-sql-product-capability-map.md
+~~~
+
+---
+
+# Pass B1 — WP-01 through WP-07
+
+## WP-01 — Pin DuckDB-Wasm and create the engine asset manifest foundation
+
+**Current Issue:** #29  
+**State:** already completed  
+**Classification:** KEEP
+
+### Why
+
+Exact engine identity is a real correctness and reproducibility prerequisite, independent of the old milestone structure.
+
+It directly supports:
+
+- CAP-DB-01 target-engine feasibility;
+- CAP-RUN-01 reproducible Browser SQL delivery;
+- deterministic Chromium verification;
+- prevention of Worker/Wasm version mismatch.
+
+### What remains valid
+
+- exact package pin;
+- exact compatible Worker/Wasm asset identity;
+- no floating latest/next URLs;
+- deterministic manifest checks.
+
+### Re-baseline consequence
+
+Do not redo this work merely because the downstream graph changes.
+
+Treat WP-01 as reusable completed evidence/foundation.
+
+It does not imply that the old WP-02..WP-42 ordering remains valid.
+
+---
+
+## WP-02 — Build the minimal Browser SQL live-compatibility probe
+
+**Current Issue:** #30  
+**State:** already completed  
+**Classification:** KEEP
+
+### Why
+
+A sanitized self-contained probe is the correct way to test real-origin runtime feasibility without implementing the product first.
+
+It supports:
+
+- CAP-DB-01 real-origin Browser SQL feasibility;
+- CAP-VER-03 Chromium proof;
+- CAP-VER-04 self-verifying authenticated-origin gates;
+- automation-first engineering verification.
+
+### What remains valid
+
+The probe should continue to prove with synthetic data:
+
+~~~text
+injected JS
+→ Worker
+→ exact Wasm
+→ probe-only OPFS
+→ write
+→ COMMIT
+→ CHECKPOINT
+→ reopen
+→ verify
+→ safe cleanup
+~~~
+
+### Re-baseline consequence
+
+Preserve the probe and its regression coverage as engineering evidence.
+
+Do not turn it into product runtime logic.
+
+If later live-gate responsibilities are split, the same probe may serve more than one gate.
+
+---
+
+## WP-03 — Execute Live Gate L-1 on the authenticated Leumi page
+
+**Current Issue:** #31  
+**State:** open / verification pending  
+**Classification:** SPLIT
+
+### Problem in current package
+
+The current Issue combines two independent questions:
+
+1. **SQL runtime/storage feasibility on the real Leumi origin**
+   - injection;
+   - Worker;
+   - exact Wasm;
+   - OPFS;
+   - COMMIT/CHECKPOINT;
+   - reopen.
+
+2. **cross-tab ownership primitive feasibility**
+   - Web Locks;
+   - two-tab exclusion;
+   - release/reacquire semantics.
+
+The first question is a hard prerequisite for building V1-on-SQL.
+
+The second is an important correctness concern for the eventual production runtime, but failure there does not prove that DuckDB/OPFS persistence itself cannot be developed or that a single-owner development vertical slice is impossible.
+
+Binding both into one all-or-nothing implementation-entry gate over-couples two capability groups.
+
+### Proposed split
+
+#### Early gate — real-origin SQL persistence feasibility
+
+Must be satisfied before dependent V1-on-SQL runtime/storage implementation:
+
+~~~text
+authenticated Leumi origin
+→ injected runtime allowed
+→ Worker/Wasm works
+→ OPFS works
+→ COMMIT/CHECKPOINT
+→ reopen/verify
+~~~
+
+This gate must be self-verifying and emit sanitized PASS/FAIL.
+
+No visual/manual correctness checklist.
+
+#### Ownership feasibility gate
+
+Verify the selected cross-tab ownership primitive before production multi-tab ownership becomes a dependency.
+
+Web Locks availability can still be probed early because it is cheap, but its acceptance should belong to the ownership capability rather than redefine SQL-engine feasibility.
+
+### Capability coverage
+
+Early half:
+
+- CAP-DB-01
+- CAP-VER-04
+- CAP-VER-07
+
+Ownership half:
+
+- CAP-RUN-02
+- CAP-VER-03
+- CAP-VER-04
+
+### Re-baseline consequence
+
+WP-03 should not survive unchanged.
+
+Its already-built probe/evidence remains reusable.
+
+The exact replacement Issues/order are decided only after Pass D/E.
+
+---
+
+## WP-04 — Create deterministic Browser SQL Chromium harness and synthetic fixtures
+
+**Current Issue:** #32  
+**State:** open  
+**Classification:** SPLIT
+
+### Problem in current package
+
+The current scope tries to create in one early package:
+
+- engine serving;
+- universe/provider fixtures;
+- temporal fixtures;
+- analytical query fixtures;
+- failure fixtures;
+- OPFS isolation;
+- focused test commands.
+
+That front-loads test data for features that belong to later mini-projects.
+
+It also risks creating a giant generic harness before the observable contracts being tested exist.
+
+### Proposed split by need
+
+#### Early V1-on-SQL verification foundation
+
+Build only what the first vertical slice needs:
+
+- deterministic exact engine assets;
+- sanitized MapHeat/GetSecuritiesData fixtures;
+- dynamic-universe cases;
+- duplicate/missing/unexpected IDs;
+- null/zero/empty/missing source cases;
+- OPFS-isolated Chromium context/database helpers;
+- persistence/reopen/failure-injection seams required by parity work.
+
+#### Enrichment-specific fixtures
+
+Add only when the analytical-data mini-project begins:
+
+- horizon jitter;
+- no-history;
+- denominator-zero;
+- temporal-link cases;
+- enrichment failure scenarios.
+
+#### Scanner-specific fixtures
+
+Add only when Dynamic SQL Scanner begins:
+
+- SELECT/JOIN/GROUP BY/HAVING/window/ranking;
+- zero rows;
+- syntax/runtime errors;
+- large result/preview behavior;
+- scheduler/overrun/cancellation cases.
+
+### Capability coverage
+
+Early slice:
+
+- CAP-VER-01
+- CAP-VER-02
+- CAP-VER-03
+- CAP-VER-07
+
+Later fixture families follow their owning product mini-projects.
+
+### Re-baseline consequence
+
+Keep a small deterministic Chromium foundation early.
+
+Do not create all future fixtures before their public contracts exist.
+
+---
+
+## WP-05 — Implement SQL Authority Worker bootstrap and minimal Controller bridge
+
+**Current Issue:** #33  
+**State:** open  
+**Classification:** KEEP
+
+### Why
+
+A dedicated SQL authority with a minimal page↔Worker request bridge is directly required for the V1-on-SQL vertical slice.
+
+It supports:
+
+- one SQL execution/storage authority;
+- keeping provider authentication in page context;
+- Worker-owned DuckDB;
+- future detachable Viewer/read APIs.
+
+### Scope correction
+
+Keep this package deliberately minimal:
+
+~~~text
+page/runtime
+→ minimal Controller bridge
+→ one SQL Authority Worker
+→ explicit READY / FAILED
+~~~
+
+Do not let it absorb:
+
+- cross-tab production ownership;
+- Scanner protocol;
+- full Viewer state protocol;
+- scheduler state;
+- analytical resource isolation.
+
+Those belong to their own capability owners.
+
+### Capability coverage
+
+- CAP-DB-02
+- CAP-RUN-03 foundation
+- CAP-RUN-05
+- CAP-VER-03
+
+### Sequencing note
+
+This belongs very early in the corrected V1-on-SQL foundation, after the real-origin engine/storage premise is sufficiently proven and alongside the minimum Chromium harness.
+
+---
+
+## WP-06 — Implement OPFS open/reopen and browser storage durability classification
+
+**Current Issue:** #34  
+**State:** open  
+**Classification:** KEEP
+
+### Why
+
+Persistent reopen is not optional enrichment or Scanner functionality.
+
+It is part of the basic promise that V1 history moved to a persistent SQL authority.
+
+Without it, there is no meaningful V1-on-SQL parity.
+
+### What remains valid
+
+- production logical DB identity;
+- reopen the same DB;
+- CHECKPOINT/reopen verification;
+- explicit persisted/best-effort storage classification;
+- no destructive automatic reset;
+- explicit blocked/recovery state.
+
+### Capability coverage
+
+- CAP-DB-03
+- CAP-LIFE-01
+- CAP-LIFE-02
+- CAP-VER-03
+
+### Scope boundary
+
+Do not expand this package into:
+
+- archive/export;
+- rollover;
+- generalized future release upgrade;
+- legacy IndexedDB migration.
+
+Those require separate justification.
+
+---
+
+## WP-07 — Implement logical schema versioning and core relational schema
+
+**Current Issue:** #35  
+**State:** open  
+**Classification:** SPLIT
+
+### Problem in current package
+
+The current package mixes two different lifecycle moments:
+
+1. the **minimum market-data schema needed for V1-on-SQL parity**;
+2. a generalized ordered schema-migration framework.
+
+It also risks letting analytical/enrichment schema decisions become prerequisites for the first Current/History vertical slice.
+
+### Proposed split
+
+#### V1-on-SQL minimum durable schema
+
+The early schema should contain only what is needed to preserve the V1 market-history contract truthfully:
+
+~~~text
+schema identity/version marker
+recording session/run identity
+security catalog + full raw MapHeat
+current universe
+complete cycle
+historical snapshot + full raw Security
+latest/current pointer
+stable canonical SecurityId
+stable snapshot identity where required
+cycle uniqueness/idempotency foundations
+~~~
+
+This schema must be sufficient for:
+
+- atomic complete-cycle persistence;
+- Current Universe reads;
+- Security Detail/History reads;
+- raw-source preservation.
+
+It must not require temporal horizon columns or Dynamic SQL query-state tables.
+
+#### Schema evolution/migration capability
+
+Plan the actual forward schema-evolution mechanism before enrichment changes the durable schema and certainly before production cutover.
+
+That mechanism should be driven by concrete schema changes we now know are needed, rather than building a generalized framework before the first usable SQL-backed product slice exists.
+
+### Capability coverage
+
+Minimum schema:
+
+- CAP-DB-04
+- CAP-DB-05 foundation
+- CAP-DB-07
+- CAP-AN-01 only where stable SnapshotId is needed for history identity/future links
+
+Later evolution:
+
+- persistence compatibility/recovery correctness;
+- enrichment schema additions;
+- initial-release upgrade/cutover safety.
+
+### Re-baseline consequence
+
+The current WP-07 should not survive as one package.
+
+The first replacement owns **minimal V1 parity schema**.
+
+A later package owns **schema evolution needed by the next actual durable change**.
+
+---
+
+# B1 cross-package findings
+
+## Finding B1-01 — The earliest useful target should be V1-on-SQL, not an abstract SQL platform
+
+The first product-shaped path emerging from WP-01..07 is:
+
+~~~text
+pinned engine evidence
+→ real-origin SQL persistence feasibility
+→ minimal Chromium/provider fixture foundation
+→ SQL Authority Worker
+→ persistent OPFS reopen
+→ minimal V1-parity schema
+~~~
+
+This is a foundation for the later vertical slice:
+
+~~~text
+same V1 validated collector
+→ atomic SQL cycle
+→ Current Universe
+→ Security Detail/History
+~~~
+
+## Finding B1-02 — Verification scaffolding should grow with the product
+
+Do not implement every temporal/query/failure fixture in an early generic test package.
+
+Use:
+
+~~~text
+current contract
+→ smallest sufficient fixture/harness
+→ temporary POC if needed
+→ durable regression only when justified
+~~~
+
+## Finding B1-03 — Real-origin feasibility and production ownership are different gates
+
+Worker/Wasm/OPFS feasibility must be known before dependent SQL persistence work.
+
+Cross-tab ownership is also required for the finished production runtime, but should not be allowed to distort the definition of SQL persistence feasibility.
+
+## Finding B1-04 — Minimal schema comes before enrichment schema
+
+The V1-on-SQL vertical slice needs truthful current/history storage first.
+
+Temporal predecessor columns, derived metrics and Scanner/query-state schema should be owned by later mini-projects.
+
+## Finding B1-05 — No implementation changes are authorized by this audit
+
+Pass B records planning conclusions only.
+
+Canonical Issue rewrites, dependency changes and replacement packages wait until the later materialization pass after the entire backlog and missing-work audit are complete.
