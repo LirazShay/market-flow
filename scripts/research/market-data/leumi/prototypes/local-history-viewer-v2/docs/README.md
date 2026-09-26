@@ -10,6 +10,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | consolidated requirements + acceptance scenarios | [browser-sql-requirements-and-acceptance.md](browser-sql-requirements-and-acceptance.md) |
 | D-043 product-backward capability map | [browser-sql-product-capability-map.md](browser-sql-product-capability-map.md) |
 | execution-plan re-baseline WP audit | [browser-sql-work-package-rebaseline-audit.md](browser-sql-work-package-rebaseline-audit.md) |
+| backlog-wide re-baseline synthesis | [browser-sql-work-package-rebaseline-synthesis.md](browser-sql-work-package-rebaseline-synthesis.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
 | official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
