@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-b6-backlog-wide-classification-synthesis",
-    "title": "Synthesize the full WP-01..WP-42 audit into one backlog-wide classification and structural diagnosis",
+    "substep": "pass-c1-missing-v1-on-sql-capabilities",
+    "title": "Find missing executable ownership in the V1-on-SQL collector, persistence, read-contract and parity path",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A and Pass B1..B5 completed; every existing WP-01..WP-42 is now classified.",
-    "ready": "B5 separates mandatory initial-V2 correctness from conditional shadow/archive/future-upgrade machinery and moves performance evidence earlier.",
-    "blockedAfterEntry": "Implementation remains paused; Pass B6 must synthesize the full classification before Pass C missing-work analysis."
+    "completed": "Pass A and all Pass B audits are complete; every old WP is classified and backlog-wide structural synthesis is recorded.",
+    "ready": "The old milestone graph is no longer assumed canonical. Emerging bands are feasibility, SQL persistence, V1-on-SQL product, enrichment, Scanner, then hardening/cutover.",
+    "blockedAfterEntry": "Implementation remains paused; Pass C must identify missing work before dependency DAG redesign or canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: WP-30..WP-42 classified; full existing WP range is now audited; no product/runtime implementation or canonical Issue graph mutation.",
+    "specImpact": "Planning-only: Pass B6 backlog-wide synthesis added; no product/runtime implementation and no canonical Issue/dependency mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass B6: produce one backlog-wide WP-01..WP-42 classification matrix, identify repeated structural defects/merge-split patterns, and state which old milestone assumptions are invalid before starting Pass C missing-work audit.",
+    "action": "Execute Issue #72 Pass C1: audit the V1-on-SQL vertical slice for missing executable work, especially collector characterization/parity, stable trusted SQL read contracts, current/latest/detail/history read semantics, and product parity verification ownership.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
-      "Do not mutate canonical WP Issues/order during Pass B6; synthesize first.",
-      "Preserve completed WP-01/WP-02 evidence while separating it from downstream-plan validity.",
-      "Make initial-V2 versus conditional/later-hardening ownership explicit.",
-      "Carry automation-first verification into every proposed replacement work unit."
+      "Do not create/delete/reorder canonical WPs yet; identify missing owners first.",
+      "Search from product/capability contracts, not old milestone boundaries.",
+      "Separate missing behavior from implementation mechanisms already covered elsewhere.",
+      "Carry automation-first parity/fault-injection verification into every missing-work proposal."
     ]
   },
   "history": {
