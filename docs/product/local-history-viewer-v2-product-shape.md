@@ -157,14 +157,33 @@ Durable decision:
 docs/project/decisions/D-043.md
 ~~~
 
-Primary implementation owners:
+Implementation ownership:
 
 ~~~text
-WP-23 / #51  collection continuity into SQL persistence
-WP-24 / #52  live provider compatibility
-WP-25 / #53  Viewer bridge
-WP-26 / #54  SQL editor + interval activation
-WP-27 / #55  SQL result-grid presentation
-WP-28 / #56  Current Universe + Security Detail/History on SQL reads
-WP-29 / #57  integrated three-surface checkpoint
+WP-09..WP-14 / #37..#42
+  preserve the validated V1 cycle/raw-data contract through SQL ingest
+
+WP-23 / #51
+  integrate the unchanged provider/Recorder contract with SQL persistence
+
+WP-24 / #52
+  live provider compatibility/equivalence
+
+WP-25 / #53
+  Viewer bridge for all three surfaces
+
+WP-26 / #54
+  Dynamic SQL Scanner editor + interval activation
+
+WP-27 / #55
+  Dynamic SQL Scanner result-grid presentation
+
+WP-28 / #56
+  Current Universe + Security Detail/History on SQL reads
+
+WP-29 / #57
+  integrated three-surface checkpoint
+
+WP-36..WP-38 / #64, #66, #67
+  preserve the same contract through cutover, live endurance and final cleanup
 ~~~
