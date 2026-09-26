@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-c1-missing-v1-on-sql-capabilities",
-    "title": "Find missing executable ownership in the V1-on-SQL collector, persistence, read-contract and parity path",
+    "substep": "pass-c2-missing-viewer-product-work",
+    "title": "Find missing Viewer/application-shell/navigation/state work across Current Universe, Detail/History and Scanner surfaces",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A and all Pass B audits are complete; every old WP is classified and backlog-wide structural synthesis is recorded.",
-    "ready": "The old milestone graph is no longer assumed canonical. Emerging bands are feasibility, SQL persistence, V1-on-SQL product, enrichment, Scanner, then hardening/cutover.",
-    "blockedAfterEntry": "Implementation remains paused; Pass C must identify missing work before dependency DAG redesign or canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, and Pass C1 missing V1-on-SQL ownership audit completed.",
+    "ready": "C1 identified ten missing executable owners around collector characterization, parity, trusted SQL reads, history cursor semantics, read consistency, resync and V1-on-SQL product proof.",
+    "blockedAfterEntry": "Implementation remains paused; Pass C continues before DAG redesign or canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: Pass B6 backlog-wide synthesis added; no product/runtime implementation and no canonical Issue/dependency mutation.",
+    "specImpact": "Planning-only: C1 missing-work audit added; old 42-WP graph is explicitly replaceable; no product/runtime implementation or canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass C1: audit the V1-on-SQL vertical slice for missing executable work, especially collector characterization/parity, stable trusted SQL read contracts, current/latest/detail/history read semantics, and product parity verification ownership.",
+    "action": "Execute Issue #72 Pass C2: audit missing Viewer/product work, especially three-surface application shell/navigation, per-surface state ownership, loading/empty/error behavior, return-state continuity, health visibility and Scanner isolation from V1 browsing.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
+      "Do not preserve the old WP graph for historical reasons; the final execution graph may be rewritten from scratch.",
       "Do not create/delete/reorder canonical WPs yet; identify missing owners first.",
-      "Search from product/capability contracts, not old milestone boundaries.",
-      "Separate missing behavior from implementation mechanisms already covered elsewhere.",
-      "Carry automation-first parity/fault-injection verification into every missing-work proposal."
+      "Separate shared Viewer shell responsibilities from Current, Detail/History and Scanner-specific concerns.",
+      "Carry automation-first UI/public-contract verification into every missing-work proposal."
     ]
   },
   "history": {
