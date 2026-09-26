@@ -16,6 +16,8 @@ This roadmap is deliberately a planning roadmap. It is not authorization to impl
 - localhost / Node / .NET / native DuckDB are not active candidates in this planning project.
 - A future non-browser contingency requires a new explicit architecture decision.
 - V1 remains frozen.
+- The proven V1 provider/data acquisition contract remains the V2 collection baseline; Browser SQL migration changes storage/analytical authority, not the provider API contract by default.
+- V2 preserves the Current Universe and Security Detail/History product surfaces and adds a separate Dynamic SQL Scanner with user SQL + configurable repeat interval.
 - No implementation begins until this planning project completes.
 
 Durable decision:
@@ -227,14 +229,19 @@ Deliverable: runtime delivery decision.
 
 Classify and design:
 
-- retain/adapt/replace existing current/history/diagnostics;
+- preserve the V1-derived Current Universe surface over SQL-authority reads;
+- preserve the V1-derived Security Detail/History surface over SQL-authority reads;
+- add a separate Dynamic SQL Scanner surface;
+- provide user SQL + configurable repeat interval on the scanner;
+- render the scanner result grid from the active SQL result schema without a second hidden filter/ranking layer;
+- allow scanner rows carrying canonical SecurityId to reuse the existing detail surface;
+- retain/adapt diagnostics;
 - result delivery;
 - DB reread vs pushed result;
 - multi-viewer behavior;
-- future SQL editor/input;
 - query/result/error/timing display.
 
-Deliverable: viewer/result architecture.
+Deliverable: three-surface viewer/result architecture.
 
 ## Planning Phase L — Testing and verification
 
