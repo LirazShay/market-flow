@@ -284,20 +284,23 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Scope**
 
-- adapt existing complete-cycle output into the target immutable handoff;
+- adapt the existing proven V1 complete-cycle output into the target immutable SQL handoff; do not redesign provider acquisition here;
 - attach stable ingest_token before Worker handoff;
-- include exact validated universe, full raw MapHeat and full raw Security records;
+- include the exact validated dynamic universe, full raw MapHeat records and full raw GetSecuritiesData Security records;
+- preserve canonical SecurityId and null/zero/empty/missing source distinctions;
 - revalidate complete counts/membership/IDs/timestamps at SQL authority boundary;
 
 **Acceptance**
 
+- SQL handoff represents the same validated complete-cycle market facts produced by the V1-proven collector;
 - partial/duplicate/missing/unexpected cycle never reaches successful SQL mutation;
+- full raw MapHeat/Security evidence and source-value distinctions survive handoff unchanged;
 - same handoff preserves the same ingest_token across retry;
 - conflicting data under one ingest_token is rejected;
 
 **Primary verification:** Node exact-membership/handoff tests
 
-**Exit:** Recorder-to-SQL authority contract is explicit and idempotency-ready.
+**Exit:** Recorder-to-SQL authority contract preserves the V1 validated-cycle boundary and is idempotency-ready.
 
 ### WP-10 — Implement one-cycle bulk staging and verified typed promotion
 
@@ -315,12 +318,14 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 **Acceptance**
 
 - no per-security JS→Worker→SQL RPC loop is used;
-- raw future fields remain queryable;
+- staging preserves incoming validated V1 market facts rather than redefining provider field meanings;
+- full raw future fields remain queryable;
+- null/zero/empty/missing distinctions remain recoverable from raw source evidence;
 - invalid typed shapes fail rather than silently coercing source data;
 
 **Primary verification:** Node normalization + Playwright bulk roundtrip
 
-**Exit:** A complete cycle can enter DuckDB as one validated bulk staging unit.
+**Exit:** A complete V1-contract cycle can enter DuckDB as one validated bulk staging unit.
 
 ### WP-11 — Implement atomic successful-cycle persistence and current/latest synchronization
 
@@ -338,13 +343,14 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Acceptance**
 
-- N-security successful cycle exposes exactly N coherent snapshots/current/latest entries;
+- N-security successful cycle exposes exactly N coherent snapshots/current/latest entries from the same validated collector cycle;
+- persisted raw MapHeat/Security facts remain traceable to that validated input cycle;
 - injected pre-COMMIT failure exposes none of the attempted cycle;
 - security leaving the universe leaves current/latest but history remains;
 
 **Primary verification:** Playwright atomic-cycle-ingest + Node set logic
 
-**Exit:** One cycle is all-or-nothing SQL-visible market state.
+**Exit:** One unchanged validated collector cycle is all-or-nothing SQL-visible market state.
 
 ### WP-12 — Implement temporal predecessor links and core persisted enrichment
 
@@ -403,17 +409,19 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 - run the complete browser persistence/atomicity/recovery suite on final M2 code;
 - verify dynamic universe/raw-data/null semantics across reopen;
+- verify the M2 SQL authority consumes/persists the proven V1 validated-cycle data contract without inventing a replacement provider model;
 - update implemented normative specs for the SQL authority contracts now delivered;
 
 **Acceptance**
 
 - all M2 public contracts pass in Chromium;
 - Fast CI and full Browser CI are green;
-- no live-only requirement is falsely marked Verified;
+- V1 collection-data invariants are preserved through SQL handoff/persistence;
+- no live-only provider-equivalence claim is falsely marked Verified before WP-24;
 
 **Primary verification:** Fast CI + full Browser CI
 
-**Exit:** M2 is a numbered implementation checkpoint ready for SQL runtime work.
+**Exit:** M2 is a numbered implementation checkpoint with V1 data-contract continuity ready for SQL runtime work.
 
 ### WP-15 — Implement query-definition/version/execution persistence
 
@@ -934,17 +942,21 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 - mark Browser SQL release manifest storageAuthority=duckdb-opfs;
 - stop/settle legacy Recorder before authority switch;
 - start with a fresh verified production OPFS authority and new SQL history epoch;
+- switch Current Universe, Security Detail/History and Dynamic SQL Scanner to the production SQL authority;
+- keep the V1-proven provider/data acquisition contract unchanged across the authority switch;
 - never import legacy history or silently reuse shadow/probe DB;
 
 **Acceptance**
 
 - no cycle is intentionally split across authorities;
 - after switch normal target performs no IndexedDB market-history writes/reads;
+- all three D-043 Viewer surfaces use the production SQL authority;
+- provider acquisition/validation behavior is not altered as a side effect of storage cutover;
 - SQL startup failure leaves Recorder stopped rather than falling back;
 
 **Primary verification:** Playwright cutover scenarios + release artifact checks
 
-**Exit:** Production authority transition is explicit and reversible only by operator release switch.
+**Exit:** Production authority transition preserves the D-043 product shape and is reversible only by operator release switch.
 
 ### WP-37 — Verify rollback, roll-forward and Live Gate L-3 endurance
 
@@ -957,17 +969,22 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 - exercise explicit rollback to retained IndexedDB release while preserving OPFS;
 - exercise fixed-runtime roll-forward reopening coherent OPFS;
 - run representative real authenticated-Leumi end-to-end session;
-- verify collection, SQL commits, scheduler, Viewer and refresh/reopen;
+- verify the V1-proven provider acquisition/complete-cycle contract remains intact;
+- verify SQL commits and scheduled queries;
+- verify all three D-043 Viewer surfaces: Current Universe, Security Detail/History and Dynamic SQL Scanner;
+- verify refresh/reopen recovery;
 
 **Acceptance**
 
 - rollback never merges SQL-period rows into IndexedDB silently;
 - roll-forward resumes committed SQL history without reset;
+- Live Gate L-3 directly verifies provider continuity plus all three D-043 Viewer surfaces;
+- Scanner SQL/interval behavior remains independent from collector/provider cadence;
 - Live Gate L-3 records sanitized end-to-end evidence;
 
 **Primary verification:** Browser recovery/cutover suite + live authenticated-Leumi verification
 
-**Exit:** Operational recovery and live production-shaped behavior are proven.
+**Exit:** Operational recovery and live production-shaped D-043 behavior are proven.
 
 ### WP-38 — Remove migration scaffolding and close Browser SQL implementation
 
@@ -980,171 +997,22 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 - remove shadow/probe comparison paths from active production runtime;
 - remove active IndexedDB production wiring and obsolete Viewer IndexedDB reads;
 - retain legacy local DB untouched unless user explicitly chooses deletion;
+- audit that the final runtime still preserves the V1 provider/data acquisition contract;
+- audit that Current Universe, Security Detail/History and separate Dynamic SQL Scanner remain present on one SQL authority;
 - run final spec/docs/cleanup audit and generated runtime publication checks;
 
 **Acceptance**
 
 - no final production code automatically selects/merges IndexedDB and DuckDB;
+- final runtime preserves D-043 provider/data continuity;
+- final runtime preserves all three D-043 Viewer surfaces;
 - temporary migration/test hooks are absent from production path;
 - Fast CI + full Browser CI green on final code;
 - STATUS points to the next real product work rather than migration cleanup;
 
 **Primary verification:** Fast CI + full Browser CI + artifact/security guards
 
-**Exit:** Browser SQL target is the single production architecture with no migration-cleanup debt.
-
-## 5. Dependency spine
-
-Critical path:
-
-~~~text
-WP-01
-→ WP-02
-→ WP-03 LIVE PASS
-→ WP-05
-→ WP-06
-→ WP-07
-→ WP-08
-→ WP-09
-→ WP-10
-→ WP-11
-→ WP-12
-→ WP-13
-→ WP-14
-→ WP-15
-→ WP-16
-→ WP-17
-→ WP-18
-→ WP-19
-→ WP-40
-→ WP-20
-→ WP-21
-→ WP-41
-→ WP-22
-→ WP-23
-→ WP-24 LIVE PASS
-→ WP-25..WP-31
-→ WP-32
-→ WP-33
-→ WP-34
-→ WP-35
-→ WP-36
-→ WP-37
-→ WP-38
-~~~
-
-Important parallelism:
-
-- WP-04 can proceed after WP-01 while the live probe is prepared/executed;
-- WP-25 Viewer bridge may begin after WP-22/WP-23 while WP-24 live verification is pending, but cutover work remains blocked by the live gate;
-- WP-34 benchmark harness can be implemented after the integrated runtime/security checkpoint while WP-32/WP-33 shadow evidence proceeds;
-- WP-35 requires both shadow/live correctness evidence and the benchmark harness.
-
-## 6. Issue body contract for Phase Q
-
-Every GitHub Issue created from a work package must contain:
-
-~~~text
-Why / source contracts
-Scope
-Explicit non-goals
-Dependencies / blockers
-Target repository areas
-Implementation sequence
-Acceptance criteria
-Required tests
-Fast/Browser/Live verification gate
-SPEC/docs impact
-Security/data-integrity checks
-Temporary-artifact cleanup
-Definition of done
-~~~
-
-A fresh AI should be able to execute an Issue by reading AGENTS.md, workstream HOT context, the Issue, and only the source docs explicitly linked by that Issue.
-
-## 7. Labels proposed for Phase Q
-
-Minimal useful label set:
-
-~~~text
-workstream:local-history-v2
-browser-sql
-type:implementation
-type:test
-type:live-verification
-type:benchmark
-type:migration
-type:cutover
-gate:blocking
-needs:browser-ci
-needs:live-leumi
-cleanup-required
-~~~
-
-Phase Q should reuse existing equivalent labels rather than create duplicates.
-
-## 8. Milestone completion rule
-
-A milestone closes only when:
-
-- every package/Issue in it is complete;
-- required tests have run in their native layer;
-- numbered implementation checkpoint requirements have Fast CI + full Browser CI where required;
-- required live gates are directly Verified, not inferred;
-- STATUS.json points to the next package/milestone;
-- temporary artifacts introduced by the milestone are either removed or explicitly owned by a later cleanup package.
-
-## 9. Planning-to-execution boundary
-
-Phase P ends with this decomposition only.
-
-Phase Q must create the real management layer in GitHub:
-
-~~~text
-milestones where useful
-+ labels
-+ 42 executable Issues
-+ dependency/blocker references
-+ parent/epic/checklist structure where the available GitHub API supports it
-+ navigation from planning docs to the execution structure
-~~~
-
-Markdown alone is not the final planning deliverable.
-
-## 10. Phase P completion result
-
-~~~text
-Phases A–O
-→ 8 implementation milestones
-→ 42 executable work packages
-→ explicit hard gates
-→ test/verification owner per package
-→ live Leumi feasibility before heavy implementation
-→ explicit shadow/cutover cleanup
-→ issue-body contract ready for Phase Q
-~~~
-
-## GitHub execution structure
-
-Phase Q materialized this decomposition into real GitHub Issues.
-
-~~~text
-Master: #20
-Epics:  #21..#28
-WP-01..WP-42: see `docs/browser-sql-github-execution-structure.md`
-~~~
-
-Canonical mapping and the one closed duplicate exception are documented in:
-
-~~~text
-docs/browser-sql-github-execution-structure.md
-~~~
-
-Issue state and STATUS.json now drive execution; this planning document remains the durable decomposition contract.
-
-## Post-audit assurance additions
-
-The Phase-R red-team review found a previously deferred storage-lifecycle decision. The implementation graph therefore gains:
+**Exit:** Browser SQL target is the single production architecture with D-043 intact and no migration-cleanup debt.
 
 ### WP-39 — Implement explicit storage lifecycle, archive export and database rollover
 
