@@ -132,6 +132,7 @@ test(
                 "README.md",
                 "PROJECT_CONTEXT.md",
                 "docs/project/**/*.md",
+                "docs/product/**/*.md",
                 "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.md",
                 "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json",
                 "scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/**/*.js"
