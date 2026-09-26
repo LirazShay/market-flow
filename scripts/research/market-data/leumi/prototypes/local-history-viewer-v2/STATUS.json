@@ -1,7 +1,7 @@
 {
   "schemaVersion": 3,
   "workstream": "local-history-viewer-v2",
-  "updatedAt": "2026-09-25",
+  "updatedAt": "2026-09-27",
   "overallStatus": "in-progress",
   "authority": {
     "operationalProgress": "STATUS.json",
@@ -80,9 +80,9 @@
     },
     "latestFastCi": {
       "status": "success",
-      "runId": 36147110049,
-      "commit": "081fd2ecef7f435063d1cdd1f20cb2254efec1a7",
-      "result": "PASS — WP-03 synthetic preflight implementation/tests."
+      "runId": 36273457428,
+      "commit": "a9a5afbf4da253fdab4af97b0bba51088cedd6ec",
+      "result": "PASS — D-043 product amendment synchronized across product/planning/Viewer/testing/decomposition docs."
     },
     "browserCi": {
       "status": "success-targeted",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "No runtime-spec behavior change; only synthetic WP-03 preflight tests and runbook/testing-policy clarification.",
+    "specImpact": "D-043 target amendment: preserve V1 Leumi collection/data contract, preserve Current Universe + Security Detail/History, add separate Dynamic SQL Scanner. Existing WP-23..WP-29/Issues #51..#57 synchronized; no runtime behavior changed yet and the 42-WP graph is unchanged.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
