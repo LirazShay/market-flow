@@ -2059,3 +2059,270 @@ The corrected package set should give this boundary one coherent early owner and
 Pass B4 remains planning-only.
 
 Canonical Issue rewrites/dependency changes wait until the full Pass B/C/D/E/F audit is complete.
+
+
+---
+
+# Pass B5 — WP-30 through WP-42
+
+## Summary matrix
+
+| WP | Classification | Re-baseline conclusion |
+|---|---|---|
+| WP-30 | SPLIT + REORDER | minimal shared health/freshness/error model moves into V1-on-SQL; richer incident/debug-bundle material follows components as they exist |
+| WP-31 | SPLIT + REORDER | secret/artifact guards become early continuous CI; Scanner-specific redaction/hardening arrives with Scanner |
+| WP-32 | DEFER + REPLACE | SQL shadow path is conditional verification fallback, not mandatory baseline architecture |
+| WP-33 | DEFER + REPLACE | replace mandatory shadow comparison with parity + Chromium + live candidate endurance; use shadow only if unresolved evidence requires it |
+| WP-34 | SPLIT + REORDER | benchmark tooling becomes an incremental engineering instrument, not one late benchmark project |
+| WP-35 | SPLIT + REORDER | performance gates occur throughout; final representative capacity gate remains before cutover |
+| WP-36 | KEEP + REORDER | explicit IndexedDB→SQL production authority cutover remains required, but optional lifecycle machinery is removed from mandatory prerequisites |
+| WP-37 | SPLIT + KEEP | keep initial rollback/roll-forward proof; separate it from generalized future-release rollback and from live endurance evidence |
+| WP-38 | KEEP + NARROW | retain final cleanup/closure, but remove only scaffolding actually introduced |
+| WP-39 | SPLIT + DEFER | no-silent-delete/storage-pressure correctness stays; archive/export/rollover becomes conditional on capacity/product evidence |
+| WP-40 | SPLIT + REORDER | baseline Scanner resource safety is required; advanced cancellation/preemption/recycle mechanisms are benchmark-driven |
+| WP-41 | KEEP + REORDER | one cross-tab production owner remains mandatory before production cutover, but not before early single-runtime parity work |
+| WP-42 | SPLIT + DEFER | minimal release/schema compatibility is required; generalized future engine/schema upgrade framework moves to later lifecycle hardening |
+
+## WP-30 — Health and diagnostics
+
+Minimum runtime/storage/Recorder/Viewer health belongs in the V1-on-SQL path, because the product must distinguish loading, healthy, stale, blocked and recovery-required states before Scanner exists.
+
+Bounded incident history and Scanner/scheduler-specific Debug Bundle material should be added later with the components they describe.
+
+This preserves CAP-UI-04, CAP-RUN-06 and CAP-LIFE-02 without front-loading late diagnostics.
+
+## WP-31 — Security verification
+
+Security cannot remain a late milestone.
+
+Early continuous CI should protect:
+
+- forbidden cookie/token/header/account patterns;
+- allowlisted diagnostics;
+- no provider auth/session data crossing into Worker or Viewer contracts;
+- sanitized generated/test artifacts.
+
+Scanner-specific treatment of user SQL, result rows and analytical external-access hardening remains inside the Scanner mini-project.
+
+## WP-32 / WP-33 — Shadow migration
+
+Shadow mode is a legitimate migration-risk tool, but it should not be mandatory.
+
+The new baseline verification stack is:
+
+~~~text
+shared deterministic V1/V2 parity fixtures
+→ real Chromium persistence/Viewer/fault-injection tests
+→ self-verifying live Recorder→SQL provider gate
+→ production-shaped endurance
+~~~
+
+A dual live IndexedDB + SQL shadow path adds temporary orchestration, authority modes, storage lifecycle and cleanup debt.
+
+Therefore shadow becomes a conditional fallback only if the normal evidence leaves a material unresolved risk.
+
+## WP-34 — Benchmark harness
+
+Performance evidence must move earlier.
+
+Use a small reusable seeded-data/result-reporting foundation and add focused benchmark scenarios when a design decision actually depends on them:
+
+- persistence throughput and OPFS growth;
+- read-model/typed-projection decisions;
+- enrichment/horizon cost;
+- Scanner result strategy;
+- mixed ingest/query contention;
+- long-session capacity.
+
+Temporary POC benchmarks are valid and need not remain permanent.
+
+## WP-35 — Performance/capacity gates
+
+Do not wait until the end to learn whether the architecture is too expensive.
+
+Use automated GitHub Actions/Chromium benchmarks throughout, including Windows runners where OS/browser behavior matters.
+
+Before cutover, still run one representative complete-system capacity gate over the features that actually shipped.
+
+Hosted-runner timing noise must be handled as benchmark evidence, not as one magical absolute threshold.
+
+## WP-36 — Production cutover
+
+The explicit authority switch remains required:
+
+~~~text
+legacy IndexedDB production
+→ fresh verified SQL/OPFS production authority
+~~~
+
+Required properties remain:
+
+- old Recorder settles before switch;
+- no cycle intentionally spans authorities;
+- normal target stops IndexedDB market-history reads/writes;
+- no silent fallback if SQL startup fails;
+- no implicit legacy-history import;
+- retained identifiable legacy release for explicit rollback.
+
+Cutover should depend on shipped product correctness, security, single-owner behavior, capacity evidence and initial rollback—not automatically on shadow, full archive/rollover or generalized future-upgrade machinery.
+
+## WP-37 — Initial rollback, roll-forward and live endurance
+
+Initial transition safety requires automated proof that:
+
+- rollback selects the retained legacy release without merging SQL-period data;
+- SQL/OPFS stays preserved;
+- roll-forward reopens coherent SQL authority;
+- no hidden cross-authority merge occurs.
+
+Live endurance is a separate self-verifying evidence step for real provider continuity, repeated SQL cycles, shipped Viewer surfaces, shipped Scanner behavior and reopen recovery.
+
+## WP-38 — Final cleanup
+
+Keep a final cleanup checkpoint.
+
+It should remove only temporary migration/POC paths that the corrected plan actually used.
+
+Do not build shadow scaffolding merely because a later cleanup task exists.
+
+Final closure must verify one production SQL authority, no obsolete IndexedDB production path, no temporary hooks in production artifacts, and accurate docs/specs/CI.
+
+## WP-39 — Storage lifecycle
+
+Split storage correctness from lifecycle features.
+
+Required for initial V2:
+
+- no silent history deletion;
+- truthful quota/write failure;
+- visible storage pressure where observable;
+- failed storage write cannot be acknowledged as a successful cycle;
+- any deletion is constrained to Market-Flow-owned storage.
+
+Conditional, evidence-driven capabilities:
+
+- archive export;
+- maintenance UI;
+- fresh-epoch rollover;
+- rollover journal;
+- archive-before-rollover flow;
+- cross-epoch lifecycle UX.
+
+These become initial-release blockers only if capacity evidence or explicit product requirements make them necessary.
+
+## WP-40 — Analytical resource isolation
+
+The Scanner must not corrupt or indefinitely starve authoritative ingestion.
+
+Baseline resource safety should guarantee:
+
+- user SQL uses a safe analytical/read-only path;
+- trusted ingest/admin writes remain separate;
+- complete-cycle backlog remains bounded;
+- result delivery is bounded/truthful;
+- analytics failure never causes early ingest acknowledgement.
+
+The current advanced mechanism set—pending cancellation, stream connection recycle, immediate preemption, hard budgets, suspension and Worker-restart escalation—must be selected only where pinned-engine Chromium POCs and mixed-load benchmarks prove it necessary.
+
+## WP-41 — Cross-tab ownership
+
+One browser-enforced production owner remains a correctness requirement before cutover.
+
+Two tabs must not independently collect and write the production DB.
+
+The Web Locks design remains strong:
+
+- exclusive ownership;
+- passive losing tab;
+- no steal mode;
+- no heartbeat/localStorage fallback authority;
+- browser release + readiness recovery;
+- deterministic two-page Chromium race/release tests.
+
+Real-origin Web Locks feasibility belongs to this ownership gate, separate from SQL engine/OPFS feasibility.
+
+## WP-42 — Future release/engine/schema lifecycle
+
+The initial V2 needs only a minimal durable compatibility contract:
+
+- explicit release/schema identities;
+- runtime/Worker/Wasm identity consistency;
+- unsupported newer/incompatible state blocks destructive write/reset;
+- schema changes made during this V2 implementation are explicit and tested;
+- initial IndexedDB→SQL rollback is defined.
+
+The current generalized framework for arbitrary future engine/schema releases is later lifecycle hardening:
+
+- generalized release-class classification;
+- side-by-side future SQL candidate migration;
+- generic upgrade journal;
+- future SQL snapshot rollback;
+- multi-version DuckDB storage compatibility matrix;
+- full future-upgrade crash matrix.
+
+Do not block first V2 cutover on building machinery whose first consumer is a later persistence-affecting release.
+
+# B5 cross-package findings
+
+## Finding B5-01 — first release and long-term operations were over-coupled
+
+The old graph made initial cutover depend on sophisticated shadow, rollover and future-upgrade systems.
+
+Those are not all first-release requirements.
+
+## Finding B5-02 — strict correctness still remains
+
+Before production cutover the corrected graph must retain:
+
+~~~text
+secret/artifact guards
+truthful health/failure state
+no silent storage data loss
+one cross-tab production owner
+explicit authority cutover
+initial rollback/roll-forward
+representative capacity evidence
+self-verifying real-provider/endurance evidence
+~~~
+
+## Finding B5-03 — shadow is a fallback technique, not architecture
+
+Default migration confidence comes from automated parity, browser integration, live candidate verification and endurance.
+
+Shadow is used only if unresolved evidence justifies its complexity.
+
+## Finding B5-04 — benchmark evidence belongs inside engineering decisions
+
+Typed projections, enrichment, Scanner result delivery and resource isolation must be benchmarked before their mechanisms are frozen.
+
+## Finding B5-05 — storage safety is not the same as archive/rollover
+
+No-silent-delete and storage failure handling are mandatory.
+
+Archive/export/rollover is conditional.
+
+## Finding B5-06 — initial rollback is not the same as future release upgrades
+
+The first IndexedDB→SQL transition needs rollback and roll-forward.
+
+That does not require a complete generic future DuckDB/schema upgrade platform.
+
+## Finding B5-07 — cross-tab ownership remains mandatory before production
+
+It moves out of early single-runtime development but remains on the path to cutover.
+
+## Finding B5-08 — Scanner resource mechanisms must be evidence-driven
+
+Resource safety is required; the exact cancellation/preemption implementation is not predetermined.
+
+## Finding B5-09 — cleanup follows actual temporary work
+
+Temporary complexity is not created merely to satisfy a future cleanup package.
+
+## Finding B5-10 — Pass B classification is now complete
+
+All existing WP-01..WP-42 have been classified.
+
+The next step is backlog-wide synthesis before the missing-work audit and dependency redesign.
+
+No canonical Issue graph has been mutated yet.
