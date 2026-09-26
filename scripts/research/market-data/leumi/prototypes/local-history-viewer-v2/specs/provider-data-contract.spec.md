@@ -16,6 +16,8 @@ Detailed endpoint/field research belongs in repository-level `docs/leumi-api/`.
 
 Operational progress is tracked only in `../STATUS.json`.
 
+> V2 evolution note: D-043 makes this V1-proven provider/data acquisition contract a preserved V2 Browser SQL requirement. Storage migration alone does not authorize changing MapHeat2/GetSecuritiesData request semantics, complete-cycle validation, raw payload meanings or identity/null semantics.
+
 ## Scope
 
 This contract covers the Local History Viewer dependency on:
@@ -172,6 +174,8 @@ Review this spec whenever:
 ## References
 
 - `../../../../../../../docs/leumi-api/README.md`
+- `../../../../../../../docs/project/decisions/D-043.md`
+- `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`
 - `../docs/requirements.md`
 - `../docs/architecture.md`
 - `../recorder/pure/universe-logic.js`
