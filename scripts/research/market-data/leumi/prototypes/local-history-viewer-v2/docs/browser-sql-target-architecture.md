@@ -258,7 +258,7 @@ Exact scheduling interval, overrun and timeout behavior are Phase H decisions.
 Target:
 
 ~~~text
-Viewer / future SQL editor
+Dynamic SQL Scanner
 → Runtime Controller
 → SQL Authority Worker
 → activate a new SQL definition/version at a deterministic boundary
