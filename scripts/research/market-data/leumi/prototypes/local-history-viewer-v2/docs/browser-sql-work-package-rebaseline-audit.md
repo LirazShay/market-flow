@@ -1417,3 +1417,645 @@ No automatable Scanner verification should be delegated to the user.
 Pass B3 records planning classifications only.
 
 Canonical Issue replacement/reordering waits until the full audit is complete.
+
+
+---
+
+# Pass B4 — WP-21 through WP-29
+
+## WP-21 — Replace runtime concatenation with deterministic Browser SQL bundling
+
+**Current Issue:** #49  
+**State:** open  
+**Classification:** KEEP + REORDER
+
+### Why
+
+A reproducible production-shaped runtime artifact is required before the real Collector→SQL→Viewer vertical slice can be trusted on the target page.
+
+It supports:
+
+- exact engine/runtime identity;
+- generated rather than hand-edited runtime artifacts;
+- reproducible live/provider verification;
+- final browser delivery.
+
+### Current sequencing defect
+
+WP-21 currently depends on WP-20, meaning the entire Dynamic SQL engine must be complete before production-shaped runtime bundling begins.
+
+That dependency is not product-driven.
+
+The V1-on-SQL vertical slice needs a generated runtime **before** Scanner completion so it can prove:
+
+~~~text
+same collector
+→ SQL persistence
+→ Viewer Current/History
+~~~
+
+### Capability coverage
+
+- CAP-RUN-01
+- CAP-VER-03
+- CAP-VER-04
+
+### Re-baseline consequence
+
+Keep deterministic bundling, but move it into the V1-on-SQL path before integrated Recorder/live-provider/Viewer verification.
+
+It must not depend on Scanner completion.
+
+---
+
+## WP-22 — Implement Runtime Controller preflight, singleton lifecycle and Worker recovery bridge
+
+**Current Issue:** #50  
+**State:** open  
+**Classification:** SPLIT + MERGE + REORDER
+
+### Why the core capability remains
+
+A runtime owner is required to coordinate:
+
+- SQL Authority Worker lifecycle;
+- readiness/preflight;
+- Recorder start only after storage readiness;
+- Viewer attachment/read commands;
+- controlled Worker recovery;
+- same-tab repeated launch.
+
+### Overlap with WP-05
+
+WP-05 already owns:
+
+~~~text
+SQL Authority Worker bootstrap
++ minimal Controller bridge
+~~~
+
+WP-22 then creates another Controller/lifecycle layer later.
+
+The corrected plan should avoid two artificial phases owning the same runtime boundary.
+
+### Proposed decomposition
+
+#### Early Runtime Controller foundation
+
+Merge the relevant WP-05/WP-22 responsibilities into one coherent early owner:
+
+- instantiate/own the SQL Authority Worker;
+- explicit runtime/Worker READY/FAILED;
+- minimal request/response/read-command bridge;
+- storage readiness before Recorder;
+- same-tab repeated-launch reuse;
+- one controlled Worker recovery path;
+- sanitized runtime failure states.
+
+This belongs before Collector→SQL integration.
+
+#### Cross-tab production ownership
+
+Keep cross-tab exclusion as a separate correctness capability owned with the audited WP-41 replacement.
+
+Do not require the full cross-tab mechanism merely to construct/test the single-runtime V1-on-SQL vertical slice, but require it before production multi-tab operation/cutover.
+
+### Capability coverage
+
+- CAP-DB-02
+- CAP-RUN-03
+- CAP-RUN-04
+- CAP-RUN-05
+- CAP-VER-03
+
+### Re-baseline consequence
+
+The current WP-22 should not survive with its old dependencies on WP-21 + WP-41 as one indivisible package.
+
+---
+
+## WP-23 — Integrate the authenticated Recorder with SQL authority persistence
+
+**Current Issue:** #51  
+**State:** open  
+**Classification:** KEEP + REORDER
+
+### Why
+
+This is the actual product seam that converts the proven V1 collector into a SQL-backed recorder without redesigning provider behavior.
+
+It is essential to the first V1-on-SQL vertical slice.
+
+### What must remain
+
+~~~text
+same authenticated page context
+same MapHeat2 dynamic universe
+same sequential GetSecuritiesData flow
+same exact complete-cycle validation
+same raw facts
+→ SQL durable handoff/acknowledgement
+~~~
+
+### Relationship to WP-09
+
+These are distinct responsibilities:
+
+- corrected WP-09: define/prove the immutable validated-cycle boundary;
+- WP-23: wire the real inherited Recorder to that boundary.
+
+Do not merge provider acquisition into SQL storage logic.
+
+### Capability coverage
+
+- CAP-COL-01 through CAP-COL-07
+- CAP-DB-06
+- CAP-VER-01
+
+### Sequencing consequence
+
+Move this immediately after the SQL persistence foundation + production-shaped runtime foundation.
+
+It belongs before enrichment and before Scanner.
+
+---
+
+## WP-24 — Execute Live Gate L-2 provider compatibility
+
+**Current Issue:** #52  
+**State:** open  
+**Classification:** KEEP + REORDER
+
+### Why
+
+Mocks can prove our integration logic, but only the authenticated Leumi origin can prove that the storage/runtime migration did not accidentally break the real provider acquisition path.
+
+This is a genuine live-only fact.
+
+### Automation-first correction
+
+The live gate must not become a manual correctness checklist.
+
+The candidate runtime/probe should automatically assert and report sanitized PASS/FAIL for:
+
+- MapHeat2 success;
+- expected dynamic membership accounting;
+- sequential GetSecuritiesData completion;
+- complete-cycle validation;
+- raw handoff completeness;
+- SQL durable cycle acknowledgement;
+- absence of copied auth/session material.
+
+The unavoidable human boundary, if any, is only launching/running the self-verifying artifact inside the authenticated session.
+
+### Capability coverage
+
+- CAP-VER-01
+- CAP-VER-04
+- CAP-VER-07
+- D-043 provider continuity
+
+### Sequencing consequence
+
+Place this after integrated Recorder→SQL exists and before declaring V1-on-SQL provider parity complete.
+
+It must not wait for Scanner UI/runtime.
+
+---
+
+## WP-25 — Implement Viewer bridge, attach/re-attach and full state snapshots
+
+**Current Issue:** #53  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Problem in current package
+
+WP-25 currently builds one Viewer protocol for all three surfaces at once:
+
+~~~text
+Current Universe
+Security Detail/History
+Dynamic SQL Scanner
+~~~
+
+That forces Scanner state design into the critical path for basic V1-on-SQL Viewer parity.
+
+### Proposed split
+
+#### Shared Viewer/runtime bridge for V1-derived surfaces
+
+Move early and own:
+
+- same-origin detachable Viewer attachment;
+- no direct Viewer DuckDB/OPFS ownership;
+- attach/re-attach after reload;
+- authoritative resync rather than notification payload authority;
+- runtime instance/revision mechanism only to the extent needed for reliable resync;
+- trusted Current/Detail/History read command transport;
+- Viewer close not stopping Recorder/runtime.
+
+#### Scanner-specific state delivery
+
+Add later with the Scanner mini-project:
+
+- active SQL/config state;
+- query execution state;
+- latest-success result metadata;
+- result-preview state;
+- Scanner-specific stale-editor/state revision semantics.
+
+### Capability coverage
+
+Early bridge:
+
+- CAP-UI-02
+- CAP-UI-03
+- CAP-RUN-03
+- CAP-VER-02/03
+
+Later bridge:
+
+- CAP-SCN-03
+- CAP-SCN-07/08/11
+- CAP-VER-05
+
+### Re-baseline consequence
+
+Do not make Scanner state protocol a dependency for Current/History.
+
+---
+
+## WP-26 — Implement SQL editor activation and multi-Viewer optimistic concurrency
+
+**Current Issue:** #54  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Core Scanner product behavior that remains
+
+The Dynamic SQL Scanner needs:
+
+- editable draft SQL;
+- editable repeat interval;
+- explicit activation;
+- bad draft leaving current active query unchanged;
+- activation/error feedback.
+
+This is clearly Scanner-only work and moves to the Scanner mini-project.
+
+### Mechanism requiring separate justification
+
+The current WP additionally mandates:
+
+~~~text
+expectedActiveQueryVersionId
+→ multi-Viewer optimistic concurrency
+→ stale-editor rejection
+~~~
+
+Multiple Viewer windows may exist, but the product contract does not yet independently require simultaneous collaborative Scanner editing.
+
+The corrected plan should decide the concurrency behavior deliberately:
+
+- optimistic concurrency if multiple Scanner editors are a supported first-release behavior;
+- simpler single-editor/last-explicit-activation semantics if sufficient;
+- never silent corruption/ambiguous active state.
+
+Do not adopt a complex concurrency protocol solely because it exists in the old design.
+
+### Capability coverage
+
+Core:
+
+- CAP-SCN-01
+- CAP-SCN-02
+- CAP-SCN-03
+- CAP-VER-05
+
+Optional/conditional mechanism:
+
+- simultaneous multi-Viewer edit conflict protection.
+
+### Re-baseline consequence
+
+Move core editor/activation/interval work entirely out of the V1-on-SQL path.
+
+---
+
+## WP-27 — Implement query-result preview and health/diagnostic presentation
+
+**Current Issue:** #55  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Problem in current package
+
+It combines two different UI needs:
+
+1. shared runtime/persistence/collector health and diagnostics;
+2. Scanner result-grid semantics.
+
+The first is useful for the V1-on-SQL product.
+
+The second cannot exist until the Scanner engine/UI exists.
+
+### Proposed split
+
+#### Shared V1-on-SQL health/diagnostics
+
+Move early enough to support observable product states:
+
+- runtime/storage/Recorder health;
+- last committed cycle/freshness;
+- storage/read failure visibility;
+- sanitized diagnostics;
+- explicit loading/empty/error distinctions.
+
+Preserve the useful V1 diagnostics experience where relevant.
+
+#### Scanner result/diagnostic presentation
+
+Keep later with Scanner:
+
+- dynamic result columns;
+- zero-row success;
+- latest execution vs latest success;
+- query error;
+- timing/row-count metadata;
+- explicit preview truncation/completeness;
+- SecurityId drill-down.
+
+### Capability coverage
+
+Shared:
+
+- CAP-UI-04
+- CAP-RUN-06
+
+Scanner:
+
+- CAP-SCN-07/08/10
+- CAP-VER-05
+
+### Re-baseline consequence
+
+Do not wait for Scanner results to provide V1-on-SQL health/error visibility.
+
+---
+
+## WP-28 — Move current/history market-data browsing behind SQL authority reads
+
+**Current Issue:** #56  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Why this package is central
+
+This is the user-facing V1-on-SQL product transition:
+
+~~~text
+IndexedDB reads
+→ trusted Runtime Controller / SQL Authority reads
+→ same Current Universe + Security Detail/History behavior
+~~~
+
+It currently appears far too late and depends on WP-12 temporal enrichment.
+
+That WP-12 dependency is not justified.
+
+### Current scope problem
+
+WP-28 mixes:
+
+1. storage/read-model contracts;
+2. Runtime read commands;
+3. two Viewer surfaces;
+4. V1 behavior parity verification;
+5. Scanner SecurityId reuse.
+
+These are related but too broad for one implementation package.
+
+### Proposed split
+
+#### Stable SQL read contracts/models
+
+Own application-trusted reads for:
+
+~~~text
+Current Universe
+selected-security current/detail
+selected-security history
+bounded continuation/load-older
+health/read metadata needed by UI
+~~~
+
+Define observable result contracts before UI adaptation.
+
+Do not use arbitrary user SQL as the Viewer contract.
+
+#### Current Universe SQL migration + parity
+
+Own:
+
+- all latest committed securities;
+- V1 field/display semantics;
+- deterministic sort behavior;
+- DB/runtime-only refresh;
+- committed-cycle live refresh;
+- state preservation.
+
+#### Security Detail/History SQL migration + parity
+
+Own:
+
+- selected SecurityId summary;
+- isolated newest-first history;
+- bounded paging/load older;
+- duplicate/skip-safe continuation;
+- return-state/live refresh behavior.
+
+#### Scanner drill-down reuse
+
+A tiny later integration concern: Scanner row with canonical SecurityId navigates into the already-proven detail surface.
+
+### Capability coverage
+
+- CAP-DB-07
+- CAP-CUR-01..05
+- CAP-DET-01..05
+- CAP-VER-02
+
+### Sequencing consequence
+
+Move the read contracts and two V1-derived surfaces immediately after trustworthy SQL persistence + integrated Recorder/runtime.
+
+Remove temporal enrichment and Scanner dependencies from the V1 parity path.
+
+---
+
+## WP-29 — Close runtime and Viewer integration checkpoint
+
+**Current Issue:** #57  
+**State:** open  
+**Classification:** SPLIT + REORDER
+
+### Problem in current package
+
+WP-29 currently requires all of:
+
+- generated runtime;
+- controller;
+- real provider integration;
+- Viewer bridge;
+- Scanner editor;
+- Scanner results;
+- Current/History migration.
+
+This delays the most important early product proof until the entire Scanner UI exists.
+
+### Proposed split
+
+#### V1-on-SQL product parity checkpoint
+
+This should occur much earlier and prove automatically, with live-only facts separately self-verified:
+
+~~~text
+same V1 provider contract
+→ SQL durable authority
+→ Current Universe
+→ Security Detail/History
+~~~
+
+Acceptance includes:
+
+- V1 collection characterization preserved;
+- Current table parity on shared synthetic cycles;
+- detail/history parity;
+- null/zero/empty/missing semantics;
+- dynamic universe;
+- sorting/paging/refresh behavior;
+- Viewer reload/re-attach;
+- no direct Viewer DB ownership;
+- runtime/Recorder health visibility;
+- Fast CI + full Browser CI;
+- L-2 live provider status accurately recorded.
+
+This is the milestone after which we can truthfully say the storage migration produced the old product behavior on SQL.
+
+#### Final three-surface integration checkpoint
+
+Occurs after the Scanner mini-project and proves:
+
+~~~text
+Current Universe
++ Security Detail/History
++ Dynamic SQL Scanner
+→ one coherent SQL authority/runtime
+~~~
+
+This checkpoint owns the D-043 three-surface integration acceptance.
+
+### Capability coverage
+
+Early checkpoint:
+
+- CAP-COL-*
+- CAP-DB-*
+- CAP-UI-02..05
+- CAP-CUR-*
+- CAP-DET-*
+- CAP-VER-01/02/03/04/07
+
+Final checkpoint:
+
+- above
+- CAP-SCN-*
+- final mixed product integration
+
+### Re-baseline consequence
+
+The old single M4 closure is too late and too broad.
+
+---
+
+# B4 cross-package findings
+
+## Finding B4-01 — Old milestone order places product-critical work after Scanner internals
+
+The existing graph effectively requires:
+
+~~~text
+complete analytical SQL runtime
+→ production runtime packaging/controller
+→ real Recorder integration
+→ V1 Current/History
+~~~
+
+The product-driven sequence should instead expose the V1-on-SQL vertical slice before Scanner:
+
+~~~text
+SQL persistence foundation
+→ production-shaped runtime/controller
+→ real Recorder→SQL integration
+→ stable trusted SQL read contracts
+→ Current Universe
+→ Security Detail/History
+→ V1-on-SQL product checkpoint
+~~~
+
+## Finding B4-02 — WP-12 must be removed from the Current/History dependency chain
+
+Temporal enrichment is not required to:
+
+- read latest committed securities;
+- read one security's raw persisted history;
+- preserve V1 sorting/paging/display behavior.
+
+## Finding B4-03 — Viewer transport and Scanner state protocol must be separated
+
+A shared detachable Viewer bridge is needed early.
+
+Scanner-specific state/result/editor protocol should be added only with the Scanner mini-project.
+
+## Finding B4-04 — Trusted product reads are a first-class missing boundary
+
+The corrected plan needs explicit stable application-owned SQL read contracts for Current/Detail/History.
+
+They are distinct from:
+
+- raw DuckDB tables;
+- arbitrary user Scanner SQL;
+- UI implementation.
+
+This boundary is important enough to receive explicit package ownership in Pass C/G.
+
+## Finding B4-05 — V1 parity needs its own automated product checkpoint
+
+The corrected graph needs a clear point where synthetic fixtures and Chromium prove:
+
+~~~text
+same input cycle
+→ SQL-backed Current/History
+→ same promised observable V1 behavior
+~~~
+
+This should happen before enrichment and Scanner development continue.
+
+## Finding B4-06 — Live L-2 remains evidence, not manual QA
+
+Authenticated-provider verification is necessary but must be self-verifying and sanitized.
+
+The user is not the assertion engine.
+
+## Finding B4-07 — runtime/controller responsibilities are currently duplicated
+
+WP-05 and WP-22 both own parts of Worker/Controller bootstrap/lifecycle.
+
+The corrected package set should give this boundary one coherent early owner and keep cross-tab ownership separate.
+
+## Finding B4-08 — no implementation or canonical graph mutation yet
+
+Pass B4 remains planning-only.
+
+Canonical Issue rewrites/dependency changes wait until the full Pass B/C/D/E/F audit is complete.
