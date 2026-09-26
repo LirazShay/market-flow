@@ -13,6 +13,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | backlog-wide re-baseline synthesis | [browser-sql-work-package-rebaseline-synthesis.md](browser-sql-work-package-rebaseline-synthesis.md) |
 | missing-work audit | [browser-sql-missing-work-audit.md](browser-sql-missing-work-audit.md) |
 | replacement dependency DAG | [browser-sql-rebaseline-dependency-dag.md](browser-sql-rebaseline-dependency-dag.md) |
+| V1-on-SQL implementation manual | [browser-sql-v1-on-sql-implementation-manual.md](browser-sql-v1-on-sql-implementation-manual.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
 | official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
