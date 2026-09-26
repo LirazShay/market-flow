@@ -33,6 +33,8 @@ The desired operating style is short-horizon and live:
 
 The exact entry/exit/trading formula is **not defined yet**.
 
+For the current Local History Viewer V2 product shape, dynamic SQL exploration is a separate third Viewer surface while the existing Current Universe and Security Detail/History browsing capabilities remain available. See `docs/product/local-history-viewer-v2-product-shape.md`.
+
 The platform must first make it cheap and flexible to ask many different live questions about the data.
 
 ---
