@@ -72,6 +72,8 @@ The target architecture must eventually have one unambiguous market-history sour
 
 ## Preserved behavior from V1/V2
 
+The provider/data acquisition side is a preserved contract, not merely a reuse candidate. Storage migration alone must not change the authenticated MapHeat2 / sequential GetSecuritiesData / exact complete-cycle behavior or the raw data meanings already proven in V1.
+
 Strong reuse candidates:
 
 - authenticated browser collection;
@@ -100,12 +102,19 @@ authenticated browser
 → commit coherent cycle to Browser SQL
 → scheduler executes active SQL every configured interval
 → results + execution metadata/error
-→ Viewer / SQL console / later decision layer
+→ Viewer surfaces
+   1. Current Universe
+   2. Security Detail/History
+   3. Dynamic SQL Scanner
 ~~~
 
 SQL sees only committed coherent data.
 
 Query failure must not stop ingestion or corrupt persistence.
+
+The SQL Scanner is a separate third surface. It accepts user SQL and an interval and shows the SQL-driven result table. It does not replace the V1-derived current-universe or per-security-history surfaces.
+
+Product authority: `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md` / D-043.
 
 ## Compute once, query many
 
