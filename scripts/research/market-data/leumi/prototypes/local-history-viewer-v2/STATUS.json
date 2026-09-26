@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-c2-missing-viewer-product-work",
-    "title": "Find missing Viewer/application-shell/navigation/state work across Current Universe, Detail/History and Scanner surfaces",
+    "substep": "pass-c3-missing-verification-work",
+    "title": "Find missing verification ownership across parity, failure injection, browser semantics and self-verifying live evidence",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, and Pass C1 missing V1-on-SQL ownership audit completed.",
-    "ready": "C1 identified ten missing executable owners around collector characterization, parity, trusted SQL reads, history cursor semantics, read consistency, resync and V1-on-SQL product proof.",
+    "completed": "Pass A, all Pass B audits, Pass C1 V1-on-SQL gaps and Pass C2 Viewer/product gaps completed.",
+    "ready": "C2 identifies explicit owners needed for application shell, per-surface state, Current/Detail parity, Scanner isolation, runtime reattach and Viewer product E2E.",
     "blockedAfterEntry": "Implementation remains paused; Pass C continues before DAG redesign or canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: C1 missing-work audit added; old 42-WP graph is explicitly replaceable; no product/runtime implementation or canonical Issue mutation.",
+    "specImpact": "Planning-only: C2 Viewer/product missing-work audit added; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass C2: audit missing Viewer/product work, especially three-surface application shell/navigation, per-surface state ownership, loading/empty/error behavior, return-state continuity, health visibility and Scanner isolation from V1 browsing.",
+    "action": "Execute Issue #72 Pass C3: audit missing verification work across V1/V2 parity, atomicity/fault injection, browser/runtime semantics, multi-tab, performance probes, and self-verifying live gates.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
-      "Do not preserve the old WP graph for historical reasons; the final execution graph may be rewritten from scratch.",
-      "Do not create/delete/reorder canonical WPs yet; identify missing owners first.",
-      "Separate shared Viewer shell responsibilities from Current, Detail/History and Scanner-specific concerns.",
-      "Carry automation-first UI/public-contract verification into every missing-work proposal."
+      "Do not create/delete/reorder canonical WPs yet; identify missing verification owners first.",
+      "Prefer automated Node/Chromium/mocks/fault injection over manual user verification.",
+      "Keep temporary engineering POCs distinct from permanent regression coverage.",
+      "Require self-verifying sanitized live artifacts for facts that CI cannot establish."
     ]
   },
   "history": {
