@@ -86,6 +86,9 @@ Parser integration itself may require Chromium/Wasm if the chosen parser exists 
 
 ### Viewer protocol/state
 
+- three-surface model: Current Universe, Security Detail/History, separate Dynamic SQL Scanner;
+- scanner user-SQL + interval state is distinct from collector cadence/configuration;
+- scanner result rows preserve canonical SecurityId navigation when present;
 - runtimeInstanceId + stateRevision comparison rules;
 - latest execution vs latest successful execution selection;
 - stale-editor optimistic-concurrency rejection;
@@ -357,10 +360,15 @@ Do not build dozens of dependent implementation tasks on an unproven runtime pre
 
 After Browser SQL collector integration exists, verify on authenticated Leumi:
 
-- existing provider requests still succeed from the page context;
-- dynamic universe and complete-cycle validation still match real responses;
+- existing V1-proven provider requests still succeed from the page context;
+- MapHeat2 dynamic-universe behavior remains equivalent;
+- sequential GetSecuritiesData request/chunk behavior remains equivalent unless separately evidenced otherwise;
+- complete-cycle validation still matches real responses;
+- full raw MapHeat/Security facts remain available at the SQL handoff;
 - no new authentication path is required;
 - runtime does not copy secrets into Worker/repository artifacts.
+
+This gate proves that changing persistence did not accidentally redesign the provider/data acquisition contract.
 
 ### Live Gate L-3 — End-to-end endurance checkpoint
 
@@ -369,6 +377,7 @@ Later, after benchmark and migration implementation, verify a representative liv
 - repeated collection;
 - SQL commits;
 - scheduled queries;
+- all three Viewer surfaces: Current Universe, Security Detail/History, Dynamic SQL Scanner;
 - Viewer updates;
 - refresh/reopen recovery;
 - no obvious provider/session breakage.
