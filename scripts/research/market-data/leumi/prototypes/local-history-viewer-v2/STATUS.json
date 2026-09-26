@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-c5-missing-performance-work",
-    "title": "Find missing performance/capacity ownership across persistence, enrichment, Scanner, storage growth and mixed workloads",
+    "substep": "pass-c6-missing-scanner-work",
+    "title": "Find missing Dynamic SQL Scanner product, lifecycle, safety, result and integration ownership",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, and Pass C1-C4 missing-work audits completed.",
-    "ready": "C4 reframes enrichment as need→semantics→dynamic experiment→benchmark→persist/query decision→schema evolution, with explicit field/horizon/formula/backfill/checkpoint ownership.",
+    "completed": "Pass A, all Pass B audits, and Pass C1-C5 missing-work audits completed.",
+    "ready": "C5 distributes performance evidence across raw persistence, trusted reads, enrichment, Scanner/result delivery, contention, storage, memory and reopen, with one final capacity gate.",
     "blockedAfterEntry": "Implementation remains paused; Pass C continues before DAG redesign or canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: C4 enrichment missing-work audit added; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: C5 performance/capacity missing-work audit added; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass C5: audit missing performance/capacity work across raw persistence, enrichment, trusted reads, Scanner result delivery, mixed ingest/query contention, storage growth, reopen and target Windows/Chromium evidence.",
+    "action": "Execute Issue #72 Pass C6: audit missing Dynamic SQL Scanner work, including editor/activation lifecycle, durable active state, read-only safety, scheduler semantics, result-grid contract, large-result behavior, failure/restart semantics, drill-down and product checkpoint ownership.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
-      "Do not create/delete/reorder canonical WPs yet; identify missing performance owners first.",
-      "Use benchmarks as decision inputs before freezing expensive mechanisms.",
-      "Separate regression/trend benchmarks from release capacity claims.",
-      "Automate performance evidence in GitHub Actions where meaningful; keep environment-qualified claims explicit."
+      "Do not create/delete/reorder canonical WPs yet; identify missing Scanner owners first.",
+      "Treat Scanner as a separate mini-project after V1-on-SQL parity.",
+      "Separate product contracts from benchmark-driven execution mechanisms.",
+      "Keep Scanner isolated from provider collection and V1-derived browsing correctness."
     ]
   },
   "history": {
