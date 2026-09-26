@@ -39,6 +39,45 @@ regression test
 
 Tests should protect public/observable behavior rather than private implementation details.
 
+## Automation-first verification
+
+Human checking is not a substitute for an assertion that can be automated.
+
+Default rule:
+
+~~~text
+if GitHub Actions / Node / Chromium / a deterministic mock / fault injection
+can prove the behavior
+→ automate it
+→ do not leave it as a user checklist
+~~~
+
+During implementation, temporary engineering tests and POC workflows are allowed and encouraged when they answer a concrete uncertainty faster or more safely than coding forward blindly.
+
+Temporary verification may include:
+
+- focused synthetic provider fixtures;
+- browser capability probes;
+- failure injection;
+- crash/reopen scenarios;
+- targeted performance experiments;
+- implementation-comparison/parity probes;
+- one-off diagnostic assertions.
+
+After the question is resolved:
+
+~~~text
+protects a durable public contract/regression
+→ keep it as permanent coverage
+
+exploratory only
+→ remove the temporary test/workflow/scaffolding
+~~~
+
+Do not accumulate permanent suite noise merely because a POC was useful once.
+
+The objective is that a human is asked to participate only where the authenticated real origin/session is technically unavailable to CI. Even there, the live artifact must self-verify its assertions and emit an explicit sanitized PASS/FAIL result; the human must not be asked to visually judge product correctness when code can decide it.
+
 ## Fast verification
 
 Command:
@@ -85,6 +124,8 @@ The V2 bootstrap baseline/isolation checkpoint requires the full Browser suite b
 Do not put credentials, cookies, tokens, account data or private session data in CI.
 
 Use live Leumi verification only when mocks/browser tests cannot prove the current provider behavior.
+
+Live verification must be automated as far as technically possible. The preferred live artifact performs the checks itself and returns sanitized machine-readable PASS/FAIL evidence. If an authenticated local session must launch the artifact, user involvement is limited to that unavoidable session boundary rather than manual inspection of assertions.
 
 ## Failure diagnosis
 
