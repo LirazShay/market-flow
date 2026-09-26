@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-e2-v1-parity-verification-plan",
-    "title": "Define the dedicated V1↔V2 parity verification plan and oracle strategy for the V1-on-SQL checkpoint",
+    "substep": "pass-e3-self-verifying-live-probe-plan",
+    "title": "Define the self-verifying live probe plan for L-1, L-2 and live-only evidence without manual QA judgement",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1 V1-on-SQL implementation manual completed.",
-    "ready": "E1 provides behavior/tests-first implementation instructions from verification bootstrap through SQL persistence, runtime/read migration, Current/Detail, L-2 and the ND-16 product checkpoint.",
-    "blockedAfterEntry": "Implementation remains paused; Pass E continues with detailed checkpoint/evidence manuals before canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, Pass E1 V1-on-SQL implementation manual, and Pass E2 V1↔V2 parity verification plan completed.",
+    "ready": "E2 defines independent oracle authority, 23 mandatory parity scenarios, mismatch taxonomy, evidence freshness and exact ND-16 PASS rules without comparing storage internals.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E continues with detailed live/checkpoint/enrichment/Scanner manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: V1-on-SQL implementation manual added and indexed; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: V1↔V2 parity verification plan added and indexed; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass E2: define the dedicated V1↔V2 parity verification plan, including fixture/oracle ownership, observable comparison model, Current/Detail/history/sorting/null/failure scenarios, parity result schema and rules for resolving expected-vs-actual disagreements.",
+    "action": "Execute Issue #72 Pass E3: define the self-verifying live-probe architecture and runbooks for L-1/L-2/L-3, including launch boundary, machine assertions, controlled same-origin context, sanitized evidence schema, cleanup, failure classification, and how live evidence is tied to exact builds.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Compare public observable contracts, never storage internals.",
-      "Use one sanitized deterministic scenario corpus across V1 expectations and V2 SQL-backed behavior.",
-      "Make parity failures diagnosable by contract area and distinguish implementation defect from oracle/spec defect."
+      "Human involvement is limited to unavoidable authenticated-session launch/gesture boundaries.",
+      "All live assertions must be machine-evaluated and emit sanitized PASS/FAIL/Unknown evidence.",
+      "Do not retain raw authenticated provider/session data in artifacts."
     ]
   },
   "history": {
