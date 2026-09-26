@@ -609,20 +609,22 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Scope**
 
-- reuse proven page-context provider collection;
-- replace candidate runtime persistence handoff with validated SQL handoff;
+- preserve the proven V1 page-context provider/data acquisition contract: MapHeat2 dynamic universe, sequential GetSecuritiesData flow, raw provider facts and exact complete-cycle validation;
+- replace only the successful-cycle persistence handoff with the validated SQL handoff;
 - keep provider requests/authentication in the page context;
 - expose SQL durable acknowledgement as Recorder success boundary;
+- do not change provider endpoint/request semantics merely to accommodate the new storage engine;
 
 **Acceptance**
 
-- provider collection still validates dynamic universe exactly;
+- provider collection still validates dynamic universe exactly and produces the same class of validated complete-cycle market facts;
+- full raw MapHeat/Security evidence, canonical IDs and null/zero/empty/missing distinctions survive the SQL handoff;
 - no credentials/session data are copied into Worker;
 - Recorder never calls a SQL cycle successful before durable acknowledgement;
 
-**Primary verification:** Node recorder contract + Playwright provider mocks
+**Primary verification:** Node recorder contract + Playwright provider mocks + later WP-24 real-provider equivalence
 
-**Exit:** Candidate runtime records market cycles through SQL authority.
+**Exit:** Candidate runtime records the proven V1-collected market cycle through SQL authority without redefining the provider contract.
 
 ### WP-24 — Execute Live Gate L-2 provider compatibility
 
@@ -655,7 +657,9 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Scope**
 
-- implement same-origin Viewer bridge through Runtime Controller;
+- implement same-origin Viewer bridge through Runtime Controller for all three product surfaces;
+- preserve Current Universe and Security Detail/History as separate V1-derived surfaces;
+- support a separate Dynamic SQL Scanner client surface;
 - add runtimeInstanceId/stateRevision;
 - send full ViewerStateSnapshot on attach/re-attach;
 - treat notifications only as hints that trigger resync;
@@ -663,6 +667,7 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 **Acceptance**
 
 - Viewer can reconstruct state without waiting for next notification;
+- bridge can support Current Universe, Security Detail/History and Dynamic SQL Scanner without creating another data authority;
 - dropped notification never corrupts authority;
 - Viewer never opens DuckDB/OPFS;
 
@@ -678,13 +683,16 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Scope**
 
+- implement SQL editing on the dedicated Dynamic SQL Scanner surface, not as a replacement for Current Universe/Detail;
 - keep draft state in Viewer only;
+- expose configurable repeat interval with the SQL activation;
 - send activateQuery with expectedActiveQueryVersionId;
 - surface parse/safety/stale-editor errors without changing healthy runtime;
 - propagate successful activation to all attached Viewers through resync;
 
 **Acceptance**
 
+- scanner user can change SQL and interval without changing collector code/cadence;
 - stale Viewer cannot silently overwrite newer active SQL;
 - bad draft leaves previous active query unchanged;
 - activation result is correlated by requestId;
@@ -701,13 +709,16 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 
 **Scope**
 
+- render the dedicated Dynamic SQL Scanner result grid from the active SQL result schema;
 - render latest execution separately from latest successful execution;
 - render bounded preview/truncation/full-row counts;
 - show empty-success distinctly from error;
+- preserve canonical SecurityId in scanner rows when returned so drill-down can reuse Security Detail/History;
 - show runtime/persistence/query/scheduler diagnostics without sensitive data;
 
 **Acceptance**
 
+- scanner result meaning follows the SQL result; UI does not silently apply an independent hidden filter/ranking layer;
 - new query error leaves prior successful preview clearly labeled;
 - truncated preview never claims completeness;
 - restart does not present old in-memory preview as new-runtime data;
@@ -725,11 +736,15 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 **Scope**
 
 - replace active Viewer IndexedDB reads with Runtime Controller/SQL Authority read commands;
-- preserve current-table and security-history public behavior where still applicable;
+- preserve the V1-derived Current Universe surface: all securities + latest committed bank data;
+- preserve the V1-derived Security Detail/History surface: selected security + persisted history;
+- preserve current-table/detail/history public behavior except where an explicit V2 product change says otherwise;
+- allow canonical-SecurityId navigation from Scanner results to the existing detail surface when present;
 - ensure Viewer never becomes direct database owner;
 
 **Acceptance**
 
+- Current Universe and Security Detail/History remain distinct usable surfaces after SQL cutover;
 - current/history displays are sourced from committed SQL authority state;
 - manual refresh is DB/runtime-state only and makes no provider request;
 - raw/history coverage reflects the new SQL epoch honestly;
@@ -747,12 +762,15 @@ Explicit authority switch, rollback/live endurance, then removal of temporary mi
 **Scope**
 
 - run repeated-launch, multi-Viewer, Viewer reload, runtime restart and result-delivery scenarios;
+- verify the complete D-043 product shape: unchanged V1-proven collection contract into SQL persistence, two preserved V1-derived browsing surfaces, and one separate Dynamic SQL Scanner;
 - update normative runtime/Viewer specs;
 - verify generated Browser SQL artifacts from final M4 code;
 
 **Acceptance**
 
 - Fast CI and full Browser CI green;
+- Current Universe, Security Detail/History and Dynamic SQL Scanner all work against one coherent SQL authority;
+- SQL/interval edits affect scanner analytics rather than provider collection behavior;
 - no extra SQL authority/OPFS owner appears under repeated/multi-Viewer use;
 - live-only L-2 status is accurately reflected;
 
