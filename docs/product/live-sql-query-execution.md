@@ -22,6 +22,18 @@ repeat interval X seconds
 
 Changing the SQL should not normally require changing application code.
 
+## V2 presentation boundary
+
+For Local History Viewer V2, this capability is exposed through a **separate Dynamic SQL Scanner surface** with editable SQL, configurable repeat interval and SQL-driven result grid.
+
+It is additive to the V1-derived Current Universe and Security Detail/History surfaces; it does not replace them.
+
+The detailed V2 product shape is owned by:
+
+~~~text
+docs/product/local-history-viewer-v2-product-shape.md
+~~~
+
 ## Query capability
 
 The selected engine should support the SQL constructs needed for live analytical exploration, including where relevant:
