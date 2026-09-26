@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-b-existing-wp-necessity-audit",
-    "title": "Classify the existing Browser SQL work packages against the independent product capability map",
+    "substep": "pass-b2-audit-wp-08-through-wp-14",
+    "title": "Audit SQL recovery, ingest, atomicity and enrichment packages against the V1-on-SQL-first product sequence",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A product capability decomposition completed independently from the existing WP graph.",
-    "ready": "Capability map now distinguishes CORE, ANALYTICAL, CORRECTNESS and CONDITIONAL needs across collector, SQL authority, three Viewer surfaces, analytics, runtime, verification and lifecycle.",
-    "blockedAfterEntry": "Implementation progression remains paused while Pass B classifies every existing WP as KEEP/REORDER/SPLIT/MERGE/DEFER/REMOVE/REPLACE."
+    "completed": "Pass A capability map and Pass B1 classification of WP-01..WP-07 completed.",
+    "ready": "B1 keeps WP-01/02/05/06, splits WP-03/04/07, and establishes minimal V1-on-SQL foundation before enrichment/Scanner complexity.",
+    "blockedAfterEntry": "Implementation remains paused; Pass B must finish classifying the full existing WP graph before canonical Issues/order are rewritten."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: Pass A capability map + automation-first verification policy added; runtime unchanged; WP graph still under Pass B audit.",
+    "specImpact": "Planning-only: WP-01..WP-07 classified in the re-baseline audit; no product/runtime implementation or canonical Issue graph mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass B: classify every existing WP-01..WP-42 against the independent capability map as KEEP/REORDER/SPLIT/MERGE/DEFER/REMOVE/REPLACE with explicit rationale and capability coverage.",
+    "action": "Execute Issue #72 Pass B2: audit WP-08..WP-14, separating minimum V1-on-SQL recovery/atomic persistence from analytical horizon/enrichment work and identifying artificial dependencies.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
-      "Audit every WP; do not skip already-completed WP-01/WP-02, but treat their evidence separately from downstream-plan validity.",
-      "Do not create/delete/reorder canonical Issues during Pass B; produce the classification first.",
-      "Identify mixed-scope packages and automatable verification; do not leave provable checks to the user.",
-      "Distinguish initial V2 necessity from later analytical/operational hardening.",
-      "Keep WP-03 open and verification-pending until the corrected graph is materialized in a later pass."
+      "Do not implement product/runtime code in this planning chat.",
+      "Do not mutate canonical WP Issues/order during Pass B; classify first.",
+      "Prefer V1-on-SQL parity before temporal/enrichment unless a dependency is proven.",
+      "Keep atomicity, idempotency, raw-source preservation and recovery correctness non-negotiable.",
+      "Automate every verification that GitHub Actions/Node/Chromium/mocks/fault injection can prove."
     ]
   },
   "history": {
