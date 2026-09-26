@@ -20,6 +20,8 @@ This is a research foundation, not a trading/execution engine.
 
 Operational progress is tracked only in `../STATUS.json`.
 
+> V2 evolution note: this file is the currently implemented V1-derived baseline. D-043 explicitly preserves its provider/data acquisition contract while the Browser SQL target replaces persistence authority and adds a separate Dynamic SQL Scanner alongside the preserved Current Universe and Security Detail/History surfaces. This note does not claim those target changes are implemented yet.
+
 ## Scope
 
 The system contract includes:
