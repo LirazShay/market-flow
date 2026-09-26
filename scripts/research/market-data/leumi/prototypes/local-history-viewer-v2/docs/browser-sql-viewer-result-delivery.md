@@ -8,7 +8,30 @@ It does not define the detailed test matrix; that belongs to Phase L.
 
 Durable decision: ../../../../../../../docs/project/decisions/D-032.md
 
-## 1. Viewer authority boundary
+## 1. Product surface model
+
+The Browser SQL Viewer target is explicitly three-surface:
+
+~~~text
+Surface 1 — Current Universe
+all securities + latest committed bank data
+
+Surface 2 — Security Detail/History
+one SecurityId + current/detail data + persisted history
+
+Surface 3 — Dynamic SQL Scanner
+user SQL + configurable repeat interval + SQL-driven result grid
+~~~
+
+Surfaces 1 and 2 preserve the V1 product behavior while changing the read authority from IndexedDB to Runtime Controller / SQL Authority.
+
+Surface 3 is additive. It must not replace the first two.
+
+A scanner row carrying canonical SecurityId may navigate to Surface 2 and reuse the same detail/history implementation. That is Viewer navigation only; trade/order execution is outside this contract.
+
+Product authority: `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md` / D-043.
+
+## 3. Viewer authority boundary
 
 Viewer windows are clients of the Runtime Controller.
 
@@ -22,7 +45,7 @@ They do not:
 
 Authoritative market/query state remains in the SQL Authority / persistent database, with runtime state coordinated by Runtime Controller.
 
-## 2. Selected Viewer transport
+## 3. Selected Viewer transport
 
 Baseline target: same-origin child Viewer windows attach directly to the Runtime Controller through a small asynchronous Viewer bridge.
 
@@ -41,7 +64,7 @@ The bridge may use direct same-origin function calls internally because the View
 
 Do not make BroadcastChannel the data path for Viewer state.
 
-## 3. Notification remains a hint
+## 4. Notification remains a hint
 
 Runtime changes may trigger lightweight Viewer notifications:
 
@@ -64,7 +87,7 @@ authoritative snapshot = actual state
 
 BroadcastChannel may remain an optional discovery/wake mechanism, but the target Viewer contract does not depend on it for correctness.
 
-## 4. stateRevision
+## 5. stateRevision
 
 Runtime Controller exposes a monotonically increasing in-memory stateRevision for Viewer-facing state changes.
 
@@ -86,7 +109,7 @@ Rules:
 - after page/runtime restart, a new revision sequence may begin;
 - Viewer must never compare revisions across different runtimeInstanceId values.
 
-## 5. runtimeInstanceId
+## 6. runtimeInstanceId
 
 Each Runtime Controller lifetime gets an opaque runtimeInstanceId.
 
@@ -99,7 +122,7 @@ stateRevision
 
 If runtimeInstanceId changes, Viewer discards assumptions about prior in-memory preview/subscription state and performs full re-attachment.
 
-## 6. ViewerStateSnapshot
+## 7. ViewerStateSnapshot
 
 Minimum normalized snapshot:
 
@@ -146,7 +169,7 @@ resultPreview:
 
 Only data needed by Viewer is exposed; raw authentication/session data is never included.
 
-## 7. Result-preview lifetime
+## 8. Result-preview lifetime
 
 V2 baseline does not persist arbitrary analytical result payloads in DuckDB.
 
@@ -172,7 +195,7 @@ Viewer must say this explicitly rather than showing stale rows from a dead runti
 
 Viewer attachment does not automatically execute SQL just to reconstruct a preview.
 
-## 8. Result materialization
+## 9. Result materialization
 
 Phase H streams the full result for accounting while retaining only a bounded Viewer preview.
 
@@ -187,7 +210,7 @@ Viewer presentation rules:
 
 The numeric preview cap remains benchmark/UX-configurable and is not hardcoded by the Phase K contract.
 
-## 9. Latest execution vs latest successful result
+## 10. Latest execution vs latest successful result
 
 Viewer must present these separately.
 
@@ -203,7 +226,7 @@ An error banner for #42 must not erase or relabel the #41 successful preview.
 
 Every preview clearly identifies the executionId/queryVersionId that produced it.
 
-## 10. Query editor boundary
+## 11. Query editor boundary
 
 Viewer owns only draft/editor state.
 
@@ -223,7 +246,7 @@ SQL Authority performs Phase H safety classification and creates/activates the i
 
 Viewer never writes query tables directly.
 
-## 11. Multi-Viewer edit concurrency
+## 12. Multi-Viewer edit concurrency
 
 Multiple Viewer clients may inspect the same runtime.
 
@@ -244,7 +267,7 @@ activation rejected
 
 No Viewer silently overwrites another Viewer's newer activation.
 
-## 12. Viewer attachment
+## 13. Viewer attachment
 
 On attach or reopen:
 
@@ -260,7 +283,7 @@ Attach is successful only when the current runtimeInstanceId is known.
 
 If no healthy Runtime Controller exists, Viewer displays disconnected/runtime-unavailable state and does not attempt direct database recovery.
 
-## 13. Viewer reload / re-attachment
+## 14. Viewer reload / re-attachment
 
 A same-origin Viewer reload loses its in-memory client subscription.
 
@@ -276,7 +299,7 @@ reload
 
 No reliance on previously received messages is required.
 
-## 14. Runtime restart while Viewer remains open
+## 15. Runtime restart while Viewer remains open
 
 If Runtime Controller disappears/restarts:
 
@@ -286,7 +309,7 @@ If Runtime Controller disappears/restarts:
 - Viewer discards old in-memory result preview unless the new runtime explicitly owns a new preview;
 - full snapshot is requested before normal display resumes.
 
-## 15. Multi-Viewer behavior
+## 16. Multi-Viewer behavior
 
 Target architecture permits multiple Viewer clients.
 
@@ -301,7 +324,7 @@ Rules:
 
 The initial user-facing launch may continue to reuse one primary named Viewer window; protocol support for multiple clients does not require adding UI to spawn many windows.
 
-## 16. Viewer close semantics
+## 17. Viewer close semantics
 
 Close means:
 
@@ -315,7 +338,7 @@ It does not mean stop Recorder or SQL scheduler.
 
 Explicit runtime stop remains a separate Runtime Controller action.
 
-## 17. Command/result correlation
+## 18. Command/result correlation
 
 Every Viewer command uses an opaque requestId.
 
@@ -331,7 +354,7 @@ result or structured error
 
 This prevents a slow response from being applied to the wrong editor action after newer Viewer activity.
 
-## 18. Structured Viewer errors
+## 19. Structured Viewer errors
 
 Viewer-facing errors distinguish at least:
 
@@ -349,7 +372,7 @@ result-preview-unavailable
 
 Do not expose cookies, headers, tokens, account information or unnecessary raw stack data.
 
-## 19. Diagnostics presentation
+## 20. Diagnostics presentation
 
 Viewer diagnostics should expose clearly:
 
@@ -368,7 +391,7 @@ Viewer diagnostics should expose clearly:
 
 Diagnostics are observational; changing them does not mutate authority.
 
-## 20. Notification failure
+## 21. Notification failure
 
 If push notification delivery fails:
 
@@ -380,9 +403,14 @@ manual sync / reattach / later notification repairs display
 
 Notification failure is never interpreted as transaction/query failure.
 
-## 21. Current/history market-data Viewer
+## 22. Current/history market-data Viewer
 
-The existing Viewer currently renders latest/history by reading IndexedDB.
+The existing two V1-derived browsing surfaces remain product requirements:
+
+- Current Universe — all latest securities/bank data;
+- Security Detail/History — one security and its persisted history.
+
+They currently render latest/history by reading IndexedDB.
 
 Target Browser SQL migration changes that boundary:
 
@@ -397,7 +425,7 @@ Viewer itself still does not open DuckDB.
 
 The exact market-history browsing SQL/API shape is an implementation decomposition item; this Phase fixes ownership and recovery semantics.
 
-## 22. Acceptance scenarios
+## 23. Acceptance scenarios
 
 K-A1: Viewer attaches and immediately obtains a full current snapshot without waiting for the next broadcast/event.
 
@@ -423,7 +451,15 @@ K-A11: latest-success metadata survives reopen but preview payload is unavailabl
 
 K-A12: current/history market-data browsing uses Controller/SQL Authority reads rather than direct Viewer DB ownership.
 
-## 23. Phase-K implementation tuning / explicit non-goals
+K-A13: Current Universe still exposes the V1-derived all-securities/latest-data browsing behavior after SQL cutover.
+
+K-A14: Security Detail/History still exposes one-security history after SQL cutover.
+
+K-A15: Dynamic SQL Scanner is a separate surface with user SQL + interval and renders the active SQL's result columns/rows.
+
+K-A16: changing Scanner SQL/interval never changes collector/provider behavior, and a scanner row with SecurityId can reuse the existing detail surface without starting another workflow.
+
+## 24. Phase-K implementation tuning / explicit non-goals
 
 The following are not architecture gaps. Exact visual styling, numeric preview cap and detailed query-history UI are implementation/benchmark tuning; arbitrary-result export and alert/decision-engine integration are separate future product features:
 
@@ -434,7 +470,7 @@ The following are not architecture gaps. Exact visual styling, numeric preview c
 - alerting/decision-engine integration;
 - detailed test cases and CI split.
 
-## 24. Completion result
+## 25. Completion result
 
 ~~~text
 Viewer = detachable same-origin client
