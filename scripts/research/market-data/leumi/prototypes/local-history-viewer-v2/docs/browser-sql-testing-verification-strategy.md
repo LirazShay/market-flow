@@ -25,6 +25,29 @@ authenticated Leumi policy/provider behavior not reproducible faithfully in CI
 
 Do not mock away the very browser behavior a test is meant to prove.
 
+## 1.1 Automation-first development and verification
+
+GitHub Actions is an active engineering verification environment, not only a final release gate.
+
+The implementation loop should aggressively automate every assertion that can be proven without the user's authenticated local session:
+
+~~~text
+engineering hypothesis / observable contract
+→ cheapest deterministic test
+→ targeted Chromium when browser semantics matter
+→ temporary POC / fault injection / benchmark when useful
+→ diagnose and fix
+→ retain only durable regression/contract coverage
+→ remove exploratory scaffolding
+→ broaden to checkpoint suites
+~~~
+
+A manual checklist is prohibited when the same expected result can be encoded as an automated assertion.
+
+Temporary tests/workflows are valid engineering tools. They do not become permanent merely because they existed during development.
+
+For authenticated-Leumi-only facts, the repository should still provide a self-verifying live probe/runtime. Its responsibility is to execute the assertions and report explicit sanitized PASS/FAIL evidence. Any unavoidable human action is limited to launching it inside the authenticated session and returning the sanitized result; visual/manual judgment is not the acceptance mechanism.
+
 ## 2. Tests protect public contracts
 
 Tests should target:
@@ -322,6 +345,8 @@ Prefer new Browser SQL fixtures that express public cycle/query contracts rather
 ## 8. Live authenticated-Leumi verification
 
 Some requirements cannot be proven by deterministic CI because we do not control the bank page/origin/policy.
+
+That limitation does not justify manual acceptance. Live gates must use self-verifying artifacts with automated assertions and sanitized PASS/FAIL output. The user must not be asked to decide correctness by observing the UI, console or database manually when the probe can assert it.
 
 ### Live Gate L-1 — Browser SQL compatibility probe
 
