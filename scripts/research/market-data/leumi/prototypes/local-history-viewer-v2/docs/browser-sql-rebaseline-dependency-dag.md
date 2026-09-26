@@ -1944,11 +1944,12 @@ Remains outside initial V2. No initial-V2 node depends on it.
 PRE-01 ─┐
 PRE-02 ─┴─→ ND-01 ──────────────→ ND-03
                                   │
-ND-02 ───────────────────┐        ▼
-                         └──────→ ND-04
-                                   │
-                                   ▼
-                                 ND-05
+                                  ▼
+                                ND-04
+                                  │
+ND-02 ────────────────────────────┤
+                                  ▼
+                                ND-05
                                    │
                                    ▼
                                  ND-06
