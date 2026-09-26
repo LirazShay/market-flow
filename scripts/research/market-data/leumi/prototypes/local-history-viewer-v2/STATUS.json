@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Pass A planning artifact added: docs/browser-sql-product-capability-map.md. No runtime/spec behavior changed; no existing WP graph mutation yet.",
+    "specImpact": "Planning-only: Pass A capability map + automation-first verification policy added; runtime unchanged; WP graph still under Pass B audit.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -136,7 +136,7 @@
     "rules": [
       "Audit every WP; do not skip already-completed WP-01/WP-02, but treat their evidence separately from downstream-plan validity.",
       "Do not create/delete/reorder canonical Issues during Pass B; produce the classification first.",
-      "Identify packages that mix product capabilities with optional mechanisms or unrelated concerns.",
+      "Identify mixed-scope packages and automatable verification; do not leave provable checks to the user.",
       "Distinguish initial V2 necessity from later analytical/operational hardening.",
       "Keep WP-03 open and verification-pending until the corrected graph is materialized in a later pass."
     ]
