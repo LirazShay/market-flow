@@ -4,6 +4,15 @@ This document is durable planning evidence for the transition from the inherited
 
 It does not contain live progress. `../STATUS.json` owns the current pointer.
 
+## Post-audit D-043 resolution
+
+This document records the earlier audit state. D-043 later converts two audit conclusions into explicit product contracts:
+
+- the V1-proven provider/data acquisition path is retained through the Browser SQL migration; changing storage does not authorize a provider/API redesign;
+- the V1-derived Current Universe and Security Detail/History surfaces are preserved, and a separate Dynamic SQL Scanner is added.
+
+Where this historical audit says the collector is only "probably" retainable or Viewer behavior is merely preliminary, D-043 is the later authority.
+
 ## Audit purpose
 
 Establish what is already proven, what is inherited, what should be retained as behavior, what is replaceable implementation detail, what became stale after the Browser-only decision, and what remains unknown.
