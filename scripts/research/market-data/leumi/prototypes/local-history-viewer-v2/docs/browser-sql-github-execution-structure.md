@@ -208,6 +208,28 @@ Phase U adds WP-41 / Issue #70 under M4 for cross-tab runtime ownership with Web
 Phase V adds WP-42 / Issue #71 under M8 for engine/schema/release upgrade compatibility and rollback. WP-36 / #64 production cutover depends on it.
 
 
+## D-043 post-freeze product amendment
+
+D-043 tightens the existing 42-WP graph without adding or reordering packages.
+
+~~~text
+WP-09..WP-14
+→ preserve the V1 validated-cycle/raw-data contract through SQL ingest
+
+WP-23..WP-24
+→ preserve + live-verify the V1 provider acquisition contract
+
+WP-25..WP-29
+→ Current Universe
+→ Security Detail/History
+→ separate Dynamic SQL Scanner
+
+WP-36..WP-38
+→ preserve the same product shape through cutover, live endurance and final cleanup
+~~~
+
+The product authority is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`; D-043 is the durable decision.
+
 ## Final planning freeze
 
 Phase W performs the final 42-WP traceability/DAG/Issue/unknown/cleanup/fresh-AI audit. Durable result: `docs/browser-sql-final-planning-freeze.md` and D-042. After green repository verification, implementation begins from WP-01 / Issue #29.
