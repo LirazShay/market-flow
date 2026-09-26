@@ -877,3 +877,198 @@ Scanner→Detail integration
 ~~~
 
 rather than reconstructing the old M4 package boundaries.
+
+
+---
+
+# Pass C3 — Missing verification executable ownership
+
+## C3-01 — Verification ownership and evidence traceability
+
+Missing owner: the strategy describes many checks, but the rewritten graph still needs one rule that every work unit names its observable contract, verification layer, durable regression coverage, temporary evidence if any, live-only evidence if any, and exact commit/runtime identity.
+
+Required trace:
+
+~~~text
+capability / contract
+→ verification owner
+→ environment
+→ commit/runtime identity
+→ PASS / FAIL / Unknown
+~~~
+
+This should become mechanically guardable when the new GitHub graph is materialized.
+
+## C3-02 — Versioned sanitized fixture/oracle corpus
+
+Own one reusable corpus for provider, parity, history-cursor, failure and later Scanner scenarios. It must use deterministic seeds/versioning, validate fixture shape, preserve null/zero/empty/missing distinctions, and prove no private authenticated data entered the fixtures.
+
+## C3-03 — Reusable public-boundary fault-injection harness
+
+Create sanctioned test seams for provider failure, validated-cycle rejection, staging/transaction failure, lost acknowledgement after commit, CHECKPOINT/storage failure where injectable, Worker/runtime loss, notification drop, trusted-read failure, Scanner execution failure and asset/capability failure.
+
+Fault injection belongs in test adapters/harness construction, not hidden production backdoors.
+
+## C3-04 — Atomicity crash-point matrix
+
+Permanent Chromium coverage must exercise failure before transaction, during staging, after partial history work, after partial current/latest work, before COMMIT, after COMMIT before acknowledgement, and CHECKPOINT-uncertain branches.
+
+Every case must prove prior committed state remains coherent, no partial success becomes visible, retry semantics are correct, and no false durable-success acknowledgement occurs.
+
+## C3-05 — Restart/reopen recovery matrix
+
+Own the full restart state-space: Viewer reload, Viewer close/reopen, Worker recreation, Runtime Controller restart, page relaunch, supported browser reopen, committed-but-unacknowledged ingest, failed operation, and incompatible/readiness-failure fixtures.
+
+Recovery must distinguish persisted authority from ephemeral runtime state and may never pass by silently resetting the DB.
+
+## C3-06 — Browser capability and negative-delivery matrix
+
+Turn the useful WP-03 POC ideas into reusable Chromium coverage for Blob Worker allowed/blocked, Wasm allowed/blocked, pinned asset success/404/mismatch, OPFS available/unavailable/failing, required API unavailable, repeated runtime launch and test-owned cleanup.
+
+These tests prove our failure handling, not the real Leumi origin.
+
+## C3-07 — Automated cross-tab ownership harness
+
+Two same-origin pages must automatically prove one owner, no DB/provider startup in the loser, same-tab reuse, owner-close release, readiness before takeover, hidden-tab lock retention, notification-loss non-takeover, blocked behavior when Web Locks are unavailable, and absence of steal/fallback election paths.
+
+## C3-08 — Browser lifecycle Viewer matrix
+
+Own Playwright scenarios for Viewer open-after-data, missed notification, reload, close/reopen, two viewers, runtime restart, Current/Detail state preservation where promised, Scanner-local failure isolation, and security removal from current universe while Detail is open.
+
+Tests should use public UI/runtime contracts rather than brittle private DOM hooks.
+
+## C3-09 — Self-verifying Live Gate L-1 runner
+
+Current defect: the live runbook still requires manual Tab A / Tab B Web Locks interpretation.
+
+Replacement requirement: one live probe launched from the authenticated page automatically checks injection, Blob Worker, exact Worker/Wasm, OPFS probe DB, write/COMMIT/CHECKPOINT, reopen, runtime relaunch where automatable, competing same-origin Web Lock behavior, safe cleanup, and emits one sanitized machine-readable PASS/FAIL artifact.
+
+The user's unavoidable role is only entering the authenticated session and launching the probe. The user should not switch tabs, inspect console/DB state, or decide whether assertions passed.
+
+## C3-10 — Self-verifying Live Gate L-2 provider runner
+
+Create one live candidate verifier that automatically checks MapHeat2 success, universe accounting, sequential GetSecuritiesData behavior, requested/received/unique/missing/unexpected validation, raw handoff preservation, canonical IDs, source-value distinctions where observed, SQL durable acknowledgement, and absence of copied auth/session material.
+
+It emits per-check and overall sanitized PASS/FAIL without retaining private raw dumps.
+
+## C3-11 — Self-verifying Live Gate L-3 endurance runner
+
+The production-shaped runtime should collect machine-evaluable evidence over the configured live endurance window: cycle counts, integrity counters, durable SQL commits, reopen/recovery, Current/Detail reads, shipped Scanner scheduling, runtime/storage/query errors and bounded health/timing evidence.
+
+At completion it emits a sanitized PASS/FAIL summary tied to the exact commit/build. The user does not manually inspect every surface.
+
+## C3-12 — Verification evidence artifact schema and freshness gate
+
+Standardize machine-readable evidence identity:
+
+~~~text
+repository commit
+runtime/release identity
+engine/Worker/Wasm identity where relevant
+workflow/probe version
+browser + OS
+fixture/dataset version
+test class
+timestamps
+individual assertions
+overall result
+Verified / Inferred / Unknown
+sanitization declaration
+~~~
+
+A previous green run must not silently count for a changed dependent surface. Stale evidence must be mechanically visible.
+
+## C3-13 — Security/redaction verification for emitted artifacts
+
+Automated scanning/allowlisting must cover Playwright traces, screenshots, HTML reports, benchmark artifacts, live-gate JSON, Debug Bundle, workflow logs and generated fixtures before upload/publication.
+
+Forbidden material includes cookies, tokens, Authorization headers, account/private session data, authenticated raw dumps, and arbitrary Scanner rows or full SQL where the diagnostics contract excludes them.
+
+## C3-14 — Target Windows/Chromium automated verification lane
+
+Current Browser CI is Ubuntu. Add a Windows GitHub Actions lane at relevant checkpoints for generated runtime startup, Worker/Wasm loading, OPFS reopen, storage/runtime integration, selected full-system smoke and benchmark sanity/trend runs.
+
+Hosted Windows evidence automates target-OS coverage; it does not replace authenticated-Leumi origin facts. Absolute performance claims remain environment-qualified.
+
+## C3-15 — CI topology and change-impact ownership
+
+The rewritten plan should explicitly own when each layer runs:
+
+~~~text
+Fast Node → normal push/PR
+targeted Chromium → relevant browser/storage/runtime work
+full Browser → coherent checkpoint/final browser state
+Windows browser lane → target-OS checkpoints
+targeted benchmark → performance-sensitive decisions
+heavy/capacity → major checkpoints/pre-cutover
+live → only real-origin/provider facts
+~~~
+
+Path filters/guards must not accidentally skip a changed contract owner.
+
+## C3-16 — Temporary POC lifecycle/disposition guard
+
+Every temporary POC, fault-injection workflow or benchmark gets an explicit closure disposition:
+
+~~~text
+promote to permanent regression
+or
+remove after evidence is captured
+~~~
+
+A work unit cannot close with abandoned temporary runtime hooks/workflows/fixtures unless a later owner is explicit.
+
+## C3-17 — Verification failure review and prevention retention
+
+For meaningful unexpected failures, require:
+
+~~~text
+failure
+→ root cause
+→ fix
+→ prevention decision
+→ smallest useful public-contract regression/guard
+→ rerun required layer
+~~~
+
+Do not retain brittle tests merely to memorialize an incident.
+
+# C3 findings
+
+## Finding C3-01 — verification infrastructure needs explicit work owners
+
+Fixtures, fault injection, evidence schemas, sanitization and CI topology are shared engineering assets, not incidental per-feature test details.
+
+## Finding C3-02 — current L-1 is not automation-first enough
+
+Manual two-tab Web Locks judgement must be replaced by a self-verifying live runner. Human involvement may remain only at the authenticated-session launch boundary.
+
+## Finding C3-03 — live gates are executable products
+
+L-1, L-2 and L-3 each need a maintained automated assertion runner, not prose instructions plus human interpretation.
+
+## Finding C3-04 — Linux Chromium, Windows CI and live Leumi prove different facts
+
+Linux Chromium remains the deterministic workhorse. Windows Actions adds target-OS evidence. Only the authenticated page proves live origin/provider facts.
+
+## Finding C3-05 — fault injection should be designed once and reused
+
+Atomicity, acknowledgement ambiguity, Worker loss, notification loss and read/query failures should use sanctioned public-boundary seams rather than ad-hoc private mutations.
+
+## Finding C3-06 — evidence has integrity and freshness requirements
+
+A green result proves only the commit/runtime/environment/fixture dependency set it exercised.
+
+## Finding C3-07 — artifact security includes test output
+
+Traces, screenshots, live evidence and benchmark output are part of the public-repository security boundary.
+
+## Finding C3-08 — user involvement should be reduced to unavoidable authentication boundaries
+
+~~~text
+user launches self-verifying artifact
+→ machine performs assertions
+→ machine emits sanitized PASS/FAIL
+~~~
+
+The user is not the manual QA engine.
