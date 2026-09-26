@@ -148,6 +148,28 @@ AB-28..AB-32 → WP-42
 
 Phase-W automated traceability check verified that **AB-01..AB-32 all exist and all have valid WP owners**.
 
+### Post-freeze D-043 product amendment
+
+D-043 was added under the explicit D-042 reopen rule for a material product clarification. It does not change the 42-package graph.
+
+Additional requirements and owners:
+
+~~~text
+DR-67 provider/data acquisition continuity → WP-23, WP-24
+DR-68 same validated raw cycle into SQL   → WP-23
+DR-69 Current Universe preserved          → WP-28, WP-29
+DR-70 Security Detail/History preserved   → WP-28, WP-29
+DR-71 separate Dynamic SQL Scanner        → WP-26, WP-27, WP-29
+DR-72 scanner → existing detail drilldown → WP-27, WP-28, WP-29
+
+AB-33 provider continuity                 → WP-23, WP-24
+AB-34 two V1-derived surfaces             → WP-28, WP-29
+AB-35 separate SQL Scanner                → WP-26, WP-27, WP-29
+AB-36 scanner drill-down is navigation    → WP-27, WP-28, WP-29
+~~~
+
+The authoritative product shape is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`.
+
 ## 5. Durable-decision traceability
 
 All Browser SQL durable decisions `D-025..D-041` have executable owners.
@@ -303,6 +325,8 @@ Reopen only when one of these occurs:
 - implementation exposes a real design contradiction not resolvable inside the owning Work Issue.
 
 When reopened, update the smallest owning decision/doc + decomposition + GitHub blockers + STATUS in one coherent batch.
+
+D-043 is the first such narrow amendment: a product clarification requiring collection continuity plus a three-surface Viewer target. Existing WP-23..WP-29 own it; no package/dependency expansion is required.
 
 Do not redesign because an implementation detail is merely inconvenient.
 
