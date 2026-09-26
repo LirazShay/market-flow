@@ -132,6 +132,12 @@ Unknown             = intentionally deferred to later planning/research
 | DR-64 | Rollback must use the preserved old release + pre-upgrade DB snapshot and must not depend on old DuckDB opening a newer-written database. | Phase V. |
 | DR-65 | Upgrade promotion must be crash-recoverable and preserve exactly one provable production authority before Recorder resumes. | Phase V. |
 | DR-66 | Generated runtime, Worker/Wasm assets, schema/migration identity and DB compatibility metadata must belong to one coherent release manifest. | Phase V. |
+| DR-67 | V2 preserves the proven V1 provider/data acquisition contract by default: authenticated page-context collection, MapHeat2 dynamic universe, sequential GetSecuritiesData flow and exact complete-cycle validation. A storage-engine migration alone is not justification to alter provider endpoints/request semantics. | D-043 / product shape. |
+| DR-68 | The SQL Authority receives the same validated complete-cycle market facts, including full raw MapHeat/Security evidence, canonical IDs and null/zero/empty/missing distinctions; SQL persistence/enrichment must not silently redefine source data. | D-043 / product shape. |
+| DR-69 | V2 preserves a Current Universe surface showing all latest committed securities/bank data, with the data source migrated from IndexedDB to SQL-authority reads. | D-043 / WP-28. |
+| DR-70 | V2 preserves a Security Detail/History surface for one selected security, with history migrated from IndexedDB to SQL-authority reads. | D-043 / WP-28. |
+| DR-71 | V2 adds a separate Dynamic SQL Scanner surface with editable user SQL, configurable repeat interval and a SQL-result-driven 0..N table; it must not replace DR-69 or DR-70. | D-043 / WP-26..WP-29. |
+| DR-72 | When a scanner result exposes canonical SecurityId, the Viewer may reuse the existing Security Detail/History surface for drill-down; no order/trading/position workflow is introduced by this requirement. | D-043 / WP-27..WP-29. |
 
 ## 3. Acceptance behaviors
 
@@ -408,6 +414,38 @@ Given a persistence-affecting candidate passed migrations, CHECKPOINT, reopen an
 when promotion completes,
 
 then exactly that candidate becomes production and Recorder resumes only after compatibility/readiness is re-proven.
+
+### AB-33 — V1 provider/data continuity through SQL migration
+
+Given the proven V1 provider collection behavior,
+
+when V2 replaces persistence with SQL Authority / DuckDB-Wasm / OPFS,
+
+then the same authenticated MapHeat2 + sequential GetSecuritiesData + exact complete-cycle validation contract still produces the validated market cycle, with full raw source facts preserved.
+
+### AB-34 — two V1-derived browsing surfaces survive cutover
+
+Given committed SQL-authority market data,
+
+when the Viewer opens the Current Universe or Security Detail/History surface,
+
+then the user can still inspect all latest securities/bank data and drill into one security's persisted history without direct IndexedDB ownership.
+
+### AB-35 — separate dynamic SQL scanner
+
+Given a configured user SQL query and repeat interval X,
+
+when the scanner is active,
+
+then the query runs on its independent scheduler cadence and the separate scanner surface displays the SQL-defined 0..N result table, including successful zero-row results, without replacing the two V1-derived surfaces.
+
+### AB-36 — scanner drill-down is navigation only
+
+Given a scanner result row containing canonical SecurityId,
+
+when the user drills into that security,
+
+then the Viewer may reuse the existing Security Detail/History surface; no trade/order/position workflow is implicitly started.
 
 ## 4. Assumptions that are not frozen contracts
 
