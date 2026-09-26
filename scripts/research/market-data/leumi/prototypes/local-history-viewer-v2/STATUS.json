@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-c6-missing-scanner-work",
-    "title": "Find missing Dynamic SQL Scanner product, lifecycle, safety, result and integration ownership",
+    "substep": "pass-d1-build-new-dependency-dag",
+    "title": "Build a new product-first dependency DAG from capabilities and missing-work inventory rather than the old WP graph",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, and Pass C1-C5 missing-work audits completed.",
-    "ready": "C5 distributes performance evidence across raw persistence, trusted reads, enrichment, Scanner/result delivery, contention, storage, memory and reopen, with one final capacity gate.",
-    "blockedAfterEntry": "Implementation remains paused; Pass C continues before DAG redesign or canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, and Pass C1-C6 missing-work audits completed.",
+    "ready": "C6 completes the Scanner audit as a full mini-project; the old 42-WP graph is now fully classified and all major missing-work domains are inventoried.",
+    "blockedAfterEntry": "Implementation remains paused; Pass D must redesign dependencies before canonical Issues are rewritten."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: C5 performance/capacity missing-work audit added; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: C6 Scanner missing-work audit added; Pass C complete; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass C6: audit missing Dynamic SQL Scanner work, including editor/activation lifecycle, durable active state, read-only safety, scheduler semantics, result-grid contract, large-result behavior, failure/restart semantics, drill-down and product checkpoint ownership.",
+    "action": "Execute Issue #72 Pass D1: build a new dependency DAG from product capabilities, grouping the Pass-C inventory into coherent work units and ignoring old WP numbering except as evidence/source mapping.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
-      "Do not create/delete/reorder canonical WPs yet; identify missing Scanner owners first.",
-      "Treat Scanner as a separate mini-project after V1-on-SQL parity.",
-      "Separate product contracts from benchmark-driven execution mechanisms.",
-      "Keep Scanner isolated from provider collection and V1-derived browsing correctness."
+      "Do not mutate canonical GitHub Issues yet; design the DAG first.",
+      "Build dependencies from product/correctness needs, not old milestone order.",
+      "Prefer coherent vertical slices and merge compatible audit bullets rather than creating one Issue per gap.",
+      "Keep V1-on-SQL parity before enrichment and Scanner unless a dependency is proven."
     ]
   },
   "history": {
