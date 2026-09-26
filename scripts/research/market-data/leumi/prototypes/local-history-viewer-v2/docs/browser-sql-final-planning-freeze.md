@@ -155,16 +155,16 @@ D-043 was added under the explicit D-042 reopen rule for a material product clar
 Additional requirements and owners:
 
 ~~~text
-DR-67 provider/data acquisition continuity → WP-23, WP-24
-DR-68 same validated raw cycle into SQL   → WP-23
-DR-69 Current Universe preserved          → WP-28, WP-29
-DR-70 Security Detail/History preserved   → WP-28, WP-29
-DR-71 separate Dynamic SQL Scanner        → WP-26, WP-27, WP-29
+DR-67 provider/data acquisition continuity → WP-23, WP-24, WP-36..WP-38
+DR-68 same validated raw cycle into SQL   → WP-09..WP-14, WP-23
+DR-69 Current Universe preserved          → WP-28, WP-29, WP-36..WP-38
+DR-70 Security Detail/History preserved   → WP-28, WP-29, WP-36..WP-38
+DR-71 separate Dynamic SQL Scanner        → WP-26, WP-27, WP-29, WP-36..WP-38
 DR-72 scanner → existing detail drilldown → WP-27, WP-28, WP-29
 
-AB-33 provider continuity                 → WP-23, WP-24
-AB-34 two V1-derived surfaces             → WP-28, WP-29
-AB-35 separate SQL Scanner                → WP-26, WP-27, WP-29
+AB-33 provider continuity                 → WP-23, WP-24, WP-37
+AB-34 two V1-derived surfaces             → WP-28, WP-29, WP-36..WP-38
+AB-35 separate SQL Scanner                → WP-26, WP-27, WP-29, WP-36..WP-38
 AB-36 scanner drill-down is navigation    → WP-27, WP-28, WP-29
 ~~~
 
