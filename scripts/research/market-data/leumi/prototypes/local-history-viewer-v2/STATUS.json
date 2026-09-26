@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-b4-audit-wp-21-through-wp-29",
-    "title": "Audit runtime, collector integration and Viewer packages for an earlier V1-on-SQL product vertical slice",
+    "substep": "pass-b5-audit-wp-30-through-wp-42",
+    "title": "Audit health, security, shadow, benchmark, cutover, lifecycle, resource-isolation, ownership and upgrade packages",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A plus Pass B1 (WP-01..07), B2 (WP-08..14) and B3 (WP-15..20) classifications completed.",
-    "ready": "B3 moves the analytical runtime into a separate Scanner mini-project and separates core Scanner contracts from benchmark-driven mechanisms.",
-    "blockedAfterEntry": "Implementation remains paused; Pass B must finish classifying the full existing WP graph before canonical Issues/order are rewritten."
+    "completed": "Pass A plus Pass B1 (WP-01..07), B2 (WP-08..14), B3 (WP-15..20) and B4 (WP-21..29) classifications completed.",
+    "ready": "B4 moves production runtime/Recorder/read contracts/Current+Detail parity ahead of Scanner work and splits the old M4 closure into early V1 parity and later three-surface integration.",
+    "blockedAfterEntry": "Implementation remains paused; Pass B5 must classify WP-30..WP-42 before the backlog-wide classification can be summarized."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: WP-15..WP-20 classified; Scanner isolated as its own mini-project; no product/runtime implementation or canonical Issue graph mutation.",
+    "specImpact": "Planning-only: WP-21..WP-29 classified; V1-on-SQL runtime/read/Viewer vertical slice moved ahead of Scanner conceptually; no product/runtime implementation or canonical Issue graph mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,14 +130,14 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass B4: audit WP-21..WP-29, focusing on runtime packaging/controller, collector→SQL integration, V1 Current/Detail read bridge, Scanner UI split and separate product checkpoints.",
+    "action": "Execute Issue #72 Pass B5: audit WP-30..WP-42, re-justifying health/security, shadow migration, benchmarks, cutover, rollback, cleanup, retention, resource isolation, cross-tab ownership and upgrade lifecycle against the initial V2 product.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical WP Issues/order during Pass B; classify first.",
-      "Pull the minimum runtime/read/Viewer work needed for V1-on-SQL parity earlier where dependencies allow.",
-      "Separate V1 Current/Detail product parity from Dynamic SQL Scanner UI/completion.",
+      "Keep correctness/security essentials, but do not treat optional operational machinery as initial-V2 blockers without evidence.",
+      "Separate production-cutover necessities from later hardening and future-release lifecycle.",
       "Automate every verification that GitHub Actions/Node/Chromium/mocks/fault injection can prove."
     ]
   },
