@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-c3-missing-verification-work",
-    "title": "Find missing verification ownership across parity, failure injection, browser semantics and self-verifying live evidence",
+    "substep": "pass-c4-missing-enrichment-work",
+    "title": "Find missing analytical enrichment design, schema, correctness and benchmark ownership",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1 V1-on-SQL gaps and Pass C2 Viewer/product gaps completed.",
-    "ready": "C2 identifies explicit owners needed for application shell, per-surface state, Current/Detail parity, Scanner isolation, runtime reattach and Viewer product E2E.",
+    "completed": "Pass A, all Pass B audits, and Pass C1-C3 missing-work audits completed.",
+    "ready": "C3 adds explicit verification infrastructure ownership, including self-verifying L-1/L-2/L-3 runners, reusable fault injection, evidence freshness, artifact sanitization and Windows CI coverage.",
     "blockedAfterEntry": "Implementation remains paused; Pass C continues before DAG redesign or canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: C2 Viewer/product missing-work audit added; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: C3 verification missing-work audit added; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass C3: audit missing verification work across V1/V2 parity, atomicity/fault injection, browser/runtime semantics, multi-tab, performance probes, and self-verifying live gates.",
+    "action": "Execute Issue #72 Pass C4: audit missing analytical enrichment work, including which derived fields/horizons should exist, persisted-vs-query-time choices, schema evolution, correctness contracts and benchmark-driven promotion decisions.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
-      "Do not create/delete/reorder canonical WPs yet; identify missing verification owners first.",
-      "Prefer automated Node/Chromium/mocks/fault injection over manual user verification.",
-      "Keep temporary engineering POCs distinct from permanent regression coverage.",
-      "Require self-verifying sanitized live artifacts for facts that CI cannot establish."
+      "Do not create/delete/reorder canonical WPs yet; identify missing enrichment owners first.",
+      "Do not inherit the old enrichment column set blindly; justify each persisted field/horizon from product/query value.",
+      "Use deterministic tests plus focused Chromium/benchmark POCs before freezing expensive persistence choices.",
+      "Keep V1-on-SQL parity independent from enrichment."
     ]
   },
   "history": {
