@@ -12,6 +12,8 @@ prove completeness before data becomes durable current/history state
 
 Operational progress is tracked only in `../STATUS.json`.
 
+> V2 evolution note: D-043 preserves the observable Recorder/provider collection contract. The Browser SQL migration changes the persistence handoff/acknowledgement authority, not the proven MapHeat2 → sequential GetSecuritiesData → exact complete-cycle acquisition behavior by default.
+
 ## Scope
 
 The recorder owns:
@@ -225,6 +227,8 @@ Review this spec whenever changing:
 ## References
 
 - `provider-data-contract.spec.md`
+- `../../../../../../../docs/project/decisions/D-043.md`
+- `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`
 - `persistence.spec.md`
 - `messaging.spec.md`
 - `../recorder/`
