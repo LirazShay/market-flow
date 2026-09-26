@@ -1521,3 +1521,389 @@ Linux CI, Windows Actions, live origin and exact user hardware are different evi
 ## Finding C5-08 — final capacity gate uses only shipped features
 
 Do not benchmark hypothetical machinery as a cutover prerequisite. Capacity proof reflects the corrected product that actually exists.
+
+
+---
+
+# Pass C6 — Missing Dynamic SQL Scanner executable ownership
+
+## C6-01 — Scanner SQL surface/schema contract
+
+The user needs a stable documented SQL surface, not merely access to whatever physical tables happen to exist.
+
+Own the names and semantics of the Scanner-facing tables/views/columns that are intentionally queryable. Distinguish stable SQL contract from internal persistence tables that may evolve.
+
+Provide enough discoverability for a user to write SQL without reading implementation source. The first-release contract may expose a small stable view layer over raw/history structures if that proves simpler and safer.
+
+## C6-02 — Draft versus active configuration lifecycle
+
+Define one authoritative lifecycle for:
+- editor draft SQL;
+- draft interval;
+- active SQL/config;
+- validation/activation;
+- disabled/stopped state if supported;
+- failed activation leaving the previous active config unchanged.
+
+Editing text alone must never silently change the executing query.
+
+## C6-03 — Activation and first-execution semantics
+
+Decide explicitly what successful activation means:
+- does the new query execute immediately, at the next interval boundary, or by another deterministic rule?;
+- when does its schedule anchor begin?;
+- what status is shown before its first execution?;
+- what happens when interval changes?;
+- what happens when SQL changes but activation fails?
+
+The choice must be simple, deterministic and testable.
+
+## C6-04 — Active-query replacement during execution
+
+Define what happens if the user activates a new SQL/config while the old query is running.
+
+Required properties:
+- no overlap between old and new active executions;
+- the result from the replaced query cannot be mislabeled as the new query;
+- activation outcome is explicit;
+- cancellation/finish-before-replace mechanism is selected from engine evidence;
+- latest-success attribution remains truthful.
+
+## C6-05 — Repeat-interval validation and units
+
+Own interval parsing/validation and product semantics.
+
+Define:
+- unit exposed to user;
+- finite positive validation;
+- allowed minimum/maximum only after benchmark/resource evidence;
+- invalid interval behavior;
+- persistence/restart behavior;
+- independence from collector cadence.
+
+Do not silently clamp invalid values without visible contract.
+
+## C6-06 — Scheduler timing and overrun policy
+
+The product requires deterministic repeated execution with no overlap, but the old activation-anchored/coalescing algorithm is only one candidate.
+
+Explicitly decide and prove:
+- cadence anchor;
+- no-overlap rule;
+- missed-tick/overrun handling;
+- no burst replay after downtime;
+- behavior after query cancellation;
+- behavior after runtime restart;
+- interaction with waiting ingest.
+
+Node policy tests should own pure timing semantics; Chromium owns runtime integration.
+
+## C6-07 — Durable Scanner lifecycle/restart state
+
+Own the smallest persisted state required to recover truthfully after restart:
+- active SQL snapshot/config;
+- interval;
+- enabled/disabled state if supported;
+- schedule state only where needed by selected scheduler semantics;
+- latest execution metadata as required by product;
+- latest successful execution identity.
+
+Do not require immutable history of every editor keystroke/version unless traceability/recovery proves it necessary.
+
+## C6-08 — Execution identity and attribution contract
+
+Every execution needs an opaque stable identity and an exact association with the SQL/config that produced it.
+
+Result/status/error must never be attributed by 'whatever query is active now'.
+
+Define execution metadata sufficient for:
+- scheduled time/start/finish;
+- success/error/cancelled/interrupted;
+- query/config identity/hash/snapshot;
+- row-count completeness;
+- timing;
+- cancellation reason where applicable.
+
+## C6-09 — Read-only SQL safety boundary
+
+Own parsed/engine-backed classification and execution hardening for arbitrary user SQL.
+
+Must reject mutation/admin/config/transaction/external-access behavior that can threaten authoritative market data or escape the intended browser-data boundary.
+
+Trusted application migrations/admin SQL use a separate path and are never enabled through the Scanner.
+
+Prefix-only regex classification is not sufficient.
+
+## C6-10 — Committed-state query consistency
+
+Scanner queries must observe one coherent committed market state.
+
+Prove that a query cannot observe half of a cycle, half-updated latest/current pointers, or uncommitted enrichment.
+
+The exact queuing/connection mechanism is implementation detail; committed-state visibility is the product contract.
+
+## C6-11 — Scanner isolation from ingestion
+
+Arbitrary SQL must never:
+- change provider collection cadence/request shape;
+- mutate authoritative market data;
+- acknowledge a cycle early;
+- create unbounded validated-cycle backlog;
+- make Current/Detail unavailable as a normal consequence of query failure.
+
+This is a permanent cross-component regression contract.
+
+## C6-12 — Baseline resource-safety policy
+
+Before adding advanced preemption, define the minimum resource bounds required to ship safely:
+- at most one active Scanner execution;
+- bounded pending work;
+- bounded retained result memory;
+- trusted ingest retains correctness priority;
+- explicit handling when a query exceeds practical resource limits.
+
+Advanced cancellation/preemption/connection-recycle mechanisms are selected only from C5 mixed-load evidence.
+
+## C6-13 — Query cancellation outcome model
+
+Define cancellation separately from SQL error.
+
+Potential reasons include ingest priority, runtime budget, query replacement, runtime shutdown and explicit user stop if that feature ships.
+
+Cancelled/interrupted executions must not overwrite the latest successful result or be reported as successful complete row counts.
+
+## C6-14 — Latest execution versus latest successful result
+
+Own this as a first-class product state:
+
+~~~text
+latest execution = may be success/error/cancelled
+latest successful execution = last success
+displayed result = attributable to one exact successful execution
+~~~
+
+A later failure must not erase or relabel the last successful result.
+
+## C6-15 — Result schema/type normalization contract
+
+Arbitrary SQL can return arbitrary DuckDB-supported columns/types. The Scanner needs a deliberate browser/UI transport contract.
+
+Define behavior for:
+- column order;
+- duplicate/ambiguous column names;
+- NULL;
+- BIGINT/large integers;
+- DECIMAL;
+- timestamps/dates;
+- booleans;
+- JSON;
+- lists/structs/maps where exposed;
+- binary/blob or unsupported UI types;
+- non-finite numeric values if encountered.
+
+Do not silently stringify everything if that loses meaningful semantics. Unsupported presentation types need explicit truthful representation/error behavior.
+
+## C6-16 — Dynamic result-grid contract
+
+The grid schema follows SQL output.
+
+Required behavior:
+- 0 columns/rows only where engine result semantics legitimately allow it;
+- successful zero rows is not error;
+- column order follows result metadata;
+- row order is exactly SQL result order;
+- no hidden UI sorting/filter/ranking;
+- loading/executing/error/empty-success/rows states are distinct;
+- result identity/timing/status remains visible enough to avoid stale ambiguity.
+
+## C6-17 — Large-result/truncation/completeness contract
+
+Define product truth independently from the eventual streaming implementation.
+
+If only a bounded preview is displayed, expose:
+- preview row count;
+- whether result is complete/truncated;
+- full row count only when actually known/completed;
+- incomplete count after cancellation truthfully;
+- byte/row caps selected from benchmark evidence.
+
+Never silently append/rewrite LIMIT to user SQL merely to protect the UI.
+
+## C6-18 — Result lifetime across restart/reconnect
+
+Decide which Scanner result data is durable and which is ephemeral.
+
+A simple baseline may persist execution metadata but keep result preview in runtime memory.
+
+If the runtime restarts:
+- old in-memory preview cannot masquerade as new-runtime state;
+- latest-success metadata may remain;
+- UI explicitly says preview unavailable until a new success if that is the selected model.
+
+Do not auto-execute SQL on Viewer attach merely to reconstruct a preview unless explicitly selected as product behavior.
+
+## C6-19 — Scanner error taxonomy and presentation
+
+Define structured categories at least for:
+- activation/validation failure;
+- SQL parse failure;
+- safety rejection;
+- execution failure;
+- cancellation;
+- runtime unavailable/not ready;
+- storage/recovery blocked;
+- result transport/presentation failure.
+
+Errors are sanitized and Scanner-local unless the underlying runtime/storage authority is globally unhealthy.
+
+## C6-20 — SQL editor UX and activation feedback
+
+Own the product editor behavior separately from engine execution:
+- editable multiline SQL;
+- interval control;
+- activate/apply action;
+- active-vs-draft indication;
+- validation/error feedback;
+- keyboard/accessibility baseline;
+- preserving draft where practical;
+- no auto-activation on every keystroke.
+
+Exact visual design is implementation tuning, but these behaviors are product contracts.
+
+## C6-21 — Scanner SQL discoverability/default experience
+
+An editable SQL product needs a usable first-run contract.
+
+Decide deliberately whether to provide:
+- a safe default query that shows the current universe;
+- visible schema/table/view reference;
+- example queries as documentation/help;
+- copy/reset-to-default behavior.
+
+Do not make saved presets/query library a first-release requirement unless separately selected.
+
+## C6-22 — Multi-Viewer editing concurrency decision
+
+Multiple Viewers may observe one runtime, but simultaneous collaborative Scanner editing is not automatically a V2 requirement.
+
+Explicitly choose the first-release behavior:
+- optimistic concurrency/version check;
+- one designated editor;
+- last explicit activation with visible authoritative resync;
+- another simple safe policy.
+
+Whatever is selected must prevent silent ambiguous active state. Do not inherit the old optimistic-concurrency mechanism without product need.
+
+## C6-23 — Scanner SecurityId drill-down validation
+
+A result row may navigate to shared Detail/History only when it exposes a valid canonical SecurityId according to the Scanner integration contract.
+
+Arbitrary result columns are not authoritative current-market data. The Detail surface rereads authoritative data by SecurityId.
+
+Rows without a usable SecurityId remain ordinary results. No trade/order workflow is started.
+
+## C6-24 — Scanner restart/recovery verification matrix
+
+Automate:
+- restart with active query;
+- restart during running execution;
+- interrupted execution classification;
+- latest-success preservation;
+- result-preview loss/reconstruction semantics;
+- interval/scheduler recovery;
+- at most one catch-up opportunity under selected policy;
+- no burst of missed executions;
+- no provider/collector side effects.
+
+## C6-25 — Scanner contract test suite
+
+Permanent tests should cover public behavior:
+- SELECT/JOIN/WHERE/GROUP BY/HAVING/ORDER BY/LIMIT/window;
+- zero-row success;
+- syntax/runtime errors;
+- safety rejection;
+- query replacement;
+- interval changes;
+- no overlap/overrun;
+- restart;
+- latest-error versus latest-success;
+- arbitrary result types/schema;
+- large-result truthfulness;
+- SecurityId drill-down;
+- Scanner failure isolation.
+
+Use Node for deterministic state/policy and Chromium for DuckDB/runtime/UI semantics.
+
+## C6-26 — Scanner engine checkpoint
+
+Before UI completion, define a headless/internal checkpoint proving:
+
+~~~text
+durable active lifecycle
++ SQL safety
++ execution attribution
++ committed-state reads
++ repeat/no-overlap scheduling
++ restart recovery
++ baseline resource safety
+~~~
+
+This checkpoint does not claim Scanner product completion.
+
+## C6-27 — Scanner product checkpoint
+
+After editor/grid/navigation integration, prove:
+
+~~~text
+editable SQL + interval
+→ explicit activation
+→ repeated safe execution
+→ truthful dynamic 0..N result grid
+→ errors/latest-success/restart semantics
+→ optional SecurityId drill-down
+→ no impact on Current/Detail/provider behavior
+~~~
+
+Required evidence includes Fast CI, full Browser CI, Scanner contract suite, relevant performance benchmark, and any live/endurance evidence that cannot be mocked.
+
+# C6 findings
+
+## Finding C6-01 — Scanner is a full mini-project, not two Viewer widgets
+
+It owns lifecycle, safety, execution, scheduling, type/result semantics, recovery, resource bounds and UI integration.
+
+## Finding C6-02 — the user-facing SQL schema is a product contract
+
+Arbitrary SQL is only maintainable if users have stable documented objects/semantics to query. Physical DB tables should not become accidental public API.
+
+## Finding C6-03 — query identity must survive active-query changes
+
+Every result/error/status must be attributable to the exact SQL/config that produced it.
+
+## Finding C6-04 — scheduler semantics must be selected explicitly
+
+No-overlap and determinism are required; activation anchoring/coalescing details are not automatically inherited.
+
+## Finding C6-05 — arbitrary SQL means arbitrary result types
+
+Dynamic-grid type/column semantics are first-class work, not UI polish.
+
+## Finding C6-06 — latest success and latest execution are different product truths
+
+A failed/cancelled new run must not destroy or relabel the last successful result.
+
+## Finding C6-07 — large-result truthfulness precedes streaming mechanism
+
+Completeness/truncation/count semantics are product contracts; Arrow streaming/paging/materialization is benchmark-selected implementation.
+
+## Finding C6-08 — multi-Viewer editing policy is a decision, not inherited complexity
+
+Multiple readers do not automatically imply collaborative SQL editing.
+
+## Finding C6-09 — Scanner must remain operationally subordinate to authoritative ingest correctness
+
+Powerful arbitrary analysis cannot become a second authority or destabilize provider collection/persistence.
+
+## Finding C6-10 — Scanner needs separate engine and product checkpoints
+
+Headless runtime correctness and complete user-facing Scanner behavior are distinct proof boundaries.
