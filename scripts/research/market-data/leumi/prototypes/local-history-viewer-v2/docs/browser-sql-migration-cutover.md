@@ -376,19 +376,21 @@ Such mechanisms would create two long-lived authorities and double the verificat
 
 Migration scaffolding has a removal condition, not permanent architecture status.
 
-## 19. Current Viewer transition
+## 19. Viewer transition
 
-Before cutover:
+Before cutover, the active legacy V1-derived browsing UI reads IndexedDB.
 
-~~~text
-Viewer → IndexedDB
-~~~
-
-After cutover:
+After cutover, all active D-043 surfaces read through one authority:
 
 ~~~text
-Viewer → Runtime Controller → SQL Authority
+Current Universe
+Security Detail/History
+Dynamic SQL Scanner
+→ Runtime Controller
+→ SQL Authority
 ~~~
+
+The provider/data acquisition contract remains the V1-proven page-context flow; only persistence/analytical authority changes.
 
 There is no target Viewer mode that merges old IndexedDB history into live SQL results.
 
@@ -419,6 +421,8 @@ N-A10: legacy IndexedDB cleanup requires explicit action; normal startup never d
 N-A11: migration-specific shadow/comparison paths are removed before the final Browser SQL runtime is considered complete.
 
 N-A12: no final production code path automatically chooses between IndexedDB and DuckDB authorities.
+
+N-A13: after cutover, Current Universe, Security Detail/History and Dynamic SQL Scanner all use the SQL authority, while provider acquisition/validation remains behaviorally continuous with the V1-proven contract.
 
 ## 21. Deferred / future requirement trigger
 
