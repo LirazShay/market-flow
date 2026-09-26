@@ -48,6 +48,8 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Browser SQL multi-tab ownership durable decision | [D-040](../../../../../../../docs/project/decisions/D-040.md) |
 | Browser SQL engine/schema/release upgrade durable decision | [D-041](../../../../../../../docs/project/decisions/D-041.md) |
 | Browser SQL planning-freeze durable decision | [D-042](../../../../../../../docs/project/decisions/D-042.md) |
+| V2 collection continuity + three-surface durable decision | [D-043](../../../../../../../docs/project/decisions/D-043.md) |
+| V2 product continuity + three Viewer surfaces | [product shape](../../../../../../../docs/product/local-history-viewer-v2-product-shape.md) |
 | product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
 | planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
 
