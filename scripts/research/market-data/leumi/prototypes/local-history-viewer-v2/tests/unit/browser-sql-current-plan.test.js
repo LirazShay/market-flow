@@ -88,33 +88,41 @@ test(
 );
 
 test(
-    "ROADMAP exposes the compact C01-C12 order without reviving the 42-WP handoff",
+    "ROADMAP points to the materialized compact graph",
     () => {
         const roadmap =
             readWorkstream(
                 "ROADMAP.md"
             );
 
-        for (
-            let index = 1;
-            index <= 12;
-            index += 1
-        ) {
-            const id =
-                "C" +
-                String(index)
-                    .padStart(
-                        2,
-                        "0"
-                    );
+        assert.match(
+            roadmap,
+            /Master #85/
+        );
 
-            assert.equal(
-                roadmap.includes(
-                    id
+        const expected =
+            new Map([
+                ["C01", "#73"],
+                ["C02", "#74"],
+                ["C03", "#75"],
+                ["C04", "#76"],
+                ["C05", "#77"],
+                ["C06", "#78"],
+                ["C07", "#79"],
+                ["C08", "#80"],
+                ["C09", "#81"],
+                ["C10", "#82"],
+                ["C11", "#83"],
+                ["C12", "#84"]
+            ]);
+
+        for (const [id, issue] of expected) {
+            assert.match(
+                roadmap,
+                new RegExp(
+                    id + "[\\s\\S]{0,80}" + issue.replace("#", "\\#")
                 ),
-                true,
-                "ROADMAP lost compact executable node: " +
-                    id
+                "ROADMAP lost materialized mapping " + id + " → " + issue
             );
         }
 
@@ -123,24 +131,95 @@ test(
                 roadmap
             ),
             false,
-            "ROADMAP must not present the historical 42-WP handoff as current."
-        );
-
-        assert.match(
-            roadmap,
-            /After materialization, GitHub Master \+ C01\.\.C12 own executable work/
+            "ROADMAP must not present the historical 42-WP graph as current."
         );
     }
 );
 
 test(
-    "current Browser SQL navigation marks the old execution graph and freeze as historical",
+    "current execution map contains the exact materialized graph and marks the old graph historical",
     () => {
         const executionMap =
             readWorkstream(
                 "docs/browser-sql-github-execution-structure.md"
             );
 
+        assert.match(
+            executionMap,
+            /#85 — \[Browser SQL\]\[V2\] Compact implementation master/
+        );
+
+        const rows = [
+            ["C01", "73", "29, #30"],
+            ["C02", "74", "#73"],
+            ["C03", "75", "#74"],
+            ["C04", "76", "#75"],
+            ["C05", "77", "#76"],
+            ["C06", "78", "#76"],
+            ["C07", "79", "#77, #78"],
+            ["C08", "80", "#77, #78"],
+            ["C09", "81", "#80"],
+            ["C10", "82", "#74"],
+            ["C11", "83", "#79, #81, #82"],
+            ["C12", "84", "#83"]
+        ];
+
+        for (const [id, issue, predecessorText] of rows) {
+            const rowPattern =
+                new RegExp(
+                    "\\| " +
+                    id +
+                    " \\| #" +
+                    issue +
+                    " \\|[\\s\\S]{0,180}\\| " +
+                    predecessorText
+                        .replaceAll("#", "\\#")
+                        .replaceAll(",", "\\,") +
+                    " \\|"
+                );
+
+            assert.match(
+                executionMap,
+                rowPattern,
+                "execution map lost direct dependency row for " + id
+            );
+        }
+
+        assert.match(
+            executionMap,
+            /The pre-KISS Master #20 \/ Epics #21\.\.#28 \/ WP graph #29\.\.#71 is historical/
+        );
+    }
+);
+
+test(
+    "conditional work is not a standing execution graph",
+    () => {
+        const roadmap =
+            readWorkstream(
+                "ROADMAP.md"
+            );
+
+        const executionMap =
+            readWorkstream(
+                "docs/browser-sql-github-execution-structure.md"
+            );
+
+        assert.match(
+            roadmap,
+            /No standing Issues exist for these paths/
+        );
+
+        assert.match(
+            executionMap,
+            /No placeholder Issues exist for O1\.\.O6/
+        );
+    }
+);
+
+test(
+    "current Browser SQL navigation keeps old decomposition and old freeze historical",
+    () => {
         const decomposition =
             readWorkstream(
                 "docs/browser-sql-implementation-decomposition.md"
@@ -150,16 +229,6 @@ test(
             readWorkstream(
                 "docs/browser-sql-final-planning-freeze.md"
             );
-
-        assert.match(
-            executionMap,
-            /historical and superseded[\s\S]*D-044/i
-        );
-
-        assert.match(
-            executionMap,
-            /one compact Master[\s\S]*C01\.\.C12 executable Issues/i
-        );
 
         assert.match(
             decomposition,
@@ -173,13 +242,13 @@ test(
 
         assert.match(
             freeze,
-            /D-044/
+            /post-KISS final planning freeze will replace this path only after/i
         );
     }
 );
 
 test(
-    "Browser SQL testing policy uses C01-C12 semantics instead of the old WP and Stage gate model",
+    "Browser SQL testing policy uses the compact live-boundary semantics",
     () => {
         const policy =
             readWorkstream(
@@ -223,5 +292,35 @@ test(
                     obsoleteText
             );
         }
+    }
+);
+
+test(
+    "C01 live runbook excludes provider calls and early real-origin Web Lock proof",
+    () => {
+        const runbook =
+            readWorkstream(
+                "docs/browser-sql-live-gate-l1.md"
+            );
+
+        assert.match(
+            runbook,
+            /C01 \/ GitHub Issue #73/
+        );
+
+        assert.match(
+            runbook,
+            /does \*\*not\*\* call Leumi provider APIs/i
+        );
+
+        assert.match(
+            runbook,
+            /Cross-tab Web Locks are \*\*not\*\* part of C01/i
+        );
+
+        assert.match(
+            runbook,
+            /does \*\*not\*\* define production CHECKPOINT cadence/i
+        );
     }
 );
