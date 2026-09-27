@@ -180,3 +180,51 @@
 
 **What would reopen this:** A real post-v1 schema change, a verified multi-process requirement, or restart evidence that committed-state recovery is insufficient.
 
+---
+
+## D-012 — Viewer read protocol and history cursor
+
+**Status:** resolved
+
+**Related S&T node(s):** 3.1, 3.3, 3.4, 4
+
+**Question:** What is the smallest Node read API that preserves the existing Viewer without exposing general database access?
+
+**Resolution:** Add exactly four viewer requests: `viewer.current.get`, `viewer.security.get`, `viewer.history.page`, and `viewer.status.get`. Return the existing logical latest/universe/history/diagnostics shapes rather than a new UI DTO. History page size remains 500 and uses keyset continuation `{securityId,collectedAtMs,cycleId}` ordered by `collected_at_ms DESC, cycle_id DESC`.
+
+**Resolution basis / rationale:** These are the only reads required by the preserved Current/Detail/diagnostics surfaces. Existing pure Viewer logic can remain unchanged, and the two-part history ordering gives a deterministic tie-breaker for equal timestamps.
+
+**What would reopen this:** A required Viewer behavior that cannot be expressed by these four operations, or measured paging performance requiring a different key/index.
+
+---
+
+## D-013 — Viewer refresh transport
+
+**Status:** resolved
+
+**Related S&T node(s):** 1.3, 3.2, 3.5
+
+**Question:** Should Node push commit events over WebSocket or should the existing BroadcastChannel notification survive?
+
+**Resolution:** Keep BroadcastChannel as a metadata-only invalidation hint. After Node `cycle.commit` COMMIT + ACK, the producer publishes the existing `CYCLE_COMMITTED` metadata message. Viewers reread Node. No WebSocket server-push event protocol is added for initial V2.
+
+**Resolution basis / rationale:** BroadcastChannel is already verified, same-origin, non-authoritative and the existing Viewer refresh logic is built around it. Keeping it avoids adding unsolicited WebSocket events while preserving the rule that durable authority is reread after a hint.
+
+**What would reopen this:** Viewer and producer move to different origins/processes, or observed BroadcastChannel limitations materially hurt daily use.
+
+---
+
+## D-014 — Viewer read-connection lifecycle
+
+**Status:** resolved
+
+**Related S&T node(s):** 3.2, 3.5
+
+**Question:** Does every Viewer window need an independent Node socket and automatic reconnect?
+
+**Resolution:** No. One lazy `role=viewer` WebSocket client in the opener runtime is shared by its Viewer windows. Transport failure discards it; no background reconnect occurs. A later explicit read/manual refresh creates a new client.
+
+**Resolution basis / rationale:** This is the smallest topology compatible with the current same-origin child-window design, multiple read-only Viewer windows and the fail-closed/no-background-retry policy.
+
+**What would reopen this:** A future standalone Viewer origin/process or evidence that one shared read socket causes material contention.
+
