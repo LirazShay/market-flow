@@ -8,7 +8,7 @@ It gives a researcher a current table, deterministic sorting, per-security histo
 
 Operational progress is tracked only in `../STATUS.json`.
 
-> V2 evolution note: this spec describes the currently implemented V1-derived Viewer baseline. D-043 preserves the Current Universe and Security Detail/History behaviors while moving their reads behind SQL authority, and adds a separate Dynamic SQL Scanner. The target contract is not considered implemented until the owning WP-25..WP-29 work updates this spec deliberately.
+> V2 evolution note: this spec describes the currently implemented V1-derived Viewer baseline. D-043 preserves the Current Universe and Security Detail/History behaviors while moving their reads behind SQL authority, and adds a separate Dynamic SQL Scanner. The target contract is not considered implemented until the owning compact Browser SQL implementation work updates this spec deliberately.
 
 ## Scope
 
