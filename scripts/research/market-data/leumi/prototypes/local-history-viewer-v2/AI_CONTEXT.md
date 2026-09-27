@@ -145,14 +145,19 @@ Provider auth remains inside the authenticated page context. Node receives marke
 
 ## Current planning protocol
 
+S&T Planner is active.
+
 ~~~text
-100 stages
-= 5 chats
-× 20 stages
-one stage = one user-visible chat message
+.planning/GOAL.md    = stable migration boundary
+.planning/TREE.yaml  = plan logic
+.planning/DECISIONS.md = material choices/questions
+.planning/STATUS.yaml  = planning resume pointer
+.planning/EXECUTION.yaml = executor-chat allocation after freeze
 ~~~
 
-Exact live stage/next action: `STATUS.json`.
+The former fixed 100-stage sequence is superseded. The user-requested conversation pacing may still be one planning unit per message, but decomposition and executor-chat count come from the S&T tree.
+
+Workstream operational current/next remains in `STATUS.json`.
 
 ## History
 
