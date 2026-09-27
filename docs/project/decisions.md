@@ -40,7 +40,7 @@ decisions.md
 | [D-022](decisions/D-022.md) | Failure-to-learning loop and continuous improvement | Accepted | quality, learning, rca, process, testing |
 | [D-023](decisions/D-023.md) | Progressive context loading with preserved cold history | Accepted | ai-context, navigation, history, efficiency |
 | [D-024](decisions/D-024.md) | Repository self-maintenance is part of every change | Accepted | maintenance, hygiene, source-of-truth, ai-workflow |
-| [D-025](decisions/D-025.md) | Market Flow V2 analytical architecture is Browser-only SQL | Accepted / amended by D-044 | browser-sql, architecture, local-history-viewer-v2 |
+| [D-025](decisions/D-025.md) | Market Flow V2 analytical architecture is Browser-only SQL | Superseded by D-045 for V2 | browser-sql, architecture, local-history-viewer-v2 |
 | [D-026](decisions/D-026.md) | Browser SQL uses one dedicated SQL Authority Worker | Accepted | browser-sql, duckdb-wasm, opfs, worker, architecture |
 | [D-027](decisions/D-027.md) | Browser SQL uses snapshot-centric wide core-horizon schema | Superseded by D-044 for initial V2 | browser-sql, schema, snapshot, horizons, data-model |
 | [D-028](decisions/D-028.md) | Validated cycles commit atomically after SQL-side enrichment | Superseded by D-044 for initial V2 | browser-sql, ingest, atomicity, enrichment, transactions |
@@ -58,8 +58,9 @@ decisions.md
 | [D-040](decisions/D-040.md) | Browser SQL uses one stable exclusive Web Lock for cross-tab runtime authority | Accepted / amended by D-044 | browser-sql, web-locks, multi-tab, ownership, split-brain, runtime |
 | [D-041](decisions/D-041.md) | Browser SQL persistence-affecting releases upgrade side-by-side and roll back by preserved snapshot | Superseded for initial V2; future reference | browser-sql, upgrade, schema, storage-version, rollback, release |
 | [D-042](decisions/D-042.md) | Browser SQL planning is frozen at the 42-package implementation baseline | Superseded by D-044 | browser-sql, planning-freeze, implementation-handoff, quality |
-| [D-043](decisions/D-043.md) | V2 preserves the V1 collection/data contract and exposes three Viewer surfaces | Accepted / amended by D-044 traceability | local-history-viewer-v2, browser-sql, viewer, product-shape, collection-continuity |
-| [D-044](decisions/D-044.md) | Browser SQL V2 uses a post-KISS minimum SQL core, product-first migration and evidence-triggered optimization | Accepted | browser-sql, architecture, kiss, implementation-plan, evidence-driven |
+| [D-043](decisions/D-043.md) | V2 preserves the V1 collection/data contract and exposes three Viewer surfaces | Accepted / amended by D-045 traceability | local-history-viewer-v2, node-sql, viewer, product-shape, collection-continuity |
+| [D-044](decisions/D-044.md) | Browser SQL V2 uses a post-KISS minimum SQL core, product-first migration and evidence-triggered optimization | Superseded by D-045 for V2 | browser-sql, architecture, kiss, implementation-plan, evidence-driven |
+| [D-045](decisions/D-045.md) | Local History Viewer V2 uses a loopback Node.js SQL authority | Accepted | node-sql, localhost, websocket, duckdb, architecture, local-history-viewer-v2 |
 
 ## Fast lookup
 
