@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-f2-archive-rollover-audit",
-    "title": "Re-justify archive/export/rollover as conditional capacity-driven lifecycle work rather than mandatory initial-V2 scope",
+    "substep": "pass-f3-upgrade-lifecycle-audit",
+    "title": "Re-justify generalized engine/schema upgrade lifecycle so initial V2 implements only the compatibility/cutover safety actually required",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, Pass E1-E9, and Pass F1 shadow audit completed.",
-    "ready": "F1 removes mandatory shadow migration from the initial path: CND-01 activates only for a specific unresolved live uncertainty, remains bounded/non-authoritative, and must be removed before ND-16 is reclosed.",
-    "blockedAfterEntry": "Implementation remains paused; Pass F continues re-justifying lifecycle/hardening mechanisms before canonical Issue materialization."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, Pass E1-E9, Pass F1 shadow audit, and Pass F2 storage lifecycle audit completed.",
+    "ready": "F2 keeps retain-all/no-silent-deletion/storage-blocked/owned-OPFS safety mandatory while moving archive/export/fresh-epoch rollover to capacity-triggered CND-02 with required post-change capacity re-verification.",
+    "blockedAfterEntry": "Implementation remains paused; Pass F continues re-justifying upgrade/performance/security lifecycle scope before canonical Issue materialization."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: conditional shadow verification audit added and indexed; old WP-32/WP-33 mandatory shadow semantics are marked for Pass-G retirement/replacement and D-035 reconciliation.",
+    "specImpact": "Planning-only: storage lifecycle audit added and indexed; old WP-39 mandatory archive/rollover scope and D-038 are marked for Pass-G split/reconciliation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass F2: audit archive/export/rollover requirements and define the exact capacity/storage evidence that promotes them from conditional CND-02 into initial-release work, including safe epoch semantics, explicit user action, failure recovery, and re-verification before L-3.",
+    "action": "Execute Issue #72 Pass F3: audit the generalized engine/schema upgrade lifecycle and decide what compatibility identity, startup blocking, initial-cutover rollback, schema evolution and future side-by-side upgrade machinery are actually mandatory for initial V2 versus deferred until the first persistence-affecting post-V2 release.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Archive/rollover is conditional by default and must be activated by measured storage/capacity risk.",
-      "No silent pruning or automatic history deletion is allowed.",
-      "If CND-02 changes the release candidate, final capacity evidence must be rerun before L-3."
+      "Preserve explicit compatibility identity and safe startup blocking.",
+      "Keep initial cutover rollback/roll-forward distinct from generalized future upgrade machinery.",
+      "Do not build a reusable migration platform before a concrete post-V2 persistence-affecting release requires it."
     ]
   },
   "history": {
