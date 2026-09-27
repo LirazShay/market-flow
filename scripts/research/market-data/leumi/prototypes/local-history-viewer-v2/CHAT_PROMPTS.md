@@ -1,3 +1,5 @@
+> **FROZEN / NOT EXECUTABLE:** Authenticated C01 failed at `wasm-instantiate`. D-045 replaces the Browser-SQL process boundary with localhost Node.js + loopback WebSocket + native DuckDB. This file is retained as planning history/reference while the 100-stage replacement plan is materialized. Follow `STATUS.json`, not the C01-C12 graph below.
+
 # Market Flow — Browser SQL V2 — Copy/Paste Prompts for 12 Serial Chats
 
 These prompts are launchers, not live status. Before doing work, every prompt validates the current GitHub main + STATUS.json and defers to the live Issue.
