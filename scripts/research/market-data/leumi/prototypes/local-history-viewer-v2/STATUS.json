@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "post-kiss-audit-v1-on-sql",
-    "title": "Audit V1-on-SQL implementation/parity/live/checkpoint plans against the KISS daily-product scope",
+    "substep": "post-kiss-audit-enrichment",
+    "title": "Audit enrichment implementation, benchmark and UI-integration plans against the KISS daily-product scope",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Post-KISS decisions/product-contract audit complete.",
-    "ready": "Core product/integrity decisions mostly survive, while fixed enrichment, complex Scanner machinery, strict performance gates, mandatory lifecycle machinery and the 42-WP freeze are marked for supersede/simplification.",
-    "blockedAfterEntry": "Implementation remains paused; continue the post-KISS audit across V1-on-SQL planning before rebuilding the compact graph."
+    "completed": "Post-KISS decisions/product audit and V1-on-SQL planning audit complete.",
+    "ready": "V1-on-SQL is reduced to five coherent executable units and six closure checks while preserving provider integrity, atomic SQL persistence, trusted reads, Current/Detail parity and bounded live proof.",
+    "blockedAfterEntry": "Implementation remains paused; continue the post-KISS audit with enrichment before Scanner/lifecycle/CI review."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: decision/product audit added. No accepted decision or product contract is mutated yet; required amendments/supersessions are recorded for Pass G.",
+    "specImpact": "Planning-only: V1-on-SQL audit added; E1-E4 detailed docs are retained as cold reference but marked for canonical simplification in Pass G.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Audit the V1-on-SQL implementation manual, parity plan, live-gates plan and ND-16 checkpoint after KISS. Keep only the minimum storage/read/viewer/live proof needed for the daily product; remove duplicated gate bureaucracy or mechanisms that no longer earn their complexity.",
+    "action": "Audit enrichment implementation, benchmark and integration planning after KISS. Separate the few analytical needs worth initial V2 work from generic horizon/metric/schema experimentation, and reduce the plan to the smallest evidence-driven enrichment slice.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Preserve provider continuity, atomic persistence, authoritative reads, Current/Detail parity and automated live-only verification.",
-      "Simplify checkpoint/evidence machinery where multiple layers prove the same thing.",
-      "Audit this area before enrichment/Scanner audits."
+      "Start from raw/history SQL capability; persistence must earn its complexity.",
+      "Do not preselect horizons, metrics, indexes or backfill machinery without a current product need.",
+      "Keep unknown provider semantics out of persisted derived data."
     ]
   },
   "history": {
