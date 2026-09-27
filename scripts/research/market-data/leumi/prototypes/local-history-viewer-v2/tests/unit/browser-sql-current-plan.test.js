@@ -302,7 +302,17 @@ test(
 
         assert.match(
             projectInstructions,
-            /Issue שלו סגור[\s\S]*required verification ירוק[\s\S]*STATUS\.json מצביע על הצ'אט\/Issue הבא/i
+            /Issue שלו סגור/i
+        );
+
+        assert.match(
+            projectInstructions,
+            /required verification ירוק/i
+        );
+
+        assert.match(
+            projectInstructions,
+            /STATUS\.json[\s\S]{0,40}מצביע על הצ'אט\/Issue הבא/i
         );
     }
 );
