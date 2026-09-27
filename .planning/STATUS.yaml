@@ -2,10 +2,11 @@ version: 1
 
 plan_state: active
 
-current_node: "3"
+current_node: "4"
 
-blockers: []
+blockers:
+  - "D-006 must be resolved while decomposing Node 4 before Scanner leaves can be approved."
 
-next_action: "Decompose node 3 (Current Universe + Security Detail/History over the Node authority) into implementation-ready leaves while preserving existing Viewer behavior."
+next_action: "Decompose node 4 (Dynamic SQL Scanner), resolve D-006 read-only SQL enforcement from current DuckDB Node API evidence, and review necessity/sufficiency."
 
-last_review: "R-003"
+last_review: "R-004"
