@@ -318,7 +318,7 @@ test(
 );
 
 test(
-    "Browser SQL testing policy uses the compact live-boundary semantics",
+    "Node SQL testing policy uses the current automated verification boundaries",
     () => {
         const policy =
             readWorkstream(
@@ -328,11 +328,14 @@ test(
         for (
             const requiredText of
             [
-                "C01 — mandatory implementation-entry live premise",
-                "Real-origin Web Lock proof is **not** an early C01 blocker",
-                "C06 / L-2",
-                "C12",
-                "Integrated Daily Workload"
+                "## Node SQL planning target",
+                "Protocol / Local Service",
+                "DuckDB Persistence",
+                "Integrated Mixed Workload",
+                "Cutover / Rollback",
+                "representative 561-security workload",
+                "one bounded self-verifying final live cutover gate",
+                "do not replace automation with a user checklist"
             ]
         ) {
             assert.equal(
@@ -340,7 +343,7 @@ test(
                     requiredText
                 ),
                 true,
-                "Testing policy lost compact Browser SQL rule: " +
+                "Testing policy lost current Node SQL rule: " +
                     requiredText
             );
         }
@@ -348,9 +351,10 @@ test(
         for (
             const obsoleteText of
             [
+                "C01 — mandatory implementation-entry live premise",
+                "C06 / L-2",
                 "Local History Viewer V2 WP-03 POC CI",
-                "any numbered V2 Stage closure",
-                "dedicated performance benchmark plan"
+                "any numbered V2 Stage closure"
             ]
         ) {
             assert.equal(
@@ -449,12 +453,12 @@ test(
 
         assert.match(
             testingPolicy,
-            /C06 \/ L-2[\s\S]*controlled single-tab real provider/i
+            /representative 561-security workload[\s\S]*required-before-cutover/i
         );
 
         assert.match(
             testingPolicy,
-            /C12[\s\S]*old Recorder settled\/stopped[\s\S]*representative Scanner verification/i
+            /Authenticated live verification occurs once on the final candidate[\s\S]*cutover remains verification-pending[\s\S]*user checklist/i
         );
 
         assert.match(
