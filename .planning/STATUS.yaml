@@ -2,10 +2,10 @@ version: 1
 
 plan_state: active
 
-current_node: "2"
+current_node: "3"
 
 blockers: []
 
-next_action: "Decompose node 2 (localhost Node.js + native DuckDB authority) into implementation-ready leaves, including service ownership, schema, atomic persistence and restart behavior."
+next_action: "Decompose node 3 (Current Universe + Security Detail/History over the Node authority) into implementation-ready leaves while preserving existing Viewer behavior."
 
-last_review: "R-002"
+last_review: "R-003"
