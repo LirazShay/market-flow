@@ -50,12 +50,12 @@ decisions.md
 | [D-032](decisions/D-032.md) | Viewer is a detachable client of one Runtime Controller | Superseded by D-044 for initial V2 | browser-sql, viewer, results, messaging, multi-viewer |
 | [D-033](decisions/D-033.md) | Browser SQL verification uses Node + Chromium + mandatory live Leumi gates | Superseded by D-045 for current V2 topology | browser-sql, testing, playwright, live-verification, ci |
 | [D-034](decisions/D-034.md) | Browser SQL performance is gated by cadence-relative headroom and full-session evidence | Superseded by D-044 for initial V2 | browser-sql, performance, benchmark, headroom, chromium |
-| [D-035](decisions/D-035.md) | Browser SQL cutover starts a fresh authority epoch without importing legacy IndexedDB history | Accepted / amended by D-044 | browser-sql, migration, cutover, indexeddb, rollback |
+| [D-035](decisions/D-035.md) | Browser SQL cutover starts a fresh authority epoch without importing legacy IndexedDB history | Superseded by D-045 for current mechanism | browser-sql, migration, cutover, indexeddb, rollback |
 | [D-036](decisions/D-036.md) | Browser SQL uses scoped failures, worst-active health precedence and sanitized local observability | Superseded by D-044 for initial V2 | browser-sql, failure, security, observability, health, diagnostics |
 | [D-037](decisions/D-037.md) | Browser SQL implementation follows gate-ordered executable work packages | Superseded by D-044 for initial V2 | browser-sql, implementation-plan, dependencies, milestones, issues |
 | [D-038](decisions/D-038.md) | Browser SQL storage lifecycle uses retain-all plus explicit archive-and-rollover | Superseded by D-044 for initial V2 | browser-sql, retention, quota, archive, rollover, opfs |
 | [D-039](decisions/D-039.md) | Browser SQL analytical work is preemptible and cannot indefinitely block market ingest | Superseded by D-044 for initial V2 | browser-sql, sql, cancellation, scheduler, resource-isolation, ingest |
-| [D-040](decisions/D-040.md) | Browser SQL uses one stable exclusive Web Lock for cross-tab runtime authority | Accepted / amended by D-044 | browser-sql, web-locks, multi-tab, ownership, split-brain, runtime |
+| [D-040](decisions/D-040.md) | Browser SQL uses one stable exclusive Web Lock for cross-tab runtime authority | Superseded by D-045 for V2 | browser-sql, web-locks, multi-tab, ownership, split-brain, runtime |
 | [D-041](decisions/D-041.md) | Browser SQL persistence-affecting releases upgrade side-by-side and roll back by preserved snapshot | Superseded for initial V2; future reference | browser-sql, upgrade, schema, storage-version, rollback, release |
 | [D-042](decisions/D-042.md) | Browser SQL planning is frozen at the 42-package implementation baseline | Superseded by D-044 | browser-sql, planning-freeze, implementation-handoff, quality |
 | [D-043](decisions/D-043.md) | V2 preserves the V1 collection/data contract and exposes three Viewer surfaces | Accepted / amended by D-045 traceability | local-history-viewer-v2, node-sql, viewer, product-shape, collection-continuity |
@@ -89,14 +89,17 @@ Repository self-maintenance / no-cleanup debt
 Local History Viewer V1
 → D-019, D-020
 
-Browser SQL / V2 analytical migration — current
-→ D-025, D-026, D-031, D-033, D-035, D-040, D-043, D-044, D-001, D-021
+Local History Viewer V2 / Node SQL — current
+→ D-043, D-045, D-001, D-021
+
+Browser SQL / V2 analytical migration — superseded architecture
+→ D-025, D-026, D-031, D-033, D-035, D-040, D-044
 
 Browser SQL / V2 analytical migration — superseded historical mechanisms
 → D-027, D-028, D-029, D-030, D-032, D-034, D-036, D-037, D-038, D-039, D-041, D-042
 
 V2 product continuity / three Viewer surfaces
-→ D-043, D-044, D-019, D-025, D-035, D-040
+→ D-043, D-045, D-019
 ~~~
 
 ## Adding a durable decision
