@@ -132,3 +132,51 @@
 
 **What would reopen this:** Observed local-service instability that makes manual relaunch materially harmful to daily use.
 
+---
+
+## D-009 — Local DuckDB file and schema shape
+
+**Status:** resolved
+
+**Related S&T node(s):** 2.2, 2.3, 2.4, 3, 4
+
+**Question:** What is the smallest durable schema that preserves the V1 data contract and remains useful for SQL?
+
+**Resolution:** Use one file-backed DuckDB database at `local-service/data/market-flow-v2.duckdb` by default, with `MARKET_FLOW_DB_PATH` override for tests. Git ignores `local-service/data/`. Schema v1 contains `schema_info`, `sessions`, `universe`, `cycles`, `history`, and `latest`. Identity/time/query metadata uses typed relational columns; raw MapHeat/Security/chunks/error/config payloads use DuckDB JSON. No secondary indexes or generalized migration framework initially.
+
+**Resolution basis / rationale:** This mirrors the proven V1 logical stores without reproducing IndexedDB mechanics. Raw JSON keeps future analytical fields; relational identity/time columns keep current/history queries straightforward. DuckDB is analytical and optimization is evidence-driven.
+
+**What would reopen this:** Measured query/storage evidence requiring a typed promoted field/index, or an actual schema evolution requirement after the first release.
+
+---
+
+## D-010 — Successful-cycle persistence algorithm
+
+**Status:** resolved
+
+**Related S&T node(s):** 2.4
+
+**Question:** How does one complete validated cycle become the new authority with the least write complexity?
+
+**Resolution:** One explicit DuckDB transaction allocates `cycle_id`, inserts cycle metadata, bulk-appends history, deletes all `latest`, bulk-appends the same complete cycle into `latest`, updates the active session, and commits. ACK follows COMMIT only. Any error rolls back the entire transaction.
+
+**Resolution basis / rationale:** Every accepted cycle already contains the full validated current universe, so wholesale latest replacement is simpler and safer than per-security upserts. Official DuckDB Node/Appender behavior is connection/transaction scoped and supports explicit transactions for controlled commit boundaries.
+
+**What would reopen this:** Evidence that full latest replacement is materially too slow for the verified daily workload.
+
+---
+
+## D-011 — Service restart and schema evolution policy
+
+**Status:** resolved
+
+**Related S&T node(s):** 2.2, 2.5, 5
+
+**Question:** What recovery/migration machinery is required for the first Node-SQL release?
+
+**Resolution:** On startup, open the file, create schema v1 only when absent, reject unknown schema versions, mark any stale `running` session `interrupted`, then listen. No automatic data migration, replay log, WAL management layer, PID file or service manager is added. Committed DB state is authoritative; uncommitted work is lost/rolled back normally.
+
+**Resolution basis / rationale:** Fresh Node/DuckDB authority is already selected; legacy import is a non-goal. Port binding gives process exclusivity and DuckDB owns its storage durability internals.
+
+**What would reopen this:** A real post-v1 schema change, a verified multi-process requirement, or restart evidence that committed-state recovery is insufficient.
+
