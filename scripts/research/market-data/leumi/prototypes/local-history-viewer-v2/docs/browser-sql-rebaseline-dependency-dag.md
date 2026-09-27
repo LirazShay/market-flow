@@ -1,5 +1,8 @@
 # Browser SQL V2 — Product-First Replacement Dependency DAG
 
+> **Reference-only / superseded execution guidance.** This provisional ND-* DAG is preserved as Issue #72 planning rationale. Current implementation order is D-044 + `browser-sql-compact-execution-dag.md` + Master #85 / C01..C12. Do not implement ND-* from this file.
+
+
 ## Role
 
 This is Pass D1 of Issue #72.
