@@ -1,5 +1,8 @@
 # Browser SQL V2 — V1-on-SQL Checkpoint Gate Matrix
 
+> **Reference-only / superseded checkpoint guidance.** Initial V2 has no ND-16 checkpoint Issue. Current closure belongs to C05/C06 and their owning verification under D-044.
+
+
 ## Role
 
 This is Pass E4 of Issue #72.
