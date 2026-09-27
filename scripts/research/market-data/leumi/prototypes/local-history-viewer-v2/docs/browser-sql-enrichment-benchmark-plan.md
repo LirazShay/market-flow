@@ -1,5 +1,8 @@
 # Browser SQL V2 — Enrichment Decision Benchmark Plan
 
+> **Reference-only / superseded benchmark guidance.** C07 owns the current representative analytical query corpus and evidence-driven optimization decision. No fixed enrichment schema or ND checkpoint is mandatory.
+
+
 ## Role
 
 This is Pass E6 of Issue #72.
