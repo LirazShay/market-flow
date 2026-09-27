@@ -206,3 +206,45 @@ Assuming 4.1–4.4 succeed, the user can explicitly activate arbitrary supported
 - D-006 resolved
 - D-015
 
+### R-006 — 2026-09-27 — S&T Node 5 verification/cutover/retirement
+
+**Result:** pass
+
+**Gates checked:**
+- strategy/tactic validity
+- child necessity
+- child sufficiency
+- automated verification coverage
+- workload viability
+- release reproducibility
+- no-overlap cutover/rollback
+- retirement/source-of-truth hygiene
+- KISS
+- implementation readiness
+
+**Necessity test:**
+- Remove 5.1: no trustworthy integrated CI proof; parent fails.
+- Remove 5.2: tiny-fixture correctness can hide a workload design failure; parent fails.
+- Remove 5.3: live cutover can test an untracked/unreproducible build or overwrite rollback; parent fails.
+- Remove 5.4: authority transition/live acceptance/rollback is unsafe or manual; parent fails.
+- Remove 5.5: obsolete Browser-SQL execution paths remain discoverable/current; parent fails.
+
+**Sufficiency test:**
+Assuming 5.1–5.5 succeed, all leaf contracts from Nodes 1–4 are exercised together, the target workload is viable, the exact candidate can be installed/run, one authenticated no-overlap cutover can accept or reject it without destroying rollback, and the repository/runtime end with only the Node-SQL path executable/current.
+
+**KISS findings:**
+- no deployment platform, Docker image, service manager or installer executable;
+- one production zip + existing bookmarklet/runtime artifacts;
+- old rolling release is preserved until acceptance instead of creating backup machinery;
+- one final live gate only;
+- no dual-write/dual-read migration;
+- cleanup is deferred until successor runtime is accepted.
+
+**Planning correction:**
+- Node 2.1 gains only a minimal GET /healthz on the same loopback HTTP/WebSocket server so CI/release readiness is deterministic; no application HTTP API is introduced.
+
+**Resolved/opened decisions:**
+- D-016
+- D-017
+- D-018
+
