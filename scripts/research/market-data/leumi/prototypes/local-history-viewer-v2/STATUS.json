@@ -84,18 +84,19 @@
       "next": "Fresh-AI dry runs for C01, one middle Issue (C06 or C08), and C12; repair any ambiguity before final CI/freeze."
     },
     "chatExecutionPlan": {
-      "status": "serial-protocol-defined-prompts-pending",
+      "status": "prompts-written-review-pending",
       "mandatoryChatCount": 12,
       "plan": "CHAT_EXECUTION_PLAN.md",
-      "visibility": "Linked prominently from the workstream HOT README.",
-      "currentStep": "Strict serial identity/start/finish/discovery protocol is now durable; next author the 12 copy/paste prompts.",
+      "prompts": "CHAT_PROMPTS.md",
+      "visibility": "Both plan and copy/paste prompts are linked prominently from the workstream HOT README.",
+      "currentStep": "Review/dry-run representative prompts and add mechanical guards before final planning freeze.",
       "rule": "Each prompt identifies Chat NN/12 + owning Cxx/#Issue, validates STATUS before work, keeps blocking discoveries/conditionals in the active chat, and advances only after green verified handoff."
     }
   },
   "next": {
-    "action": "Author the 12 copy/paste prompts with explicit Chat NN/12 identity, STATUS entry validation, discovery triage, verified completion receipt, and next-chat handoff.",
+    "action": "Dry-run Chat 01, one middle prompt, and Chat 12 from the HOT path; repair any ambiguity, add narrow prompt-plan guards, run final Fast CI, then finalize planning freeze.",
     "issue": 72,
-    "workPackage": "CHAT-PROMPTS",
+    "workPackage": "CHAT-PROMPT-DRY-RUN",
     "rules": [
       "Do not implement C01 or downstream runtime/browser behavior.",
       "Do not freeze planning until the chat split/prompts and remaining fresh-AI/final CI checks are verified.",
