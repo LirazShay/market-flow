@@ -82,23 +82,17 @@
 
 ## D-006 — Scanner write-safety mechanism
 
-**Status:** open
+**Status:** resolved
 
-**Related S&T node(s):** 4
+**Related S&T node(s):** 2.2, 2.3, 2.4, 4.1, 4.2
 
 **Question:** What is the smallest exact mechanism that proves user SQL is read-only on the same writable DuckDB authority?
 
-**Why it matters:** Application string-prefix checks are insufficient; execution must not permit mutation of the market-history authority.
+**Resolution:** Use one hardened shared DuckDB instance and a dedicated Scanner connection. At instance creation set `enable_external_access=false`, `allow_community_extensions=false`, `autoinstall_known_extensions=false`, `autoload_known_extensions=false`, `allow_persistent_secrets=false`, then `lock_configuration=true`. For every Scanner SQL string, use `extractStatements`, require exactly one statement, prepare it and require `prepared.statementType === StatementType.SELECT` before execution. Schema v1 creates no sequences; writer IDs use serialized `MAX(id)+1` allocation inside write transactions, removing the known durable `SELECT nextval(...)` mutation path.
 
-**Options considered (only when useful):**
-- parse/extract statements with the pinned Node API and allow only verified read/query statement types;
-- execute Scanner through a separately opened read-only database authority only if the Node API/locking model proves this is safe and simpler.
+**Resolution basis / rationale:** The current maintained Node API exposes `DuckDBPreparedStatement.statementType` backed by DuckDB's prepared-statement type API. DuckDB's security guidance explicitly recommends disabling external access/extensions and locking configuration for untrusted SQL. A second read-only DuckDBInstance is deliberately rejected because DuckDB recommends sharing one instance for the same file and different instance configurations cannot safely provide the desired mixed read/write topology.
 
-**Resolution:** TBD during Scanner branch planning.
-
-**Resolution basis / rationale:** Current `@duckdb/node-api` exposes statement extraction, but the exact statement-type/safety surface must be verified before the leaf is implementation-ready.
-
-**What would reopen this:** N/A while open.
+**What would reopen this:** A verified SELECT expression/function in the pinned DuckDB version that can mutate Market Flow durable tables/schema despite the hardened no-sequence design, or a Node API regression that removes prepared statement typing.
 
 ---
 
@@ -227,4 +221,20 @@
 **Resolution basis / rationale:** This is the smallest topology compatible with the current same-origin child-window design, multiple read-only Viewer windows and the fail-closed/no-background-retry policy.
 
 **What would reopen this:** A future standalone Viewer origin/process or evidence that one shared read socket causes material contention.
+
+---
+
+## D-015 — Scanner scheduling/config ownership
+
+**Status:** resolved
+
+**Related S&T node(s):** 4.2, 4.3, 4.4
+
+**Question:** Should Scanner repeat scheduling/config live in Node or in the existing browser runtime?
+
+**Resolution:** Keep Node execution stateless (`scanner.execute {sql}`) and keep the single active Scanner config/timer in one browser runtime controller. Activation runs immediately, later runs use completion-based `setTimeout(intervalMs)`, executions never overlap, missed intervals do not queue, and re-activation replaces the generation without cancelling an in-flight query. Scanner config/results are not persisted initially.
+
+**Resolution basis / rationale:** The product does not require headless Scanner operation, query-version history, anchored scheduling or cancellation. Browser ownership removes a server scheduler/config store while keeping query execution beside DuckDB.
+
+**What would reopen this:** A concrete requirement for Scanner execution while no Viewer/runtime browser context exists, or a requirement to persist/restore active query configuration across restarts.
 
