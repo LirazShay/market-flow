@@ -53,7 +53,7 @@ C05 Current Universe and C06 Security Detail/History are separate preserved prod
 
 Both must be complete before new analytical product work becomes the active dependency path.
 
-## Group 3 — Analytics + Scanner
+## Group 3 — Analytics + Dynamic SQL Scanner
 
 ~~~text
 C05 + C06
