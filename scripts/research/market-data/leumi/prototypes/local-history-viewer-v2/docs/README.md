@@ -11,11 +11,11 @@ This directory contains durable V2 design/evidence. It does **not** own live pro
 | live user SQL product behavior | [live SQL requirement](../../../../../../../docs/product/live-sql-query-execution.md) |
 | compact target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
 | implementation dependency rationale | [browser-sql-compact-execution-dag.md](browser-sql-compact-execution-dag.md) |
-| executable Issue-body source before materialization | [browser-sql-compact-issue-specifications.md](browser-sql-compact-issue-specifications.md) |
-| reconciliation/materialization plan | [browser-sql-pre-materialization-reconciliation-map.md](browser-sql-pre-materialization-reconciliation-map.md) |
+| design/specification reference for C01..C12 | [browser-sql-compact-issue-specifications.md](browser-sql-compact-issue-specifications.md) |
+| current GitHub graph | Master #85 / C01..C12 #73..#84 via [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
 | testing policy | [../tests/TESTING_POLICY.md](../tests/TESTING_POLICY.md) |
 | stable plan/order | [../ROADMAP.md](../ROADMAP.md) |
-| GitHub execution navigation | [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
+| materialization/re-baseline history | [browser-sql-pre-materialization-reconciliation-map.md](browser-sql-pre-materialization-reconciliation-map.md) and post-KISS audits — reference only |
 
 ## Historical Browser SQL planning
 
