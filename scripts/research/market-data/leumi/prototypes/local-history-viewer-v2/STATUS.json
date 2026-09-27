@@ -12,7 +12,7 @@
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
     "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "Continue the final post-KISS planning audit after Master/C01-C08 review; next audit C09-C10",
+    "title": "Continue the final post-KISS planning audit after Master/C01-C10 review; next audit C11-C12",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0-R6 are complete. R7 review has validated Master #85 and C01-C08. C07 now freezes its representative query corpus/workload before measurement; C08 now has explicit safe activation, draft/no-execute, exact pinned-build read-only enforcement, deterministic activation ordering and collector-cadence isolation. Current analytics design was rewritten to the post-KISS baseline.",
-    "ready": "The compact graph remains materialized and implementation is still paused. Master/C01-C08 have passed final critique after targeted KISS/parity/analytics corrections; C09-C12, cross-cutting review, dry runs, guards/CI and freeze remain.",
+    "completed": "R0-R6 are complete. R7 review has validated Master #85 and C01-C10. C09 now separates local draft from authoritative active/runtime state and preserves execution/result attribution. C10 now uses the canonical stable Web Lock with fail-fast independent-tab acquisition and teardown-before-release semantics. D-040, target architecture and the multi-tab design are aligned to the post-KISS ownership boundary.",
+    "ready": "The compact graph remains materialized and implementation is still paused. Master/C01-C10 have passed final critique after targeted KISS/parity/analytics/ownership corrections; C11-C12, cross-cutting review, dry runs, guards/CI and freeze remain.",
     "blockedAfterEntry": "Do not start C01. The next chat must finish R7-R8: final planning critique, fresh-AI dry runs, current-plan guard verification, Fast CI, new post-KISS freeze artifact, final STATUS switch, and closure of #72."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -75,7 +75,7 @@
       "status": "not-required-so-far",
       "reason": "R4-R6 changed GitHub/docs/current-plan Node guard only; no runtime/browser/Playwright production behavior changed."
     },
-    "specImpact": "Planning-only corrections: C07/C08 Issues and compact specs/DAG tightened; target architecture aligned; sql-live-analytics-design.md replaced with the current post-KISS direction. No product/runtime/browser implementation changed.",
+    "specImpact": "Planning-only corrections: C09/C10 Issues and compact specs/DAG tightened; D-040, target architecture and multi-tab ownership design aligned. No product/runtime/browser implementation changed.",
     "planningAudit": {
       "status": "in-progress",
       "reviewed": [
@@ -87,7 +87,9 @@
         "C05 #77",
         "C06 #78",
         "C07 #79",
-        "C08 #80"
+        "C08 #80",
+        "C09 #81",
+        "C10 #82"
       ],
       "corrections": [
         "C02 separates runtime/build identity from schema/storage-format compatibility; ordinary build changes do not make an existing DB incompatible.",
@@ -97,13 +99,16 @@
         "The second of C05/C06 to close owns the shared Current→Detail→Back regression so parallel execution cannot leave integration unverified.",
         "C07 records its representative query corpus and day-sized workload parameters before deciding whether optimization is needed; no final trading formula or fixed horizon schema is implied.",
         "C08 makes draft state non-executing, preserves the previous active config on failed activation, proves read-only safety on the exact pinned build without regex-only enforcement, uses deterministic single-runtime activation ordering, and keeps Scanner cadence independent from collection.",
-        "The current target architecture and SQL analytics direction were aligned to the compact post-KISS baseline, removing stale mandatory latest/fixed-horizon/immutable-version/anchored-scheduler design."
+        "The current target architecture and SQL analytics direction were aligned to the compact post-KISS baseline, removing stale mandatory latest/fixed-horizon/immutable-version/anchored-scheduler design.",
+        "C09 makes runtime active/status authoritative over Viewer-local draft state, keeps result/error attribution tied to the producing execution, handles uncommon values truthfully and keeps Scanner UI isolated from provider/collector behavior.",
+        "C10 fixes one canonical stable Web Lock, fail-fast independent-tab acquisition, no weaker ownership fallback, diagnostic-only messaging/query surfaces, and release only after the old local runtime reaches its no-further-mutation teardown boundary.",
+        "D-040 and the multi-tab/target architecture docs were aligned so real-origin two-tab ownership is verified in C12 rather than as a stale early WP gate."
       ],
-      "next": "Audit C09 #81 and C10 #82."
+      "next": "Audit C11 #83 and C12 #84."
     }
   },
   "next": {
-    "action": "Continue planning only: audit C09-C12 in order, then perform cross-cutting KISS/dependency review, fresh-AI dry runs, repair any remaining plan/docs/guards, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
+    "action": "Continue planning only: audit C11-C12, then perform cross-cutting KISS/dependency review, fresh-AI dry runs, repair any remaining plan/docs/guards, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE-FINALIZATION",
     "rules": [
