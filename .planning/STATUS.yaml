@@ -2,10 +2,10 @@ version: 1
 
 plan_state: active
 
-current_node: "1"
+current_node: "2"
 
 blockers: []
 
-next_action: "Decompose node 1 (browser↔Node protocol/producer boundary) to implementation-ready leaves, then review necessity/sufficiency."
+next_action: "Decompose node 2 (localhost Node.js + native DuckDB authority) into implementation-ready leaves, including service ownership, schema, atomic persistence and restart behavior."
 
-last_review: "R-001"
+last_review: "R-002"
