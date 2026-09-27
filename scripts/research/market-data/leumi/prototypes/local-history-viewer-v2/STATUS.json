@@ -23,8 +23,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "S&T Node 1 is locally approved: shared protocol, generic browser WebSocket client, Recorder→Node persistence adapter and fail-closed runtime lifecycle are implementation-ready leaves.",
-    "ready": "Decompose S&T Node 2 for the single localhost Node.js/native DuckDB authority.",
+    "completed": "S&T Node 2 is locally approved: loopback service ownership, minimal DuckDB schema/file, lifecycle persistence, atomic full-cycle commit and restart recovery are implementation-ready leaves.",
+    "ready": "Decompose S&T Node 3 for Current Universe and Security Detail/History reads over the Node authority.",
     "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
@@ -54,12 +54,13 @@
       "goal": ".planning/GOAL.md",
       "tree": ".planning/TREE.yaml",
       "planState": "active",
-      "currentNode": "2",
-      "node1": "approved-reviewed"
+      "currentNode": "3",
+      "node1": "approved-reviewed",
+      "node2": "approved-reviewed"
     }
   },
   "next": {
-    "action": "Continue S&T planning from node 2: local Node.js service + native DuckDB authority.",
+    "action": "Continue S&T planning from node 3: preserve Current Universe + Security Detail/History over Node/DuckDB.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
