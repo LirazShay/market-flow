@@ -22,21 +22,14 @@ After HOT context, read only the current task scope, target code/tests and ownin
 
 ## Implementation across fresh chats
 
-Browser SQL V2 implementation is intentionally partitioned into **12 planned fresh chats: one chat per executable C01..C12 Issue, executed strictly serially**. Chat N+1 starts only after Chat N has closed its Issue, completed required verification and advanced `STATUS.json`.
-
-Stable chat boundaries, entry/exit gates, verification ownership and conditional rejoin rules:
+Browser SQL V2 uses **12 serial fresh chats: one per C01..C12 Issue**. Chat N+1 starts only after verified closure of Chat N and the `STATUS.json` handoff.
 
 ~~~text
-CHAT_EXECUTION_PLAN.md
+CHAT_EXECUTION_PLAN.md = stable chat boundaries/rules
+CHAT_PROMPTS.md        = copy/paste prompt for Chat 01..12
 ~~~
 
-Ready-to-copy prompt for each Chat 01..12:
-
-~~~text
-CHAT_PROMPTS.md
-~~~
-
-These files do not own live progress. Always use `STATUS.json` to determine which chat/Issue is actually current.
+Neither owns live progress; `STATUS.json` decides the current chat/Issue.
 
 ## Baseline architecture
 
