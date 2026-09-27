@@ -202,7 +202,17 @@ No history synchronization back to IndexedDB is required.
 Dependency rationale:
 `browser-sql-compact-execution-dag.md`
 
-Issue-body source before GitHub materialization:
+Design/specification reference:
 `browser-sql-compact-issue-specifications.md`
 
-Actual Issue numbers belong in the GitHub execution map after materialization. Live completion remains only in `STATUS.json`.
+Materialized execution:
+
+~~~text
+Master #85
+C01..C12 = #73..#84
+~~~
+
+Issue-number navigation:
+`browser-sql-github-execution-structure.md`
+
+Live completion/current-next state remains only in `STATUS.json`.
