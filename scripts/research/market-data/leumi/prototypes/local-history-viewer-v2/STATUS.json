@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "post-kiss-consistency-audit",
-    "title": "Re-audit Browser SQL planning against the KISS daily-product scope before rebuilding the compact execution graph",
+    "substep": "post-kiss-audit-v1-on-sql",
+    "title": "Audit V1-on-SQL implementation/parity/live/checkpoint plans against the KISS daily-product scope",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A-E, Pass F1/F2 and the KISS scope reset are complete.",
-    "ready": "KISS materially changed initial-V2 scope, so prior planning must be re-audited before canonical graph materialization.",
-    "blockedAfterEntry": "Implementation remains paused; run the post-KISS audit first, then rebuild the compact graph."
+    "completed": "Post-KISS decisions/product-contract audit complete.",
+    "ready": "Core product/integrity decisions mostly survive, while fixed enrichment, complex Scanner machinery, strict performance gates, mandatory lifecycle machinery and the 42-WP freeze are marked for supersede/simplification.",
+    "blockedAfterEntry": "Implementation remains paused; continue the post-KISS audit across V1-on-SQL planning before rebuilding the compact graph."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: review order corrected after KISS reset; existing detailed planning is reference until audited.",
+    "specImpact": "Planning-only: decision/product audit added. No accepted decision or product contract is mutated yet; required amendments/supersessions are recorded for Pass G.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,16 +130,15 @@
     }
   },
   "next": {
-    "action": "Audit decisions, product docs, manuals, verification plans and old GitHub execution assumptions against KISS. Classify KEEP, SIMPLIFY, SUPERSEDE, DEFER or REMOVE-from-initial-V2 before rebuilding the canonical graph.",
+    "action": "Audit the V1-on-SQL implementation manual, parity plan, live-gates plan and ND-16 checkpoint after KISS. Keep only the minimum storage/read/viewer/live proof needed for the daily product; remove duplicated gate bureaucracy or mechanisms that no longer earn their complexity.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
-      "Do not mutate canonical GitHub Issues until the audit is complete.",
-      "KISS scope reset is the current initial-V2 scope authority.",
-      "Preserve correctness/data integrity while simplifying mechanisms.",
-      "Audit one coherent area per continuation message.",
-      "Rebuild the compact plan from scratch; do not mechanically compress ND-01..ND-33."
+      "Do not mutate canonical GitHub Issues yet.",
+      "Preserve provider continuity, atomic persistence, authoritative reads, Current/Detail parity and automated live-only verification.",
+      "Simplify checkpoint/evidence machinery where multiple layers prove the same thing.",
+      "Audit this area before enrichment/Scanner audits."
     ]
   },
   "history": {
