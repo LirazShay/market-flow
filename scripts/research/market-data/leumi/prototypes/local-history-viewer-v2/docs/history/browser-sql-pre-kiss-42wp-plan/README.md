@@ -22,7 +22,7 @@ Preserved exact source files:
 Important:
 
 - these files are historical evidence, not current implementation authority;
-- live progress remains only in `../../../../STATUS.json` relative to this history area;
+- live progress remains only in `../../../STATUS.json` relative to this history area;
 - current plan authority will be reconciled through the R1..R8 sequence documented in `../../browser-sql-pre-materialization-reconciliation-map.md`;
 - old GitHub Issues #20..#71 are not retired by this snapshot step;
 - completed evidence in old Issues remains valid where later successor work references it.
