@@ -23,8 +23,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "D-045 selected the Node/WebSocket/DuckDB boundary; migration inventory is green; S&T Planner is installed with GOAL, root tree and initial decisions/review.",
-    "ready": "Resume .planning/STATUS.yaml and decompose S&T node 1 into implementation-ready leaves.",
+    "completed": "S&T Node 1 is locally approved: shared protocol, generic browser WebSocket client, Recorder→Node persistence adapter and fail-closed runtime lifecycle are implementation-ready leaves.",
+    "ready": "Decompose S&T Node 2 for the single localhost Node.js/native DuckDB authority.",
     "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
@@ -54,16 +54,16 @@
       "goal": ".planning/GOAL.md",
       "tree": ".planning/TREE.yaml",
       "planState": "active",
-      "currentNode": "1"
+      "currentNode": "2"
     }
   },
   "next": {
-    "action": "Continue S&T planning from .planning/STATUS.yaml; decompose node 1 and run local necessity/sufficiency review.",
+    "action": "Continue S&T planning from node 2: local Node.js service + native DuckDB authority.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
     "rules": [
-      "Planning source is .planning; do not resume the old 100-stage or Browser-SQL execution graphs.",
+      "Planning source is .planning.",
       "Do not implement production work until plan_state is frozen.",
       "Conversation pacing remains one planning unit per user message unless the user changes it."
     ]
