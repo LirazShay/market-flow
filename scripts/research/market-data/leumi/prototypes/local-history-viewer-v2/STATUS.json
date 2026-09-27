@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pre-materialization-reconciliation-map",
-    "title": "Map the exact canonical docs/decisions/status changes required before creating the new Master + C01-C12 GitHub graph",
+    "substep": "r0-historical-snapshot-archive",
+    "title": "Create the pre-KISS historical snapshot/archive boundary before mutating durable decisions",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Compact Issue critique corrections are applied to the canonical DAG/specifications.",
-    "ready": "The pre-materialization graph is now one Master + C01-C12, with Current/Detail split, direct dependencies only, no navigation-only parent Issues, and corrected conditional owners/acceptance.",
-    "blockedAfterEntry": "Implementation remains paused; map and order the canonical docs/decision/STATUS reconciliation before GitHub Issue creation."
+    "completed": "Pre-materialization reconciliation map complete.",
+    "ready": "The safe rewrite order R0-R8 is defined, including D-044, ROADMAP/product/testing reconciliation, new Master+C01-C12 materialization, old-graph retirement, STATUS switch and final fresh-AI freeze.",
+    "blockedAfterEntry": "Implementation remains paused; execute R0 historical snapshot/archive before changing current durable decisions or creating new execution Issues."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: compact DAG/specifications corrected and consistency-checked; no product/runtime code, successor Issues, or old-Issue retirement.",
+    "specImpact": "Planning-only: reconciliation map added and indexed. No product/runtime code, durable decision status, or GitHub execution graph changed.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,16 +130,16 @@
     }
   },
   "next": {
-    "action": "Create a precise pre-materialization reconciliation map for ROADMAP, product docs, TESTING_POLICY, accepted decisions D-025..D-043, old decomposition/execution/freeze docs, guards and STATUS. Define which files are amended, superseded, archived or rewritten and the safe order of changes before creating the new Master + C01-C12 graph.",
+    "action": "Execute R0: preserve the current pre-KISS/42-WP planning state as cold history before changing durable decisions. Archive the old ROADMAP A-W, old implementation decomposition/execution structure/final audit/freeze and a STATUS snapshot, then update docs/history navigation without changing current implementation authority yet.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
       "Do not create or retire GitHub execution Issues yet.",
-      "Use the corrected C01-C12 DAG/specifications as the canonical execution-plan input.",
-      "Do not leave conflicting Accepted decisions or current-looking old 42-WP docs when materialization begins.",
-      "Preserve historical evidence instead of rewriting history.",
-      "Keep STATUS.json as the only live progress source."
+      "Do not mutate D-025..D-043 in R0.",
+      "Preserve exact historical evidence before replacing current-plan documents.",
+      "Keep archived material clearly COLD and keep STATUS.json as the only live progress source.",
+      "Run Fast CI after the archive/navigation changes."
     ]
   },
   "history": {
