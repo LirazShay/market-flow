@@ -71,9 +71,9 @@
     },
     "latestFastCi": {
       "status": "pass",
-      "runId": 36304029050,
-      "commit": "7e63a3bbf01e0701279e184be51aff94c602fae4",
-      "result": "PASS — Fast CI green on the current C01 probe/artifact-delivery state."
+      "runId": 36306167443,
+      "commit": "7b1f0dd6c8e4a3ab6f697a7a9e6bab5a155a8581",
+      "result": "PASS — Fast CI green after D-045 authority correction, HOT-context compaction and guard realignment."
     },
     "browserCi": {
       "status": "not-required-for-planning-freeze",
@@ -120,7 +120,8 @@
       "totalChats": 5,
       "stagesPerChat": 20,
       "currentStage": 2,
-      "currentChat": 1
+      "currentChat": 1,
+      "stage02": "complete-green"
     }
   },
   "next": {
