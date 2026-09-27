@@ -1,5 +1,8 @@
 # Browser SQL V2 — V1-on-SQL Implementation Manual
 
+> **Reference-only / superseded implementation guidance.** Current V1-on-SQL ownership is C02..C06 under D-044 and the compact Issue specifications. The ND-* sequence below is planning rationale, not an implementation instruction.
+
+
 ## Role
 
 This is Pass E1 of Issue #72.
