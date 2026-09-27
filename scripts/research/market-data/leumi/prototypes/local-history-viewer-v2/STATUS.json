@@ -12,7 +12,7 @@
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
     "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "KISS/docs/specs/guards audit complete after repairing HOT-context contradictions; next fresh-AI dry runs and final planning verification",
+    "title": "Run fresh-AI dry runs against the audited HOT path and representative C01/C06-or-C08/C12 Issues",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Master #85 and C01-C12 passed individual and cross-cutting critique. Current HOT/WARM guidance now matches the compact post-KISS graph, single-tab L-2 boundary, no-overlap C12 transition and change-surface CI policy.",
-    "ready": "Implementation remains paused. Next: fresh-AI dry runs, repair any findings, final current-plan/Fast CI verification, then planning freeze.",
+    "completed": "Master #85/C01-C12, the cross-cutting DAG and the KISS/current-doc/spec/guard audit are complete. HOT/WARM guidance is compact and aligned; misleading ND-era manuals are reference-only; Issue #72 now owns only the final planning-quality gate.",
+    "ready": "Implementation remains paused. Fresh-AI dry runs are next, followed by any repairs, final Fast CI and the post-KISS planning freeze.",
     "blockedAfterEntry": "Do not start C01 until the final planning freeze is green and #72 is closed."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -63,29 +63,29 @@
       "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
     },
     "currentPlanGuard": {
-      "status": "verification-in-progress",
+      "status": "green-stage10",
       "path": "tests/unit/browser-sql-current-plan.test.js",
-      "note": "Guard now covers materialized graph plus audited HOT/WARM live and CI boundaries."
+      "note": "Materialized graph, HOT/WARM live/CI boundaries and reference-only legacy-manual guards passed in Fast CI."
     },
     "latestFastCi": {
-      "status": "repairing",
-      "runId": 36300895053,
-      "result": "Fast CI exposed three documentation/context defects: STATUS > 8KB, missing explicit cold-history index path in AI_CONTEXT, and ROADMAP missing exact Security Detail/History wording. Sources are being corrected; rerun required."
+      "status": "pass-stage10",
+      "runId": 36301274163,
+      "result": "PASS after repairing HOT-context size/history/product wording and guard robustness. A final planning Fast CI run remains required after fresh-AI dry runs and any resulting repairs."
     },
     "browserCi": {
       "status": "not-required",
       "reason": "Planning/docs/Node-guard changes only; no production/runtime/browser/Playwright behavior changed."
     },
-    "specImpact": "Planning-only. AGENTS, AI_CONTEXT, TESTING_POLICY, specs navigation and plan guards aligned; no product/runtime/browser implementation changed.",
+    "specImpact": "Planning/docs/Node-guard only. No product/runtime/browser/Playwright behavior changed.",
     "planningAudit": {
       "status": "in-progress",
-      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + HOT/WARM KISS/docs/specs/guards",
+      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/current-doc/spec/guard audit",
       "graph": "12 mandatory nodes; acyclic; intended parallel fronts and O1-O6 rejoin ownership verified.",
-      "next": "Fresh-AI dry runs, remaining repairs, final Fast CI, post-KISS freeze."
+      "next": "Fresh-AI dry runs for C01, one middle Issue (C06 or C08), and C12; repair any ambiguity before final CI/freeze."
     }
   },
   "next": {
-    "action": "Continue planning only with fresh-AI dry runs against the HOT path and representative Issues; repair any ambiguity, then run final Fast CI and prepare the post-KISS planning freeze.",
+    "action": "Perform fresh-AI dry runs from AGENTS → README → STATUS → AI_CONTEXT → active Issue for C01, a representative middle Issue, and C12. Fix any ambiguity, then run final Fast CI and prepare the post-KISS planning freeze.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE-FINALIZATION",
     "rules": [
