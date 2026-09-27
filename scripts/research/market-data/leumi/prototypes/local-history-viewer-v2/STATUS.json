@@ -84,16 +84,18 @@
       "next": "Fresh-AI dry runs for C01, one middle Issue (C06 or C08), and C12; repair any ambiguity before final CI/freeze."
     },
     "chatExecutionPlan": {
-      "status": "in-progress",
+      "status": "plan-written-prompts-pending",
       "mandatoryChatCount": 12,
-      "currentStep": "Validated one executable Issue per chat as the cleanest boundary; define durable visible plan/prompts next.",
-      "rule": "Baseline execution is one sequential fresh chat per C01-C12. O1-O6 remain evidence-triggered work inside their owning chat and do not increase the planned chat count."
+      "plan": "CHAT_EXECUTION_PLAN.md",
+      "visibility": "Linked prominently from the workstream HOT README.",
+      "currentStep": "Author one copy/paste prompt for each Chat 01..12 and verify that each prompt delegates live state back to STATUS.json.",
+      "rule": "One executable C01-C12 Issue per planned fresh chat; O1-O6 remain evidence-triggered inside the owning chat unless this durable plan is explicitly revised."
     }
   },
   "next": {
-    "action": "Write the durable 12-chat execution plan in a prominent workstream location and link it from the HOT README, without duplicating live status. Then prepare one copy/paste prompt per chat.",
+    "action": "Author the 12 copy/paste implementation-chat prompts from CHAT_EXECUTION_PLAN.md, keeping each prompt self-contained enough to bootstrap but free of duplicated live progress.",
     "issue": 72,
-    "workPackage": "CHAT-EXECUTION-PLAN",
+    "workPackage": "CHAT-PROMPTS",
     "rules": [
       "Do not implement C01 or downstream runtime/browser behavior.",
       "Do not freeze planning until the chat split/prompts and remaining fresh-AI/final CI checks are verified.",
