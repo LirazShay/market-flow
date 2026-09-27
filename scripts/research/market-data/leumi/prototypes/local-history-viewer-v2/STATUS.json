@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "post-kiss-audit-testing-ci",
-    "title": "Audit Browser SQL testing, CI and live-verification obligations against the KISS daily-product scope",
+    "substep": "post-kiss-audit-github-execution-structure",
+    "title": "Audit the old Master/Epics/WP GitHub execution structure against the KISS compact-plan target",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Post-KISS decisions/product, V1-on-SQL, enrichment, Scanner and lifecycle/hardening audits complete.",
-    "ready": "Lifecycle is reduced to one Web Lock, retain-all/no-silent-loss behavior, small health, representative daily workload, and explicit cutover/rollback; shadow/archive/preemption/upgrades are conditional or future-only.",
-    "blockedAfterEntry": "Implementation remains paused; audit testing/CI/live-evidence obligations next, then rebuild the compact canonical graph."
+    "completed": "Post-KISS decisions/product, V1-on-SQL, enrichment, Scanner, lifecycle/hardening and testing/CI audits complete.",
+    "ready": "Testing is reduced to Node/Chromium/live by observable contract, with two normal CI workflows and no old WP/Phase-specific gate machinery.",
+    "blockedAfterEntry": "Implementation remains paused; audit the old GitHub execution structure next, then rebuild the compact canonical graph."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: lifecycle/hardening audit added; operational scope is simplified before canonical graph materialization.",
+    "specImpact": "Planning-only: testing/CI audit added; old Phase-L/WP-specific testing machinery is marked for simplification in Pass G.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Audit testing/CI/live-verification obligations after KISS. Keep high-value public-contract tests and required Chromium/live checks, remove duplicated gate layers/workflows and define the smallest practical CI policy for the compact plan.",
+    "action": "Audit Master Issue #20, Epics #21-#28 and WP Issues #29-#71 against the post-KISS plan. Decide which historical Issues stay closed as evidence, which open Issues should be closed/superseded, and how to avoid leaving the obsolete 42-WP graph looking canonical before creating the compact replacement graph.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
-      "Do not mutate canonical GitHub Issues yet.",
-      "Preserve tests for public behavior, data integrity, SQL safety, Web Lock ownership and day-scale integrated behavior.",
-      "Use Node for deterministic logic, Chromium for browser/SQL integration, live Leumi only for real-origin/provider facts.",
-      "Do not retain separate CI/checkpoint machinery that proves the same contract twice."
+      "Do not mutate the old canonical GitHub Issues yet; first produce the disposition map.",
+      "Preserve completed WP-01/WP-02 evidence.",
+      "Do not reuse old Issues merely to save IDs if their scope no longer matches.",
+      "The replacement graph should be rebuilt from the KISS audits, not compressed mechanically from 42 WPs."
     ]
   },
   "history": {
