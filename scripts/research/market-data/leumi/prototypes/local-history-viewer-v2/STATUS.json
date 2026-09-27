@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-e5-enrichment-mini-project-plan",
-    "title": "Write the analytical enrichment mini-project implementation manual from semantic selection through schema evolution and checkpoint",
+    "substep": "pass-e6-enrichment-benchmark-plan",
+    "title": "Define the focused enrichment benchmark plan that selects persisted analytical structure before schema freeze",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E4 completed.",
-    "ready": "E4 defines 17 mandatory fresh gates for ND-16, including L-1/L-2, persistence, parity, CI, security, evidence freshness and zero unresolved Unknowns.",
-    "blockedAfterEntry": "Implementation remains paused; Pass E continues with enrichment/benchmark/Scanner manuals before canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E5 completed.",
+    "ready": "E5 defines the enrichment mini-project from semantic gates and dynamic SQL experiments through benchmark-informed persist/query decisions, schema evolution, atomic set-based implementation, rebuildability and the ND-20 checkpoint.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E continues with enrichment benchmark and Scanner/integration manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: V1-on-SQL checkpoint gate matrix added and indexed; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: analytical enrichment implementation manual added and indexed; older Phase F/G enrichment choices are explicitly candidates pending E5 evidence and later durable-decision reconciliation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass E5: write the analytical enrichment mini-project implementation manual covering semantic evidence gates, horizon/predecessor decisions, persist-vs-query choices, schema evolution, rebuild/backfill policy, atomic integration, arbitrary cross-time SQL capability, correctness tests and checkpoint exit criteria.",
+    "action": "Execute Issue #72 Pass E6: define the focused enrichment benchmark plan that compares raw baseline, dynamic SQL, predecessor persistence, selected metrics and typed/indexed promotion, with storage/write/reopen/query evidence sufficient to decide the physical enrichment design before schema freeze.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Begin enrichment only after ND-16 V1-on-SQL checkpoint is complete.",
-      "Do not persist a field/metric/horizon before semantic proof and benchmark-informed persist-vs-query decision.",
-      "Keep derived state rebuildable from preserved raw facts."
+      "Benchmarks must answer specific persist-vs-query decisions, not benchmark hypothetical mechanisms for their own sake.",
+      "Use correctness-first machine-readable evidence and compare against the raw V1-on-SQL baseline.",
+      "Do not freeze horizon/metric/index layout until benchmark evidence supports it."
     ]
   },
   "history": {
