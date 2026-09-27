@@ -5,27 +5,27 @@
   "overallStatus": "in-progress",
   "authority": {
     "operationalProgress": "STATUS.json",
-    "planAndOrder": "ROADMAP.md",
+    "planAndOrder": ".planning/TREE.yaml (active S&T plan); ROADMAP.md is frozen Browser-SQL reference",
     "fastTechnicalContext": "AI_CONTEXT.md",
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "node-sql-replan",
-    "substep": "chat-01-stage-03-migration-inventory",
-    "title": "Chat 01/5 — Node SQL migration re-plan — Stage 03/100",
+    "stage": "node-sql-snt-planning",
+    "substep": "bootstrap-goal-root",
+    "title": "S&T Planner — Node SQL migration planning",
     "issue": 73,
     "chat": 1,
     "status": "in-progress"
   },
   "currentStage": {
-    "stage": "architecture-correction",
-    "title": "Browser-SQL inventory classified for Node-SQL migration",
+    "stage": "architecture-correction-planning",
+    "title": "S&T replacement plan for localhost Node.js + native DuckDB",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Stage 03 classified Browser-SQL decisions, Issues, docs, runtime/probes, specs, tests, CI and package surface as KEEP/ADAPT/ARCHIVE/RETIRE in docs/node-sql-migration-inventory.md.",
-    "ready": "Derive one canonical Node-SQL requirement/invariant matrix from D-043, D-045 and the migration inventory without reloading historical Browser-SQL planning.",
-    "blockedAfterEntry": "No retire/delete/Issue-close action may execute before replacement ownership exists."
+    "completed": "D-045 selected the Node/WebSocket/DuckDB boundary; migration inventory is green; S&T Planner is installed with GOAL, root tree and initial decisions/review.",
+    "ready": "Resume .planning/STATUS.yaml and decompose S&T node 1 into implementation-ready leaves.",
+    "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
   "verification": {
@@ -115,7 +115,7 @@
       "authority": "authenticated Leumi collector → loopback WebSocket → localhost Node.js → native DuckDB"
     },
     "replan": {
-      "status": "in-progress",
+      "status": "superseded-by-snt-planner",
       "totalStages": 100,
       "totalChats": 5,
       "stagesPerChat": 20,
@@ -127,17 +127,24 @@
         "inventory": "docs/node-sql-migration-inventory.md",
         "fastCiRunId": 36306504525
       }
+    },
+    "sntPlanner": {
+      "status": "active",
+      "goal": ".planning/GOAL.md",
+      "tree": ".planning/TREE.yaml",
+      "planState": "active",
+      "currentNode": "1"
     }
   },
   "next": {
-    "action": "Stage 04/100 — derive the canonical Node-SQL requirements/invariants matrix from D-043, D-045 and the migration inventory.",
+    "action": "Continue S&T planning from .planning/STATUS.yaml; decompose node 1 and run local necessity/sufficiency review.",
     "issue": 73,
-    "workPackage": "NODE-SQL-REPLAN",
+    "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
     "rules": [
-      "One planned stage equals one chat message.",
-      "Use the Stage-03 inventory instead of rereading all Browser-SQL history.",
-      "Do not implement production code before the replacement plan is complete."
+      "Planning source is .planning; do not resume the old 100-stage or Browser-SQL execution graphs.",
+      "Do not implement production work until plan_state is frozen.",
+      "Conversation pacing remains one planning unit per user message unless the user changes it."
     ]
   },
   "history": {
