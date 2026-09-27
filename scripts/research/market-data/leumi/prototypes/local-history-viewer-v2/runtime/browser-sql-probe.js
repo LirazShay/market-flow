@@ -1141,12 +1141,183 @@
         }
     }
 
+    function capabilityFromStage(
+        runResult,
+        stageName
+    ) {
+        return runResult
+            .stages
+            .some(
+                stage =>
+                    stage.name ===
+                        stageName &&
+                    stage.status ===
+                        "passed"
+            )
+            ? "Verified"
+            : "Unknown";
+    }
+
+    function buildLiveGateResult(
+        runResult,
+        cleanupResult,
+        bundleName
+    ) {
+        const bundle =
+            config
+                .engine
+                .bundles[
+                    bundleName
+                ] ??
+            null;
+
+        const cleanupPassed =
+            cleanupResult.status ===
+            "passed";
+
+        return {
+            probe:
+                "C01-L1",
+            status:
+                runResult.status ===
+                    "passed" &&
+                cleanupPassed
+                    ? "passed"
+                    : "failed",
+            failedStage:
+                runResult.failedStage ??
+                (
+                    cleanupPassed
+                        ? null
+                        : "probe-cleanup"
+                ),
+            candidate: {
+                package:
+                    config
+                        .engine
+                        .package
+                        .name +
+                    "@" +
+                    config
+                        .engine
+                        .package
+                        .version,
+                duckdbCore:
+                    "v" +
+                    config
+                        .engine
+                        .core
+                        .version,
+                duckdbCoreCommit:
+                    config
+                        .engine
+                        .core
+                        .commit,
+                bundle:
+                    bundleName,
+                worker:
+                    bundle
+                        ? bundle
+                            .mainWorker
+                        : null,
+                wasm:
+                    bundle
+                        ? bundle
+                            .mainModule
+                        : null
+            },
+            capabilities: {
+                bookmarkletBootstrap:
+                    capabilityFromStage(
+                        runResult,
+                        "bookmarklet-bootstrap"
+                    ),
+                blobWorkerCreate:
+                    capabilityFromStage(
+                        runResult,
+                        "blob-worker-create"
+                    ),
+                workerAssetLoad:
+                    capabilityFromStage(
+                        runResult,
+                        "worker-asset-load"
+                    ),
+                wasmInstantiate:
+                    capabilityFromStage(
+                        runResult,
+                        "wasm-instantiate"
+                    ),
+                opfsOpen:
+                    capabilityFromStage(
+                        runResult,
+                        "opfs-open"
+                    ),
+                syntheticWriteCommit:
+                    capabilityFromStage(
+                        runResult,
+                        "write-commit-checkpoint"
+                    ),
+                closeReopenReadback:
+                    capabilityFromStage(
+                        runResult,
+                        "reopen-verify"
+                    ),
+                probeCleanup:
+                    cleanupPassed
+                        ? "Verified"
+                        : "Unknown"
+            },
+            sanitization: {
+                cookiesPersisted:
+                    false,
+                tokensPersisted:
+                    false,
+                authorizationHeadersPersisted:
+                    false,
+                accountDataPersisted:
+                    false,
+                privateSessionArtifactsPersisted:
+                    false
+            }
+        };
+    }
+
+    async function runLiveGate(
+        options = {}
+    ) {
+        const bundleName =
+            options.bundle ??
+            "eh";
+
+        const runResult =
+            await run(
+                Object.assign(
+                    {},
+                    options,
+                    {
+                        bundle:
+                            bundleName
+                    }
+                )
+            );
+
+        const cleanupResult =
+            await cleanup();
+
+        return buildLiveGateResult(
+            runResult,
+            cleanupResult,
+            bundleName
+        );
+    }
+
     const api =
         Object.freeze({
             config,
             run,
             verify,
-            cleanup
+            cleanup,
+            runLiveGate
         });
 
     windowObject
@@ -1159,12 +1330,18 @@
             false
     ) {
         api
-            .run()
+            .runLiveGate()
             .then(
                 result => {
+                    windowObject
+                        .__MARKET_FLOW_BROWSER_SQL_L1_RESULT__ =
+                        result;
+
                     console.log(
-                        "Market Flow Browser SQL probe:",
-                        result
+                        "Market Flow Browser SQL C01 L-1:",
+                        JSON.stringify(
+                            result
+                        )
                     );
                 }
             );

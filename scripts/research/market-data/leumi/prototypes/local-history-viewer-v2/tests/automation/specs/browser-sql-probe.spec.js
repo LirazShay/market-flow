@@ -318,6 +318,133 @@ test(
 );
 
 test(
+    "C01 auto-run emits one sanitized L-1 result and cleans probe-owned storage",
+    async ({ page, context }) => {
+        await routePinnedEngineAssets(
+            context
+        );
+
+        await page.goto(
+            "/tests/automation/runtime-smoke.html"
+        );
+
+        const artifacts =
+            await probeBuilder
+                .buildProbeArtifacts({
+                    write:
+                        false
+                });
+
+        await page.addScriptTag({
+            content:
+                artifacts.probeText
+        });
+
+        await expect
+            .poll(
+                async () =>
+                    await page.evaluate(
+                        () =>
+                            window
+                                .__MARKET_FLOW_BROWSER_SQL_L1_RESULT__ &&
+                            window
+                                .__MARKET_FLOW_BROWSER_SQL_L1_RESULT__
+                                .status
+                    ),
+                {
+                    timeout:
+                        15000
+                }
+            )
+            .toBe(
+                "passed"
+            );
+
+        const result =
+            await page.evaluate(
+                () =>
+                    window
+                        .__MARKET_FLOW_BROWSER_SQL_L1_RESULT__
+            );
+
+        expect(
+            result
+        ).toMatchObject({
+            probe:
+                "C01-L1",
+            status:
+                "passed",
+            failedStage:
+                null,
+            candidate: {
+                package:
+                    "@duckdb/duckdb-wasm@1.32.0",
+                duckdbCore:
+                    "v1.4.3",
+                duckdbCoreCommit:
+                    "d1dc88f950d456d72493df452dabdcd13aa413dd",
+                bundle:
+                    "eh"
+            },
+            capabilities: {
+                bookmarkletBootstrap:
+                    "Verified",
+                blobWorkerCreate:
+                    "Verified",
+                workerAssetLoad:
+                    "Verified",
+                wasmInstantiate:
+                    "Verified",
+                opfsOpen:
+                    "Verified",
+                syntheticWriteCommit:
+                    "Verified",
+                closeReopenReadback:
+                    "Verified",
+                probeCleanup:
+                    "Verified"
+            },
+            sanitization: {
+                cookiesPersisted:
+                    false,
+                tokensPersisted:
+                    false,
+                authorizationHeadersPersisted:
+                    false,
+                accountDataPersisted:
+                    false,
+                privateSessionArtifactsPersisted:
+                    false
+            }
+        });
+
+        expect(
+            JSON.stringify(
+                result
+            )
+        ).not.toContain(
+            "Authorization"
+        );
+
+        expect(
+            JSON.stringify(
+                result
+            )
+        ).not.toContain(
+            "Cookie"
+        );
+
+        expect(
+            JSON.stringify(
+                result
+            )
+        ).not.toContain(
+            "hb2.leumi"
+        );
+    }
+);
+
+test(
     "WP-02 probe classifies blocked pinned Worker loading without leaking raw error details",
     async ({ page, context }) => {
         await routePinnedEngineAssets(
@@ -341,7 +468,7 @@ test(
                 async () =>
                     await window
                         .MarketFlowBrowserSqlProbe
-                        .run({
+                        .runLiveGate({
                             bundle:
                                 "mvp",
                             workerReadyTimeoutMs:
@@ -362,16 +489,16 @@ test(
         );
 
         expect(
-            result.error
-        ).toEqual({
-            name:
-                expect.any(
-                    String
-                ),
-            message:
-                expect.any(
-                    String
-                )
+            result.capabilities
+        ).toMatchObject({
+            bookmarkletBootstrap:
+                "Verified",
+            blobWorkerCreate:
+                "Verified",
+            workerAssetLoad:
+                "Unknown",
+            probeCleanup:
+                "Verified"
         });
 
         expect(
