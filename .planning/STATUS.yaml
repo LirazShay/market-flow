@@ -2,11 +2,10 @@ version: 1
 
 plan_state: active
 
-current_node: "4"
+current_node: "5"
 
-blockers:
-  - "D-006 must be resolved while decomposing Node 4 before Scanner leaves can be approved."
+blockers: []
 
-next_action: "Decompose node 4 (Dynamic SQL Scanner), resolve D-006 read-only SQL enforcement from current DuckDB Node API evidence, and review necessity/sufficiency."
+next_action: "Decompose node 5 for verification, cutover, rollback and retirement; then run Final Planning Review across the complete tree."
 
-last_review: "R-004"
+last_review: "R-005"
