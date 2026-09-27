@@ -1,0 +1,11 @@
+version: 1
+
+plan_state: active
+
+current_node: "1"
+
+blockers: []
+
+next_action: "Decompose node 1 (browser↔Node protocol/producer boundary) to implementation-ready leaves, then review necessity/sufficiency."
+
+last_review: "R-001"
