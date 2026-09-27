@@ -71,9 +71,9 @@
     },
     "latestFastCi": {
       "status": "pass",
-      "runId": 36302947707,
-      "commit": "eb1761f3cf6858886f1c5426e3b84670f9ee9c1d",
-      "result": "PASS — final planning freeze, Chat 01 handoff and current-plan guards are green."
+      "runId": 36303002607,
+      "commit": "771ec6968b767a12f4165da63644faea637a09e5",
+      "result": "PASS — final implementation-entry STATUS points to Chat 01 / C01 / #73 after planning Issue #72 closure."
     },
     "browserCi": {
       "status": "not-required-for-planning-freeze",
