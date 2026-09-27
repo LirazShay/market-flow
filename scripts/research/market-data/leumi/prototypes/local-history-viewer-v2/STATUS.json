@@ -31,9 +31,9 @@
   "verification": {
     "latestFastCi": {
       "status": "pass",
-      "runId": 36309106380,
-      "commit": "6ecee53ff59ae1d1cf78ef96e2b1f03708369ad2",
-      "result": "PASS — Fast CI green after S&T Node 5 decomposition/review and Node-SQL verification-policy guard realignment."
+      "runId": 36309556306,
+      "commit": "7545e17c0642b372611071fa78189b17df8df6d5",
+      "result": "PASS — Fast CI green after offline-first Fake Leumi/test-pyramid replan and .planning CI-path coverage."
     },
     "architectureTrigger": {
       "browserSql": "FAIL — authenticated C01 stopped at wasm-instantiate; Issue #73 owns the evidence.",
@@ -64,7 +64,7 @@
     }
   },
   "next": {
-    "action": "Run Final Planning Review across the complete S&T tree, including Fake Leumi/test pyramid; if green, freeze and populate .planning/EXECUTION.yaml.",
+    "action": "Run Final Planning Review across the complete S&T tree, explicitly auditing Fake Leumi, unit/service/browser/local-demo coverage; if green, freeze and populate .planning/EXECUTION.yaml.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
