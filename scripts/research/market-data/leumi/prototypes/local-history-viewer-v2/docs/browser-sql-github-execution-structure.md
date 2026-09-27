@@ -72,6 +72,15 @@ Create a focused Issue only when the triggering executable Issue records the evi
 - O5 target Windows/Chrome evidence ← C11 / #83;
 - O6 temporary shadow comparison ← C06 / #78.
 
+Resolution ownership:
+- O1 must finish before C11 can use the optimized candidate;
+- O2/O4 and C11-triggered O3 keep C11 open;
+- C09-triggered O3 keeps C09 open;
+- O5 keeps C11 open until the required target evidence is green;
+- O6 keeps C06 open until the named ambiguity is resolved and the affected C06 proof is rerun.
+
+Any conditional implementation that changes an earlier public/runtime contract reruns the smallest affected verification before rejoining its owner.
+
 ## Historical graph
 
 The pre-KISS Master #20 / Epics #21..#28 / WP graph #29..#71 is historical.
