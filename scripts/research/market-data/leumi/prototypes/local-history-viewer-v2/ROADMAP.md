@@ -11,14 +11,21 @@ D-043 = provider/data continuity + three product surfaces
 D-044 = post-KISS Browser SQL implementation baseline
 ~~~
 
+Current GitHub execution authority:
+
+~~~text
+Master #85
+C01..C12 = #73..#84
+~~~
+
 ## Fixed product and integrity constraints
 
 V1 provider/collection continuity is preserved while storage and analytical authority change.
 
-- preserve the proven V1 authenticated MapHeat2 → sequential GetSecuritiesData contract;
+- preserve the proven authenticated MapHeat2 → sequential GetSecuritiesData contract;
 - canonical SecurityId = `String(PaperId or Key)`;
 - no hardcoded universe size;
-- validate complete-cycle requested/received/unique/duplicate/missing/unexpected accounting;
+- validate requested/received/unique/duplicate/missing/unexpected accounting;
 - preserve full raw MapHeat and Security facts;
 - preserve `null != 0 != "" != undefined`;
 - incomplete/corrupt cycles do not advance authoritative state;
@@ -33,32 +40,32 @@ V1 provider/collection continuity is preserved while storage and analytical auth
 
 ~~~text
 completed evidence #29/#30
-→ C01 real-origin DuckDB L-1
-→ C02 minimum SQL runtime + schema
-→ C03 atomic persistence + reopen/durability
-→ C04 Recorder integration + trusted reads
+→ C01 #73 real-origin DuckDB L-1
+→ C02 #74 minimum SQL runtime + schema
+→ C03 #75 atomic persistence + reopen/durability
+→ C04 #76 Recorder integration + trusted reads
 ~~~
 
-C10 Web Lock ownership may start after C02 in parallel with C03-C09 work.
+C10 #82 Web Lock ownership may start after C02 #74 in parallel with C03-C09 work.
 
 ## Group 2 — V1 Product on SQL
 
 ~~~text
-C04
-├→ C05 Current Universe SQL parity
-└→ C06 Detail/History SQL parity + bounded L-2
+C04 #76
+├→ C05 #77 Current Universe SQL parity
+└→ C06 #78 Detail/History SQL parity + bounded L-2
 ~~~
 
-C05 Current Universe and C06 Security Detail/History are separate preserved product surfaces and may progress in parallel.
+C05 and C06 are separate preserved product surfaces and may progress in parallel.
 
 Both must be complete before new analytical product work becomes the active dependency path.
 
 ## Group 3 — Analytics + Dynamic SQL Scanner
 
 ~~~text
-C05 + C06
-├→ C07 real analytical SQL + representative day-sized measurement
-└→ C08 Scanner core → C09 Scanner UI/results/integration
+C05 #77 + C06 #78
+├→ C07 #79 real analytical SQL + representative day-sized measurement
+└→ C08 #80 Scanner core → C09 #81 Scanner UI/results/integration
 ~~~
 
 C07 and C08/C09 intentionally run in parallel.
@@ -70,9 +77,9 @@ C07 may conclude that dynamic SQL is sufficient and no persisted analytical opti
 ## Group 4 — Daily Readiness + Cutover
 
 ~~~text
-C07 + C09 + C10
-→ C11 representative daily mixed workload
-→ C12 final authenticated verification + explicit cutover/rollback/cleanup
+C07 #79 + C09 #81 + C10 #82
+→ C11 #83 representative daily mixed workload
+→ C12 #84 final authenticated verification + explicit cutover/rollback/cleanup
 ~~~
 
 Cutover starts fresh SQL production history. There is no required legacy IndexedDB history import, permanent dual authority or automatic fallback.
@@ -81,12 +88,12 @@ Cutover starts fresh SQL production history. There is no required legacy Indexed
 
 No standing Issues exist for these paths.
 
-- **O1 analytical optimization** — only if C07 shows an important query is materially too slow/awkward.
-- **O2 Scanner resource hardening** — only if C11 shows Scanner materially harms ingest after simpler fixes fail.
-- **O3 streaming/chunked results** — only if C09/C11 shows simple materialization is unsafe/unusable.
-- **O4 storage/export/fresh-DB workflow** — only if C11 shows retain-all cannot support required daily use.
-- **O5 target Windows/Chrome evidence** — only if normal Chromium evidence is insufficient for a material target-environment decision.
-- **O6 temporary shadow comparison** — only if C06 leaves one specific material live parity uncertainty unresolved.
+- **O1 analytical optimization** — only if C07/#79 proves an important query is materially too slow/awkward.
+- **O2 Scanner resource hardening** — only if C11/#83 proves Scanner materially harms ingest after simpler fixes fail.
+- **O3 streaming/chunked results** — only if C09/#81 or C11/#83 proves simple materialization is unsafe/unusable.
+- **O4 storage/export/fresh-DB workflow** — only if C11/#83 proves retain-all cannot support required daily use.
+- **O5 target Windows/Chrome evidence** — only if C11/#83 shows normal Chromium evidence is insufficient for a material target decision.
+- **O6 temporary shadow comparison** — only if C06/#78 leaves one specific material live parity uncertainty unresolved.
 
 Any candidate-changing conditional must rerun the affected verification before C12.
 
@@ -105,6 +112,8 @@ authenticated Leumi
 
 Permanent normal workflows remain Fast CI and Browser CI.
 
+C01/#73 is the early live premise for Worker/Wasm/OPFS/write/COMMIT/close-reopen only. Real-origin Web Lock proof belongs to C12/#84.
+
 ## Initial-V2 non-goals
 
 - generalized engine/schema migration framework;
@@ -119,16 +128,24 @@ Permanent normal workflows remain Fast CI and Browser CI.
 
 ## Execution authority
 
-The compact dependency/design source is:
+GitHub Master #85 and executable Issues #73..#84 own executable work.
+
+Dependency rationale:
 
 ~~~text
 docs/browser-sql-compact-execution-dag.md
 ~~~
 
-The executable Issue-body source before GitHub materialization is:
+Design/specification reference:
 
 ~~~text
 docs/browser-sql-compact-issue-specifications.md
 ~~~
 
-After materialization, GitHub Master + C01..C12 own executable work. This ROADMAP continues to own only stable scope/order, while `STATUS.json` remains the only live progress pointer.
+Issue-number navigation:
+
+~~~text
+docs/browser-sql-github-execution-structure.md
+~~~
+
+This ROADMAP owns only stable scope/order. `STATUS.json` remains the only live progress pointer.
