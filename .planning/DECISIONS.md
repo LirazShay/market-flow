@@ -286,3 +286,35 @@
 
 **What would reopen this:** A later explicit product requirement to import/delete legacy browser history.
 
+---
+
+## D-019 — Fake Leumi is the canonical offline browser/provider verification environment
+
+**Status:** resolved
+
+**Related S&T node(s):** 5.1, 5.1.1, 5.1.3, 5.1.4
+
+**Question:** How do we verify the full product deeply when TASE is closed and without depending on an authenticated bank session?
+
+**Resolution:** Promote the existing synthetic Leumi fixtures into one real loopback Fake Leumi HTTP server/page that serves the exact production MapHeat2/GetSecuritiesData paths. The default scenario is a deterministic 4-security moving market and is shared by browser E2E and the local manual demo. Main happy-path E2E uses real HTTP requests to the fake provider rather than Playwright page.route interception. Focused failure-shape tests may keep route interception where it is the smallest proof.
+
+**Resolution basis / rationale:** The repository already has verified response-envelope fixtures and provider path mocks. The new Node architecture makes every post-provider boundary local and deterministic, so almost the entire product can be proven offline. Reusing one simulator across CI and manual local exercise avoids a separate demo codebase.
+
+**What would reopen this:** A production provider behavior that cannot be represented by the preserved sanitized fixture contract and materially affects correctness.
+
+---
+
+## D-020 — Test pyramid and test-first execution policy for Node-SQL migration
+
+**Status:** resolved
+
+**Related S&T node(s):** 1.*, 2.*, 3.*, 4.*, 5.1.*
+
+**Question:** What verification depth is expected while implementing each leaf?
+
+**Resolution:** Every implementation leaf follows public-contract test/proof first where practical. Pure transformation/protocol/scheduler logic gets focused unit tests; Node persistence/security/read behavior gets real service + real temporary DuckDB integration tests; browser/runtime/Viewer wiring gets Chromium E2E against the real Fake Leumi HTTP server + real local service; scale is covered separately by 5.2. Do not defer correctness to the final Browser suite and do not duplicate the same assertion at every layer unless it protects a distinct boundary.
+
+**Resolution basis / rationale:** The new architecture has clean seams and is cheap to test deterministically. This produces faster diagnosis and far stronger confidence before the one remaining real-origin cutover gate.
+
+**What would reopen this:** None; specific tests may move layers if a cheaper layer can prove the same observable contract more reliably.
+
