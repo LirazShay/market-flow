@@ -284,3 +284,14 @@ Given shared deterministic Fake Leumi scenarios, real Node/DuckDB integration, r
 - D-019 defines Fake Leumi as the canonical offline browser-provider environment.
 - D-020 makes test layering/test-first expectations explicit for all implementation leaves.
 
+### R-008 — 2026-09-27 — Final Planning Review (correction pass)
+
+**Result:** corrections applied; final audit pending in this review
+
+**Outside-in gaps found before freeze:**
+1. Scanner read-only admission was incomplete: DuckDB documents `query(...)` as arbitrary nested SQL even inside an outer SELECT. D-006 / node 4.1 were strengthened with engine hardening + one SELECT + dangerous function-call rejection using `query` plus catalog `has_side_effects`.
+2. Fake Leumi local demo claimed one-command operation but did not explicitly auto-load the real built runtime. Node 5.1.4 now requires the fake page to auto-load the exact normal runtime in demo mode with explicit local-Origin service configuration.
+
+**Disposition:**
+Both are material correctness/testability gaps, so freeze was withheld until corrected. The whole-plan audit must now be rerun against the corrected tree.
+
