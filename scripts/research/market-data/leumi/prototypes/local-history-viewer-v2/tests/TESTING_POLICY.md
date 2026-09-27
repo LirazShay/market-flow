@@ -5,14 +5,14 @@ V2 follows the repository-wide rules in `AGENTS.md`. This file owns only V2-spec
 ## Test layers
 
 ~~~text
-pure deterministic logic
-→ Node unit tests
+pure logic + protocol + native DuckDB service/database integration
+→ Node tests with synthetic temporary DBs
 
-IndexedDB / DuckDB-Wasm / OPFS / DOM / BroadcastChannel / browser integration
-→ Playwright + Chromium
+browser runtime + WebSocket + Recorder + Viewer + Scanner integration
+→ Playwright + Chromium + local test service
 
-current authenticated provider/session behavior
-→ explicit live verification
+current authenticated Leumi provider/origin behavior that CI cannot prove
+→ one bounded self-verifying final live cutover gate
 ~~~
 
 ## Change flow
@@ -137,107 +137,39 @@ tests/E2E_DEBUGGING.md
 
 If a meaningful unexpected failure occurs, apply the repository Failure Review / continuous-improvement rules before closing the incident.
 
-## Browser SQL planning target
+## Node SQL planning target
 
-Current durable Browser SQL authorities:
+Current durable authorities:
 
 ~~~text
 docs/project/decisions/D-043.md
-→ product/provider continuity + three Viewer surfaces
+→ provider/data continuity + three Viewer surfaces
 
-docs/project/decisions/D-044.md
-→ post-KISS implementation/testing baseline
+docs/project/decisions/D-045.md
+→ localhost Node.js + native DuckDB authority boundary
 
-../docs/browser-sql-compact-execution-dag.md
-→ C01..C12 dependency rationale
+.planning/TREE.yaml
+→ frozen implementation contract after Final Planning Review
 ~~~
 
-Browser SQL keeps the existing three-layer rule:
-
-~~~text
-pure deterministic behavior
-→ Node unit tests
-
-Worker / Wasm / OPFS / DOM / Runtime / Viewer / Web Locks / Scanner
-→ Playwright + real Chromium
-
-authenticated Leumi origin/provider behavior that CI cannot prove
-→ explicit self-verifying live verification
-~~~
-
-### C01 — mandatory implementation-entry live premise
-
-Before production Browser SQL implementation depends on the selected page-runtime delivery, C01 must prove the minimal authenticated-Leumi premise with synthetic probe data only:
-
-~~~text
-injected JS
-→ Blob Worker
-→ exact pinned DuckDB Worker/Wasm
-→ OPFS probe database
-→ synthetic SQL write + COMMIT
-→ close/reopen Worker/runtime
-→ verify marker
-→ probe-only cleanup
-~~~
-
-A mock Chromium page cannot substitute for this real-origin premise.
-
-The existing deterministic synthetic probe/preflight remains useful browser-mechanics evidence, but it does not prove the authenticated Leumi origin.
-
-The probe may use CHECKPOINT internally as part of its regression sequence; that does **not** define production CHECKPOINT cadence or the C03 durability/acknowledgement contract.
-
-Real-origin Web Lock proof is **not** an early C01 blocker. Web Lock mechanics are verified in Chromium under C10, and authenticated two-tab ownership is verified at final readiness in C12.
-
-If C01 fails because of real CSP/origin/browser constraints, dependent production SQL work stops and the runtime-delivery premise is reconsidered from evidence.
-
-### Browser SQL CI cadence
-
-Fast CI remains the normal push/PR gate.
-
-Use targeted Chromium during browser TDD/debugging.
-
-Any added/modified Playwright test must run in Chromium after its final edit.
-
-A browser-dependent production/runtime change must receive Chromium verification on the final changed state.
-
-Run the full Browser suite when closing a coherent browser/runtime slice or when a change crosses storage/runtime/Recorder/Viewer/Scanner/ownership boundaries.
-
-Docs-only, planning-only and pure Node-only changes do not automatically require Browser CI.
-
-Representative day-scale workload evidence belongs to C11 and does not need to run on every push when it is materially heavier than the normal Browser suite.
-
-### Browser SQL permanent verification areas
-
-Keep permanent regression coverage focused on observable contracts:
+Permanent verification areas:
 
 ~~~text
 Provider / Data
-SQL Storage
-Viewer
-Ownership
+Protocol / Local Service
+DuckDB Persistence
+Viewer Current + Detail/History
 Scanner
-Integrated Daily Workload
+Integrated Mixed Workload
+Cutover / Rollback
 ~~~
 
-Do not require tests for unselected mechanisms such as fixed horizon schemas, immutable query-version history, anchored scheduling, advanced preemption, automatic archive/rollover or generalized upgrade migration.
+Fast CI remains the normal push/PR gate.
 
-If a conditional mechanism is activated by evidence, add focused tests for that mechanism and rerun the affected owning verification.
+Use targeted Chromium during browser TDD/debugging. Any added/modified Playwright test must run in Chromium after its final edit. Cross-component/runtime closure requires full Browser CI.
 
-### Live verification moments
+The representative 561-security workload is a separate required-before-cutover workflow rather than an every-push gate.
 
-Normal initial-V2 live verification has only three purpose-specific moments:
+Authenticated live verification occurs once on the final candidate. It must self-verify and emit sanitized PASS/FAIL evidence. If the current assistant environment cannot control the authenticated browser/session, the cutover remains verification-pending; do not replace automation with a user checklist.
 
-~~~text
-C01
-→ real-origin Worker/Wasm/OPFS premise
-
-C06 / L-2
-→ controlled single-tab real provider → complete validation → SQL → trusted read
-
-C12
-→ no-overlap authenticated transition: old Recorder settled/stopped → real-origin two-tab ownership → fresh SQL authority → Current/Detail + representative Scanner verification
-~~~
-
-Each live artifact must self-verify as far as technically possible and emit sanitized machine-readable PASS/FAIL evidence.
-
-Do not create a generalized live-gate/evidence platform unless repeated implementation pain proves one is necessary.
+Do not create generalized release/evidence platforms, background replay/reconnect systems, workload optimizers or query-governance machinery unless concrete evidence activates a current need.
