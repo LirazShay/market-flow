@@ -2,9 +2,9 @@
 
 ## Role
 
-This document turns C01..C11 from the compact DAG into draft executable Issue specifications.
+This document defines the corrected executable Issue specifications for C01..C12 after the compact-Issue critique.
 
-It is the direct input to the next review step: issue-size/dependency critique.
+It is the direct pre-materialization source for the new GitHub execution graph.
 
 It is still planning-only:
 - no successor GitHub Issues created yet;
@@ -17,15 +17,15 @@ Canonical dependency source:
 docs/browser-sql-compact-execution-dag.md
 ~~~
 
-Each draft intentionally contains only what a fresh implementation chat needs.
-
 ---
 
-# Shared rules for C01..C11
+# Shared rules for C01..C12
 
 Every executable Issue must follow these rules:
 
 - GitHub main is source of truth;
+- before implementation, read the current versions of directly touched code/tests/specs;
+- do not preload historical Browser SQL planning documents unless a linked uncertainty requires them;
 - preserve the V1 provider/data contract unless the Issue explicitly changes it;
 - no hardcoded universe size;
 - canonical SecurityId = String(PaperId or Key);
@@ -43,13 +43,13 @@ Every executable Issue must follow these rules:
 
 ---
 
-# P1 — Feasibility + SQL Core
+# Feasibility + SQL Core
 
 ## C01 — Prove pinned DuckDB-Wasm on authenticated Leumi
 
 ### Purpose
 
-Close the only early live premise: the already pinned Browser SQL runtime must actually work on the authenticated Leumi origin.
+Close the early live premise: the already pinned Browser SQL runtime must actually work on the authenticated Leumi origin.
 
 ### Direct dependencies
 
@@ -62,12 +62,12 @@ Close the only early live premise: the already pinned Browser SQL runtime must a
 - prove injected JS can create the required Blob Worker;
 - load the exact pinned DuckDB Worker/Wasm assets;
 - open a probe-only OPFS database;
-- execute synthetic create/write/commit;
-- exercise the minimum reopen/durability action required by the selected design;
-- tear down and reopen the Worker/runtime;
-- verify the marker after reopen;
+- execute synthetic SQL write + COMMIT;
+- close/reopen Worker/runtime and read the marker;
 - clean only probe-owned storage;
 - emit sanitized machine-readable PASS/FAIL with failed stage and candidate identity.
+
+The current probe may execute CHECKPOINT as part of its existing tested sequence. That does **not** define production CHECKPOINT cadence or production durable-success semantics; C03 owns that decision.
 
 ### Non-goals
 
@@ -75,12 +75,12 @@ Close the only early live premise: the already pinned Browser SQL runtime must a
 - no production DB/schema;
 - no Web Lock proof;
 - no Recorder/Viewer/Scanner work;
-- no manual visual acceptance.
+- no production persistence cadence.
 
 ### Acceptance
 
 - exact pinned runtime works on authenticated Leumi origin;
-- probe data survives the supported reopen boundary;
+- probe data survives the supported close/reopen boundary;
 - cleanup is limited to probe-owned data;
 - failure is classified automatically and safely;
 - evidence contains no auth/session/account material.
@@ -102,7 +102,7 @@ Close the only early live premise: the already pinned Browser SQL runtime must a
 
 ### Purpose
 
-Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema and startup contract required by later cycle persistence.
+Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema/startup contract required by later cycle persistence.
 
 ### Direct dependency
 
@@ -111,11 +111,11 @@ Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema
 ### Scope
 
 - one Runtime Controller owns one SQL Worker;
-- deterministic generated runtime/build identity using the pinned assets;
+- deterministic generated runtime/build identity using pinned assets;
 - one production DB identity;
 - simple schema/build compatibility metadata;
 - minimal tables/structures for cycle identity, current universe, raw MapHeat, raw Security history and stable snapshot/cycle ordering;
-- latest/current lookup structure only where needed by the trusted read contract;
+- latest/current lookup structure only where needed by trusted reads;
 - startup/open/readiness states required for normal use;
 - unsupported schema/build compatibility blocks writable startup;
 - no silent delete/recreate/reset;
@@ -135,7 +135,7 @@ Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema
 - runtime opens the intended OPFS DB through one Worker authority;
 - schema represents minimum raw/current/history needs without fixed enrichment columns;
 - runtime identity and schema compatibility are explicit;
-- unsupported DB is preserved and startup fails visibly;
+- unsupported DB is preserved and writable startup fails visibly;
 - repeated startup does not silently recreate/reset the DB.
 
 ### Verification
@@ -156,7 +156,7 @@ Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema
 
 ### Purpose
 
-Persist one already-validated complete market cycle atomically and prove the successful state survives the supported reopen/restart boundary.
+Persist one already-validated complete market cycle atomically and prove successful state survives the supported reopen/restart boundary.
 
 ### Direct dependency
 
@@ -171,7 +171,7 @@ Persist one already-validated complete market cycle atomically and prove the suc
 - preserve raw MapHeat/Security facts and exact value distinctions;
 - failure before commit leaves the prior committed state unchanged;
 - define and prove the minimum safe durable-success acknowledgement boundary;
-- add retry/idempotency state only if the proven acknowledgement boundary requires it;
+- add retry/idempotency state only if that boundary creates committed-but-unacknowledged retry ambiguity;
 - explicit storage/write/durability failures;
 - reopen the same DB and verify committed facts.
 
@@ -190,14 +190,16 @@ Persist one already-validated complete market cycle atomically and prove the suc
 - current/history/latest remain mutually coherent;
 - raw facts and null/zero/empty/missing distinctions survive round-trip;
 - reopen returns the same committed state;
-- duplicate replay does not create contradictory state under the selected retry contract;
+- if the selected durable-success boundary admits committed-but-unacknowledged retry ambiguity, the chosen minimal retry/idempotency mechanism proves replay safety;
+- if no such ambiguity exists, no retry-token/idempotency subsystem is required;
 - failed persistence is never acknowledged as success.
 
 ### Verification
 
 - Node tests for deterministic validation/normalization pieces;
-- Chromium tests for real DuckDB transaction failure, reopen and retry seams;
-- fault injection around pre-commit and selected durability boundary;
+- Chromium tests for real DuckDB transaction failure and reopen;
+- fault injection around pre-commit and the selected durability boundary;
+- replay/idempotency tests only if that mechanism is actually selected;
 - Fast CI + full Browser CI.
 
 ### Cleanup
@@ -206,8 +208,6 @@ Persist one already-validated complete market cycle atomically and prove the suc
 - document only the durability mechanism actually selected/proven.
 
 ---
-
-# P2 — V1 Product on SQL
 
 ## C04 — Integrate the Recorder and expose trusted SQL reads
 
@@ -260,16 +260,18 @@ Connect the proven V1 collection path to the SQL authority and provide the small
 
 ### Cleanup
 
-- remove any temporary direct-table Viewer/debug path;
-- keep trusted API intentionally small.
+- remove temporary direct-table Viewer/debug paths;
+- keep the trusted API intentionally small.
 
 ---
 
-## C05 — Deliver Current Universe + Detail/History parity and bounded live L-2
+# V1 Product on SQL
+
+## C05 — Move Current Universe to trusted SQL reads
 
 ### Purpose
 
-Make the existing V1 browsing product usable from SQL before building analytical product features.
+Make the Current Universe surface work from SQL while preserving intentional V1 public behavior.
 
 ### Direct dependency
 
@@ -277,25 +279,66 @@ Make the existing V1 browsing product usable from SQL before building analytical
 
 ### Scope
 
-- Current Universe reads SQL through trusted API;
-- preserve intended membership, values, sorting and missing/zero rendering behavior;
-- Security Detail/History reads SQL through trusted API;
+- Current Universe reads SQL through the trusted API;
+- current membership follows the latest committed validated universe;
+- preserve intended values, default/user sorting and missing/zero rendering;
+- open-after-existing-data and reload reread authoritative SQL state;
+- missed notifications do not make cached Viewer state authoritative;
+- Current remains independent of Scanner state/errors;
+- row selection/navigation emits the canonical SecurityId needed by Detail.
+
+### Non-goals
+
+- no Detail/History implementation;
+- no L-2 live provider proof;
+- no Scanner;
+- no analytical enrichment UI.
+
+### Acceptance
+
+- Current membership/values/sort/rendering match intended V1 public behavior on deterministic scenarios;
+- a committed cycle refreshes Current from authoritative SQL;
+- reload/open-after-existing-data reconstructs Current from SQL;
+- missing notification is recovered by authoritative reread;
+- Scanner absence/error cannot change Current semantics.
+
+### Verification
+
+- Chromium Current parity tests using deterministic provider/SQL fixtures;
+- reuse existing Current public-behavior tests where possible;
+- Fast CI + full Browser CI.
+
+### Cleanup
+
+- remove temporary IndexedDB/direct-table Current paths once the SQL-backed path is authoritative in V2;
+- keep no duplicate Current data authority.
+
+---
+
+## C06 — Move Detail/History to SQL and run bounded L-2
+
+### Purpose
+
+Make Security Detail/History work from SQL, close the V1 browsing-product migration, and prove the real provider→SQL→read path once.
+
+### Direct dependency
+
+- C04.
+
+### Scope
+
+- Detail/History reads SQL through the trusted API;
 - newest-first bounded history paging;
 - equal-timestamp-safe continuation with no duplicate/skip;
-- Current→Detail navigation and practical Back/state behavior;
-- detail remains meaningful for a security no longer in current universe;
-- reload/open-after-existing-data/missed-notification causes authoritative reread;
-- compact V1 parity scenario families:
-  - changing universe;
-  - source-value truthfulness;
-  - invalid/partial cycles;
-  - persistence/reopen;
-  - Current/Detail/history;
-  - Viewer lifecycle;
+- detail remains meaningful for known history when the security is no longer current;
+- reload/open-after-existing-data/missed-notification rereads authority;
+- integrated Current→Detail navigation check once C05 exists;
+- deterministic Detail/history/Viewer-lifecycle parity scenarios;
 - bounded self-verifying L-2 using real provider data through the normal Recorder→SQL→trusted-read path.
 
 ### Non-goals
 
+- no Current implementation itself;
 - no Scanner;
 - no persisted horizon schema;
 - no general benchmark framework;
@@ -303,15 +346,17 @@ Make the existing V1 browsing product usable from SQL before building analytical
 
 ### Acceptance
 
-- Current and Detail/History match the intentional V1 public behavior on deterministic scenarios;
-- no material parity Unknown remains;
-- real provider L-2 reports complete accounting and successful SQL readback;
-- Viewer remains a client and never becomes DB authority;
-- evidence remains sanitized.
+- Detail current summary/history/paging match intended V1 public behavior;
+- equal-timestamp paging has no duplicate/skip;
+- historical Detail remains available for a security no longer current;
+- reload/missed notification recovers by authoritative reread;
+- when C05 is available, Current→Detail navigation works using canonical SecurityId;
+- L-2 reports exact provider accounting, successful SQL persistence/readback and no auth/session leakage;
+- no material V1-on-SQL parity Unknown remains after C05 and C06 are both complete.
 
 ### Verification
 
-- deterministic Node/Chromium parity tests by the six scenario families;
+- deterministic Chromium Detail/history/lifecycle parity tests;
 - full Browser CI;
 - bounded authenticated L-2 PASS;
 - conditional shadow only if the documented trigger is met.
@@ -319,21 +364,22 @@ Make the existing V1 browsing product usable from SQL before building analytical
 ### Cleanup
 
 - remove temporary parity/shadow scaffolding not promoted to a durable regression;
-- keep one compact parity fixture/oracle set.
+- keep compact reusable fixtures/oracles only.
 
 ---
 
-# P3 — Analytics + Scanner
+# Analytics + Scanner
 
-## C06 — Prove the real analytical SQL on day-sized history
+## C07 — Prove the real analytical SQL on day-sized history
 
 ### Purpose
 
 Use the actual SQL queries the product needs before deciding that persisted analytical optimization is necessary.
 
-### Direct dependency
+### Direct dependencies
 
-- C05.
+- C05;
+- C06.
 
 ### Scope
 
@@ -356,7 +402,7 @@ Use the actual SQL queries the product needs before deciding that persisted anal
 
 ### Acceptance
 
-- the representative analytical questions are expressible correctly from current SQL history;
+- representative analytical questions are expressible correctly from current SQL history;
 - day-sized behavior is measured rather than guessed;
 - every proposed persisted optimization has a concrete measured/query reason;
 - no optimization is selected by default.
@@ -364,26 +410,27 @@ Use the actual SQL queries the product needs before deciding that persisted anal
 ### Verification
 
 - deterministic query correctness tests;
-- focused Chromium/DuckDB timing measurement where browser runtime matters;
+- focused Chromium/DuckDB measurement where browser runtime matters;
 - Fast CI;
 - Browser CI only for changed browser/SQL integration surfaces.
 
 ### Cleanup
 
-- remove one-off benchmark scaffolding unless reused by C10;
+- remove one-off measurement scaffolding unless reused by C11;
 - if no optimization is needed, explicitly record that outcome and stop.
 
 ---
 
-## C07 — Implement the simple safe Scanner core
+## C08 — Implement the simple safe Scanner core
 
 ### Purpose
 
 Provide one active read-only SQL statement running at a configurable repeat interval without overlapping or mutating market authority.
 
-### Direct dependency
+### Direct dependencies
 
-- C05.
+- C05;
+- C06.
 
 ### Scope
 
@@ -395,9 +442,9 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 - allow representative SELECT/CTE/JOIN/GROUP BY/HAVING/window/order/limit queries;
 - block mutation/admin/external-access/multi-statement paths;
 - committed-state reads only;
-- run promptly after activation according to selected simple policy;
+- run promptly after activation according to the selected simple policy;
 - one execution at a time;
-- if already running, skip/coalesce timer opportunity; no burst replay;
+- if already running, skip/coalesce the timer opportunity; no burst replay;
 - when B is activated while A runs, A may finish but is never attributed to B;
 - zero rows is success;
 - query error is isolated from Recorder and market data;
@@ -417,6 +464,7 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 - unsafe SQL cannot mutate authority or access forbidden external/admin capabilities;
 - no Scanner overlap occurs;
 - interval changes require Activate;
+- query results remain attributable to the config that produced them;
 - query errors never corrupt or stop successful Recorder persistence;
 - restart behavior is deterministic and simple.
 
@@ -424,7 +472,7 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 
 - Node tests for pure interval/config/state logic where useful;
 - Chromium with real pinned DuckDB-Wasm for safety corpus, timer/no-overlap, restart and execution attribution;
-- Fast CI + full Browser CI because Scanner/runtime integration is browser-dependent.
+- Fast CI + full Browser CI.
 
 ### Cleanup
 
@@ -433,15 +481,15 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 
 ---
 
-## C08 — Build Scanner UI, truthful result grid and product integration
+## C09 — Build Scanner UI, truthful result grid and product integration
 
 ### Purpose
 
-Expose C07 as the third user-facing surface without adding hidden analytical semantics.
+Expose C08 as the third user-facing surface without adding hidden analytical semantics.
 
 ### Direct dependency
 
-- C07.
+- C08.
 
 ### Scope
 
@@ -455,7 +503,7 @@ Expose C07 as the third user-facing surface without adding hidden analytical sem
 - zero-row successful table;
 - clear query error distinct from empty result;
 - if only first N rows are rendered, say so clearly without silently rewriting SQL;
-- previous successful result may remain visibly previous/stale after later error in same runtime;
+- previous successful result may remain visibly previous/stale after a later error within one runtime;
 - optional canonical SecurityId drill-down to shared Detail;
 - Scanner isolation from Recorder/Current/Detail.
 
@@ -485,13 +533,13 @@ Expose C07 as the third user-facing surface without adding hidden analytical sem
 ### Cleanup
 
 - remove temporary result-delivery experiments if simple materialization is sufficient;
-- streaming task is created only if evidence triggers it.
+- create streaming work only if evidence triggers O3.
 
 ---
 
-# P4 — Daily Readiness + Cutover
+# Daily Readiness + Cutover
 
-## C09 — Enforce one production runtime owner with Web Locks
+## C10 — Enforce one production runtime owner with Web Locks
 
 ### Purpose
 
@@ -518,7 +566,7 @@ Prevent two independent same-origin tabs from opening competing production SQL/R
 
 - no distributed lease protocol;
 - no automatic takeover while owner is alive;
-- no early authenticated-origin proof; final real-origin ownership belongs to C11.
+- no early authenticated-origin proof; final real-origin ownership belongs to C12.
 
 ### Acceptance
 
@@ -541,40 +589,39 @@ Prevent two independent same-origin tabs from opening competing production SQL/R
 
 ---
 
-## C10 — Prove representative daily mixed workload
+## C11 — Prove representative daily mixed workload
 
 ### Purpose
 
-Verify the actual selected product shape can run like a normal daily local tool before any production cutover.
+Verify the actual selected product shape can run like a normal daily local tool before production cutover.
 
 ### Direct dependencies
 
-- C05;
-- C06;
-- C08;
+- C07;
 - C09;
+- C10;
 - any activated conditional mechanism that changes the release candidate.
 
 ### Scope
 
 - deterministic day-shaped market history/workload;
-- realistic collection cadence and changing universe shape;
+- representative collection cadence and changing universe shape;
 - continuous SQL persistence;
 - Current/Detail reads;
 - representative active Scanner query/interval;
 - selected analytical optimization, if any;
 - one-owner runtime behavior;
-- measure backlog, query durations, responsiveness, memory trend, storage growth and reopen behavior as needed to answer release questions;
-- verify no corruption, silent loss or Scanner overlap.
+- record workload parameters and measured latency/memory/storage facts needed for future regression comparison;
+- verify explicit errors rather than corruption/silent loss.
 
 ### Conditional decisions owned here
 
-C10 may activate, only on evidence:
-- advanced Scanner resource hardening;
-- storage/export/fresh-DB workflow;
-- target Windows/Chrome evidence.
+C11 may activate, only on evidence:
+- O2 advanced Scanner resource hardening;
+- O4 storage/export/fresh-DB workflow;
+- O5 target Windows/Chrome evidence.
 
-If any activated mechanism changes the candidate, rerun the affected C10 workload before closure.
+If any activated mechanism changes the candidate, rerun affected C11 workload verification before closure.
 
 ### Non-goals
 
@@ -585,13 +632,20 @@ If any activated mechanism changes the candidate, rerun the affected C10 workloa
 
 ### Acceptance
 
-- persistence backlog does not grow without bound;
-- Scanner does not overlap;
-- Current/Detail/Scanner remain practically usable;
-- memory/storage behavior is understood and stable enough for the required daily use;
-- accumulated DB reopens successfully;
+- workload parameters are recorded and represent intended normal daily operation;
+- every injected provider cycle reaches a terminal state: committed or explicitly failed;
+- persistence queue/backlog shows no sustained monotonic growth during the steady-state portion;
+- Scanner executions never overlap;
+- representative Scanner executions repeatedly complete;
+- Current and Detail reads continue to complete during mixed load;
+- browser/runtime does not crash or hit OOM;
+- storage growth is measured and no quota/storage failure occurs for the required workload;
+- accumulated DB closes/reopens and expected committed state is readable;
+- measured latency/memory/storage observations are recorded for future regression comparison;
 - no data-integrity failure occurs;
-- every triggered conditional is either resolved and reverified or blocks completion explicitly.
+- every triggered conditional is resolved/reverified or explicitly blocks completion.
+
+If a concrete responsiveness threshold is required for release, define it before the deciding run from real product use/baseline evidence; do not invent it after seeing the result.
 
 ### Verification
 
@@ -604,11 +658,11 @@ If any activated mechanism changes the candidate, rerun the affected C10 workloa
 ### Cleanup
 
 - remove temporary benchmark/profiling scaffolding not retained for regression;
-- keep only the minimal repeatable daily-workload test/assets that protect the product.
+- keep only the minimal repeatable daily-workload assets that protect the product.
 
 ---
 
-## C11 — Run final live verification and perform explicit SQL cutover
+## C12 — Run final live verification and perform explicit SQL cutover
 
 ### Purpose
 
@@ -616,13 +670,13 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 
 ### Direct dependency
 
-- C10.
+- C11.
 
 ### Preconditions
 
 - current candidate Fast CI green;
 - full Browser CI green;
-- C10 green on final candidate;
+- C11 green on final candidate;
 - L-1 and L-2 evidence valid for the compatible candidate;
 - no unresolved material data-integrity/security issue.
 
@@ -641,7 +695,7 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 - keep previous working release available;
 - document/verify simple rollback procedure: stop SQL release, preserve SQL DB, run prior release;
 - remove temporary migration/live-probe scaffolding that has no continuing purpose;
-- update durable docs/STATUS to implementation-complete state only after required verification is green.
+- update durable docs/STATUS only after required verification is green.
 
 ### Non-goals
 
@@ -665,7 +719,7 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 
 - Fast CI;
 - full Browser CI;
-- C10 final workload evidence;
+- C11 final workload evidence;
 - final authenticated self-verifying run;
 - explicit first-production-cycle/readback checks;
 - final security/static guards and docs consistency checks.
@@ -683,12 +737,12 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 Conditional Issues are created only when triggered by evidence from their owner:
 
 ~~~text
-O1 analytical optimization   ← C06
-O2 Scanner resource hardening ← C10
-O3 streaming/chunking         ← C08 or C10
-O4 storage/export/fresh DB    ← C10
-O5 target Windows evidence    ← C10
-O6 shadow comparison          ← C05
+O1 analytical optimization    ← C07
+O2 Scanner resource hardening ← C11
+O3 streaming/chunking         ← C09 or C11
+O4 storage/export/fresh DB    ← C11
+O5 target Windows evidence    ← C11
+O6 shadow comparison          ← C06
 ~~~
 
 A conditional Issue body must state:
@@ -703,63 +757,11 @@ Do not create placeholder conditional Issues.
 
 ---
 
-# Parent navigation drafts
+# Compact Master draft
 
-These are navigation only and must not duplicate live status.
+Create **one** compact Master Issue. Do not create navigation-only parent/Epic Issues.
 
-## P1 — Feasibility + SQL Core
-
-Children:
-~~~text
-C01 C02 C03
-~~~
-
-Outcome:
-~~~text
-Browser SQL premise proven and complete-cycle SQL authority trustworthy
-~~~
-
-## P2 — V1 Product on SQL
-
-Children:
-~~~text
-C04 C05
-~~~
-
-Outcome:
-~~~text
-existing Current + Detail/History product works from SQL with real-provider proof
-~~~
-
-## P3 — Analytics + Scanner
-
-Children:
-~~~text
-C06 C07 C08
-~~~
-
-Outcome:
-~~~text
-real analytical SQL proven and simple Scanner usable
-~~~
-
-## P4 — Daily Readiness + Cutover
-
-Children:
-~~~text
-C09 C10 C11
-~~~
-
-Outcome:
-~~~text
-one-owner daily operation proven and SQL authority switched explicitly
-~~~
-
----
-
-# Master draft
-
-One compact Master should explain only:
+The Master should explain only:
 
 ~~~text
 same V1 provider contract
@@ -770,24 +772,43 @@ same V1 provider contract
 → explicit cutover
 ~~~
 
-It should link P1..P4, point to STATUS.json for live progress, identify #29/#30 as reused completed evidence, and state that conditional mechanisms are created only on evidence triggers.
+Group C01..C12 inside the Master under four headings:
 
-It should not reproduce every child acceptance criterion.
+~~~text
+Feasibility + SQL Core
+V1 Product on SQL
+Analytics + Scanner
+Daily Readiness + Cutover
+~~~
+
+The Master should:
+- point to STATUS.json for live progress;
+- identify #29/#30 as reused completed evidence;
+- link C01..C12;
+- state only direct dependencies;
+- state that conditional O1..O6 work is created only on evidence triggers.
+
+It should not reproduce every child acceptance criterion and should not duplicate live status.
 
 ---
 
 # Draft-spec completion test
 
-These drafts are ready for critique only if:
+These corrected drafts are ready for materialization review only if:
 
-- every C01..C11 has one clear product/engineering purpose;
-- every dependency is direct and matches the compact DAG;
-- acceptance criteria are externally meaningful;
+- every C01..C12 has one clear product/engineering purpose;
+- every dependency is direct and matches browser-sql-compact-execution-dag.md;
+- Current and Detail/History are separate parallel product boundaries;
+- acceptance criteria are observable and avoid arbitrary implementation/performance lock-in;
+- C01 does not freeze production CHECKPOINT cadence;
+- C03 idempotency remains conditional;
+- C11 workload acceptance is measurable without arbitrary after-the-fact thresholds;
 - test layer matches the behavior being proven;
 - no Issue requires future/conditional machinery by default;
-- no Issue exists solely to say 'run a checkpoint';
+- no Issue exists solely to run a checkpoint;
 - no live/manual step remains where Chromium/Node can assert the behavior;
 - C01 safely owns the pending L-1 transfer from old #31 during later materialization;
-- C11 owns final cutover/rollback/cleanup without becoming a generalized release platform.
+- C12 owns final cutover/rollback/cleanup without becoming a generalized release platform;
+- no navigation-only parent Issues are required.
 
-Next step: critique these Issue sizes/dependencies and revise before creating GitHub Issues.
+Next step: run a focused consistency check across the corrected DAG/specifications before creating GitHub Issues.
