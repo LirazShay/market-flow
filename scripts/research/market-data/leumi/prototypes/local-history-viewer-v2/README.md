@@ -24,14 +24,16 @@ After HOT context, read only the current task scope, target code/tests and ownin
 
 Browser-SQL C01-C12 is frozen after the authenticated `wasm-instantiate` failure.
 
-Current migration planning:
+S&T Planner now owns replacement planning:
 
 ~~~text
-100 stages = 5 chats × 20
-one stage = one user-visible message
+.planning/GOAL.md
+→ .planning/TREE.yaml
+→ Final Planning Review
+→ .planning/EXECUTION.yaml
 ~~~
 
-`STATUS.json` is the live pointer. Old `CHAT_EXECUTION_PLAN.md` / `CHAT_PROMPTS.md` are reference-only until replaced.
+The tree determines the real work and executor-chat count; the former fixed 100-stage sequence is superseded. `STATUS.json` remains the workstream live pointer.
 
 ## Baseline architecture
 
