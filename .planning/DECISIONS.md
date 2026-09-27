@@ -238,3 +238,51 @@
 
 **What would reopen this:** A concrete requirement for Scanner execution while no Viewer/runtime browser context exists, or a requirement to persist/restore active query configuration across restarts.
 
+---
+
+## D-016 — Candidate publication and rollback release
+
+**Status:** resolved
+
+**Related S&T node(s):** 5.3, 5.4
+
+**Question:** How can the Node candidate be tested live without overwriting the known-good rolling IndexedDB release first?
+
+**Resolution:** Build the Node runtime/service as one commit-matched candidate artifact/prerelease. Do not change the rolling release tag before authenticated cutover acceptance. On PASS, promote the exact candidate artifacts to the rolling release. On FAIL, stop the candidate and relaunch the still-unchanged rolling IndexedDB release.
+
+**Resolution basis / rationale:** This removes the need for a special backup tag or reverse migration. Rollback remains a runtime selection because legacy IndexedDB is never modified by Node cutover.
+
+**What would reopen this:** A release platform limitation that prevents promotion of the already-verified candidate artifacts without rebuilding them.
+
+---
+
+## D-017 — Final authenticated verification boundary
+
+**Status:** resolved
+
+**Related S&T node(s):** 5.4
+
+**Question:** What live evidence remains necessary after deterministic Node/Chromium/workload verification?
+
+**Resolution:** Exactly one final no-overlap authenticated self-verifying cutover run on the final candidate. It proves real provider collection through one Node commit plus Current, Detail/History, representative Scanner and producer-ownership behavior. The verifier emits sanitized machine-readable PASS/FAIL only. If the assistant cannot control an authenticated browser/session at execution time, the cutover remains pending; do not convert the limitation into a user-operated test checklist.
+
+**Resolution basis / rationale:** Browser→localhost feasibility is already proven on the real Leumi origin and provider acquisition is preserved. Repeating live gates during implementation adds user/session dependency without proving contracts that CI can cover.
+
+**What would reopen this:** A later code change that alters the real provider/origin transport premise materially before cutover.
+
+---
+
+## D-018 — Legacy IndexedDB and obsolete Browser-SQL retirement
+
+**Status:** resolved
+
+**Related S&T node(s):** 5.4, 5.5
+
+**Question:** What is removed after Node acceptance, and what remains as rollback/history?
+
+**Resolution:** After cutover PASS, remove obsolete Browser-SQL executable dependencies/probes/tests/workflows and archive/remove duplicated planning docs according to the Stage-03 inventory. Close old Browser-SQL Issues as superseded. Do not automatically delete the user's old IndexedDB contents; it remains inert local rollback/history data. No Node→IndexedDB reverse import exists.
+
+**Resolution basis / rationale:** Repository/runtime cleanup removes contradictory authority while leaving user data untouched and avoiding a destructive migration step.
+
+**What would reopen this:** A later explicit product requirement to import/delete legacy browser history.
+
