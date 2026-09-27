@@ -80,9 +80,10 @@ test(
         for (
             const requiredText of
             [
-                "docs/project/decisions/D-044.md",
-                "browser-sql-compact-execution-dag.md",
-                "C01..C12"
+                "docs/project/decisions/D-045.md",
+                "localhost Node.js service",
+                "native DuckDB",
+                "frozen reference planning"
             ]
         ) {
             assert.equal(
@@ -90,7 +91,7 @@ test(
                     requiredText
                 ),
                 true,
-                "D-043 lost current compact implementation traceability: " +
+                "D-043 lost current Node-SQL implementation traceability: " +
                     requiredText
             );
         }
