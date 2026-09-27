@@ -20,7 +20,7 @@ C01 proves only the Browser SQL feasibility facts that deterministic CI cannot p
 
 This probe does **not** call Leumi provider APIs and does not open the production Market Flow database.
 
-Cross-tab Web Locks are **not** part of C01. Chromium owns Web Lock implementation verification in C10 / #82, and the authenticated-origin two-tab ownership proof belongs to C12 / #84 before cutover.
+Cross-tab Web Locks are **not** part of C01. Chromium owns Web Lock implementation verification in C10 / #82. The authenticated-origin two-tab proof belongs inside the C12 / #84 no-overlap release transition, after the old IndexedDB Recorder is settled/stopped and before SQL production recording is accepted.
 
 The existing probe may execute CHECKPOINT as part of its current synthetic sequence. That is capability evidence only; it does **not** define production CHECKPOINT cadence or the C03 durability/acknowledgement policy.
 
