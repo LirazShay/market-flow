@@ -23,8 +23,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "S&T Node 3 is locally approved: four Node read operations, one shared viewer-role client, Node-backed Current/diagnostics, SQL-keyset Detail/History and existing BroadcastChannel refresh/recovery are implementation-ready.",
-    "ready": "Decompose S&T Node 4 for Dynamic SQL Scanner and resolve the open read-only SQL enforcement decision D-006.",
+    "completed": "S&T Node 4 is locally approved: hardened SELECT-only Scanner execution, stateless Node query contract, one browser scheduler/config and schema-driven Scanner UI are implementation-ready; D-006 is resolved.",
+    "ready": "Decompose S&T Node 5 for verification/cutover/rollback/retirement, then run Final Planning Review over the whole tree.",
     "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
@@ -54,21 +54,22 @@
       "goal": ".planning/GOAL.md",
       "tree": ".planning/TREE.yaml",
       "planState": "active",
-      "currentNode": "4",
+      "currentNode": "5",
       "node1": "approved-reviewed",
       "node2": "approved-reviewed",
-      "node3": "approved-reviewed"
+      "node3": "approved-reviewed",
+      "node4": "approved-reviewed"
     }
   },
   "next": {
-    "action": "Continue S&T planning from node 4: Dynamic SQL Scanner; resolve D-006 read-only enforcement before approving leaves.",
+    "action": "Continue S&T planning from node 5: verification, cutover, rollback and Browser-SQL retirement; then Final Planning Review.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
     "rules": [
       "Planning source is .planning.",
       "Do not implement production work until plan_state is frozen.",
-      "D-006 is the only current material planning blocker and belongs to Node 4.",
+      "All material planning blockers are currently resolved.",
       "Conversation pacing remains one planning unit per user message unless the user changes it."
     ]
   },
