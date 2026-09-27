@@ -408,40 +408,54 @@ Human decision is acceptable here because cutover/rollback is an explicit releas
 
 ---
 
-# 19. Final live run — small, integrated, machine-observed
+# 19. Final authenticated transition — small, integrated, machine-observed
 
 Do not build an elaborate L-3 framework.
 
-Before cutover, run the final candidate in the authenticated Leumi environment for a representative bounded session.
+The final authenticated proof is part of one explicit no-overlap release transition:
+
+~~~text
+stop old IndexedDB Recorder at a settled boundary
+→ preserve legacy data
+→ launch the tested SQL candidate
+→ prove real-origin two-tab ownership
+→ granted owner opens fresh production OPFS/readiness
+→ begin SQL recording
+→ run a bounded integrated verification
+→ accept cutover only if required checks pass
+~~~
+
+If a material post-stop/cutover check fails, explicitly stop SQL, preserve its DB and launch the retained old release. There is no automatic fallback or history synchronization.
 
 Machine-observe at least:
-- provider cycles attempted/completed/failed;
-- validation failures;
-- persistence failures;
+- provider cycles attempted/completed/failed and exact integrity counters;
+- validation/persistence failures;
 - current committed cycle freshness;
-- Scanner executions/errors/overlap count;
+- Current/Detail trusted reads;
+- one explicitly activated representative Scanner query plus executions/errors/overlap count;
+- one-writer/passive-loser ownership state;
 - obvious backlog growth;
-- one-writer ownership state;
 - runtime/storage errors.
 
 Human role:
 
 ~~~text
-launch the tested artifact in the authenticated session
+launch the tested artifact and perform the explicit release transition in the authenticated session
 ~~~
 
 Assertions remain automated where technically possible.
 
 ---
 
-# 20. Final live run does not need to be a full formal market-day gate
+# 20. Final authenticated transition does not need to reproduce a full market day
 
-The heavy day-shaped workload should be proven deterministically in Chromium with synthetic data.
+The heavy day-shaped workload is proven deterministically in Chromium with synthetic data.
 
-The real authenticated run proves:
-- real origin/provider compatibility;
-- integrated runtime survives normal live operation;
-- one-owner behavior works;
+The bounded authenticated transition proves:
+- real origin/provider compatibility on the final candidate;
+- the actual no-overlap authority switch works;
+- real two-tab single-owner behavior works;
+- Current/Detail and one representative Scanner execution work on live committed SQL data;
 - no unexpected live-only browser/provider issue appears.
 
 It does not need to reproduce an entire trading day if CI already proves the day-scale workload and a shorter live session exercises the real-only surfaces adequately.
