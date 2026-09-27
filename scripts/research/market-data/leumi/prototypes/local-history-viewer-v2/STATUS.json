@@ -12,7 +12,7 @@
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
     "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "Continue the final post-KISS planning audit after Master/C01-C06 review; next audit C07-C08",
+    "title": "Continue the final post-KISS planning audit after Master/C01-C08 review; next audit C09-C10",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0-R6 are complete. R7 review has validated Master #85 and C01-C06. C02 separates build identity from storage compatibility; C03 avoids a mandatory duplicate latest structure; C05/C06 now have explicit public-behavior parity oracles and deterministic ownership of the shared Current→Detail→Back regression.",
-    "ready": "The compact graph remains materialized and implementation is still paused. Master/C01-C06 have passed final critique after targeted KISS/parity corrections; C07-C12, cross-cutting review, dry runs, guards/CI and freeze remain.",
+    "completed": "R0-R6 are complete. R7 review has validated Master #85 and C01-C08. C07 now freezes its representative query corpus/workload before measurement; C08 now has explicit safe activation, draft/no-execute, exact pinned-build read-only enforcement, deterministic activation ordering and collector-cadence isolation. Current analytics design was rewritten to the post-KISS baseline.",
+    "ready": "The compact graph remains materialized and implementation is still paused. Master/C01-C08 have passed final critique after targeted KISS/parity/analytics corrections; C09-C12, cross-cutting review, dry runs, guards/CI and freeze remain.",
     "blockedAfterEntry": "Do not start C01. The next chat must finish R7-R8: final planning critique, fresh-AI dry runs, current-plan guard verification, Fast CI, new post-KISS freeze artifact, final STATUS switch, and closure of #72."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -75,7 +75,7 @@
       "status": "not-required-so-far",
       "reason": "R4-R6 changed GitHub/docs/current-plan Node guard only; no runtime/browser/Playwright production behavior changed."
     },
-    "specImpact": "Planning-only corrections: C05/C06 Issues, compact executable specifications and compact DAG were tightened around public-behavior parity and shared integration ownership. No product/runtime/browser implementation changed.",
+    "specImpact": "Planning-only corrections: C07/C08 Issues and compact specs/DAG tightened; target architecture aligned; sql-live-analytics-design.md replaced with the current post-KISS direction. No product/runtime/browser implementation changed.",
     "planningAudit": {
       "status": "in-progress",
       "reviewed": [
@@ -85,20 +85,25 @@
         "C03 #75",
         "C04 #76",
         "C05 #77",
-        "C06 #78"
+        "C06 #78",
+        "C07 #79",
+        "C08 #80"
       ],
       "corrections": [
         "C02 separates runtime/build identity from schema/storage-format compatibility; ordinary build changes do not make an existing DB incompatible.",
         "C03 keeps atomic persistence over the authoritative structures actually selected by C02 and does not mandate a duplicate latest structure.",
         "Current V2 spec guidance no longer points at the retired WP-* execution graph.",
         "C05/C06 define parity from the implemented public surface specs/tests rather than IndexedDB internals, preserve key Current/Detail observable behavior, and scope the final parity Unknown to the two product surfaces.",
-        "The second of C05/C06 to close owns the shared Current→Detail→Back regression so parallel execution cannot leave integration unverified."
+        "The second of C05/C06 to close owns the shared Current→Detail→Back regression so parallel execution cannot leave integration unverified.",
+        "C07 records its representative query corpus and day-sized workload parameters before deciding whether optimization is needed; no final trading formula or fixed horizon schema is implied.",
+        "C08 makes draft state non-executing, preserves the previous active config on failed activation, proves read-only safety on the exact pinned build without regex-only enforcement, uses deterministic single-runtime activation ordering, and keeps Scanner cadence independent from collection.",
+        "The current target architecture and SQL analytics direction were aligned to the compact post-KISS baseline, removing stale mandatory latest/fixed-horizon/immutable-version/anchored-scheduler design."
       ],
-      "next": "Audit C07 #79 and C08 #80."
+      "next": "Audit C09 #81 and C10 #82."
     }
   },
   "next": {
-    "action": "Continue planning only: audit C07-C12 in order, then perform cross-cutting KISS/dependency review, fresh-AI dry runs, repair any remaining plan/docs/guards, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
+    "action": "Continue planning only: audit C09-C12 in order, then perform cross-cutting KISS/dependency review, fresh-AI dry runs, repair any remaining plan/docs/guards, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE-FINALIZATION",
     "rules": [
