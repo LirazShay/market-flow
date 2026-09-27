@@ -60,7 +60,7 @@ Viewer window:   market-flow-leumi-v2-viewer
 Runtime files:   market-flow-v2.*
 ~~~
 
-The internal `window.MarketFlow*` globals are intentionally still inherited. Do not inject V1 and V2 into the same page context without a refresh. Separate tabs can run independently because their persistent data/channel/window identities are separated.
+The internal `window.MarketFlow*` globals are intentionally still inherited. Do not inject V1 and V2 into the same page context without a refresh. V1 and V2 keep separate persistent data/channel/window identities. Within the V2 SQL target itself, production Recorder/DB ownership is singular: C10 uses one stable exclusive Web Lock so independent V2 tabs cannot become competing production owners.
 
 ## Where to look
 
