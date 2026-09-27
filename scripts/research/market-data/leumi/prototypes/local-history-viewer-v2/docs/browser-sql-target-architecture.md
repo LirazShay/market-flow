@@ -65,7 +65,7 @@ After cutover:
 DuckDB/OPFS = only new market-history authority
 ~~~
 
-The minimum initial schema supports cycle/snapshot identity, current/latest state, raw MapHeat, raw Security history, stable history ordering and small trusted reads.
+The minimum initial schema supports cycle/snapshot identity, authoritative current state, raw MapHeat, raw Security history, stable history ordering and small trusted reads. A separate latest/current lookup structure exists only if C02 proves it necessary.
 
 No fixed persisted horizon/metric/predecessor matrix is required.
 
@@ -76,7 +76,7 @@ Recorder collects
 → exact validation
 → one validated-cycle handoff
 → SQL transaction
-→ atomic current/history/latest state
+→ atomic selected current/history authority state
 → selected proven durability boundary
 → success acknowledgement
 → notification hint
@@ -104,23 +104,23 @@ Viewer code should not depend on physical table layout.
 
 ~~~text
 draft SQL + interval
-→ explicit Activate
-→ one active config
-→ read-only SQL
+→ explicit validated Activate
+→ one successfully active config
+→ read-only SQL on the pinned/hardened engine
 → one execution at a time
 → truthful result/error
 ~~~
 
-Committed-state reads only; zero rows is success; no hidden analytical semantics; no overlap or burst replay.
+Draft edits do not execute. Invalid activation preserves the previous active config. Committed-state reads only; zero rows is success; no hidden analytical semantics; no overlap or burst replay; Scanner cadence never changes collector/provider cadence.
 
-Persist only the current active config for initial restart usefulness.
+Persist only the current successfully activated config for initial restart usefulness. Read-only enforcement is proven on the exact pinned build and is not regex-only.
 
 Immutable query history, anchored scheduler machinery, mandatory streaming and advanced cancellation/preemption are not baseline architecture.
 
 ## 7. Analytical optimization
 
 ~~~text
-real query
+predeclared representative query corpus
 → representative day-sized measurement
 → sufficient? stop
 → insufficient? smallest targeted optimization
@@ -149,7 +149,7 @@ retain committed history
 → explicit failure if safe persistence cannot continue
 ~~~
 
-Unsupported DB/schema compatibility blocks writable startup and preserves the DB unchanged.
+Unsupported schema/storage-format compatibility blocks writable startup and preserves the DB unchanged. Runtime/build identity is traceability metadata and does not itself make an existing DB incompatible.
 
 Archive/rollover and generalized upgrade machinery are conditional/future.
 
