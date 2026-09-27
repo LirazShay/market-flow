@@ -10,9 +10,9 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-chat-execution-plan",
-    "substep": "chat-partition-design",
-    "title": "Design the durable multi-chat implementation split and handoff prompts before final planning freeze",
+    "stage": "browser-sql-plan-final-freeze",
+    "substep": "final-review-freeze-and-implementation-handoff",
+    "title": "Perform the final post-KISS planning freeze and implementation-entry handoff",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Master #85/C01-C12, the cross-cutting DAG and the KISS/current-doc/spec/guard audit are complete. HOT/WARM guidance is compact and aligned; misleading ND-era manuals are reference-only; Issue #72 now owns only the final planning-quality gate.",
-    "ready": "Implementation remains paused. The current planning task is to define exact fresh-chat execution boundaries/prompts for the compact C01-C12 graph, then resume fresh-AI dry runs/final freeze.",
+    "completed": "Master #85/C01-C12, cross-cutting DAG/KISS review, and the serial 12-chat execution design are complete. CHAT_EXECUTION_PLAN.md and CHAT_PROMPTS.md are HOT-visible; representative fresh-AI dry runs for Chat 01, Chat 08 and Chat 12 were repaired and guarded; Fast CI is green.",
+    "ready": "Implementation is still paused only for the final planning freeze/handoff. The next planning action is the final review, freeze artifact, Issue #72 closure and STATUS transition to C01/#73 if no new defect is found.",
     "blockedAfterEntry": "Do not start C01 until the final planning freeze is green and #72 is closed."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -63,44 +63,49 @@
       "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
     },
     "currentPlanGuard": {
-      "status": "green-stage10",
+      "status": "green-after-chat-prompt-review",
       "path": "tests/unit/browser-sql-current-plan.test.js",
-      "note": "Materialized graph, HOT/WARM live/CI boundaries and reference-only legacy-manual guards passed in Fast CI."
+      "note": "Current-plan guard includes the 12-chat mapping/serial-handoff contract."
     },
     "latestFastCi": {
-      "status": "pass-stage10",
-      "runId": 36301274163,
-      "result": "PASS after repairing HOT-context size/history/product wording and guard robustness. A final planning Fast CI run remains required after fresh-AI dry runs and any resulting repairs."
+      "status": "pass",
+      "runId": 36302626256,
+      "result": "PASS on commit 240e5f6e6919ebf77c83fa98978502a94c8626a0 after repairing README HOT-context budget; 12-chat prompt guards are green."
     },
     "browserCi": {
       "status": "not-required",
-      "reason": "Planning/docs/Node-guard changes only; no production/runtime/browser/Playwright behavior changed."
+      "reason": "This work changed planning/docs and Node guards only; no product/runtime/browser/Playwright behavior changed."
     },
     "specImpact": "Planning/docs only. No product/runtime/browser behavior changed.",
     "planningAudit": {
-      "status": "in-progress",
-      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/current-doc/spec/guard audit",
+      "status": "verification-complete-freeze-pending",
+      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/HOT docs + representative fresh-AI chat dry runs + prompt guards",
       "graph": "12 mandatory nodes; acyclic; intended parallel fronts and O1-O6 rejoin ownership verified.",
-      "next": "Fresh-AI dry runs for C01, one middle Issue (C06 or C08), and C12; repair any ambiguity before final CI/freeze."
+      "next": "Perform final review/freeze; if still green, close #72 and move STATUS to implementation entry C01/#73."
     },
     "chatExecutionPlan": {
-      "status": "prompts-written-review-pending",
+      "status": "complete-green",
       "mandatoryChatCount": 12,
       "plan": "CHAT_EXECUTION_PLAN.md",
       "prompts": "CHAT_PROMPTS.md",
-      "visibility": "Both plan and copy/paste prompts are linked prominently from the workstream HOT README.",
-      "currentStep": "Review/dry-run representative prompts and add mechanical guards before final planning freeze.",
-      "rule": "Each prompt identifies Chat NN/12 + owning Cxx/#Issue, validates STATUS before work, keeps blocking discoveries/conditionals in the active chat, and advances only after green verified handoff."
+      "visibility": "Both are linked from the HOT README.",
+      "dryRuns": {
+        "chat01": "PASS — stale prompt correctly blocks while STATUS does not point to C01; prompt cannot self-advance STATUS.",
+        "chat08": "PASS — middle chat reconstructs work from current GitHub/Issue after prior conditional rejoin; no previous-chat memory required.",
+        "chat12": "PASS after correction — final chat cannot invent Chat 13/new work and must hand off to a truthful post-release state."
+      },
+      "guard": "tests/unit/browser-sql-current-plan.test.js verifies exactly 12 Chat/Cxx/#Issue mappings, serial STATUS gating, stale-prompt protection, discovery protocol, next pointers and final Chat 12 semantics.",
+      "rule": "One planned fresh chat per C01-C12, strictly serial; blocking discoveries stay with the active chat and evidence may explicitly revise the durable plan."
     }
   },
   "next": {
-    "action": "Dry-run Chat 01, one middle prompt, and Chat 12 from the HOT path; repair any ambiguity, add narrow prompt-plan guards, run final Fast CI, then finalize planning freeze.",
+    "action": "Perform the final post-KISS planning review/freeze. If no new contradiction appears, write the freeze/handoff, update the implementation continuation prompt, close planning Issue #72, and move the sole STATUS current pointer to Chat 01 / C01 / #73.",
     "issue": 72,
-    "workPackage": "CHAT-PROMPT-DRY-RUN",
+    "workPackage": "FINAL-PLANNING-FREEZE",
     "rules": [
-      "Do not implement C01 or downstream runtime/browser behavior.",
-      "Do not freeze planning until the chat split/prompts and remaining fresh-AI/final CI checks are verified.",
-      "Keep live progress only in STATUS.json."
+      "Do not implement C01 in the planning-freeze work.",
+      "Do not close #72 or point STATUS to C01 until the final freeze review is green.",
+      "After the transition, implementation starts only through Chat 01 and the strict serial protocol."
     ]
   },
   "history": {
