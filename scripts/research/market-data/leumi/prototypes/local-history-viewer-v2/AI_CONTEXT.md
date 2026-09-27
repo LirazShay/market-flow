@@ -99,31 +99,13 @@ It is **not** part of the early C01 feasibility blocker.
 
 ~~~text
 Master #85
-
-C01 #73
-C02 #74
-C03 #75
-C04 #76
-C05 #77
-C06 #78
-C07 #79
-C08 #80
-C09 #81
-C10 #82
-C11 #83
-C12 #84
+C01..C12 = #73..#84
+completed reusable evidence = #29/#30
 ~~~
 
 Stable order/scope: `ROADMAP.md`.
 Exact live pointer: `STATUS.json`.
-Issue navigation: `docs/browser-sql-github-execution-structure.md`.
-
-Completed reusable evidence:
-
-~~~text
-#29 engine pin/manifest
-#30 deterministic Browser SQL probe
-~~~
+Issue mapping: `docs/browser-sql-github-execution-structure.md`.
 
 ## Conditional/future scope
 
