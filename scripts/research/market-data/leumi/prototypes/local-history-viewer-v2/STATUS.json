@@ -10,24 +10,24 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-c01",
-    "substep": "chat-01-authenticated-duckdb-feasibility",
-    "title": "Chat 01/12 — C01 / #73 — prove pinned DuckDB-Wasm on authenticated Leumi",
+    "stage": "node-sql-replan",
+    "substep": "chat-01-stage-01-capture-architecture-trigger",
+    "title": "Chat 01/5 — Node SQL migration re-plan — Stage 01/100",
     "issue": 73,
     "chat": 1,
-    "status": "verification-pending"
+    "status": "in-progress"
   },
   "currentStage": {
-    "stage": "browser-sql-implementation",
-    "title": "Browser SQL V2 compact implementation — C01",
-    "status": "verification-pending"
+    "stage": "architecture-correction",
+    "title": "Browser SQL → Node.js localhost + WebSocket + native DuckDB",
+    "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Post-KISS planning is frozen and verified. Planning Issue #72 is closed. Master #85 with C01-C12 #73-#84 is the executable graph; the 12-chat serial plan/prompts are verified and HOT-visible.",
-    "ready": "C01 deterministic preflight is green; authenticated Leumi L-1 is the only pending exit gate.",
-    "blockedAfterEntry": "None from planning. Any new implementation evidence is handled by the active-chat discovery protocol."
+    "completed": "Authenticated C01 evidence disproved the current Browser-SQL runtime premise at wasm-instantiate. A separate real Leumi-origin smoke test proved browser→ws://127.0.0.1:8765→Node.js messaging.",
+    "ready": "Re-plan V2 around Leumi page collection + localhost WebSocket + Node.js service + native DuckDB before any further implementation.",
+    "blockedAfterEntry": "Do not continue the old C02-C12 Browser-SQL execution graph until the replacement plan/Issues/decisions are materialized and verified."
   },
-  "activeMiniProject": "browser-sql-c01",
+  "activeMiniProject": "node-sql-replan",
   "verification": {
     "planningBaseline": {
       "status": "frozen",
@@ -99,22 +99,26 @@
       "rule": "One planned fresh chat per C01-C12, strictly serial; blocking discoveries stay with the active chat and evidence may explicitly revise the durable plan."
     },
     "c01": {
-      "status": "verification-pending",
+      "status": "failed-live-premise",
       "fastCiRunId": 36304029050,
       "chromiumRunId": 36304029077,
       "artifactId": 10926746330,
-      "live": "pending-authenticated-l1"
+      "live": "FAIL — wasm-instantiate; Worker asset loaded, Wasm instantiation remained Unknown"
+    },
+    "nodeBridge": {
+      "status": "evidence-captured",
+      "result": "PASS — real Leumi page established WebSocket to ws://127.0.0.1:8765 and Node received the test message; production protocol not yet designed."
     }
   },
   "next": {
-    "action": "Run the exact C01 artifact from Actions run 36304029077 on authenticated Leumi and return only its sanitized C01-L1 result.",
+    "action": "Stage 02/100 — define the replacement architecture boundary and authority model before changing implementation code.",
     "issue": 73,
-    "workPackage": "C01",
+    "workPackage": "NODE-SQL-REPLAN",
     "chat": 1,
-    "prompt": "CHAT_PROMPTS.md#chat-01--c01--73",
     "rules": [
-      "Do not start Chat 02 until C01 L-1 passes, #73 closes and STATUS points to C02/#74.",
-      "Live progress remains only in STATUS.json."
+      "One planned stage equals one chat message.",
+      "Do not resume the superseded Browser-SQL implementation graph.",
+      "Do not start implementation before the replacement plan is complete."
     ]
   },
   "history": {
@@ -122,5 +126,12 @@
     "preKissPlan": "docs/history/browser-sql-pre-kiss-42wp-plan/README.md",
     "rule": "Historical planning remains COLD reference; live progress stays only here.",
     "latestArchive": "docs/history/status-snapshots/2026-09-27-pre-final-planning-freeze.json"
+  },
+  "migrationPlan": {
+    "totalStages": 100,
+    "totalChats": 5,
+    "stagesPerChat": 20,
+    "currentStage": 1,
+    "currentChat": 1
   }
 }
