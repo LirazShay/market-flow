@@ -14,7 +14,7 @@ Browser SQL is currently a planning/implementation target governed by:
 ../../../../../../../docs/product/local-history-viewer-v2-product-shape.md
 ~~~
 
-D-043 is target behavior, not a claim that the inherited V1-backed specs already implement the three-surface SQL design. As WP-23..WP-29 change observable behavior, the affected V2 specs must be evolved in the same implementation batch.
+D-043 is target behavior, not a claim that the inherited V1-backed specs already implement the three-surface SQL design. As the owning compact Browser SQL implementation work changes observable behavior, the affected V2 specs must be evolved in the same implementation batch.
 
 When V2 intentionally changes runtime behavior:
 
