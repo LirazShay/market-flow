@@ -84,16 +84,16 @@
       "next": "Fresh-AI dry runs for C01, one middle Issue (C06 or C08), and C12; repair any ambiguity before final CI/freeze."
     },
     "chatExecutionPlan": {
-      "status": "plan-written-prompts-pending",
+      "status": "serial-protocol-defined-prompts-pending",
       "mandatoryChatCount": 12,
       "plan": "CHAT_EXECUTION_PLAN.md",
       "visibility": "Linked prominently from the workstream HOT README.",
-      "currentStep": "Author one copy/paste prompt for each Chat 01..12 and verify that each prompt delegates live state back to STATUS.json.",
-      "rule": "One executable C01-C12 Issue per planned fresh chat; O1-O6 remain evidence-triggered inside the owning chat unless this durable plan is explicitly revised."
+      "currentStep": "Strict serial identity/start/finish/discovery protocol is now durable; next author the 12 copy/paste prompts.",
+      "rule": "Each prompt identifies Chat NN/12 + owning Cxx/#Issue, validates STATUS before work, keeps blocking discoveries/conditionals in the active chat, and advances only after green verified handoff."
     }
   },
   "next": {
-    "action": "Author the 12 copy/paste implementation-chat prompts from CHAT_EXECUTION_PLAN.md, keeping each prompt self-contained enough to bootstrap but free of duplicated live progress.",
+    "action": "Author the 12 copy/paste prompts with explicit Chat NN/12 identity, STATUS entry validation, discovery triage, verified completion receipt, and next-chat handoff.",
     "issue": 72,
     "workPackage": "CHAT-PROMPTS",
     "rules": [
