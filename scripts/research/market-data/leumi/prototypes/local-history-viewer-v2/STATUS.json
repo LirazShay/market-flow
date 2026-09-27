@@ -92,6 +92,7 @@
   "history": {
     "index": "docs/history/README.md",
     "preKissPlan": "docs/history/browser-sql-pre-kiss-42wp-plan/README.md",
-    "rule": "Historical planning remains COLD reference; live progress stays only here."
+    "rule": "Historical planning remains COLD reference; live progress stays only here.",
+    "latestArchive": "docs/history/status-snapshots/2026-09-27-pre-final-planning-freeze.json"
   }
 }
