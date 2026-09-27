@@ -235,15 +235,15 @@ These exist specifically for the rejected Browser-SQL Worker/Wasm probe path.
 
 `package.json` remains the workstream package/test entry point.
 
-Planned package-level changes, not yet implementation:
+Current S&T package decisions:
 
-- remove production dependence on `@duckdb/duckdb-wasm`;
-- remove Browser-SQL probe build/test scripts after their retirement gate;
-- add one maintained native DuckDB Node binding only after official-evidence selection;
-- add/retain a WebSocket server dependency only when the production protocol stage selects it;
-- preserve Playwright and deterministic build/test tooling that still serves browser↔localhost integration.
+- add/pin `@duckdb/node-api@1.5.5-r.5`;
+- add/pin `ws@8.21.3`;
+- remove production dependence on `@duckdb/duckdb-wasm` only after the accepted Node cutover/retirement gate;
+- remove Browser-SQL probe build/test scripts with the same retirement gate;
+- preserve Playwright and deterministic build/test tooling for browser↔localhost integration.
 
-Exact packages/versions are intentionally **not** selected by this inventory stage.
+The Stage-03 inventory originally deferred exact versions; .planning/DECISIONS.md now owns the selected package identities.
 
 ## 11. Security classification
 
