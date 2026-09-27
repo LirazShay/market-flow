@@ -248,3 +248,39 @@ Assuming 5.1–5.5 succeed, all leaf contracts from Nodes 1–4 are exercised to
 - D-017
 - D-018
 
+### R-007 — 2026-09-27 — Replan for offline-first full verification / Fake Leumi
+
+**Result:** pass
+
+**Trigger:**
+The implementation will be performed while the market is closed. The user requires much stronger automatic verification from the start and a local Fake Leumi environment that can exercise the whole architecture before real market data is available.
+
+**Affected planning area reopened:**
+- GOAL verification constraints;
+- root success evidence;
+- Node 5.1;
+- test policy/verification assumptions.
+Nodes 1–4 product strategies remain valid; their leaf success evidence already expects unit/integration/browser proof and is strengthened by D-020 rather than redesigned.
+
+**Necessity test for 5.1 children:**
+- Remove 5.1.1: tests/demo duplicate fake provider semantics or depend on request interception; offline proof is inconsistent.
+- Remove 5.1.2: database/service failures first appear in slow browser E2E; deep transactional/security proof is missing.
+- Remove 5.1.3: build/runtime/browser wiring is not proven across real HTTP/WebSocket/DuckDB boundaries.
+- Remove 5.1.4: the user still cannot exercise the complete system locally without knowing the test runner.
+
+**Sufficiency test:**
+Given shared deterministic Fake Leumi scenarios, real Node/DuckDB integration, real-boundary Chromium E2E and one-command local demo, all product behavior except genuine authenticated Leumi-origin/provider facts can be verified while the market is closed. 5.2 separately covers scale and 5.4 remains the minimal final real-world gate.
+
+**KISS findings:**
+- reuse existing 4-security fixtures/provider paths;
+- extend simple loopback HTTP infrastructure rather than introducing a mock framework;
+- one default small-moving scenario, optional explicit scenario selection;
+- no fake-site GUI/config editor;
+- no Electron/installer;
+- keep Playwright route interception only for focused failure cases.
+
+**Planning changes:**
+- 5.1 is no longer a large leaf; it is decomposed into 5.1.1–5.1.4.
+- D-019 defines Fake Leumi as the canonical offline browser-provider environment.
+- D-020 makes test layering/test-first expectations explicit for all implementation leaves.
+
