@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-e8-scanner-mini-project-plan",
-    "title": "Write the Dynamic SQL Scanner mini-project implementation manual from SQL contract and lifecycle through engine/product checkpoints",
+    "substep": "pass-e9-scanner-verification-plan",
+    "title": "Define the dedicated Dynamic SQL Scanner verification matrix and exact ND-25/ND-27 evidence gates",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E7 completed.",
-    "ready": "E7 separates persisted enrichment, browsing exposure and Scanner availability; ND-21 may be an explicit no-op and leaves a stable analytical handoff for ND-22.",
-    "blockedAfterEntry": "Implementation remains paused; Pass E continues with Scanner and final integration manuals before canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E8 completed.",
+    "ready": "E8 fully specifies the Scanner mini-project from stable SQL contract/lifecycle through safety, execution/result semantics, scheduler/resource evidence, UI, drill-down and separate engine/product checkpoints.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E continues with Scanner verification and final integration manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: enrichment integration plan added and indexed; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: Dynamic SQL Scanner implementation manual added and indexed; older Phase H/K/T mechanisms are explicitly candidates pending re-selection by E8 evidence.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass E8: write the Dynamic SQL Scanner mini-project implementation manual covering stable SQL contract, draft/active lifecycle, safe execution, result typing, scheduler/resource safety, restart semantics, editor/grid UI, drill-down, engine checkpoint and product checkpoint.",
+    "action": "Execute Issue #72 Pass E9: define the Scanner verification plan, including safety cases, lifecycle/scheduler state matrix, restart/interruption, arbitrary types/large results, multi-Viewer editing, isolation, drill-down, mixed-load evidence, and exact ND-25/ND-27 PASS/freshness rules.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Scanner starts only after ND-20; it consumes the E7 analytical handoff without redefining Current/Detail behavior.",
-      "Separate product contracts from benchmark-selected execution mechanisms.",
-      "Require distinct engine and product checkpoints."
+      "Keep ND-25 engine proof separate from ND-27 product proof.",
+      "Require pinned-build Chromium proof for safety and any selected cancellation/preemption mechanism.",
+      "Verify Scanner isolation from provider collection and Current/Detail as a permanent regression."
     ]
   },
   "history": {
