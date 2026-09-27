@@ -184,7 +184,7 @@ After **production/runtime/browser code changes**, Chromium verification on the 
 
 - localized change → targeted Chromium may be sufficient;
 - shared runtime/harness/storage/messaging/viewer integration, cross-component or multi-area change → full Browser suite;
-- every numbered Stage closure → Fast CI + full Browser CI.
+- closing a coherent browser/runtime mini-project or cross-component integration boundary → Fast CI + full Browser CI; docs/planning-only or pure Node-only work does not require Browser CI merely because it closes a numbered planning Stage.
 
 Any added/modified test must run in its real layer after the final edit.
 
@@ -366,7 +366,7 @@ A work unit is complete only when relevant items are true:
 - required tests passed;
 - changed tests ran in their native layer;
 - code changes received required Chromium verification;
-- numbered Stage closure has Fast + full Browser CI;
+- coherent browser/runtime or cross-component closure has Fast + full Browser CI when that layer is relevant;
 - live-only verification is explicitly pending when applicable;
 - no known failure is hidden;
 - data-integrity checks are present where needed;
