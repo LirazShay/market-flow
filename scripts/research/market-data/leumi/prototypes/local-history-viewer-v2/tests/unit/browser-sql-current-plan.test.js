@@ -403,3 +403,56 @@ test(
         );
     }
 );
+
+
+test(
+    "legacy-looking Browser SQL manuals are visibly reference-only and current runbooks use audited ownership timing",
+    () => {
+        const referenceOnlyDocs = [
+            "docs/browser-sql-rebaseline-dependency-dag.md",
+            "docs/browser-sql-self-verifying-live-gates-plan.md",
+            "docs/browser-sql-v1-on-sql-implementation-manual.md",
+            "docs/browser-sql-v1-parity-verification-plan.md",
+            "docs/browser-sql-v1-on-sql-checkpoint.md",
+            "docs/browser-sql-enrichment-implementation-manual.md",
+            "docs/browser-sql-enrichment-benchmark-plan.md",
+            "docs/browser-sql-enrichment-integration-plan.md",
+            "docs/browser-sql-scanner-implementation-manual.md",
+            "docs/browser-sql-scanner-verification-plan.md"
+        ];
+
+        for (const relativePath of referenceOnlyDocs) {
+            const content =
+                readWorkstream(
+                    relativePath
+                );
+
+            assert.match(
+                content,
+                /Reference-only \/ superseded/i,
+                relativePath +
+                    " must not look like current executable guidance."
+            );
+        }
+
+        const docsIndex =
+            readWorkstream(
+                "docs/README.md"
+            );
+
+        assert.match(
+            docsIndex,
+            /not listed in the Current Browser SQL authorities table[\s\S]*reference\/evidence only/i
+        );
+
+        const c01Runbook =
+            readWorkstream(
+                "docs/browser-sql-live-gate-l1.md"
+            );
+
+        assert.match(
+            c01Runbook,
+            /C12 \/ #84 no-overlap release transition[\s\S]*old IndexedDB Recorder is settled\/stopped[\s\S]*before SQL production recording is accepted/i
+        );
+    }
+);
