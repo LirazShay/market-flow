@@ -41,14 +41,14 @@ decisions.md
 | [D-023](decisions/D-023.md) | Progressive context loading with preserved cold history | Accepted | ai-context, navigation, history, efficiency |
 | [D-024](decisions/D-024.md) | Repository self-maintenance is part of every change | Accepted | maintenance, hygiene, source-of-truth, ai-workflow |
 | [D-025](decisions/D-025.md) | Market Flow V2 analytical architecture is Browser-only SQL | Superseded by D-045 for V2 | browser-sql, architecture, local-history-viewer-v2 |
-| [D-026](decisions/D-026.md) | Browser SQL uses one dedicated SQL Authority Worker | Accepted | browser-sql, duckdb-wasm, opfs, worker, architecture |
+| [D-026](decisions/D-026.md) | Browser SQL uses one dedicated SQL Authority Worker | Superseded by D-045 for V2 | browser-sql, duckdb-wasm, opfs, worker, architecture |
 | [D-027](decisions/D-027.md) | Browser SQL uses snapshot-centric wide core-horizon schema | Superseded by D-044 for initial V2 | browser-sql, schema, snapshot, horizons, data-model |
 | [D-028](decisions/D-028.md) | Validated cycles commit atomically after SQL-side enrichment | Superseded by D-044 for initial V2 | browser-sql, ingest, atomicity, enrichment, transactions |
 | [D-029](decisions/D-029.md) | Analytical SQL uses immutable versions and a non-overlapping anchored scheduler | Superseded by D-044 for initial V2 | browser-sql, scheduler, query-runtime, sql-safety, versioning |
 | [D-030](decisions/D-030.md) | OPFS durability uses checkpointed batches and idempotent recovery | Superseded by D-044 for initial V2 | browser-sql, opfs, persistence, recovery, checkpoint, idempotency |
-| [D-031](decisions/D-031.md) | Browser SQL delivery keeps Market Flow self-contained and pins external engine assets | Accepted / amended by D-044 | browser-sql, runtime, bookmarklet, wasm, worker, delivery, csp |
+| [D-031](decisions/D-031.md) | Browser SQL delivery keeps Market Flow self-contained and pins external engine assets | Superseded by D-045 for V2 | browser-sql, runtime, bookmarklet, wasm, worker, delivery, csp |
 | [D-032](decisions/D-032.md) | Viewer is a detachable client of one Runtime Controller | Superseded by D-044 for initial V2 | browser-sql, viewer, results, messaging, multi-viewer |
-| [D-033](decisions/D-033.md) | Browser SQL verification uses Node + Chromium + mandatory live Leumi gates | Accepted / amended by D-044 | browser-sql, testing, playwright, live-verification, ci |
+| [D-033](decisions/D-033.md) | Browser SQL verification uses Node + Chromium + mandatory live Leumi gates | Superseded by D-045 for current V2 topology | browser-sql, testing, playwright, live-verification, ci |
 | [D-034](decisions/D-034.md) | Browser SQL performance is gated by cadence-relative headroom and full-session evidence | Superseded by D-044 for initial V2 | browser-sql, performance, benchmark, headroom, chromium |
 | [D-035](decisions/D-035.md) | Browser SQL cutover starts a fresh authority epoch without importing legacy IndexedDB history | Accepted / amended by D-044 | browser-sql, migration, cutover, indexeddb, rollback |
 | [D-036](decisions/D-036.md) | Browser SQL uses scoped failures, worst-active health precedence and sanitized local observability | Superseded by D-044 for initial V2 | browser-sql, failure, security, observability, health, diagnostics |
