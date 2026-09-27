@@ -1,5 +1,8 @@
 # Browser SQL V2 — Self-Verifying Live Gates Plan
 
+> **Reference-only / superseded live-gate design.** Current initial-V2 live boundaries are C01, controlled single-tab C06/L-2, and the no-overlap C12 release transition. Use the active Issues, D-044 and `tests/TESTING_POLICY.md`; do not implement the old L-3 framework from this file.
+
+
 ## Role
 
 This is Pass E3 of Issue #72.
