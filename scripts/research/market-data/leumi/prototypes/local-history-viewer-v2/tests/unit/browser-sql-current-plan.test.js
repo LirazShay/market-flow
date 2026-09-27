@@ -43,11 +43,16 @@ function readWorkstream(relativePath) {
 }
 
 test(
-    "D-044 is the current Browser SQL implementation baseline and old planning decisions are superseded",
+    "D-045 is the current V2 authority boundary and Browser-SQL execution is frozen",
     () => {
         const decisionIndex =
             readRepository(
                 "docs/project/decisions.md"
+            );
+
+        const d045 =
+            readRepository(
+                "docs/project/decisions/D-045.md"
             );
 
         const d044 =
@@ -55,34 +60,29 @@ test(
                 "docs/project/decisions/D-044.md"
             );
 
-        const d037 =
-            readRepository(
-                "docs/project/decisions/D-037.md"
-            );
-
-        const d042 =
-            readRepository(
-                "docs/project/decisions/D-042.md"
+        const roadmap =
+            readWorkstream(
+                "ROADMAP.md"
             );
 
         assert.match(
             decisionIndex,
-            /D-044[\s\S]*Accepted/
+            /D-045[\s\S]*Accepted/
+        );
+
+        assert.match(
+            d045,
+            /authenticated Leumi page[\s\S]*loopback WebSocket[\s\S]*local Node\.js service[\s\S]*native DuckDB/i
         );
 
         assert.match(
             d044,
-            /one Master plus C01\.\.C12 executable Issues/
+            /Status:\s*Superseded by D-045 for Local History Viewer V2/i
         );
 
         assert.match(
-            d037,
-            /Status:\s*Superseded by D-044 for initial V2/i
-        );
-
-        assert.match(
-            d042,
-            /Status:\s*Superseded by D-044 for initial V2/i
+            roadmap,
+            /FROZEN \/ NOT EXECUTABLE[\s\S]*D-045/i
         );
     }
 );
@@ -439,12 +439,12 @@ test(
 
         assert.match(
             aiContext,
-            /controlled single-tab real provider[\s\S]*not cross-tab production-ownership evidence/i
+            /Leumi page[\s\S]*ws:\/\/127\.0\.0\.1:8765[\s\S]*local Node\.js server/i
         );
 
         assert.match(
             aiContext,
-            /one no-overlap authenticated release transition/i
+            /Local Node\.js service:[\s\S]*sole target owner of V2 DuckDB persistence and SQL execution/i
         );
 
         assert.match(
