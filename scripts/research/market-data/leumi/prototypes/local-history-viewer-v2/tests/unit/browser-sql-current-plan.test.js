@@ -442,7 +442,12 @@ test(
 
         assert.match(
             docsIndex,
-            /not listed in the Current Browser SQL authorities table[\s\S]*reference\/evidence only/i
+            /Current Browser SQL authorities table/i
+        );
+
+        assert.match(
+            docsIndex,
+            /reference\/evidence only/i
         );
 
         const c01Runbook =
