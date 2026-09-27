@@ -11,27 +11,27 @@
   },
   "currentFocus": {
     "stage": "node-sql-replan",
-    "substep": "chat-01-stage-01-capture-architecture-trigger",
-    "title": "Chat 01/5 — Node SQL migration re-plan — Stage 01/100",
+    "substep": "chat-01-stage-02-authority-boundary",
+    "title": "Chat 01/5 — Node SQL migration re-plan — Stage 02/100",
     "issue": 73,
     "chat": 1,
     "status": "in-progress"
   },
   "currentStage": {
     "stage": "architecture-correction",
-    "title": "Browser SQL → Node.js localhost + WebSocket + native DuckDB",
+    "title": "Node.js localhost authority boundary fixed by D-045",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Authenticated C01 evidence disproved the current Browser-SQL runtime premise at wasm-instantiate. A separate real Leumi-origin smoke test proved browser→ws://127.0.0.1:8765→Node.js messaging.",
-    "ready": "Re-plan V2 around Leumi page collection + localhost WebSocket + Node.js service + native DuckDB before any further implementation.",
-    "blockedAfterEntry": "Do not continue the old C02-C12 Browser-SQL execution graph until the replacement plan/Issues/decisions are materialized and verified."
+    "completed": "D-045 fixes authenticated Leumi collector → loopback WebSocket → one localhost Node.js service → native DuckDB as the replacement authority boundary. D-043 provider/product continuity remains current.",
+    "ready": "Inventory Browser-SQL artifacts, decisions and Issues and classify each keep/adapt/archive/retire before designing the replacement execution graph.",
+    "blockedAfterEntry": "Old Browser-SQL ROADMAP/C01-C12 prompts are frozen and not executable."
   },
   "activeMiniProject": "node-sql-replan",
   "verification": {
     "planningBaseline": {
-      "status": "frozen",
-      "decision": "../../../../../../../docs/project/decisions/D-044.md",
+      "status": "superseded-by-d045",
+      "decision": "../../../../../../../docs/project/decisions/D-045.md",
       "freeze": "docs/browser-sql-final-planning-freeze.md",
       "masterIssue": 85,
       "executableIssues": {
@@ -51,9 +51,9 @@
       "planningIssue72": "closed-completed"
     },
     "engineSelection": {
-      "status": "complete",
-      "target": "@duckdb/duckdb-wasm@1.32.0 / DuckDB core v1.4.3 (d1dc88f950d456d72493df452dabdcd13aa413dd)",
-      "manifest": "runtime/duckdb-engine-manifest.js"
+      "status": "replanning",
+      "target": "Node.js localhost service + native DuckDB; exact maintained Node package/version not yet pinned",
+      "historicalBrowserCandidate": "@duckdb/duckdb-wasm@1.32.0 failed authenticated C01 at wasm-instantiate"
     },
     "reusableProbeEvidence": {
       "status": "complete",
@@ -85,7 +85,7 @@
       "result": "PASS"
     },
     "chatExecutionPlan": {
-      "status": "complete-green",
+      "status": "frozen-superseded",
       "mandatoryChatCount": 12,
       "plan": "CHAT_EXECUTION_PLAN.md",
       "prompts": "CHAT_PROMPTS.md",
@@ -108,16 +108,21 @@
     "nodeBridge": {
       "status": "evidence-captured",
       "result": "PASS — real Leumi page established WebSocket to ws://127.0.0.1:8765 and Node received the test message; production protocol not yet designed."
+    },
+    "architectureCorrection": {
+      "status": "accepted",
+      "decision": "../../../../../../../docs/project/decisions/D-045.md",
+      "authority": "authenticated Leumi collector → loopback WebSocket → localhost Node.js → native DuckDB"
     }
   },
   "next": {
-    "action": "Stage 02/100 — define the replacement architecture boundary and authority model before changing implementation code.",
+    "action": "Stage 03/100 — inventory Browser-SQL artifacts/decisions/Issues and classify each keep, adapt, archive or retire.",
     "issue": 73,
     "workPackage": "NODE-SQL-REPLAN",
     "chat": 1,
     "rules": [
       "One planned stage equals one chat message.",
-      "Do not resume the superseded Browser-SQL implementation graph.",
+      "D-045 is the current runtime/process authority boundary.",
       "Do not start implementation before the replacement plan is complete."
     ]
   },
@@ -131,7 +136,7 @@
     "totalStages": 100,
     "totalChats": 5,
     "stagesPerChat": 20,
-    "currentStage": 1,
+    "currentStage": 2,
     "currentChat": 1
   }
 }
