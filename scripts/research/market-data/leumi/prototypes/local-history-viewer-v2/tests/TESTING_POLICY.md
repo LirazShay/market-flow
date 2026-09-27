@@ -39,6 +39,33 @@ regression test
 
 Tests should protect public/observable behavior rather than private implementation details.
 
+## Node-SQL test pyramid
+
+The migration is designed to be testable while the exchange is closed.
+
+~~~text
+pure protocol / validation / scheduling / presentation logic
+→ focused unit tests
+
+local-service protocol / DuckDB transactions / restart / reads / Scanner safety
+→ real ws + real temporary DuckDB service integration tests
+
+browser runtime / provider collection / Recorder / Viewer / Scanner
+→ Chromium against real loopback Fake Leumi HTTP + real local service
+
+~561-security growth/performance
+→ separate accelerated workload gate
+
+real authenticated Leumi facts only
+→ one final self-verifying cutover gate
+~~~
+
+The canonical offline provider environment serves the same MapHeat2/GetSecuritiesData paths from sanitized synthetic scenarios. Main happy-path browser E2E must use the real Fake Leumi HTTP server rather than request interception. Focused malformed/failure tests may still use Playwright routing when it is the smallest isolated proof.
+
+Every implementation leaf should add/adjust the cheapest public-contract proof first when practical, then broaden only across boundaries affected by that leaf.
+
+A one-command local Fake Leumi demo must reuse the same simulator and Node service as CI so local manual exercise is not a separate implementation.
+
 ## Automation-first verification
 
 Human checking is not a substitute for an assertion that can be automated.
