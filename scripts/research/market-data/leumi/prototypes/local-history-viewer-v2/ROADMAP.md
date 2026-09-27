@@ -13,6 +13,8 @@ D-044 = post-KISS Browser SQL implementation baseline
 
 ## Fixed product and integrity constraints
 
+V1 provider/collection continuity is preserved while storage and analytical authority change.
+
 - preserve the proven V1 authenticated MapHeat2 → sequential GetSecuritiesData contract;
 - canonical SecurityId = `String(PaperId or Key)`;
 - no hardcoded universe size;

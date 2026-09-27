@@ -32,6 +32,7 @@ Preserves mechanism-level planning that was useful research but is no longer cur
 
 ## Other historical areas
 
-Existing folders for V1 freeze/bootstrap, testing refactors, runtime optimization and live-verification evidence remain historical owners for their respective work.
+- `status-snapshots/` preserves historical STATUS snapshots used for continuation/RCA.
+- Existing folders for V1 freeze/bootstrap, testing refactors, runtime optimization and live-verification evidence remain historical owners for their respective work.
 
 Do not copy live current/next status into this directory.

@@ -154,78 +154,109 @@ test(
 );
 
 test(
-    "Browser SQL contracts trace D-043 through ingest, Viewer integration and cutover",
+    "current Browser SQL contracts trace D-043 through the compact D-044 execution baseline",
     () => {
-        const requirements =
-            readWorkstream(
-                "docs/browser-sql-requirements-and-acceptance.md"
-            );
-
-        for (
-            const id of
-            [
-                "DR-67",
-                "DR-68",
-                "DR-69",
-                "DR-70",
-                "DR-71",
-                "DR-72",
-                "AB-33",
-                "AB-34",
-                "AB-35",
-                "AB-36"
-            ]
-        ) {
-            assert.equal(
-                requirements.includes(
-                    id
-                ),
-                true,
-                "Missing D-043 requirement/acceptance ID: " +
-                    id
-            );
-        }
-
-        const decomposition =
-            readWorkstream(
-                "docs/browser-sql-implementation-decomposition.md"
+        const d044 =
+            read(
+                "docs/project/decisions/D-044.md"
             );
 
         for (
             const requiredText of
             [
-                "same validated complete-cycle market facts produced by the V1-proven collector",
-                "preserve the proven V1 page-context provider/data acquisition contract",
-                "support a separate Dynamic SQL Scanner client surface",
-                "preserve the V1-derived Current Universe surface",
-                "all three D-043 Viewer surfaces use the production SQL authority",
-                "final runtime preserves D-043 provider/data continuity"
+                "existing authenticated V1 provider flow",
+                "atomic raw/current/history SQL authority",
+                "Current Universe + Security Detail/History",
+                "simple read-only Dynamic SQL Scanner",
+                "explicit cutover",
+                "C01..C12"
             ]
         ) {
             assert.equal(
-                decomposition.includes(
+                d044.includes(
                     requiredText
                 ),
                 true,
-                "Implementation decomposition lost D-043 behavior: " +
+                "D-044 lost compact implementation contract: " +
                     requiredText
             );
         }
 
-        const finalFreeze =
+        const dag =
             readWorkstream(
-                "docs/browser-sql-final-planning-freeze.md"
+                "docs/browser-sql-compact-execution-dag.md"
             );
 
-        assert.match(
-            finalFreeze,
-            /DR-68[\s\S]*WP-09\.\.WP-14/
-        );
+        const specs =
+            readWorkstream(
+                "docs/browser-sql-compact-issue-specifications.md"
+            );
 
-        assert.match(
-            finalFreeze,
-            /DR-71[\s\S]*WP-36\.\.WP-38/
-        );
+        for (
+            const requiredText of
+            [
+                "C04 — Recorder integration + trusted reads",
+                "C05 — Current Universe SQL parity",
+                "C06 — Detail/History SQL parity + bounded L-2",
+                "C08 — Scanner core",
+                "C12 — Final live verification + cutover/rollback/cleanup"
+            ]
+        ) {
+            assert.equal(
+                dag.includes(
+                    requiredText
+                ),
+                true,
+                "Compact DAG lost product-flow owner: " +
+                    requiredText
+            );
+        }
+
+        for (
+            const requiredText of
+            [
+                "C04 — Integrate the Recorder and expose trusted SQL reads",
+                "C05 — Move Current Universe to trusted SQL reads",
+                "C06 — Move Detail/History to SQL and run bounded L-2",
+                "C08 — Implement the simple safe Scanner core",
+                "C12 — Run final live verification and perform explicit SQL cutover"
+            ]
+        ) {
+            assert.equal(
+                specs.includes(
+                    requiredText
+                ),
+                true,
+                "Compact Issue specifications lost product-flow owner: " +
+                    requiredText
+            );
+        }
+
+        for (
+            const historicalPath of
+            [
+                "docs/browser-sql-requirements-and-acceptance.md",
+                "docs/browser-sql-implementation-decomposition.md",
+                "docs/browser-sql-final-planning-freeze.md"
+            ]
+        ) {
+            const content =
+                readWorkstream(
+                    historicalPath
+                );
+
+            assert.match(
+                content,
+                /(superseded|historical)/i,
+                historicalPath +
+                    " must not present the old 42-WP plan as current authority."
+            );
+
+            assert.match(
+                content,
+                /D-044/
+            );
+        }
     }
 );
 
@@ -237,24 +268,16 @@ test(
                 "docs/browser-sql-target-architecture.md"
             );
 
-        const viewer =
-            readWorkstream(
-                "docs/browser-sql-viewer-result-delivery.md"
+        const product =
+            read(
+                "docs/product/local-history-viewer-v2-product-shape.md"
             );
-
-        assert.equal(
-            architecture.includes(
-                "Viewer / future SQL editor"
-            ),
-            false,
-            "Target architecture still contains the pre-D-043 future-editor ambiguity."
-        );
 
         for (
             const content of
             [
                 architecture,
-                viewer
+                product
             ]
         ) {
             assert.match(
@@ -322,7 +345,7 @@ test(
 );
 
 test(
-    "V2 design navigation exposes the D-043 decision and product authority",
+    "V2 design navigation exposes current D-043/D-044 authorities and cold history",
     () => {
         const docsIndex =
             readWorkstream(
@@ -336,7 +359,17 @@ test(
 
         assert.match(
             docsIndex,
+            /D-044/
+        );
+
+        assert.match(
+            docsIndex,
             /local-history-viewer-v2-product-shape\.md/
+        );
+
+        assert.match(
+            docsIndex,
+            /history\/README\.md/
         );
     }
 );

@@ -16,7 +16,7 @@ The preserved acquisition contract is:
 authenticated Leumi page
 → MapHeat2 dynamic universe
 → sequential GetSecuritiesData chunks
-→ exact complete-cycle validation
+→ exact completeness validation
 → one validated complete cycle
 ~~~
 
@@ -104,7 +104,7 @@ The Scanner is additive; it does not replace Current or Detail/History.
 Minimum behavior:
 
 - editable user SQL;
-- configurable repeat interval;
+- user-selectable repeat interval;
 - explicit activation;
 - one active SQL/config;
 - read-only execution against committed coherent data;

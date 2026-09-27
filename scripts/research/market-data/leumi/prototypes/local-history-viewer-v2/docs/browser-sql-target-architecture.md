@@ -41,6 +41,8 @@ Viewer surface(s)
 
 Viewer surfaces are clients. They do not independently own DuckDB/OPFS.
 
+The Dynamic SQL Scanner is additive and does not replace the V1-derived Current Universe or Security Detail/History surfaces.
+
 ## 2. Provider continuity
 
 ~~~text
