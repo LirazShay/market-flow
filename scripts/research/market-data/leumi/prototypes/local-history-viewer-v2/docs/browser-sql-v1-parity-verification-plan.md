@@ -1,5 +1,8 @@
 # Browser SQL V2 — V1↔V2 Parity Verification Plan
 
+> **Reference-only / superseded verification guidance.** Current parity ownership is C05/C06 plus their public-behavior tests under D-044. The ND-* checkpoint structure below is historical planning rationale.
+
+
 ## Role
 
 This is Pass E2 of Issue #72.
