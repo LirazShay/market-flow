@@ -235,6 +235,11 @@ test(
                 "NEXT_CHAT_PROMPT.md"
             );
 
+        const projectInstructions =
+            readRepository(
+                "PROJECT_INSTRUCTIONS.md"
+            );
+
         assert.match(
             decomposition,
             /Superseded for current initial V2 by D-044/i
@@ -267,22 +272,32 @@ test(
 
         assert.match(
             nextPrompt,
-            /Start \*\*Chat 01 of 12\*\*/i
+            /אני צאט 1 תתחיל/
         );
 
         assert.match(
             nextPrompt,
-            /CHAT_PROMPTS\.md/
+            /Project Instructions[\s\S]*STATUS\.json/i
         );
 
         assert.match(
-            nextPrompt,
-            /planning Issue #72 is closed/i
+            projectInstructions,
+            /אני צאט N תתחיל/
         );
 
         assert.match(
-            nextPrompt,
-            /STATUS\.json[\s\S]{0,80}points to Chat 01 \/ C01 \/ #73/i
+            projectInstructions,
+            /אל תבקש prompt נוסף/
+        );
+
+        assert.match(
+            projectInstructions,
+            /מספר הצ'אט הוא identity hint בלבד[\s\S]*לעולם לא גובר על STATUS\.json/i
+        );
+
+        assert.match(
+            projectInstructions,
+            /Issue שלו סגור[\s\S]*required verification ירוק[\s\S]*STATUS\.json מצביע על הצ'אט\/Issue הבא/i
         );
     }
 );
