@@ -12,7 +12,7 @@
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
     "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "Continue the final post-KISS planning audit after Master/C01-C04 review; next audit C05-C06",
+    "title": "Continue the final post-KISS planning audit after Master/C01-C06 review; next audit C07-C08",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0-R6 are complete. R7 review has validated Master #85 and C01-C04. C02 now separates runtime/build identity from storage compatibility; C03 no longer mandates a separate latest structure; retired WP references were removed from current V2 spec guidance.",
-    "ready": "The compact graph remains materialized and implementation is still paused. Master/C01-C04 have passed final critique after targeted KISS corrections; C05-C12, cross-cutting review, dry runs, guards/CI and freeze remain.",
+    "completed": "R0-R6 are complete. R7 review has validated Master #85 and C01-C06. C02 separates build identity from storage compatibility; C03 avoids a mandatory duplicate latest structure; C05/C06 now have explicit public-behavior parity oracles and deterministic ownership of the shared Current→Detail→Back regression.",
+    "ready": "The compact graph remains materialized and implementation is still paused. Master/C01-C06 have passed final critique after targeted KISS/parity corrections; C07-C12, cross-cutting review, dry runs, guards/CI and freeze remain.",
     "blockedAfterEntry": "Do not start C01. The next chat must finish R7-R8: final planning critique, fresh-AI dry runs, current-plan guard verification, Fast CI, new post-KISS freeze artifact, final STATUS switch, and closure of #72."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -75,7 +75,7 @@
       "status": "not-required-so-far",
       "reason": "R4-R6 changed GitHub/docs/current-plan Node guard only; no runtime/browser/Playwright production behavior changed."
     },
-    "specImpact": "Planning-only corrections: C03 executable Issue/compact specs/DAG aligned; stale retired-WP references removed from V2 spec guidance. No product/runtime/browser implementation changed.",
+    "specImpact": "Planning-only corrections: C05/C06 Issues, compact executable specifications and compact DAG were tightened around public-behavior parity and shared integration ownership. No product/runtime/browser implementation changed.",
     "planningAudit": {
       "status": "in-progress",
       "reviewed": [
@@ -83,18 +83,22 @@
         "C01 #73",
         "C02 #74",
         "C03 #75",
-        "C04 #76"
+        "C04 #76",
+        "C05 #77",
+        "C06 #78"
       ],
       "corrections": [
         "C02 separates runtime/build identity from schema/storage-format compatibility; ordinary build changes do not make an existing DB incompatible.",
         "C03 keeps atomic persistence over the authoritative structures actually selected by C02 and does not mandate a duplicate latest structure.",
-        "Current V2 spec guidance no longer points at the retired WP-* execution graph."
+        "Current V2 spec guidance no longer points at the retired WP-* execution graph.",
+        "C05/C06 define parity from the implemented public surface specs/tests rather than IndexedDB internals, preserve key Current/Detail observable behavior, and scope the final parity Unknown to the two product surfaces.",
+        "The second of C05/C06 to close owns the shared Current→Detail→Back regression so parallel execution cannot leave integration unverified."
       ],
-      "next": "Audit C05 #77 and C06 #78."
+      "next": "Audit C07 #79 and C08 #80."
     }
   },
   "next": {
-    "action": "Continue planning only: audit C05-C12 in order, then perform cross-cutting KISS/dependency review, fresh-AI dry runs, repair any remaining plan/docs/guards, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
+    "action": "Continue planning only: audit C07-C12 in order, then perform cross-cutting KISS/dependency review, fresh-AI dry runs, repair any remaining plan/docs/guards, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE-FINALIZATION",
     "rules": [
