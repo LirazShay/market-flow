@@ -29,104 +29,25 @@
   },
   "activeMiniProject": "node-sql-replan",
   "verification": {
-    "planningBaseline": {
-      "status": "superseded-by-d045",
-      "decision": "../../../../../../../docs/project/decisions/D-045.md",
-      "freeze": "docs/browser-sql-final-planning-freeze.md",
-      "masterIssue": 85,
-      "executableIssues": {
-        "C01": 73,
-        "C02": 74,
-        "C03": 75,
-        "C04": 76,
-        "C05": 77,
-        "C06": 78,
-        "C07": 79,
-        "C08": 80,
-        "C09": 81,
-        "C10": 82,
-        "C11": 83,
-        "C12": 84
-      },
-      "planningIssue72": "closed-completed"
-    },
-    "engineSelection": {
-      "status": "replanning",
-      "target": "Node.js localhost service + native DuckDB; exact maintained Node package/version not yet pinned",
-      "historicalBrowserCandidate": "@duckdb/duckdb-wasm@1.32.0 failed authenticated C01 at wasm-instantiate"
-    },
-    "reusableProbeEvidence": {
-      "status": "complete",
-      "issues": [
-        29,
-        30
-      ],
-      "chromiumRunId": 36139339586,
-      "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
-    },
-    "currentPlanGuard": {
-      "status": "transitioning-to-node-sql",
-      "path": "tests/unit/browser-sql-current-plan.test.js",
-      "note": "D-045 and Stage-03 inventory are guarded; historical Browser-SQL graph guards remain only until replacement Node-SQL graph is materialized."
-    },
     "latestFastCi": {
       "status": "pass",
       "runId": 36306504525,
       "commit": "4935f8f6567a1b17af77cfe8dda69972284951b1",
       "result": "PASS — Fast CI green after Stage-03 inventory/index/guard realignment."
     },
-    "browserCi": {
-      "status": "not-required-for-planning-freeze",
-      "reason": "Planning finalization changed docs/Node guards only; no production/runtime/browser/Playwright behavior changed."
-    },
-    "planningAudit": {
-      "status": "complete",
-      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/HOT docs + representative fresh-AI dry runs + serial-prompt guards + final freeze",
-      "result": "PASS"
-    },
-    "chatExecutionPlan": {
-      "status": "frozen-superseded",
-      "mandatoryChatCount": 12,
-      "plan": "CHAT_EXECUTION_PLAN.md",
-      "prompts": "CHAT_PROMPTS.md",
-      "visibility": "Both are linked from the HOT README.",
-      "dryRuns": {
-        "chat01": "PASS — stale prompt correctly blocks while STATUS does not point to C01; prompt cannot self-advance STATUS.",
-        "chat08": "PASS — middle chat reconstructs work from current GitHub/Issue after prior conditional rejoin; no previous-chat memory required.",
-        "chat12": "PASS after correction — final chat cannot invent Chat 13/new work and must hand off to a truthful post-release state."
-      },
-      "guard": "tests/unit/browser-sql-current-plan.test.js verifies exactly 12 Chat/Cxx/#Issue mappings, serial STATUS gating, stale-prompt protection, discovery protocol, next pointers and final Chat 12 semantics.",
-      "rule": "One planned fresh chat per C01-C12, strictly serial; blocking discoveries stay with the active chat and evidence may explicitly revise the durable plan."
-    },
-    "c01": {
-      "status": "failed-live-premise",
-      "fastCiRunId": 36304029050,
-      "chromiumRunId": 36304029077,
-      "artifactId": 10926746330,
-      "live": "FAIL — wasm-instantiate; Worker asset loaded, Wasm instantiation remained Unknown"
-    },
-    "nodeBridge": {
-      "status": "evidence-captured",
-      "result": "PASS — real Leumi page established WebSocket to ws://127.0.0.1:8765 and Node received the test message; production protocol not yet designed."
+    "architectureTrigger": {
+      "browserSql": "FAIL — authenticated C01 stopped at wasm-instantiate; Issue #73 owns the evidence.",
+      "nodeBridge": "PASS — real Leumi page reached ws://127.0.0.1:8765 and Node received the test message."
     },
     "architectureCorrection": {
       "status": "accepted",
       "decision": "../../../../../../../docs/project/decisions/D-045.md",
       "authority": "authenticated Leumi collector → loopback WebSocket → localhost Node.js → native DuckDB"
     },
-    "replan": {
-      "status": "superseded-by-snt-planner",
-      "totalStages": 100,
-      "totalChats": 5,
-      "stagesPerChat": 20,
-      "currentStage": 3,
-      "currentChat": 1,
-      "stage02": "complete-green",
-      "stage03": {
-        "status": "complete-green",
-        "inventory": "docs/node-sql-migration-inventory.md",
-        "fastCiRunId": 36306504525
-      }
+    "migrationInventory": {
+      "status": "complete-green",
+      "path": "docs/node-sql-migration-inventory.md",
+      "fastCiRunId": 36306504525
     },
     "sntPlanner": {
       "status": "active",
