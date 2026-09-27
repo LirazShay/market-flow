@@ -1,0 +1,106 @@
+version: 1
+
+root: "0"
+
+nodes:
+  "0":
+    status: draft
+    strategy: "Local History Viewer V2 operates simply and reliably on a localhost Node.js + native DuckDB authority while preserving the proven Leumi collection contract and all required user-facing SQL/history behavior."
+    tactic: "Keep authenticated collection in the browser, cross one narrow loopback WebSocket boundary, centralize persistence/reads/Scanner in one Node service, adapt the existing Viewer, then verify/cut over and retire the rejected Browser-SQL path."
+    parallel_assumptions:
+      - "Real Leumi-origin browser→localhost WebSocket connectivity is already verified."
+      - "D-045 fixes one local Node service as the authority boundary, so no browser-side SQL ownership is required."
+      - "The existing V1-derived collector and Viewer provide reusable behavior rather than requiring a rewrite from scratch."
+    necessary_assumptions: []
+    sufficiency_assumptions:
+      - "A correct transport/producer boundary, one correct persistent authority, preserved read surfaces, a safe Scanner, and verified cutover together cover the complete desired outcome."
+      - "Operational simplicity is handled inside the single-service and cutover branches rather than by adding a separate deployment subsystem."
+    success_evidence:
+      - "A validated real/synthetic complete cycle can travel browser→Node and become one atomic DuckDB commit."
+      - "Current Universe and Security Detail/History read the committed Node authority and preserve their public behavior."
+      - "Dynamic SQL Scanner runs user-selected read-only SQL repeatedly without changing collector cadence or corrupting ingest."
+      - "Only one producer can mutate the authority while multiple Viewer clients can read it."
+      - "Fast CI, browser integration verification and final scoped live verification are green on the cutover candidate."
+      - "Old Browser-SQL executable assets/issues are retired or archived only after replacement ownership exists."
+    depends_on: []
+    children:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+
+  "1":
+    status: draft
+    strategy: "The authenticated browser sends only valid, well-defined market-data work to the local authority over one safe loopback protocol."
+    tactic: "Adapt the existing Recorder/runtime around a small versioned WebSocket protocol with explicit producer/viewer roles, validation, acknowledgements and failure semantics."
+    parallel_assumptions:
+      - "The existing Recorder already produces a validated complete-cycle object before persistence."
+      - "Native browser WebSocket to 127.0.0.1 is already proven on the real Leumi origin."
+    necessary_assumptions:
+      - "Without a deterministic browser→Node boundary, Node cannot safely become the new persistence authority."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Protocol contract covers connect/role, session lifecycle, complete-cycle commit, commit acknowledgement/error and read/query requests without transporting provider credentials."
+    depends_on: []
+    children: []
+
+  "2":
+    status: draft
+    strategy: "One local Node.js process is the sole durable SQL/history authority and commits complete cycles correctly."
+    tactic: "Implement one loopback WebSocket service around a pinned native DuckDB Node API, a minimal raw/current/history schema and atomic/idempotent complete-cycle persistence."
+    parallel_assumptions:
+      - "DuckDB's maintained Node API supports a persistent local database and normal SQL execution."
+      - "One service process removes the OPFS/Web-Lock/multi-owner complexity that invalidated the browser design."
+    necessary_assumptions:
+      - "Without one durable authority, history/current/Scanner cannot share coherent committed state."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Service opens/reopens one local database, accepts one producer, commits or rolls back a whole cycle, and exposes coherent current/history state after restart."
+    depends_on: []
+    children: []
+
+  "3":
+    status: draft
+    strategy: "Current Universe and Security Detail/History preserve their user-visible behavior while reading the Node authority."
+    tactic: "Keep the existing browser Viewer shell/pure presentation logic and replace IndexedDB data adapters/refresh notifications with WebSocket request/response plus commit notifications."
+    parallel_assumptions:
+      - "Most current Viewer behavior is independent of IndexedDB and can keep its pure rendering/sorting/navigation logic."
+      - "Using WebSocket for reads avoids adding an HTTP/CORS/PNA surface solely for the Viewer."
+    necessary_assumptions:
+      - "The migration is incomplete if the existing browsing surfaces regress or retain IndexedDB as a co-authority."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Current and Detail/History parity tests pass against the local service with no provider calls from Viewer actions."
+    depends_on: []
+    children: []
+
+  "4":
+    status: draft
+    strategy: "The Dynamic SQL Scanner provides safe, truthful user-defined analytics on committed DuckDB history."
+    tactic: "Run one active read-only Scanner configuration inside Node, schedule without overlap/burst replay, validate SQL safety before execution and return truthful schema/results/errors to the Viewer."
+    parallel_assumptions:
+      - "Running Scanner beside DuckDB avoids browser SQL/CSP limitations and keeps collector cadence independent."
+      - "One active configuration is sufficient for the initial product."
+    necessary_assumptions:
+      - "Dynamic SQL is an explicit V2 product requirement and cannot be replaced by hard-coded application ranking logic."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Representative SELECT/JOIN/GROUP/HAVING/window queries return correct results; mutating SQL is rejected; zero rows and errors are rendered truthfully; executions never overlap."
+    depends_on: []
+    children: []
+
+  "5":
+    status: draft
+    strategy: "The Node-SQL candidate can replace the old authority safely and leave the repository/daily workflow simpler than the rejected Browser-SQL path."
+    tactic: "Build deterministic Node+Chromium verification, exercise one bounded authenticated final path, cut over at a settled boundary, keep legacy IndexedDB only as explicit rollback evidence, and retire obsolete Browser-SQL machinery."
+    parallel_assumptions:
+      - "Most correctness can be proven without repeated user-operated live checks."
+      - "A fresh Node/DuckDB authority avoids importer and dual-write complexity."
+    necessary_assumptions:
+      - "Without verified cutover/cleanup, the repository and runtime would retain ambiguous competing authorities."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Final candidate passes required CI/integration/live evidence, starts with one simple local-service command plus the browser runtime, and repository authorities point only to the Node-SQL design."
+    depends_on: []
+    children: []
