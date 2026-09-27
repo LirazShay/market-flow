@@ -422,8 +422,8 @@ Use the actual SQL queries the product needs before deciding that persisted anal
 
 ### Verification
 
-- deterministic query correctness tests;
-- focused Chromium/DuckDB measurement where browser runtime matters;
+- deterministic correctness tests for the predeclared query corpus and expected results;
+- focused Chromium/DuckDB measurement using the recorded day-sized workload parameters where browser runtime matters;
 - Fast CI;
 - Browser CI only for changed browser/SQL integration surfaces.
 
@@ -490,7 +490,7 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 ### Verification
 
 - Node tests for pure interval/config/state logic where useful;
-- Chromium with real pinned DuckDB-Wasm for safety corpus, timer/no-overlap, restart and execution attribution;
+- Chromium with real pinned DuckDB-Wasm for draft-does-not-run, invalid-Activate preservation, allowed/blocked safety corpus + engine hardening, timer/no-overlap/no-burst, deterministic activation ordering, restart and execution attribution;
 - Fast CI + full Browser CI.
 
 ### Cleanup
