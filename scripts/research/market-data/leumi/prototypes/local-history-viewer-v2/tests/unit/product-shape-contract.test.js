@@ -80,10 +80,9 @@ test(
         for (
             const requiredText of
             [
-                "WP-09..WP-14",
-                "WP-23..WP-24",
-                "WP-25..WP-29",
-                "WP-36..WP-38"
+                "docs/project/decisions/D-044.md",
+                "browser-sql-compact-execution-dag.md",
+                "C01..C12"
             ]
         ) {
             assert.equal(
@@ -91,10 +90,18 @@ test(
                     requiredText
                 ),
                 true,
-                "D-043 lost executable ownership: " +
+                "D-043 lost current compact implementation traceability: " +
                     requiredText
             );
         }
+
+        assert.equal(
+            /WP-09\.\.WP-14|WP-23\.\.WP-24|WP-25\.\.WP-29|WP-36\.\.WP-38/.test(
+                decision
+            ),
+            false,
+            "D-043 must not retain superseded 42-WP ownership ranges."
+        );
     }
 );
 
