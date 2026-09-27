@@ -20,7 +20,7 @@ nodes:
       - "Current Universe and Security Detail/History read the committed Node authority and preserve their public behavior."
       - "Dynamic SQL Scanner runs user-selected read-only SQL repeatedly without changing collector cadence or corrupting ingest."
       - "Only one producer can mutate the authority while multiple Viewer clients can read it."
-      - "Fast CI, browser integration verification and final scoped live verification are green on the cutover candidate."
+      - "Fast CI, real-service integration, Chromium E2E against the local Fake Leumi site, one-command local demo, representative workload and final scoped live verification are green on the cutover candidate."
       - "Old Browser-SQL executable assets/issues are retired or archived only after replacement ownership exists."
     depends_on: []
     children:
@@ -525,24 +525,109 @@ nodes:
 
   "5.1":
     status: approved
-    strategy: "The complete Node-SQL system has one automated verification matrix that proves cross-component behavior without user-operated checking."
-    tactic: "Adapt package/test tooling and CI after Nodes 1–4 exist: production dependencies pin @duckdb/node-api@1.5.5-r.5 and ws@8.21.3; Fast CI runs existing public/pure tests plus Node protocol/database/lifecycle/Scanner integration tests against temporary DB files; Browser CI uses Playwright webServer entries to start the existing HTTP harness and the localhost service in test mode (temporary DB + explicit harness Origin), then runs Node-backed Recorder/Current/Detail/Scanner/runtime tests. Keep browser tests against public behavior and upload traces/reports only on failure."
+    strategy: "The complete Node-SQL system can be proven automatically and exercised locally without waiting for an open market or authenticated Leumi session."
+    tactic: "Build one layered test pyramid around shared synthetic market scenarios: pure unit tests, real Node/DuckDB service integration, a real local Fake Leumi HTTP site that serves production provider paths, Chromium E2E that uses that site without route interception, and a one-command headed/manual local demo using the same components."
     parallel_assumptions:
-      - "The service /healthz endpoint gives Playwright deterministic readiness without adding an application HTTP API."
-      - "Synthetic provider fixtures can prove browser↔Node behavior while authenticated origin/provider facts remain reserved for one final live gate."
+      - "The repository already has four-security Leumi fixtures, provider-path constants and Playwright mocks that can be promoted into a real HTTP simulator instead of inventing new fake semantics."
+      - "Because provider URLs are same-origin relative paths, a local page can exercise the production collector against fake MapHeat2/GetSecuritiesData endpoints."
+      - "A small moving universe is sufficient for correctness/navigation/Scanner behavior; the separate 5.2 workload leaf owns scale."
     necessary_assumptions:
-      - "Without full deterministic system verification, cutover would depend on manual spot checking and could hide cross-component regressions."
+      - "Without a market-independent full-system harness, implementation completed while the exchange is closed cannot be verified deeply enough before the final live gate."
+    sufficiency_assumptions:
+      - "Shared scenarios + unit/service/browser/local-demo layers prove the same contracts at increasing boundaries, while 5.2 separately proves scale and 5.4 retains the one irreducible real-origin/provider proof."
+    success_evidence:
+      - "All core business/protocol logic has focused unit coverage and no private implementation-detail coupling."
+      - "Node service integration uses real ws sockets + real temporary DuckDB files and covers success, rollback/fault, restart and security/ownership paths."
+      - "Chromium E2E loads a real Fake Leumi page, calls real local HTTP MapHeat2/GetSecuritiesData endpoints, connects to the real Node service and proves Recorder→DuckDB→Current/Detail/Scanner."
+      - "A local one-command demo starts Fake Leumi + Node service, prints one URL, supports a configurable small scenario and requires no Playwright interception, bank login or market hours."
+    depends_on: []
+    children:
+      - "5.1.1"
+      - "5.1.2"
+      - "5.1.3"
+      - "5.1.4"
+
+  "5.1.1":
+    status: approved
+    strategy: "All test layers share one deterministic Fake Leumi market model instead of duplicating ad-hoc fixtures."
+    tactic: "Refactor the existing tests/fixtures/leumi-api-fixtures.js into reusable synthetic scenarios while preserving its current public exports. Add a default small-moving scenario with 4 securities, stable canonical IDs and a finite repeating sequence of market states that deliberately includes normal changing prices plus zero/null/missing-value cases. Add tests/fake-leumi/server.js (or equivalent simple Node module) on 127.0.0.1:4173 that serves fake-leumi.html and the exact existing /lti/lti-app/api/MarketFast/MapHeat2 and /lti/lti-app/api/SecuritiesFast/GetSecuritiesData paths. It tracks the requested ID coverage for each complete security cycle and advances the scenario only after the full current universe has been served. Expose scenario selection through one explicit CLI/env option with small-moving as default; no GUI scenario editor."
+    parallel_assumptions:
+      - "Existing fixture builders already encode the verified Leumi response envelope and null/zero cases."
+      - "Advancing after the current universe has been fully served preserves deterministic cycles even if chunk size changes."
+    necessary_assumptions:
+      - "Without one shared deterministic fake market, unit/service/E2E/manual tests can disagree about provider behavior and become expensive to maintain."
     sufficiency_assumptions: []
     success_evidence:
-      - "Fast CI proves protocol validation, Origin/producer ownership, schema/bootstrap, JSON fidelity, atomic rollback fault points, restart recovery, read models, SQL guard and Scanner scheduling logic."
-      - "Full Chromium proves no-service fail-closed launch, validated synthetic cycles → Node commit, Current parity, Detail/history paging, refresh/reload, multiple viewers, second-producer rejection and Scanner result/error/navigation behavior."
-      - "No browser integration test requires credentials, cookies, authenticated dumps or private account/session data."
-      - "Final CI state no longer depends on DuckDB-Wasm/OPFS probe workflows."
+      - "Existing mock-Leumi fixture tests remain green after refactor."
+      - "Direct HTTP tests prove MapHeat2 two-step loading and GetSecuritiesData filtering use the production endpoint/query contract."
+      - "The default scenario can reset deterministically, advance only after full-universe coverage and preserve 0/null/missing distinctions."
+      - "The fake server is loopback-only and contains no real provider/session/account data."
+    depends_on: []
+    children: []
+
+  "5.1.2":
+    status: approved
+    strategy: "Node/DuckDB correctness is proven with real service/database integration before browser E2E."
+    tactic: "Create a service-test harness that starts the real local service on an ephemeral/overridden loopback port with a temporary DuckDB path and explicit allowed test Origin, drives it with real ws clients using the shared protocol, and tears down DB/process state per test. Add integration suites for producer lifecycle, exact complete-cycle commit/readback, transaction fault injection/rollback, JSON fidelity, restart/interrupted-session recovery, one-producer/multiple-viewer ownership, viewer read models, Scanner SQL hardening/execution and socket/error boundaries."
+    parallel_assumptions:
+      - "Using the real service and real temporary DuckDB catches integration defects that mocks of database/transport would hide."
+      - "The service already has configuration seams for test DB path/Origin/port and requires no dependency-injection framework."
+    necessary_assumptions:
+      - "Without a real service integration layer, browser E2E becomes the first place persistence/security failures surface and is slower/harder to diagnose."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Service integration tests run headless with no browser and no network outside loopback."
+      - "Fault injection proves all-or-nothing persistence at every transaction phase."
+      - "Restart tests reopen the same temp DB and verify exact committed state/interrupted-session repair."
+      - "Scanner/ownership/security tests mutate no authority on rejected operations."
+    depends_on:
+      - "1.1"
+      - "2.5"
+      - "3.1"
+      - "4.2"
+      - "5.1.1"
+    children: []
+
+  "5.1.3":
+    status: approved
+    strategy: "Chromium proves the complete browser product against real local HTTP/WebSocket/DuckDB boundaries rather than Playwright network stubs."
+    tactic: "Adapt playwright.config.js/webServer startup to run both the Fake Leumi HTTP site and the local Node service in test mode. Add/convert the main happy-path E2E to page.goto the real fake-leumi.html, load the real built runtime, let its production universe/provider code call the fake HTTP endpoints naturally, then assert session/universe/cycles in Node plus Current, Detail/history, BroadcastChannel refresh, reload/reopen, Scanner results/navigation, second-producer rejection, service-loss fail-closed behavior and recovery via explicit relaunch. Keep page.route mocks only for focused malformed/HTTP-failure tests where route injection is the cheapest isolated proof."
+    parallel_assumptions:
+      - "A real local HTTP provider boundary is materially closer to production than page.route while still deterministic."
+      - "Existing Playwright public-behavior tests can be adapted incrementally instead of rewritten wholesale."
+    necessary_assumptions:
+      - "Without full browser E2E through actual HTTP + WebSocket + DuckDB, wiring/build/runtime regressions can survive lower test layers."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Primary E2E happy path contains no page.route interception and no live Leumi request."
+      - "At least several fake cycles create growing history while latest remains one row/security and Viewer/Scanner update from committed Node data."
+      - "Browser tests cover no-service launch, mid-run service loss, explicit relaunch and multiple viewer windows."
+      - "Full Browser CI starts/stops all local processes deterministically and uploads diagnostics on failure."
     depends_on:
       - "1.4"
-      - "2.5"
       - "3.5"
       - "4.4"
+      - "5.1.1"
+      - "5.1.2"
+    children: []
+
+  "5.1.4":
+    status: approved
+    strategy: "The user can exercise the final architecture locally today with no bank login, market hours or test-runner knowledge."
+    tactic: "Add one documented npm run demo:fake-leumi command backed by a tiny launcher script that starts the Fake Leumi HTTP site and Node service with a dedicated ignored demo DuckDB file, selects the default 4-security small-moving scenario (optional --scenario override), prints the Fake Leumi URL and clean stop instructions, and leaves the normal built runtime/bookmarklet usable on that page. Also provide npm run demo:fake-leumi:reset to remove only the ignored demo DB/state. Do not add an installer, Electron app or custom control panel."
+    parallel_assumptions:
+      - "Reusing the exact Fake Leumi and local-service processes from CI makes local manual exercise meaningful rather than a separate demo implementation."
+      - "Four moving synthetic securities are enough to inspect Current, Detail/history and Scanner behavior manually."
+    necessary_assumptions:
+      - "Without a simple local entry point, a fully automated harness still does not satisfy the requirement to exercise the system locally before real market availability."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "From a clean checkout after npm install, one command starts both services and prints a working URL."
+      - "The page continuously produces synthetic cycles into a dedicated DuckDB file and the user can open Current, Detail/history and Scanner without Leumi."
+      - "Stop/restart preserves demo history unless the explicit reset command is used."
+      - "The demo never touches production DB path, legacy IndexedDB authority or real Leumi endpoints."
+    depends_on:
+      - "5.1.3"
     children: []
 
   "5.2":
@@ -561,7 +646,7 @@ nodes:
       - "p95 commit and representative query timings are <3000 ms on the CI runner; otherwise cutover is blocked and the smallest measured optimization is planned before proceeding."
       - "The workload workflow is not required on every push; it is required on the final cutover candidate and after changes that can materially affect persistence/query performance."
     depends_on:
-      - "5.1"
+      - "5.1.2"
     children: []
 
   "5.3":
