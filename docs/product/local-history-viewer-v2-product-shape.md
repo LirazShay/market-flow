@@ -44,14 +44,14 @@ validated complete cycle
 → Viewer reads IndexedDB
 
 V2:
-same validated complete cycle
-→ one SQL Authority
-→ pinned DuckDB-Wasm + persistent OPFS
+same validated complete cycle in authenticated Leumi page
+→ loopback WebSocket
+→ one localhost Node.js / native DuckDB authority
 → atomic raw/current/history persistence
 → trusted SQL-backed reads
 ~~~
 
-After explicit production cutover, DuckDB/OPFS is the only new market-history authority. IndexedDB is not a co-equal production authority.
+After explicit production cutover, Node/native DuckDB is the only new market-history authority. IndexedDB is not a co-equal production authority.
 
 V2 also adds:
 
@@ -79,7 +79,7 @@ all current securities
 → deterministic table/sorting
 ~~~
 
-The source changes from IndexedDB to trusted Runtime Controller / SQL Authority reads.
+The source changes from IndexedDB to trusted localhost Node/DuckDB reads.
 
 Missing/null/zero distinctions remain truthful.
 
@@ -93,7 +93,7 @@ selected canonical SecurityId
 → persisted chronological history
 ~~~
 
-The source changes from IndexedDB to trusted Runtime Controller / SQL Authority reads.
+The source changes from IndexedDB to trusted localhost Node/DuckDB reads.
 
 The surface must remain useful for known persisted history even when a security is no longer in the current universe.
 
@@ -127,7 +127,7 @@ The UI must not silently add a second filter/rank/sort or hidden LIMIT that chan
 
 ## 6. Navigation and authority
 
-All three surfaces are clients of one Runtime Controller / SQL Authority.
+All three surfaces are clients of one localhost Node.js / native DuckDB authority.
 
 Notifications are hints. Viewer state is rebuilt from authoritative reads.
 
@@ -161,48 +161,14 @@ A completed V2 must demonstrate together:
 
 ## 9. Traceability
 
-Product/provider authority:
+Product/provider continuity:
+`docs/project/decisions/D-043.md`
 
-~~~text
-docs/project/decisions/D-043.md
-~~~
+Current runtime/process boundary:
+`docs/project/decisions/D-045.md`
 
-Implementation baseline:
+Active implementation plan:
+`.planning/TREE.yaml`
 
-~~~text
-docs/project/decisions/D-044.md
-~~~
-
-Current implementation ownership:
-
-~~~text
-Master #85
-
-C02-C04 = #74-#76
-  minimum SQL authority, atomic cycle persistence, Recorder integration and trusted reads
-
-C05 = #77
-  Current Universe SQL parity
-
-C06 = #78
-  Detail/History SQL parity + bounded real-provider L-2
-
-C07 = #79
-  real analytical SQL + evidence-driven optimization decision
-
-C08-C09 = #80-#81
-  simple Scanner core + Scanner UI/results
-
-C10-C11 = #82-#83
-  single-owner runtime + representative daily mixed workload
-
-C12 = #84
-  final live verification + explicit cutover/rollback/cleanup
-~~~
-
-C01/#73 owns the real-origin DuckDB feasibility premise before C02.
-
-The compact dependency source is:
-`scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-compact-execution-dag.md`.
-
-Live completion/current-next state remains only in the V2 `STATUS.json`.
+Live workstream current/next state:
+`scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json`
