@@ -324,3 +324,82 @@ test(
         );
     }
 );
+
+
+test(
+    "HOT/WARM guidance preserves the audited post-KISS live and CI boundaries",
+    () => {
+        const agents =
+            readRepository(
+                "AGENTS.md"
+            );
+
+        const aiContext =
+            readWorkstream(
+                "AI_CONTEXT.md"
+            );
+
+        const testingPolicy =
+            readWorkstream(
+                "tests/TESTING_POLICY.md"
+            );
+
+        const specsIndex =
+            readWorkstream(
+                "specs/README.md"
+            );
+
+        const targetArchitecture =
+            readWorkstream(
+                "docs/browser-sql-target-architecture.md"
+            );
+
+        assert.equal(
+            agents.includes(
+                "every numbered Stage closure"
+            ),
+            false,
+            "Repository guidance must not require Browser CI solely because a planning Stage is numbered."
+        );
+
+        assert.match(
+            agents,
+            /docs\/planning-only or pure Node-only work does not require Browser CI/i
+        );
+
+        assert.match(
+            aiContext,
+            /controlled single-tab real provider[\s\S]*not cross-tab production-ownership evidence/i
+        );
+
+        assert.match(
+            aiContext,
+            /one no-overlap authenticated release transition/i
+        );
+
+        assert.match(
+            testingPolicy,
+            /C06 \/ L-2[\s\S]*controlled single-tab real provider/i
+        );
+
+        assert.match(
+            testingPolicy,
+            /C12[\s\S]*old Recorder settled\/stopped[\s\S]*representative Scanner verification/i
+        );
+
+        assert.match(
+            specsIndex,
+            /D-044\.md/
+        );
+
+        assert.match(
+            specsIndex,
+            /browser-sql-compact-issue-specifications\.md/
+        );
+
+        assert.match(
+            targetArchitecture,
+            /normal transition has no old\/new production-authority overlap/i
+        );
+    }
+);
