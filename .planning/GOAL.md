@@ -18,6 +18,8 @@ authenticated Leumi page
 
 The migration succeeds when the daily tool works end-to-end with Node/DuckDB as the only new SQL/history authority, while the proven Leumi collection/data contract and user-facing V1-derived browsing behavior remain intact.
 
+Before any real-market cutover, the same end-to-end path must also run deterministically against a configurable small Fake Leumi market so correctness can be established when the exchange is closed.
+
 ## Current reality
 
 - D-045 already selected the localhost Node.js + native DuckDB authority boundary after authenticated DuckDB-Wasm failed at `wasm-instantiate`.
@@ -44,6 +46,8 @@ The migration succeeds when the daily tool works end-to-end with Node/DuckDB as 
 - Prefer one producer and multiple read/viewer clients; do not reintroduce browser DB ownership/election.
 - Tests protect public/observable behavior; use Node for service/database logic and Chromium for browser↔localhost/UI integration.
 - Repository remains public; fixtures/logs/evidence must stay sanitized.
+- The whole system must be verifiable while the market is closed: unit tests, real Node/DuckDB service integration tests, Chromium E2E against a local Fake Leumi HTTP site, and a one-command local manual demo all use sanitized synthetic data.
+- The Fake Leumi site must serve the same MapHeat2/GetSecuritiesData paths used by production collection; browser E2E must not depend on Playwright request interception for the main happy-path proof.
 - Planning completes and freezes before production implementation starts.
 
 ## Non-goals
