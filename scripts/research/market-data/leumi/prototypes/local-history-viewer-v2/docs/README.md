@@ -20,6 +20,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | analytical enrichment implementation manual | [browser-sql-enrichment-implementation-manual.md](browser-sql-enrichment-implementation-manual.md) |
 | enrichment decision benchmark plan | [browser-sql-enrichment-benchmark-plan.md](browser-sql-enrichment-benchmark-plan.md) |
 | enrichment integration plan | [browser-sql-enrichment-integration-plan.md](browser-sql-enrichment-integration-plan.md) |
+| Dynamic SQL Scanner implementation manual | [browser-sql-scanner-implementation-manual.md](browser-sql-scanner-implementation-manual.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
 | official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
