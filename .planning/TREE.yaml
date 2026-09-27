@@ -652,7 +652,7 @@ nodes:
   "5.3":
     status: approved
     strategy: "The exact verified candidate is easy to run locally and can be tested without destroying the previous rollback release."
-    tactic: "Extend the release build after 5.1/5.2: Browser CI emits the existing runtime.js/bookmarklet plus market-flow-v2-local-service.zip containing local-service/ source, shared transport protocol, production package.json/package-lock.json subset or equivalent locked install files, and a short RUN.md with one-time npm ci --omit=dev and daily npm run start:local-service commands. The candidate remains a CI artifact/prerelease and does not replace the rolling runtime tag until 5.4 passes."
+    tactic: "Extend the release build after offline Fake Leumi verification/local demo and workload proof: Browser CI emits the existing runtime.js/bookmarklet plus market-flow-v2-local-service.zip containing local-service/ source, shared transport protocol, production package.json/package-lock.json subset or equivalent locked install files, and a short RUN.md with one-time npm ci --omit=dev and daily npm run start:local-service commands. The candidate remains a CI artifact/prerelease and does not replace the rolling runtime tag until 5.4 passes."
     parallel_assumptions:
       - "Node source is already runnable and does not need a bundler/native executable layer."
       - "A locked npm install plus one start command is simpler and more maintainable than packaging node_modules or introducing Docker."
@@ -665,7 +665,7 @@ nodes:
       - "The candidate browser runtime and local-service zip come from the same green Browser/workload-verified commit."
       - "The existing rolling IndexedDB release is unchanged before live acceptance."
     depends_on:
-      - "5.1"
+      - "5.1.4"
       - "5.2"
     children: []
 
