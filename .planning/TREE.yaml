@@ -160,7 +160,7 @@ nodes:
   "2.1":
     status: approved
     strategy: "The local service has one secure, deterministic process/connection ownership boundary."
-    tactic: "Add local-service/server.mjs using ws@8.21.3, bind only 127.0.0.1:8765, set maxPayload to 16 MiB, validate the exact production Origin before upgrade/hello, accept roles from the shared protocol, allow only one producer socket at a time, allow multiple viewer sockets, and dispatch producer writes through one serialized Promise chain."
+    tactic: "Add local-service/server.mjs using Node http + ws@8.21.3 on 127.0.0.1:8765: expose only GET /healthz for readiness and WebSocket upgrade for application traffic; set maxPayload to 16 MiB, validate the exact production Origin before upgrade/hello, accept roles from the shared protocol, allow only one producer socket at a time, allow multiple viewer sockets, and dispatch producer writes through one serialized Promise chain."
     parallel_assumptions:
       - "Port binding already provides single service-process ownership; a second PID/lock-file system is unnecessary."
       - "A simple Promise tail is sufficient to prevent heartbeat/lifecycle/cycle transactions from interleaving on the writer connection."
@@ -498,16 +498,129 @@ nodes:
     children: []
 
   "5":
-    status: draft
+    status: approved
     strategy: "The Node-SQL candidate can replace the old authority safely and leave the repository/daily workflow simpler than the rejected Browser-SQL path."
-    tactic: "Build deterministic Node+Chromium verification, exercise one bounded authenticated final path, cut over at a settled boundary, keep legacy IndexedDB only as explicit rollback evidence, and retire obsolete Browser-SQL machinery."
+    tactic: "Prove the full candidate in deterministic Node/Chromium CI, run one accelerated representative mixed workload, package one reproducible candidate without overwriting rollback, perform one no-overlap self-verifying authenticated cutover, then retire superseded Browser-SQL runtime/planning machinery."
     parallel_assumptions:
-      - "Most correctness can be proven without repeated user-operated live checks."
-      - "A fresh Node/DuckDB authority avoids importer and dual-write complexity."
+      - "Most correctness and failure behavior can be proven automatically with synthetic data before touching the authenticated bank origin."
+      - "The real Leumi-origin WebSocket premise is already verified and provider acquisition remains unchanged, so only one final authenticated end-to-end cutover proof is necessary."
+      - "Publishing the Node candidate separately from the rolling IndexedDB release keeps rollback trivial until acceptance."
     necessary_assumptions:
       - "Without verified cutover/cleanup, the repository and runtime would retain ambiguous competing authorities."
+    sufficiency_assumptions:
+      - "Final deterministic CI, representative workload evidence, reproducible candidate packaging, one bounded authenticated cutover/rollback gate, and post-acceptance retirement together cover release correctness and operational handoff."
+      - "Leaf-level tests remain owned by Nodes 1–4 success evidence; this branch adds only cross-component/release proof rather than duplicating every unit test."
+    success_evidence:
+      - "Final candidate passes Fast CI, full Browser CI and representative workload verification on the exact commit/artifacts used for cutover."
+      - "One authenticated no-overlap self-verifier proves real provider → validated cycle → Node commit → Current/Detail/Scanner on the final candidate without copying session secrets."
+      - "Rollback remains available until acceptance because the previous rolling IndexedDB release and browser database are untouched."
+      - "After acceptance, the rolling release contains the verified Node candidate and current repository authorities no longer expose executable Browser-SQL paths."
+    depends_on: []
+    children:
+      - "5.1"
+      - "5.2"
+      - "5.3"
+      - "5.4"
+      - "5.5"
+
+  "5.1":
+    status: approved
+    strategy: "The complete Node-SQL system has one automated verification matrix that proves cross-component behavior without user-operated checking."
+    tactic: "Adapt package/test tooling and CI after Nodes 1–4 exist: production dependencies pin @duckdb/node-api@1.5.5-r.5 and ws@8.21.3; Fast CI runs existing public/pure tests plus Node protocol/database/lifecycle/Scanner integration tests against temporary DB files; Browser CI uses Playwright webServer entries to start the existing HTTP harness and the localhost service in test mode (temporary DB + explicit harness Origin), then runs Node-backed Recorder/Current/Detail/Scanner/runtime tests. Keep browser tests against public behavior and upload traces/reports only on failure."
+    parallel_assumptions:
+      - "The service /healthz endpoint gives Playwright deterministic readiness without adding an application HTTP API."
+      - "Synthetic provider fixtures can prove browser↔Node behavior while authenticated origin/provider facts remain reserved for one final live gate."
+    necessary_assumptions:
+      - "Without full deterministic system verification, cutover would depend on manual spot checking and could hide cross-component regressions."
     sufficiency_assumptions: []
     success_evidence:
-      - "Final candidate passes required CI/integration/live evidence, starts with one simple local-service command plus the browser runtime, and repository authorities point only to the Node-SQL design."
-    depends_on: []
+      - "Fast CI proves protocol validation, Origin/producer ownership, schema/bootstrap, JSON fidelity, atomic rollback fault points, restart recovery, read models, SQL guard and Scanner scheduling logic."
+      - "Full Chromium proves no-service fail-closed launch, validated synthetic cycles → Node commit, Current parity, Detail/history paging, refresh/reload, multiple viewers, second-producer rejection and Scanner result/error/navigation behavior."
+      - "No browser integration test requires credentials, cookies, authenticated dumps or private account/session data."
+      - "Final CI state no longer depends on DuckDB-Wasm/OPFS probe workflows."
+    depends_on:
+      - "1.4"
+      - "2.5"
+      - "3.5"
+      - "4.4"
     children: []
+
+  "5.2":
+    status: approved
+    strategy: "The candidate is demonstrably viable for the intended ~561-security recurring workload before live cutover."
+    tactic: "Add npm test:workload and a manually dispatched/required-before-cutover Node workload workflow using only synthetic data: create a fresh temporary DB, ingest 600 complete cycles × 561 securities through the real producer persistence path as fast as possible, interleave Current/history reads and representative Scanner JOIN/GROUP/HAVING/window/ranking queries, restart the service mid-run, continue ingest, then verify exact row/cycle/latest/session counts and persisted reopen state. Record DB size and p50/p95 commit/query timings as an artifact; require p95 complete-cycle commit and representative Scanner query each below the current 3000 ms snapshot interval on the CI runner."
+    parallel_assumptions:
+      - "600 accelerated cycles (~336k history rows) is large enough to expose obvious growth/locking/transaction/query mistakes without turning every push into a long soak test."
+      - "A 3000 ms threshold is tied to the repository's current default snapshot interval rather than an invented SLA."
+    necessary_assumptions:
+      - "Without representative mixed workload proof, correctness on tiny fixtures could still hide a design that cannot keep up with the daily tool."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "600 cycles produce exactly 600 cycle rows, 336600 history rows and exactly 561 latest rows after restart/reopen."
+      - "No failed/partial cycle, duplicate latest authority or Scanner/ingest corruption occurs while reads are interleaved."
+      - "p95 commit and representative query timings are <3000 ms on the CI runner; otherwise cutover is blocked and the smallest measured optimization is planned before proceeding."
+      - "The workload workflow is not required on every push; it is required on the final cutover candidate and after changes that can materially affect persistence/query performance."
+    depends_on:
+      - "5.1"
+    children: []
+
+  "5.3":
+    status: approved
+    strategy: "The exact verified candidate is easy to run locally and can be tested without destroying the previous rollback release."
+    tactic: "Extend the release build after 5.1/5.2: Browser CI emits the existing runtime.js/bookmarklet plus market-flow-v2-local-service.zip containing local-service/ source, shared transport protocol, production package.json/package-lock.json subset or equivalent locked install files, and a short RUN.md with one-time npm ci --omit=dev and daily npm run start:local-service commands. The candidate remains a CI artifact/prerelease and does not replace the rolling runtime tag until 5.4 passes."
+    parallel_assumptions:
+      - "Node source is already runnable and does not need a bundler/native executable layer."
+      - "A locked npm install plus one start command is simpler and more maintainable than packaging node_modules or introducing Docker."
+    necessary_assumptions:
+      - "Without reproducible candidate packaging, the cutover could test a different service/runtime combination than CI verified."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "A clean temp directory can unzip the artifact, install production dependencies from the lockfile, start /healthz + WebSocket service, and stop cleanly."
+      - "Artifact manifest/notes record the exact Git commit and pinned Node/DuckDB/ws versions."
+      - "The candidate browser runtime and local-service zip come from the same green Browser/workload-verified commit."
+      - "The existing rolling IndexedDB release is unchanged before live acceptance."
+    depends_on:
+      - "5.1"
+      - "5.2"
+    children: []
+
+  "5.4":
+    status: approved
+    strategy: "Production authority changes exactly once at a settled boundary and can roll back without data conversion or dual writes."
+    tactic: "Perform one bounded authenticated cutover on the exact 5.3 candidate: require Fast/Browser/workload green; stop the old IndexedDB Recorder after any in-flight cycle settles; keep old IndexedDB and rolling release untouched; start the candidate local service on a fresh DuckDB file; launch the candidate browser runtime; run a self-verifier that waits for one real validated provider cycle committed to Node, confirms Current read, one selected Security Detail/history read, one representative read-only Scanner query, one viewer reconnect/read, and second-producer rejection, then emits one sanitized PASS/FAIL object containing only counts/timings/stages. PASS promotes those exact artifacts to the rolling release. FAIL stops the candidate Recorder/service and returns to the still-available previous rolling IndexedDB runtime; no Node data is imported back."
+    parallel_assumptions:
+      - "Fresh authority + untouched old IndexedDB makes rollback a runtime switch instead of a bidirectional data migration."
+      - "The self-verifier can judge required assertions automatically; human visual inspection is not an acceptance mechanism."
+    necessary_assumptions:
+      - "Without a no-overlap cutover/rollback boundary, two authorities can collect concurrently or the rollback path can destroy the only known-good history."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "No old Recorder provider request overlaps the new Node-authority session."
+      - "Sanitized final result proves real cycle requested/received/unique completeness, Node commit/ACK, Current/Detail/Scanner reads and ownership checks on the final candidate."
+      - "No cookie/token/authorization/account/private session material appears in verifier output, logs or repository artifacts."
+      - "If the current assistant environment cannot control the authenticated browser/session, this leaf remains pending rather than delegating a manual checklist or inventing PASS."
+      - "After PASS, the rolling release points to the exact accepted commit/artifacts; after FAIL, the old rolling release/IndexedDB path remains runnable."
+    depends_on:
+      - "5.3"
+    children: []
+
+  "5.5":
+    status: approved
+    strategy: "After accepted cutover, only the Node-SQL architecture remains executable/current while rejected Browser-SQL evidence stays traceable."
+    tactic: "Execute the Stage-03 inventory after 5.4 PASS: remove @duckdb/duckdb-wasm, Browser-SQL probe/build scripts, generated probe artifacts, obsolete probe tests and WP02/WP03 workflows; replace Browser-SQL-specific plan guards with Node-SQL/S&T guards; move remaining top-level browser-sql planning/design docs to cold history or delete duplicates already preserved there; update README/specs/testing/runtime/storage/messaging/viewer docs to D-045 + frozen S&T execution truth; close #73-#85 as superseded/architecture-corrected with links to D-045 and the accepted S&T plan/results, preserving already-closed #29/#30 as evidence. Do not clear the user's legacy IndexedDB automatically."
+    parallel_assumptions:
+      - "The S&T tree/EXECUTION allocation and accepted runtime provide successor ownership before old Issues/assets retire."
+      - "Historical decisions/evidence are sufficient for traceability; obsolete executable probes do not need to remain in active code/CI."
+    necessary_assumptions:
+      - "Without retirement, fresh chats and CI can still discover/execute contradictory Browser-SQL paths and the repository remains harder to maintain."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "No production dependency/script/workflow references DuckDB-Wasm, OPFS SQL authority, Browser SQL probe or browser DB Web Locks."
+      - "Fast CI + full Browser CI remain green after cleanup on the accepted Node-SQL runtime."
+      - "All current docs/specs point to D-043/D-045 and .planning; old Browser-SQL material is clearly historical."
+      - "#73-#85 are closed as superseded/architecture-corrected, not falsely marked as completed Browser-SQL implementation."
+      - "Legacy IndexedDB data remains local and untouched unless the user later explicitly chooses to remove it."
+    depends_on:
+      - "5.4"
+    children: []
+
