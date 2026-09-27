@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "kiss-reset-collapse-provisional-dag",
-    "title": "Collapse the 33-node provisional analysis DAG into a compact KISS execution graph for the daily local V2 product",
+    "substep": "post-kiss-consistency-audit",
+    "title": "Re-audit Browser SQL planning against the KISS daily-product scope before rebuilding the compact execution graph",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, Pass B, Pass C, Pass D, Pass E, Pass F1/F2, plus the KISS daily-scope reset completed.",
-    "ready": "KISS reset reduces initial V2 to a daily local recorder/viewer + useful enrichment + simple Dynamic SQL Scanner, with advanced lifecycle machinery conditional/future-only.",
-    "blockedAfterEntry": "Implementation remains paused; the next planning step must collapse the provisional 33-node analysis graph before canonical GitHub Issues are rewritten."
+    "completed": "Pass A-E, Pass F1/F2 and the KISS scope reset are complete.",
+    "ready": "KISS materially changed initial-V2 scope, so prior planning must be re-audited before canonical graph materialization.",
+    "blockedAfterEntry": "Implementation remains paused; run the post-KISS audit first, then rebuild the compact graph."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: KISS scope reset added and indexed; F3 generalized upgrade lifecycle is removed from the initial-V2 planning path; no product/runtime implementation or canonical Issue mutation.",
+    "specImpact": "Planning-only: review order corrected after KISS reset; existing detailed planning is reference until audited.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,16 @@
     }
   },
   "next": {
-    "action": "Collapse the provisional ND-01..ND-33 analysis graph into a compact KISS execution graph of roughly 7 major mini-projects / 12–18 coherent executable units, preserving only real correctness gates and moving shadow/archive/advanced preemption/generalized upgrades to conditional or future-only scope.",
+    "action": "Audit decisions, product docs, manuals, verification plans and old GitHub execution assumptions against KISS. Classify KEEP, SIMPLIFY, SUPERSEDE, DEFER or REMOVE-from-initial-V2 before rebuilding the canonical graph.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
-      "Do not implement product/runtime code in this planning chat.",
-      "Do not mutate canonical GitHub Issues yet.",
-      "Use browser-sql-kiss-scope-reset.md as the scope authority for initial V2.",
-      "Keep provider/data integrity, atomic persistence, trusted reads, Scanner read-only/no-overlap, simple single-owner Web Lock, day-scale verification and explicit cutover.",
-      "Do not recreate the 33-node DAG with new names."
+      "No product/runtime implementation in this planning chat.",
+      "Do not mutate canonical GitHub Issues until the audit is complete.",
+      "KISS scope reset is the current initial-V2 scope authority.",
+      "Preserve correctness/data integrity while simplifying mechanisms.",
+      "Audit one coherent area per continuation message.",
+      "Rebuild the compact plan from scratch; do not mechanically compress ND-01..ND-33."
     ]
   },
   "history": {
