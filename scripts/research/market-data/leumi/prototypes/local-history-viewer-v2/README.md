@@ -31,6 +31,14 @@ CHAT_PROMPTS.md        = copy/paste prompt for Chat 01..12
 
 Neither owns live progress; `STATUS.json` decides the current chat/Issue.
 
+With the Market Flow Project Instructions installed, starting a fresh implementation chat requires only:
+
+~~~text
+אני צאט N תתחיל
+~~~
+
+The assistant reconstructs the full contract from GitHub; `CHAT_PROMPTS.md` is the verbose fallback.
+
 ## Baseline architecture
 
 ~~~text
