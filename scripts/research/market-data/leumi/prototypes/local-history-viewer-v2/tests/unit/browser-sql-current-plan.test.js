@@ -461,3 +461,195 @@ test(
         );
     }
 );
+
+
+test(
+    "12 serial chat prompts map exactly to C01-C12 and cannot self-advance stale STATUS",
+    () => {
+        const prompts =
+            readWorkstream(
+                "CHAT_PROMPTS.md"
+            );
+
+        const plan =
+            readWorkstream(
+                "CHAT_EXECUTION_PLAN.md"
+            );
+
+        const readme =
+            readWorkstream(
+                "README.md"
+            );
+
+        const headings =
+            Array.from(
+                prompts.matchAll(
+                    /^## Chat (\d{2}) — (C\d{2}) \/ #(\d+)$/gm
+                )
+            );
+
+        assert.equal(
+            headings.length,
+            12,
+            "CHAT_PROMPTS.md must contain exactly 12 planned chat prompts."
+        );
+
+        for (let index = 0; index < 12; index += 1) {
+            const chatNumber =
+                String(index + 1)
+                    .padStart(2, "0");
+
+            const cId =
+                "C" +
+                chatNumber;
+
+            const issue =
+                String(73 + index);
+
+            const heading =
+                headings[index];
+
+            assert.deepEqual(
+                [
+                    heading[1],
+                    heading[2],
+                    heading[3]
+                ],
+                [
+                    chatNumber,
+                    cId,
+                    issue
+                ],
+                "Unexpected Chat/Cxx/Issue mapping at position " +
+                    String(index + 1)
+            );
+
+            const start =
+                heading.index;
+
+            const end =
+                index + 1 < headings.length
+                    ? headings[index + 1].index
+                    : prompts.length;
+
+            const block =
+                prompts.slice(
+                    start,
+                    end
+                );
+
+            assert.match(
+                block,
+                new RegExp(
+                    "אני Chat " +
+                    chatNumber +
+                    " מתוך 12"
+                )
+            );
+
+            assert.match(
+                block,
+                new RegExp(
+                    "ה-owner שלי הוא " +
+                    cId +
+                    " \/ GitHub Issue #" +
+                    issue
+                )
+            );
+
+            assert.match(
+                block,
+                /Fetch את main/
+            );
+
+            assert.match(
+                block,
+                /STATUS\.json הוא מקור האמת היחיד ל-live progress\/current\/next/
+            );
+
+            assert.match(
+                block,
+                /פרומפט stale לעולם לא גובר על STATUS\.json/
+            );
+
+            assert.match(
+                block,
+                /אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible/
+            );
+
+            assert.match(
+                block,
+                /ה-Issue החי הוא executable authority לפרטים/
+            );
+
+            assert.match(
+                block,
+                /DISCOVERY PROTOCOL/
+            );
+
+            assert.match(
+                block,
+                new RegExp(
+                    "Issue #" +
+                    issue +
+                    " סגור"
+                )
+            );
+
+            assert.match(
+                block,
+                /אין verification-pending/
+            );
+
+            assert.match(
+                block,
+                /רק אם כל ה-EXIT GATE אמיתי בגיטהאב/
+            );
+
+            if (index < 11) {
+                const nextC =
+                    "C" +
+                    String(index + 2)
+                        .padStart(2, "0");
+
+                const nextIssue =
+                    String(74 + index);
+
+                assert.match(
+                    block,
+                    new RegExp(
+                        "STATUS\\.json עודכן ומצביע על " +
+                        nextC +
+                        " \\/ #" +
+                        nextIssue
+                    )
+                );
+            }
+        }
+
+        assert.match(
+            plan,
+            /Only one planned implementation chat is active at a time/
+        );
+
+        assert.match(
+            plan,
+            /The previous chat's prose is never an entry gate\. GitHub is\./
+        );
+
+        assert.match(
+            plan,
+            /Necessary plan correction/
+        );
+
+        assert.match(
+            readme,
+            /CHAT_EXECUTION_PLAN\.md/
+        );
+
+        assert.match(
+            readme,
+            /CHAT_PROMPTS\.md/
+        );
+    }
+);
