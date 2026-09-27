@@ -29,6 +29,8 @@ Start there only when a current Issue explicitly needs historical rationale/evid
 
 The post-KISS audit trail is also planning rationale rather than normal implementation startup context. Prefer D-044, the compact DAG and the active Issue.
 
+Any top-level Browser SQL planning/manual/checkpoint file that is **not** listed in the Current Browser SQL authorities table is reference/evidence only unless the active Issue links it explicitly. Files with old ND-/WP-/Phase ownership must not be treated as executable instructions.
+
 ## Source-of-truth reminder
 
 ~~~text
