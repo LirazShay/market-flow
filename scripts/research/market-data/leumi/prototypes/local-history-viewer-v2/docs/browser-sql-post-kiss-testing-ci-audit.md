@@ -241,14 +241,15 @@ The generated live artifact should self-judge PASS/FAIL.
 
 # 11. Final live verification is integrated, not another platform
 
-Near cutover, run one bounded final authenticated session using the actual candidate.
+At cutover, run one bounded final authenticated transition using the actual candidate after the old IndexedDB Recorder has settled/stopped.
 
 It should observe enough to show:
-- real collection continues;
-- SQL commits continue;
+- no normal overlap between old and SQL production authorities;
+- real collection continues into SQL commits;
+- exact cycle-integrity counters remain valid;
 - Current/Detail work;
-- Scanner runs if enabled;
-- one runtime owner holds;
+- one representative Scanner query is explicitly activated and succeeds;
+- one runtime owner holds and a second same-origin tab remains passive;
 - no obvious live-only runtime/storage/provider failure occurs.
 
 Day-scale load/performance belongs primarily in deterministic Chromium.
