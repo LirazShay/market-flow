@@ -20,26 +20,18 @@ README.md
 
 After HOT context, read only the current task scope, target code/tests and owning SPEC(s).
 
-## Current re-plan across fresh chats
+## Current re-plan
 
-The Browser-SQL C01-C12 execution graph is frozen after authenticated C01 failed at `wasm-instantiate`.
+Browser-SQL C01-C12 is frozen after the authenticated `wasm-instantiate` failure.
 
-The current architecture migration is being replanned as **100 stages across 5 fresh chats, 20 stages per chat**. During this re-plan, one stage equals one user-visible chat message. `STATUS.json` is the live pointer; the old 12-chat files remain reference-only until replacement planning is materialized.
-
-~~~text
-CHAT_EXECUTION_PLAN.md = stable chat boundaries/rules
-CHAT_PROMPTS.md        = copy/paste prompt for Chat 01..12
-~~~
-
-Neither owns live progress; `STATUS.json` decides the current chat/Issue.
-
-With the Project Instructions installed, start with:
+Current migration planning:
 
 ~~~text
-אני צאט N תתחיל
+100 stages = 5 chats × 20
+one stage = one user-visible message
 ~~~
 
-GitHub reconstructs the contract; `CHAT_PROMPTS.md` is fallback.
+`STATUS.json` is the live pointer. Old `CHAT_EXECUTION_PLAN.md` / `CHAT_PROMPTS.md` are reference-only until replaced.
 
 ## Baseline architecture
 
