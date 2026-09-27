@@ -2,10 +2,10 @@ version: 1
 
 plan_state: active
 
-current_node: "5"
+current_node: "0"
 
 blockers: []
 
-next_action: "Decompose node 5 for verification, cutover, rollback and retirement; then run Final Planning Review across the complete tree."
+next_action: "Run the whole-plan outside-in coverage audit and Final Planning Review. If it passes, mark every internal node approved, freeze plan_state, allocate every implementation-ready leaf exactly once in EXECUTION.yaml, and realign workstream STATUS for S&T execution."
 
-last_review: "R-005"
+last_review: "R-006"
