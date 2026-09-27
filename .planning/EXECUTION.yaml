@@ -1,0 +1,6 @@
+version: 1
+
+# Populated only after the complete S&T tree passes Final Planning Review.
+# Every implementation-ready leaf must then appear exactly once.
+
+chats: {}
