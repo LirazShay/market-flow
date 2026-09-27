@@ -11,6 +11,8 @@ Browser SQL is currently a planning/implementation target governed by:
 ../STATUS.json
 ../../../../../../../docs/project/decisions/D-025.md
 ../../../../../../../docs/project/decisions/D-043.md
+../../../../../../../docs/project/decisions/D-044.md
+../docs/browser-sql-compact-issue-specifications.md
 ../../../../../../../docs/product/local-history-viewer-v2-product-shape.md
 ~~~
 
