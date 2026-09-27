@@ -410,3 +410,7 @@ docs/project/specification-policy.md
 docs/project/continuous-improvement.md
 docs/project/decisions.md
 ~~~
+
+## 13. S&T Planner
+
+On S&T requests, follow `.planning/README.md`, `FRAMEWORK.md` and `STATUS.yaml`. While active, plan only; freeze only after Final Planning Review, then assign every leaf once in `EXECUTION.yaml`. "אני צ'אט מספר N" runs only assigned unblocked nodes after dependencies; material plan defects reopen the affected branch.
