@@ -140,7 +140,7 @@ Prove a validated complete cycle can be stored coherently and survives the suppo
 ## Scope
 - validated-cycle bulk handoff contract;
 - defensive SQL-side completeness/shape checks where useful;
-- one transaction for current/history/latest coherence;
+- one transaction for coherence of the selected current/history authority structures; a separate latest/current lookup is maintained only if C02 selected one as necessary;
 - failure before commit leaves prior state only;
 - raw MapHeat/Security/value preservation;
 - dynamic-universe add/remove behavior;
