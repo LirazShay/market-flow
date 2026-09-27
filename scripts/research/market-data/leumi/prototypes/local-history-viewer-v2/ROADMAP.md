@@ -53,7 +53,7 @@ C10 #82 Web Lock ownership may start after C02 #74 in parallel with C03-C09 work
 ~~~text
 C04 #76
 ├→ C05 #77 Current Universe SQL parity
-└→ C06 #78 Detail/History SQL parity + bounded L-2
+└→ C06 #78 Security Detail/History SQL parity + bounded L-2
 ~~~
 
 C05 and C06 are separate preserved product surfaces and may progress in parallel.
