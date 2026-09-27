@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-e6-enrichment-benchmark-plan",
-    "title": "Define the focused enrichment benchmark plan that selects persisted analytical structure before schema freeze",
+    "substep": "pass-e7-enrichment-integration-plan",
+    "title": "Define how proven enrichment is selectively exposed through Current/Detail and handed to the later Scanner without destabilizing V1-on-SQL parity",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E5 completed.",
-    "ready": "E5 defines the enrichment mini-project from semantic gates and dynamic SQL experiments through benchmark-informed persist/query decisions, schema evolution, atomic set-based implementation, rebuildability and the ND-20 checkpoint.",
-    "blockedAfterEntry": "Implementation remains paused; Pass E continues with enrichment benchmark and Scanner/integration manuals before canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E6 completed.",
+    "ready": "E6 defines controlled correctness-first benchmark variants and reproducible decision evidence for horizons, predecessor links, metrics, typed promotion and indexes before enrichment schema freeze.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E continues with enrichment integration and Scanner mini-project manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: analytical enrichment implementation manual added and indexed; older Phase F/G enrichment choices are explicitly candidates pending E5 evidence and later durable-decision reconciliation.",
+    "specImpact": "Planning-only: enrichment decision benchmark plan added and indexed; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass E6: define the focused enrichment benchmark plan that compares raw baseline, dynamic SQL, predecessor persistence, selected metrics and typed/indexed promotion, with storage/write/reopen/query evidence sufficient to decide the physical enrichment design before schema freeze.",
+    "action": "Execute Issue #72 Pass E7: define the enrichment integration plan for ND-21, including selective Current/Detail exposure, SQL contract handoff, formatting/null behavior, no-op outcome, UI parity protection, and the exact boundary handed to the Scanner mini-project.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Benchmarks must answer specific persist-vs-query decisions, not benchmark hypothetical mechanisms for their own sake.",
-      "Use correctness-first machine-readable evidence and compare against the raw V1-on-SQL baseline.",
-      "Do not freeze horizon/metric/index layout until benchmark evidence supports it."
+      "Only expose enrichment that already passed ND-20.",
+      "Persistence does not imply UI exposure; ND-21 may be an explicit no-op.",
+      "Do not make Current/Detail depend on Scanner state or arbitrary SQL."
     ]
   },
   "history": {
