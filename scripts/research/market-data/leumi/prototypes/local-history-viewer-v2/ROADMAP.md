@@ -1,3 +1,5 @@
+> **FROZEN / NOT EXECUTABLE:** Authenticated C01 failed at `wasm-instantiate`. D-045 replaces the Browser-SQL process boundary with localhost Node.js + loopback WebSocket + native DuckDB. This file is retained as planning history/reference while the 100-stage replacement plan is materialized. Follow `STATUS.json`, not the C01-C12 graph below.
+
 # Local History Viewer V2 — Browser SQL Implementation Roadmap
 
 This file owns stable implementation scope and order.
