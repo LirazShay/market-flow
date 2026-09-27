@@ -93,7 +93,7 @@ nodes:
   "1.3":
     status: approved
     strategy: "The existing Recorder hands lifecycle and complete-cycle persistence to Node without changing provider acquisition or complete-cycle validation."
-    tactic: "Add a Recorder→Node persistence adapter that maps the current startSession, persistUniverse, commitSuccessfulCycle, recordFailedCycle, recordHeartbeat and stopSession boundaries to protocol requests; change recorder-loop.js to use that adapter instead of IndexedDB persistence/BroadcastChannel for the new path while leaving pure config/universe/chunk/cycle/no-overlap logic intact."
+    tactic: "Add a Recorder→Node persistence adapter that maps the current startSession, persistUniverse, commitSuccessfulCycle, recordFailedCycle, recordHeartbeat and stopSession boundaries to protocol requests; change recorder-loop.js to use that adapter instead of IndexedDB persistence while leaving pure config/universe/chunk/cycle/no-overlap logic intact; after a successful Node commit ACK, retain the existing metadata-only BroadcastChannel CYCLE_COMMITTED invalidation hint for Viewer refresh."
     parallel_assumptions:
       - "The current Recorder already separates provider/cycle construction from persistence methods closely enough to replace the adapter instead of rewriting collection logic."
       - "Node ACKs can return the sessionId/cycleId identities currently produced by IndexedDB."
@@ -104,7 +104,7 @@ nodes:
       - "Characterization/unit tests for provider collection and pure cycle logic remain unchanged and green."
       - "A fake local service observes the exact session-start → universe → cycle/failure/heartbeat → stop request ordering."
       - "cycle.commit ACK returns the authoritative cycleId; response.error/timeout is treated as persistence failure and never exposes browser success."
-      - "The new Recorder path performs no IndexedDB market-state writes and sends no full-cycle BroadcastChannel payload."
+      - "The new Recorder path performs no IndexedDB market-state writes; BroadcastChannel remains metadata-only and CYCLE_COMMITTED is published only after the Node commit ACK."
     depends_on:
       - "1.1"
       - "1.2"
@@ -178,7 +178,7 @@ nodes:
   "2.2":
     status: approved
     strategy: "DuckDB has a minimal durable schema that preserves raw market facts and the current/history authority contract."
-    tactic: "Add local-service/database.mjs and schema-v1.sql; open @duckdb/node-api file local-service/data/market-flow-v2.duckdb by default (MARKET_FLOW_DB_PATH override for tests), ignore local-service/data/ in Git, and create schema_info plus sessions, universe, cycles, history and latest tables with raw provider objects/chunk/error/config stored as DuckDB JSON and timestamps as BIGINT epoch-ms."
+    tactic: "Add local-service/database.mjs and schema-v1.sql; open @duckdb/node-api file local-service/data/market-flow-v2.duckdb by default (MARKET_FLOW_DB_PATH override for tests), ignore local-service/data/ in Git, and create schema_info plus sessions, universe, cycles, history and latest tables. Universe stores security_id, paper_name, updated_at_ms, map_heat_date_change + raw_map_heat JSON; history/latest store cycle/session/security/chunk/time metadata + raw_security JSON; cycles/sessions keep their lifecycle/count metadata with chunks/error/config JSON; timestamps use BIGINT epoch-ms."
     parallel_assumptions:
       - "Keeping raw provider objects in JSON preserves unanticipated fields without building a large typed schema first."
       - "Metadata columns needed for identity/time/current/history queries can stay relational while raw source facts remain complete."
@@ -259,18 +259,133 @@ nodes:
     children: []
 
   "3":
-    status: draft
+    status: approved
     strategy: "Current Universe and Security Detail/History preserve their user-visible behavior while reading the Node authority."
-    tactic: "Keep the existing browser Viewer shell/pure presentation logic and replace IndexedDB data adapters/refresh notifications with WebSocket request/response plus commit notifications."
+    tactic: "Expose four narrow read requests from Node, reuse one viewer-role WebSocket client in the browser, keep the existing pure rendering/sorting/detail UI, replace only IndexedDB data adapters, and retain metadata-only BroadcastChannel as the post-commit refresh hint."
     parallel_assumptions:
-      - "Most current Viewer behavior is independent of IndexedDB and can keep its pure rendering/sorting/navigation logic."
-      - "Using WebSocket for reads avoids adding an HTTP/CORS/PNA surface solely for the Viewer."
+      - "The existing Viewer rendering/sorting/navigation logic is largely independent of IndexedDB and can consume the same logical row shapes."
+      - "Node can reconstruct those logical shapes from the typed metadata + raw JSON schema without creating a second data model."
+      - "BroadcastChannel remains safe as a hint because every refresh rereads the Node authority."
     necessary_assumptions:
       - "The migration is incomplete if the existing browsing surfaces regress or retain IndexedDB as a co-authority."
+    sufficiency_assumptions:
+      - "Node read models, one browser data client, Current/diagnostics adapters, Detail/history adapters, and refresh/recovery parity together replace every Viewer dependency on IndexedDB while preserving the public UI contract."
+      - "Dynamic SQL Scanner UI/query execution is deliberately excluded here and owned by Node 4."
+    success_evidence:
+      - "Current Universe renders the same 16-column model, sort/null/zero/scroll behavior from Node reads."
+      - "Security Detail/History remains newest-first with 500-row pages and no duplicate/skip across equal timestamps."
+      - "Known historical securities can still open by canonical securityId even if absent from the current universe."
+      - "Manual and post-commit refresh perform Node reads only and never call the provider."
+      - "Viewer reload/reopen works from committed Node state with no IndexedDB market-state read."
+    depends_on: []
+    children:
+      - "3.1"
+      - "3.2"
+      - "3.3"
+      - "3.4"
+      - "3.5"
+
+  "3.1":
+    status: approved
+    strategy: "Node exposes only the read operations and row shapes required by the existing Viewer."
+    tactic: "Extend the shared protocol and add local-service/viewer-reads.mjs with viewer.current.get, viewer.security.get, viewer.history.page and viewer.status.get. current.get returns separate latestRows/universeRows matching the existing pure current-table inputs; security.get returns the newest known row for one canonical securityId; history.page returns at most 500 newest-first rows plus an opaque continuation; status.get returns the existing diagnostics logical shape. Normalize DuckDB BIGINT values to safe JS Numbers and JSON columns to objects before protocol serialization."
+    parallel_assumptions:
+      - "Returning existing logical row shapes keeps presentation code unchanged and avoids a new Viewer DTO layer."
+      - "Four explicit operations are sufficient for the preserved Viewer and safer/simpler than a general SQL/read API."
+    necessary_assumptions:
+      - "Without authoritative Node read models, browser adapters either retain IndexedDB or duplicate SQL/database knowledge."
     sufficiency_assumptions: []
     success_evidence:
-      - "Current and Detail/History parity tests pass against the local service with no provider calls from Viewer actions."
-    depends_on: []
+      - "current.get returns every latest row even when universe metadata is missing, plus the current universe rows separately."
+      - "security.get resolves current latest first, otherwise newest persisted history for the requested securityId, and returns null only when no persisted row exists."
+      - "history.page orders by collected_at_ms DESC, cycle_id DESC; continuation {securityId,collectedAtMs,cycleId} uses keyset predicates and LIMIT 501 to return 500 rows + hasMore without duplicate/skip at equal timestamps."
+      - "status.get provides recorderState, lastCycle, rowCounts.latest/history and storage usage as the DuckDB file byte size with unavailable quota fields left null."
+      - "Unsafe BIGINT conversion, malformed cursor/securityId or database read failure returns response.error rather than partial success."
+    depends_on:
+      - "1.1"
+      - "2.2"
+      - "2.4"
+      - "2.5"
+    children: []
+
+  "3.2":
+    status: approved
+    strategy: "Viewer modules share one simple read connection to Node without becoming persistence owners."
+    tactic: "Add viewer/node-data-client.js around the generic WebSocket client with role=viewer. Lazily create/reuse one viewer-role socket in the opener runtime for all Viewer windows, expose current/security/history/status request methods, discard the socket after transport failure, and allow the next explicit Viewer read/manual refresh to establish a fresh connection; no background reconnect or cache."
+    parallel_assumptions:
+      - "All Viewer windows originate from one running browser runtime, so one shared read socket is sufficient."
+      - "The generic WebSocket client already owns hello/request correlation/timeout/error semantics."
+    necessary_assumptions:
+      - "Without one shared adapter, each Viewer module would duplicate socket lifecycle/protocol details."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Multiple open Viewer windows can issue reads through the same viewer-role client without starting another Recorder."
+      - "Transport/server errors reject the affected read visibly and discard the dead client."
+      - "A later manual read can create a fresh viewer connection after service recovery; no request/result cache is used."
+    depends_on:
+      - "1.2"
+      - "3.1"
+    children: []
+
+  "3.3":
+    status: approved
+    strategy: "Current Universe and existing header diagnostics render from Node with unchanged public semantics."
+    tactic: "Replace current-table.js IndexedDB loadSnapshot with node-data-client current.get followed by the unchanged buildCurrentTableModel(latestRows, universeRows). Replace diagnostics-data.js IndexedDB/browser-storage reads with status.get while keeping existing diagnostics pure/model/render logic; represent DB file bytes as storage usage and unknown quota/free/ratio as null."
+    parallel_assumptions:
+      - "The current table's sorting/formatting/render logic already consumes logical rows, not IDB primitives."
+      - "The diagnostics model only requires latest/history counts plus recorder/last-cycle/storage values and can truthfully represent unknown quota."
+    necessary_assumptions:
+      - "Without adapting Current and diagnostics reads, the main Viewer still depends on stale IndexedDB state."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Existing 16 columns, default/toggled sorting, deterministic tie/null behavior, zero display, missing-universe fallback and sort/scroll preservation pass against Node-backed fixtures."
+      - "Empty committed DB renders EMPTY; Node read failure renders ERROR, never empty success."
+      - "Header recorder/last-cycle/count/storage values come only from Node status.get and retain truthful null semantics."
+    depends_on:
+      - "3.1"
+      - "3.2"
+    children: []
+
+  "3.4":
+    status: approved
+    strategy: "Security Detail/History keeps its paging/navigation behavior and remains useful for persisted securities outside the current universe."
+    tactic: "Replace history-data.js IndexedDB cursor reads with node-data-client history.page while keeping INITIAL_PAGE_SIZE=500. Adapt security-detail.js to open/refresh by canonical securityId: resolve display/current row with security.get when needed, preserve loaded depth and Back-to-Current sort/viewport state, and continue displaying persisted history even when the security is absent from current.get."
+    parallel_assumptions:
+      - "security-detail already treats continuation as data returned by history-data and can keep its rendering logic."
+      - "A securityId-based entry point also prepares the shared Detail surface for later Scanner-row navigation without coupling Scanner into this node."
+    necessary_assumptions:
+      - "Without Node-backed paging and ID-based detail resolution, the second required Viewer surface either retains IndexedDB or loses historical-only securities."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Initial/older pages are newest-first, fixed at 500, and equal-timestamp fixtures prove no duplicate/skip."
+      - "Load-more preserves prior rows and continuation; refresh preserves at least the previously loaded depth."
+      - "Current→Detail→Back preserves Current sort/viewport."
+      - "Opening a known historical-only securityId succeeds; unknown securityId produces an explicit not-found state/error."
+    depends_on:
+      - "3.1"
+      - "3.2"
+    children: []
+
+  "3.5":
+    status: approved
+    strategy: "Viewer live refresh and reload/reopen preserve current behavior without introducing server push or a second authority."
+    tactic: "Keep the existing metadata-only BroadcastChannel CYCLE_COMMITTED path: producer publishes it only after Node commit ACK, viewer/live-refresh.js coalesces overlapping refresh hints and rereads Current/Detail/diagnostics from Node. Keep manual refresh read-only. Reuse existing bootstrap/reload recovery; it rebuilds the same shell and uses the shared viewer client instead of IndexedDB."
+    parallel_assumptions:
+      - "Existing isRefreshMessage already treats only CYCLE_COMMITTED as a data-refresh trigger."
+      - "Notification loss is safe because startup/manual refresh always rereads authoritative Node state."
+    necessary_assumptions:
+      - "Without refresh/recovery adaptation, Viewer parity fails even if individual Node read operations are correct."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "One CYCLE_COMMITTED hint after ACK refreshes Current and selected Detail/diagnostics from Node."
+      - "Refresh hints arriving during an in-flight refresh coalesce rather than overlap/burst."
+      - "Manual refresh and viewer reload/reopen make no provider calls and recover from committed Node state."
+      - "BroadcastChannel unavailable degrades to explicit manual refresh exactly as today."
+      - "No market-row payload crosses BroadcastChannel and no IndexedDB market read is required by Viewer startup/refresh."
+    depends_on:
+      - "1.3"
+      - "3.3"
+      - "3.4"
     children: []
 
   "4":
