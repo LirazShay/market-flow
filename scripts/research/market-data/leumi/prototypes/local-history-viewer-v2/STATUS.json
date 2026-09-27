@@ -10,27 +10,29 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-plan-final-freeze",
-    "substep": "final-review-freeze-and-implementation-handoff",
-    "title": "Perform the final post-KISS planning freeze and implementation-entry handoff",
-    "issue": 72,
-    "status": "in-progress"
+    "stage": "browser-sql-c01",
+    "substep": "chat-01-authenticated-duckdb-feasibility",
+    "title": "Chat 01/12 — C01 / #73 — prove pinned DuckDB-Wasm on authenticated Leumi",
+    "issue": 73,
+    "chat": 1,
+    "status": "ready"
   },
   "currentStage": {
-    "stage": "browser-sql-plan-rebaseline",
-    "title": "Finalize and verify the compact Browser SQL plan before implementation",
-    "status": "in-progress"
+    "stage": "browser-sql-implementation",
+    "title": "Browser SQL V2 compact implementation — C01",
+    "status": "ready"
   },
   "stageSummary": {
-    "completed": "Master #85/C01-C12, cross-cutting DAG/KISS review, and the serial 12-chat execution design are complete. CHAT_EXECUTION_PLAN.md and CHAT_PROMPTS.md are HOT-visible; representative fresh-AI dry runs for Chat 01, Chat 08 and Chat 12 were repaired and guarded; Fast CI is green.",
-    "ready": "Implementation is still paused only for the final planning freeze/handoff. The next planning action is the final review, freeze artifact, Issue #72 closure and STATUS transition to C01/#73 if no new defect is found.",
-    "blockedAfterEntry": "Do not start C01 until the final planning freeze is green and #72 is closed."
+    "completed": "Post-KISS planning is frozen and verified. Planning Issue #72 is closed. Master #85 with C01-C12 #73-#84 is the executable graph; the 12-chat serial plan/prompts are verified and HOT-visible.",
+    "ready": "Implementation entry is Chat 01 / C01 / #73. Start only through the Chat 01 prompt in CHAT_PROMPTS.md and revalidate its entry gate against GitHub.",
+    "blockedAfterEntry": "None from planning. Any new implementation evidence is handled by the active-chat discovery protocol."
   },
-  "activeMiniProject": "browser-sql-plan-rebaseline",
+  "activeMiniProject": "browser-sql-c01",
   "verification": {
     "planningBaseline": {
-      "status": "materialized-not-yet-finally-frozen",
+      "status": "frozen",
       "decision": "../../../../../../../docs/project/decisions/D-044.md",
+      "freeze": "docs/browser-sql-final-planning-freeze.md",
       "masterIssue": 85,
       "executableIssues": {
         "C01": 73,
@@ -46,7 +48,7 @@
         "C11": 83,
         "C12": 84
       },
-      "oldGraph": "retired: #20-#28 and superseded WPs closed; #29/#30 retained as completed evidence; #65 retained closed duplicate"
+      "planningIssue72": "closed-completed"
     },
     "engineSelection": {
       "status": "complete",
@@ -63,25 +65,24 @@
       "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
     },
     "currentPlanGuard": {
-      "status": "green-after-chat-prompt-review",
+      "status": "green-final-freeze",
       "path": "tests/unit/browser-sql-current-plan.test.js",
-      "note": "Current-plan guard includes the 12-chat mapping/serial-handoff contract."
+      "note": "Guards cover compact graph, HOT/WARM authority, 12 serial prompts and final post-KISS freeze/Chat 01 entry handoff."
     },
     "latestFastCi": {
       "status": "pass",
-      "runId": 36302626256,
-      "result": "PASS on commit 240e5f6e6919ebf77c83fa98978502a94c8626a0 after repairing README HOT-context budget; 12-chat prompt guards are green."
+      "runId": 36302947707,
+      "commit": "eb1761f3cf6858886f1c5426e3b84670f9ee9c1d",
+      "result": "PASS — final planning freeze, Chat 01 handoff and current-plan guards are green."
     },
     "browserCi": {
-      "status": "not-required",
-      "reason": "This work changed planning/docs and Node guards only; no product/runtime/browser/Playwright behavior changed."
+      "status": "not-required-for-planning-freeze",
+      "reason": "Planning finalization changed docs/Node guards only; no production/runtime/browser/Playwright behavior changed."
     },
-    "specImpact": "Planning/docs only. No product/runtime/browser behavior changed.",
     "planningAudit": {
-      "status": "verification-complete-freeze-pending",
-      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/HOT docs + representative fresh-AI chat dry runs + prompt guards",
-      "graph": "12 mandatory nodes; acyclic; intended parallel fronts and O1-O6 rejoin ownership verified.",
-      "next": "Perform final review/freeze; if still green, close #72 and move STATUS to implementation entry C01/#73."
+      "status": "complete",
+      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/HOT docs + representative fresh-AI dry runs + serial-prompt guards + final freeze",
+      "result": "PASS"
     },
     "chatExecutionPlan": {
       "status": "complete-green",
@@ -99,13 +100,15 @@
     }
   },
   "next": {
-    "action": "Perform the final post-KISS planning review/freeze. If no new contradiction appears, write the freeze/handoff, update the implementation continuation prompt, close planning Issue #72, and move the sole STATUS current pointer to Chat 01 / C01 / #73.",
-    "issue": 72,
-    "workPackage": "FINAL-PLANNING-FREEZE",
+    "action": "Open a fresh Chat 01 and paste the complete Chat 01 / C01 / #73 prompt from CHAT_PROMPTS.md. The chat must fetch main, confirm #72 is closed and confirm STATUS points to C01/#73 before implementation.",
+    "issue": 73,
+    "workPackage": "C01",
+    "chat": 1,
+    "prompt": "CHAT_PROMPTS.md#chat-01--c01--73",
     "rules": [
-      "Do not implement C01 in the planning-freeze work.",
-      "Do not close #72 or point STATUS to C01 until the final freeze review is green.",
-      "After the transition, implementation starts only through Chat 01 and the strict serial protocol."
+      "Do not start Chat 02 until Chat 01 closes #73, required verification is green and STATUS points to C02/#74.",
+      "Blocking discoveries stay in Chat 01; evidence may correct the durable plan through the documented discovery protocol.",
+      "Live progress remains only in STATUS.json."
     ]
   },
   "history": {
