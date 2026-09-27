@@ -160,7 +160,7 @@ nodes:
   "2.1":
     status: approved
     strategy: "The local service has one secure, deterministic process/connection ownership boundary."
-    tactic: "Add local-service/server.mjs using Node http + ws@8.21.3 on 127.0.0.1:8765: expose only GET /healthz for readiness and WebSocket upgrade for application traffic; set maxPayload to 16 MiB, validate the exact production Origin before upgrade/hello, accept roles from the shared protocol, allow only one producer socket at a time, allow multiple viewer sockets, and dispatch producer writes through one serialized Promise chain."
+    tactic: "Add local-service/server.mjs using Node http + ws@8.21.3 on loopback (production default 127.0.0.1:8765): expose only GET /healthz for readiness and WebSocket upgrade for application traffic; set maxPayload to 16 MiB, validate the allowed Origin before upgrade/hello, accept roles from the shared protocol, allow only one producer socket at a time, allow multiple viewer sockets, and dispatch producer writes through one serialized Promise chain. Production defaults to https://hb2.bankleumi.co.il; tests/demo may explicitly override loopback port, DB path and allowed local Fake-Leumi Origin without changing the production defaults."
     parallel_assumptions:
       - "Port binding already provides single service-process ownership; a second PID/lock-file system is unnecessary."
       - "A simple Promise tail is sufficient to prevent heartbeat/lifecycle/cycle transactions from interleaving on the writer connection."
@@ -417,19 +417,22 @@ nodes:
   "4.1":
     status: approved
     strategy: "Scanner SQL cannot mutate the market database or escape into unrelated external state."
-    tactic: "Harden the single DuckDBInstance at creation with enable_external_access=false, allow_community_extensions=false, autoinstall_known_extensions=false, autoload_known_extensions=false, allow_persistent_secrets=false and lock_configuration=true. Add local-service/scanner-sql-guard.mjs: reject empty SQL; connection.extractStatements(sql) must return count=1; prepare statement 0; prepared.statementType must equal StatementType.SELECT; destroy rejected/prepared resources cleanly. Execute accepted SQL only through the prepared statement on a dedicated Scanner connection. Schema v1 contains no sequences, so SELECT nextval cannot mutate durable ID state."
+    tactic: "Harden the single DuckDBInstance at creation with enable_external_access=false, allow_community_extensions=false, autoinstall_known_extensions=false, autoload_known_extensions=false, allow_persistent_secrets=false and lock_configuration=true. Add local-service/scanner-sql-guard.mjs: reject empty SQL; connection.extractStatements(sql) must return count=1; prepare statement 0; prepared.statementType must equal StatementType.SELECT. Before execution, run a small conservative SQL lexical scan (ignoring string literals/comments, normalizing quoted/unquoted identifiers) over function-call tokens and reject explicit query(...) plus every function name reported by duckdb_functions() with has_side_effects=true. Execute accepted SQL only through the prepared statement on a dedicated Scanner connection. Schema v1 contains no sequences."
     parallel_assumptions:
-      - "DuckDB's prepared-statement StatementType is parser/binder evidence and is stronger than text-prefix filtering."
-      - "Global external-access/config hardening is compatible with Market Flow because the service needs only its already-open database file and built-in SQL."
-      - "SELECT-only plus no durable sequences removes the known database-mutation path available from a SELECT expression."
+      - "DuckDB's prepared-statement StatementType reliably rejects direct DDL/DML/PRAGMA/SET/CALL/ATTACH/LOAD/transaction statements."
+      - "DuckDB explicitly warns that query() can execute arbitrary SQL inside a SELECT, so it must be denied even though the outer statement type is SELECT."
+      - "duckdb_functions().has_side_effects identifies built-in side-effecting functions such as sequence operations; a conservative lexical function-call guard can reject those names without implementing a SQL parser."
+      - "Global external-access/config hardening blocks file/network/extension escape paths even for otherwise valid SELECT expressions."
+      - "The local user is trusted; this guard protects the market authority from accidental/unsupported SQL mutation and is not presented as a hostile-code sandbox."
     necessary_assumptions:
-      - "Without engine-level hardening plus parsed statement admission, editable SQL could mutate authority or access host/network state."
+      - "Without engine hardening plus nested/side-effect function admission, editable SELECT SQL can still mutate authority or host state."
     sufficiency_assumptions: []
     success_evidence:
-      - "Unit/integration tests accept representative analytical SELECT/CTE/JOIN/window queries."
+      - "Unit/integration tests accept representative analytical SELECT/CTE/JOIN/window queries, including ordinary columns/strings containing words such as query without treating them as function calls."
       - "Tests reject 0 statements, 2+ statements and prepared StatementTypes INSERT/UPDATE/DELETE/CREATE/DROP/ALTER/COPY/PRAGMA/SET/CALL/ATTACH/LOAD/TRANSACTION and other non-SELECT values."
-      - "read_csv/read_parquet/read_json/external attach or extension loading fails under engine configuration even when referenced from SELECT."
-      - "Scanner tests prove no sequence object exists and failed/rejected Scanner SQL leaves sessions/cycles/history/latest unchanged."
+      - "Tests reject query('DELETE ...'), case/whitespace/schema-qualified/quoted spellings of query(), and every currently registered has_side_effects=true function when invoked as a function."
+      - "read_csv/read_parquet/read_json/read_text/read_blob/external attach or extension loading fails under engine configuration even when referenced from SELECT."
+      - "Rejected Scanner SQL leaves sessions/cycles/history/latest/schema unchanged."
     depends_on:
       - "2.2"
     children: []
@@ -614,7 +617,7 @@ nodes:
   "5.1.4":
     status: approved
     strategy: "The user can exercise the final architecture locally today with no bank login, market hours or test-runner knowledge."
-    tactic: "Add one documented npm run demo:fake-leumi command backed by a tiny launcher script that starts the Fake Leumi HTTP site and Node service with a dedicated ignored demo DuckDB file, selects the default 4-security small-moving scenario (optional --scenario override), prints the Fake Leumi URL and clean stop instructions, and leaves the normal built runtime/bookmarklet usable on that page. Also provide npm run demo:fake-leumi:reset to remove only the ignored demo DB/state. Do not add an installer, Electron app or custom control panel."
+    tactic: "Add one documented npm run demo:fake-leumi command backed by a tiny launcher script that builds/uses the normal runtime, starts the Fake Leumi HTTP site and Node service with a dedicated ignored demo DuckDB file plus the explicit local Fake-Leumi Origin override, selects the default 4-security small-moving scenario (optional --scenario override), and serves fake-leumi.html with the exact built runtime auto-loaded in demo mode. Print one URL and clean stop instructions. Also provide npm run demo:fake-leumi:reset to remove only the ignored demo DB/state. Do not add an installer, Electron app, bookmarklet-copy step or custom control panel."
     parallel_assumptions:
       - "Reusing the exact Fake Leumi and local-service processes from CI makes local manual exercise meaningful rather than a separate demo implementation."
       - "Four moving synthetic securities are enough to inspect Current, Detail/history and Scanner behavior manually."
@@ -622,7 +625,7 @@ nodes:
       - "Without a simple local entry point, a fully automated harness still does not satisfy the requirement to exercise the system locally before real market availability."
     sufficiency_assumptions: []
     success_evidence:
-      - "From a clean checkout after npm install, one command starts both services and prints a working URL."
+      - "From a clean checkout after npm install, one command builds/starts the required components and prints a working URL; opening it requires no bookmarklet paste or DevTools action."
       - "The page continuously produces synthetic cycles into a dedicated DuckDB file and the user can open Current, Detail/history and Scanner without Leumi."
       - "Stop/restart preserves demo history unless the explicit reset command is used."
       - "The demo never touches production DB path, legacy IndexedDB authority or real Leumi endpoints."
