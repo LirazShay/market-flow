@@ -24,6 +24,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | Dynamic SQL Scanner verification plan | [browser-sql-scanner-verification-plan.md](browser-sql-scanner-verification-plan.md) |
 | conditional shadow verification audit | [browser-sql-shadow-verification-audit.md](browser-sql-shadow-verification-audit.md) |
 | storage lifecycle / archive / rollover audit | [browser-sql-storage-lifecycle-audit.md](browser-sql-storage-lifecycle-audit.md) |
+| KISS scope reset | [browser-sql-kiss-scope-reset.md](browser-sql-kiss-scope-reset.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
 | official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
