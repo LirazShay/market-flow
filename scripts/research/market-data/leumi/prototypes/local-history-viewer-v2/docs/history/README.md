@@ -24,6 +24,14 @@ v2-bootstrap/2026-09-24-v2-bootstrap.md
 
 Records the exact V1 clone provenance, V2 namespace isolation, verification runs and bootstrap failure review.
 
+### 2026-09-27 — Pre-KISS Browser SQL 42-WP planning snapshot
+
+~~~text
+browser-sql-pre-kiss-42wp-plan/README.md
+~~~
+
+Preserves the old A..W ROADMAP, 42-WP implementation decomposition/GitHub execution map/final audit/freeze, and a STATUS snapshot from immediately before the post-KISS canonical rewrite. It is cold historical evidence only.
+
 ## Inherited V1 baseline history
 
 The remaining historical material under this directory was copied with the exact V1 baseline. It is retained as provenance/evidence for the implementation V2 started from; it is **not** V2 live status.
