@@ -28,6 +28,7 @@ authenticated Leumi page
 ~~~
 
 D-043 owns provider/data continuity and the three product surfaces.
+Preserve V1 provider/collection continuity; V2 changes persistence/analytics authority, not the proven provider contract.
 D-044 owns the current post-KISS implementation baseline.
 
 ## Provider/data invariants
