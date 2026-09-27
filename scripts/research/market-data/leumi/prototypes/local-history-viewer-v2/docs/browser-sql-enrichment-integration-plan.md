@@ -1,5 +1,8 @@
 # Browser SQL V2 — Enrichment Integration Plan
 
+> **Reference-only / superseded integration guidance.** Initial V2 does not require a mandatory enrichment handoff before Scanner work. C07 and C08/C09 run in parallel after C05+C06; only evidence-triggered O1 may add targeted enrichment.
+
+
 ## Role
 
 This is Pass E7 of Issue #72.
