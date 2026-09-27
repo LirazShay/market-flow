@@ -22,7 +22,7 @@ After HOT context, read only the current task scope, target code/tests and ownin
 
 ## Implementation across fresh chats
 
-Browser SQL V2 implementation is intentionally partitioned into **12 planned fresh chats: one chat per executable C01..C12 Issue**.
+Browser SQL V2 implementation is intentionally partitioned into **12 planned fresh chats: one chat per executable C01..C12 Issue, executed strictly serially**. Chat N+1 starts only after Chat N has closed its Issue, completed required verification and advanced `STATUS.json`.
 
 Stable chat boundaries, entry/exit gates, verification ownership and conditional rejoin rules:
 
