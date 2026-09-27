@@ -158,3 +158,51 @@ Neither correction changes the approved parent strategies or invalidates prior l
 - D-013
 - D-014
 
+### R-005 — 2026-09-27 — S&T Node 4 Dynamic SQL Scanner
+
+**Result:** pass
+
+**Gates checked:**
+- strategy/tactic validity
+- D-006 security/read-only resolution
+- child necessity
+- child sufficiency
+- SQL semantics truthfulness
+- scheduler/no-overlap behavior
+- Scanner/Recorder independence
+- KISS
+- implementation readiness
+
+**Necessity test:**
+- Remove 4.1: editable SQL is not safely read-only/external-state constrained; parent fails.
+- Remove 4.2: no exact Node execution/result contract exists; parent fails.
+- Remove 4.3: one-active-config/no-overlap/repeat semantics remain undefined; parent fails.
+- Remove 4.4: required Scanner product surface does not exist; parent fails.
+
+**Sufficiency test:**
+Assuming 4.1–4.4 succeed, the user can explicitly activate arbitrary supported analytical SELECT SQL, run it repeatedly against coherent committed DuckDB state, receive exact 0..N schema/rows/errors without hidden semantics, avoid overlap/burst, and navigate SecurityId results to the shared Detail surface. Collector cadence/authority is unaffected.
+
+**Security findings:**
+- StatementType.SELECT alone is not sufficient because SELECT can access external files/functions and sequences can mutate via nextval.
+- D-006 therefore combines engine hardening + one parsed SELECT + no durable sequences.
+- No second read-only DuckDBInstance is introduced; the same file should have one shared instance with separate connections.
+- Scanner user is local/trusted, so CPU/RAM governance, cancellation and arbitrary result caps are deferred rather than altering SQL semantics preemptively.
+
+**KISS findings:**
+- stateless Node scanner.execute request;
+- browser owns one active config/timer;
+- completion-based delay, no anchored scheduler;
+- no query history/config persistence;
+- no mandatory streaming/cancellation;
+- no hidden LIMIT/filter/sort;
+- arrays + explicit column metadata preserve duplicate names/order.
+
+**Planning corrections:**
+- Node 2 schema no longer uses DuckDB sequences; IDs are allocated on the serialized writer transaction.
+- Node 2 shared instance is hardened once at database creation.
+- Product docs are amended to D-045 Node/WebSocket/native-DuckDB architecture.
+
+**Resolved/opened decisions:**
+- D-006 resolved
+- D-015
+
