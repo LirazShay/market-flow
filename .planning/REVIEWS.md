@@ -69,3 +69,49 @@ Assuming 1.1–1.4 succeed, the browser can connect, identify itself, send every
 - D-007
 - D-008
 
+### R-003 — 2026-09-27 — S&T Node 2 localhost Node/DuckDB authority
+
+**Result:** pass
+
+**Gates checked:**
+- strategy/tactic validity
+- child necessity
+- child sufficiency
+- transaction/data integrity
+- restart/recovery
+- security/ownership
+- KISS
+- implementation readiness
+
+**Necessity test:**
+- Remove 2.1: no safe/singular service ownership or serialized mutation; parent fails.
+- Remove 2.2: no durable database/schema contract; parent fails.
+- Remove 2.3: producer/session/universe/failure lifecycle remains undefined; parent fails.
+- Remove 2.4: complete-cycle atomicity/current-history coherence is not implemented; parent fails.
+- Remove 2.5: restart/readiness can leave stale ownership or ambiguous authority; parent fails.
+
+**Sufficiency test:**
+Assuming 2.1–2.5 succeed, one loopback Node process owns one validated schema/file, one producer write stream, complete lifecycle persistence, atomic cycle commits and deterministic recovery. That is sufficient for the durable authority; consumer read UX and Scanner semantics remain correctly downstream in Nodes 3/4.
+
+**KISS findings:**
+- six small tables including schema_info; no ORM;
+- raw provider facts stay JSON instead of a speculative wide typed schema;
+- no secondary indexes before measurement;
+- no migration framework, PID lock, replay log, Docker or service manager;
+- latest is replaced wholesale because every accepted cycle is already complete;
+- one serialized writer path avoids transaction interleaving.
+
+**External capability evidence checked:**
+- current DuckDB Node API supports file-backed `DuckDBInstance` creation and normal connection execution;
+- DuckDB Appenders are connection/transaction scoped and explicit transactions can control commit frequency.
+
+**Corrections made:**
+- removed “idempotent cycle persistence” from the parent tactic because initial transport explicitly has no replay;
+- separated lifecycle persistence from successful-cycle atomic persistence;
+- made stale-session interruption the only application-level restart repair.
+
+**Opened/referenced decisions:**
+- D-009
+- D-010
+- D-011
+
