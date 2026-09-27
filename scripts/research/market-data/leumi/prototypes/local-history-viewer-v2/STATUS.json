@@ -23,8 +23,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "S&T Nodes 1-5 are locally approved and Node 5.1 was reopened/refined for offline-first verification: shared Fake Leumi scenarios, real Node/DuckDB service integration, real-boundary Chromium E2E and a one-command local demo.",
-    "ready": "Run whole-plan outside-in Final Planning Review including the new Fake Leumi/test-pyramid constraint; freeze/allocate only if the full tree still passes.",
+    "completed": "Final Planning Review found and corrected two material gaps: nested DuckDB query()/side-effect function mutation under SELECT, and Fake Leumi demo runtime auto-load/origin wiring.",
+    "ready": "Re-run the whole-plan Final Planning Review on the corrected tree; freeze/allocate only if it passes.",
     "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
@@ -60,11 +60,12 @@
       "node3": "approved-reviewed",
       "node4": "approved-reviewed",
       "node5": "approved-reviewed",
-      "offlineVerification": "approved-reviewed-r007"
+      "offlineVerification": "approved-reviewed-r007",
+      "finalReview": "correction-pass-r008"
     }
   },
   "next": {
-    "action": "Run Final Planning Review across the complete S&T tree, explicitly auditing Fake Leumi, unit/service/browser/local-demo coverage; if green, freeze and populate .planning/EXECUTION.yaml.",
+    "action": "Re-run corrected Final Planning Review; if fully green, freeze .planning and allocate implementation chats.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
