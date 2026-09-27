@@ -23,8 +23,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "S&T Nodes 1-5 are locally approved. Node 5 fixes final CI/workload proof, reproducible candidate packaging, one no-overlap authenticated cutover/rollback gate and post-acceptance Browser-SQL retirement.",
-    "ready": "Run whole-plan outside-in coverage audit + Final Planning Review; freeze and allocate executor chats only if the complete tree passes.",
+    "completed": "S&T Nodes 1-5 are locally approved and Node 5.1 was reopened/refined for offline-first verification: shared Fake Leumi scenarios, real Node/DuckDB service integration, real-boundary Chromium E2E and a one-command local demo.",
+    "ready": "Run whole-plan outside-in Final Planning Review including the new Fake Leumi/test-pyramid constraint; freeze/allocate only if the full tree still passes.",
     "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
@@ -59,18 +59,19 @@
       "node2": "approved-reviewed",
       "node3": "approved-reviewed",
       "node4": "approved-reviewed",
-      "node5": "approved-reviewed"
+      "node5": "approved-reviewed",
+      "offlineVerification": "approved-reviewed-r007"
     }
   },
   "next": {
-    "action": "Run Final Planning Review across the complete S&T tree; if green, freeze and populate .planning/EXECUTION.yaml.",
+    "action": "Run Final Planning Review across the complete S&T tree, including Fake Leumi/test pyramid; if green, freeze and populate .planning/EXECUTION.yaml.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
     "rules": [
       "Planning source is .planning.",
       "Do not implement production work until plan_state is frozen.",
-      "All five root branches are locally approved; whole-plan coverage/freeze is the only next planning action.",
+      "Offline Fake Leumi verification is a hard planning constraint, not optional follow-up work.",
       "Conversation pacing remains one planning unit per user message unless the user changes it."
     ]
   },
