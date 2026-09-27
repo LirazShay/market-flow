@@ -92,8 +92,8 @@ It is **not** part of the early C01 feasibility blocker.
 ## Live verification boundaries
 
 - C01 / #73: authenticated-origin Worker + exact Worker/Wasm + OPFS + synthetic SQL write/COMMIT + close/reopen/read marker. Existing probe CHECKPOINT usage does not define production checkpoint cadence.
-- C06 / #78: bounded real provider → validation → SQL → trusted-read L-2 proof.
-- C12 / #84: final integrated authenticated run + real-origin ownership proof + explicit cutover.
+- C06 / #78: bounded controlled single-tab real provider → validation → SQL → trusted-read L-2 proof; it is not cross-tab production-ownership evidence.
+- C12 / #84: one no-overlap authenticated release transition — settle/stop old IndexedDB Recorder first, then prove real-origin two-tab ownership, start fresh SQL authority, exercise Current/Detail/Scanner and accept or explicitly roll back.
 
 ## Current execution graph
 
