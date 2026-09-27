@@ -2,41 +2,37 @@
 
 This directory contains durable V2 design/evidence. It does **not** own live progress; use `../STATUS.json`.
 
-## Current Browser SQL authorities
+## Current Node-SQL authorities
 
 | Need | Authority |
 |---|---|
 | product/provider continuity + three surfaces | [product shape](../../../../../../../docs/product/local-history-viewer-v2-product-shape.md) + [D-043](../../../../../../../docs/project/decisions/D-043.md) |
-| post-KISS implementation baseline | [D-044](../../../../../../../docs/project/decisions/D-044.md) |
+| current runtime/process boundary | [D-045](../../../../../../../docs/project/decisions/D-045.md) |
 | live user SQL product behavior | [live SQL requirement](../../../../../../../docs/product/live-sql-query-execution.md) |
-| compact target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
-| implementation dependency rationale | [browser-sql-compact-execution-dag.md](browser-sql-compact-execution-dag.md) |
-| design/specification reference for C01..C12 | [browser-sql-compact-issue-specifications.md](browser-sql-compact-issue-specifications.md) |
-| current GitHub graph | Master #85 / C01..C12 #73..#84 via [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
+| Browser-SQL → Node-SQL disposition | [node-sql-migration-inventory.md](node-sql-migration-inventory.md) |
 | testing policy | [../tests/TESTING_POLICY.md](../tests/TESTING_POLICY.md) |
-| stable plan/order | [../ROADMAP.md](../ROADMAP.md) |
-| materialization/re-baseline history | [browser-sql-pre-materialization-reconciliation-map.md](browser-sql-pre-materialization-reconciliation-map.md) and post-KISS audits — reference only |
+| live planning pointer | [../STATUS.json](../STATUS.json) |
 
-## Historical Browser SQL planning
+## Browser-SQL history/reference
 
-Pre-KISS 42-WP planning and superseded mechanism designs are COLD history:
+The former Browser-SQL C01-C12 plan and all top-level `browser-sql-*.md` files are reference/evidence only under D-045.
+
+The previous compact baseline is preserved in [D-044](../../../../../../../docs/project/decisions/D-044.md), which is superseded for current V2.
+
+Pre-KISS Browser-SQL history remains under:
 
 ~~~text
 history/README.md
 ~~~
 
-Start there only when a current Issue explicitly needs historical rationale/evidence.
-
-The post-KISS audit trail is also planning rationale rather than normal implementation startup context. Prefer D-044, the compact DAG and the active Issue.
-
-Any top-level Browser SQL planning/manual/checkpoint file that is **not** listed in the Current Browser SQL authorities table is reference/evidence only unless the active Issue links it explicitly. Files with old ND-/WP-/Phase ownership must not be treated as executable instructions.
+Do not treat an old Browser-SQL manual, DAG, Issue map or freeze document as executable guidance.
 
 ## Source-of-truth reminder
 
 ~~~text
 STATUS.json = live progress/current/verification
-ROADMAP.md   = stable plan/scope/order
-GitHub Issue = active executable work unit
-D-043/D-044  = durable product/implementation decisions
+D-043       = provider/data/product continuity
+D-045       = current Node.js localhost authority boundary
+inventory   = keep/adapt/archive/retire migration disposition
 docs/history = cold historical evidence
 ~~~
