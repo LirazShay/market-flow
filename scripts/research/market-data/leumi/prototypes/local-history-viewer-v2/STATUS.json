@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-e7-enrichment-integration-plan",
-    "title": "Define how proven enrichment is selectively exposed through Current/Detail and handed to the later Scanner without destabilizing V1-on-SQL parity",
+    "substep": "pass-e8-scanner-mini-project-plan",
+    "title": "Write the Dynamic SQL Scanner mini-project implementation manual from SQL contract and lifecycle through engine/product checkpoints",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E6 completed.",
-    "ready": "E6 defines controlled correctness-first benchmark variants and reproducible decision evidence for horizons, predecessor links, metrics, typed promotion and indexes before enrichment schema freeze.",
-    "blockedAfterEntry": "Implementation remains paused; Pass E continues with enrichment integration and Scanner mini-project manuals before canonical Issue mutation."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E7 completed.",
+    "ready": "E7 separates persisted enrichment, browsing exposure and Scanner availability; ND-21 may be an explicit no-op and leaves a stable analytical handoff for ND-22.",
+    "blockedAfterEntry": "Implementation remains paused; Pass E continues with Scanner and final integration manuals before canonical Issue mutation."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: enrichment decision benchmark plan added and indexed; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: enrichment integration plan added and indexed; no product/runtime implementation and no canonical Issue mutation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass E7: define the enrichment integration plan for ND-21, including selective Current/Detail exposure, SQL contract handoff, formatting/null behavior, no-op outcome, UI parity protection, and the exact boundary handed to the Scanner mini-project.",
+    "action": "Execute Issue #72 Pass E8: write the Dynamic SQL Scanner mini-project implementation manual covering stable SQL contract, draft/active lifecycle, safe execution, result typing, scheduler/resource safety, restart semantics, editor/grid UI, drill-down, engine checkpoint and product checkpoint.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Only expose enrichment that already passed ND-20.",
-      "Persistence does not imply UI exposure; ND-21 may be an explicit no-op.",
-      "Do not make Current/Detail depend on Scanner state or arbitrary SQL."
+      "Scanner starts only after ND-20; it consumes the E7 analytical handoff without redefining Current/Detail behavior.",
+      "Separate product contracts from benchmark-selected execution mechanisms.",
+      "Require distinct engine and product checkpoints."
     ]
   },
   "history": {
