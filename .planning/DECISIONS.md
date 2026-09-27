@@ -86,13 +86,13 @@
 
 **Related S&T node(s):** 2.2, 2.3, 2.4, 4.1, 4.2
 
-**Question:** What is the smallest exact mechanism that proves user SQL is read-only on the same writable DuckDB authority?
+**Question:** What is the smallest exact mechanism that keeps editable Scanner SQL from mutating the same writable DuckDB authority?
 
-**Resolution:** Use one hardened shared DuckDB instance and a dedicated Scanner connection. At instance creation set `enable_external_access=false`, `allow_community_extensions=false`, `autoinstall_known_extensions=false`, `autoload_known_extensions=false`, `allow_persistent_secrets=false`, then `lock_configuration=true`. For every Scanner SQL string, use `extractStatements`, require exactly one statement, prepare it and require `prepared.statementType === StatementType.SELECT` before execution. Schema v1 creates no sequences; writer IDs use serialized `MAX(id)+1` allocation inside write transactions, removing the known durable `SELECT nextval(...)` mutation path.
+**Resolution:** Use one hardened shared DuckDB instance and a dedicated Scanner connection. At instance creation disable external access, community/auto extensions and persistent secrets, then lock configuration. For each Scanner SQL string: require exactly one extracted statement; prepare it; require `StatementType.SELECT`; then run a conservative lexical function-call scan that ignores comments/string literals and normalizes quoted/unquoted identifiers. Reject explicit `query(...)` and every function name reported by `duckdb_functions()` with `has_side_effects=true`. Schema v1 creates no sequences. Accepted SQL executes only through the prepared SELECT.
 
-**Resolution basis / rationale:** The current maintained Node API exposes `DuckDBPreparedStatement.statementType` backed by DuckDB's prepared-statement type API. DuckDB's security guidance explicitly recommends disabling external access/extensions and locking configuration for untrusted SQL. A second read-only DuckDBInstance is deliberately rejected because DuckDB recommends sharing one instance for the same file and different instance configurations cannot safely provide the desired mixed read/write topology.
+**Resolution basis / rationale:** DuckDB documents `query(query_string)` as a table function that can execute arbitrary queries and potentially alter database state, so outer SELECT typing alone is insufficient. DuckDB also exposes `duckdb_functions().has_side_effects` for functions that change state. Engine hardening blocks file/network/extension escape paths. A small conservative lexer is sufficient for function-call identification and is simpler than introducing a third-party SQL parser. This is defense for a trusted local tool operator, not a claim of hostile-SQL sandboxing.
 
-**What would reopen this:** A verified SELECT expression/function in the pinned DuckDB version that can mutate Market Flow durable tables/schema despite the hardened no-sequence design, or a Node API regression that removes prepared statement typing.
+**What would reopen this:** A verified mutation path in the pinned DuckDB version that survives the hardened SELECT + dangerous-function guard, or a Node API/catalog change that removes the required statement/function metadata.
 
 ---
 
