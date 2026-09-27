@@ -125,7 +125,7 @@ authenticated Leumi
 → only real provider/origin facts CI cannot prove
 ~~~
 
-The exact replacement verification matrix is still part of the 100-stage re-plan.
+The replacement verification matrix is owned by the active S&T tree, including unit, real service/DuckDB integration, Fake-Leumi Chromium E2E, local demo, workload and final live-cutover proof.
 
 ## Security
 
