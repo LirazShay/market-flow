@@ -337,17 +337,17 @@ Expose C08 as the third product surface.
 - SQL editor;
 - interval control;
 - Activate;
-- active/draft/status visibility;
-- truthful result grid;
-- SQL result column/order fidelity;
-- common result types including BigInt-safe display;
+- Viewer-local draft remains non-authoritative; active config/status comes from Runtime Controller state and resyncs after successful activation, including activation from another Viewer;
+- truthful result grid with SQL result column/order fidelity;
+- common result types including BigInt-safe display; uncommon/unsupported values use a truthful safe representation or explicit unsupported state;
 - NULL vs zero truthfulness;
 - clear zero-row success;
 - clear query error;
-- truthful bounded rendering/truncation if the UI shows only part of a materialized result;
+- result/error/status remains attributable to the execution/config that produced it and is never relabeled by later draft/activation changes;
+- truthful bounded rendering/truncation if the UI shows only part of a materialized result, including total-vs-rendered distinction when total is known;
 - previous successful result may remain visibly previous/stale after a later error within one runtime;
 - optional canonical SecurityId drill-down to shared Detail;
-- Scanner isolation regressions.
+- Scanner UI actions do not call provider APIs or alter collector cadence; Scanner failure remains isolated from Recorder/Current/Detail.
 
 ## Non-scope
 - generic data-grid product;
@@ -367,16 +367,16 @@ Medium. Keep separate from C08 because engine/security behavior and UI/result re
 Ensure only one independent same-origin tab owns production Worker/DB/Recorder.
 
 ## Scope
-- stable exclusive Web Lock;
-- same-tab local singleton reuse;
-- owner may start production Worker/DB/Recorder;
-- non-owner stays passive;
-- owner close releases browser lock;
-- later owner runs normal readiness/reopen before recording;
-- no heartbeat authority;
-- no steal:true;
-- no localStorage/IndexedDB election fallback;
-- Chromium multi-page ownership tests.
+- canonical stable exclusive Web Lock: `market-flow:local-history-viewer-v2:runtime-owner`, unchanged across builds/DB revisions;
+- same-tab local singleton reuse; repeated local launch does not request the same owner lock again;
+- independent tabs use fail-fast exclusive acquisition (`ifAvailable: true`); only the granted-lock callback may start production Worker/DB/Recorder;
+- non-owner stays passive and opens no production Worker/DB or provider collection;
+- owner holds the lock for the full mutation-capable runtime lifetime;
+- explicit stop releases only after local runtime teardown reaches the no-further-mutation boundary;
+- browser close/agent termination releases the lock; a later explicit owner runs normal readiness/reopen before recording;
+- no heartbeat authority, timeout displacement, `steal:true`, localStorage/IndexedDB fallback or BroadcastChannel election;
+- BroadcastChannel and `navigator.locks.query()` are diagnostic/hint surfaces only and never authorize startup;
+- Chromium multi-page ownership tests cover race, passive loser, same-tab relaunch, hidden owner, unavailable/SecurityError, teardown-before-release and later reacquisition.
 
 ## Live proof
 
