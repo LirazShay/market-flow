@@ -31,18 +31,103 @@ nodes:
       - "5"
 
   "1":
-    status: draft
+    status: approved
     strategy: "The authenticated browser sends only valid, well-defined market-data work to the local authority over one safe loopback protocol."
-    tactic: "Adapt the existing Recorder/runtime around a small versioned WebSocket protocol with explicit producer/viewer roles, validation, acknowledgements and failure semantics."
+    tactic: "Reuse the existing validated universe/complete-cycle objects unchanged, wrap them in one small versioned WebSocket request/response protocol, replace browser persistence calls with Node acknowledgements, and fail closed if the local authority is unavailable."
     parallel_assumptions:
       - "The existing Recorder already produces a validated complete-cycle object before persistence."
       - "Native browser WebSocket to 127.0.0.1 is already proven on the real Leumi origin."
+      - "The same-origin Viewer can later reuse the same generic browser WebSocket client with role=viewer."
     necessary_assumptions:
       - "Without a deterministic browser→Node boundary, Node cannot safely become the new persistence authority."
+    sufficiency_assumptions:
+      - "A shared protocol, a deterministic browser client, a Recorder persistence adapter, and fail-closed runtime lifecycle together cover every browser-side responsibility required to hand authority to Node."
+      - "Server-side Origin enforcement, producer ownership and database semantics are deliberately owned by Node 2 rather than duplicated here."
+    success_evidence:
+      - "The existing validated universe and complete-cycle shapes cross the socket without a second market-data transformation."
+      - "Recorder success remains commit-before-success: a cycle is successful in browser state only after the Node commit ACK."
+      - "Local-service absence, rejection, timeout or disconnect never silently falls back to IndexedDB or lets cycles continue as if durable."
+      - "Provider cookies/tokens/account/session browser data are absent from the protocol contract."
+    depends_on: []
+    children:
+      - "1.1"
+      - "1.2"
+      - "1.3"
+      - "1.4"
+
+  "1.1":
+    status: approved
+    strategy: "Browser and Node share one deterministic protocol contract for producer operations."
+    tactic: "Add a dual Node/browser pure module at transport/pure/protocol.js with protocol version 1, JSON encode/decode, one envelope {v,type,requestId,payload}, strict message-type validation, and the producer operation set client.hello, producer.session.start, producer.universe.replace, producer.cycle.commit, producer.cycle.failed, producer.heartbeat, producer.session.stop, response.ok and response.error."
+    parallel_assumptions:
+      - "A single shared pure module prevents browser/server protocol drift without adding a schema framework."
+      - "The existing universe and complete-cycle objects are already the validated data-bearing contracts and should be transported as-is."
+    necessary_assumptions:
+      - "Without one shared protocol definition, browser and Node can disagree about request/response meaning and corrupt lifecycle ordering."
     sufficiency_assumptions: []
     success_evidence:
-      - "Protocol contract covers connect/role, session lifecycle, complete-cycle commit, commit acknowledgement/error and read/query requests without transporting provider credentials."
+      - "Node unit tests round-trip representative universe/cycle fixtures through encode/decode while preserving null, zero, empty string and missing properties."
+      - "Unknown versions/types, malformed envelopes and missing requestId values are rejected deterministically."
+      - "The protocol schema contains no cookie, authorization, account or private browser-session fields."
     depends_on: []
+    children: []
+
+  "1.2":
+    status: approved
+    strategy: "Browser code has one predictable WebSocket request client that can be reused by producer and Viewer roles."
+    tactic: "Add transport/websocket-client.js over native WebSocket using ws://127.0.0.1:8765, client.hello role/clientId handshake, monotonic request IDs, request correlation, a 30-second request timeout, explicit close, and rejection of every pending request on close/protocol error; do not add reconnect, offline queue or replay."
+    parallel_assumptions:
+      - "The real Leumi-origin smoke test already proves the browser can open this loopback socket."
+      - "A generic request client is enough for producer now and Viewer/Scanner later."
+    necessary_assumptions:
+      - "Without request correlation and explicit failure behavior, Recorder lifecycle calls cannot safely wait for authoritative Node acknowledgements."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Deterministic browser tests prove connect/hello, request↔response correlation, timeout, server error, malformed response and socket-close rejection."
+      - "No request is sent before the hello handshake succeeds."
+      - "No automatic retry/reconnect/replay occurs after failure."
+    depends_on:
+      - "1.1"
+    children: []
+
+  "1.3":
+    status: approved
+    strategy: "The existing Recorder hands lifecycle and complete-cycle persistence to Node without changing provider acquisition or complete-cycle validation."
+    tactic: "Add a Recorder→Node persistence adapter that maps the current startSession, persistUniverse, commitSuccessfulCycle, recordFailedCycle, recordHeartbeat and stopSession boundaries to protocol requests; change recorder-loop.js to use that adapter instead of IndexedDB persistence/BroadcastChannel for the new path while leaving pure config/universe/chunk/cycle/no-overlap logic intact."
+    parallel_assumptions:
+      - "The current Recorder already separates provider/cycle construction from persistence methods closely enough to replace the adapter instead of rewriting collection logic."
+      - "Node ACKs can return the sessionId/cycleId identities currently produced by IndexedDB."
+    necessary_assumptions:
+      - "Without replacing the persistence handoff, IndexedDB remains a co-authority and D-045 is not actually implemented."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Characterization/unit tests for provider collection and pure cycle logic remain unchanged and green."
+      - "A fake local service observes the exact session-start → universe → cycle/failure/heartbeat → stop request ordering."
+      - "cycle.commit ACK returns the authoritative cycleId; response.error/timeout is treated as persistence failure and never exposes browser success."
+      - "The new Recorder path performs no IndexedDB market-state writes and sends no full-cycle BroadcastChannel payload."
+    depends_on:
+      - "1.1"
+      - "1.2"
+    children: []
+
+  "1.4":
+    status: approved
+    strategy: "Runtime lifecycle fails closed around the localhost authority instead of running a disconnected or duplicate producer."
+    tactic: "Wire runtime launch to establish the WebSocket/hello before starting Recorder/provider work, surface service-unavailable/producer-rejected failures clearly, stop the Recorder when transport closes, wait for producer.session.stop ACK on normal stop, then close the socket; require explicit relaunch after failure."
+    parallel_assumptions:
+      - "Failing launch/operation is simpler and safer than background reconnection for this local daily tool."
+      - "Node 2 will enforce the one-producer rule; browser runtime only needs to honor rejection."
+    necessary_assumptions:
+      - "Without fail-closed runtime wiring, the browser can keep polling or report success after losing the only durable authority."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "With no local service, runtime launch starts no Recorder and makes no provider request."
+      - "A producer-already-active response starts no second Recorder."
+      - "Mid-run socket loss prevents further cycle scheduling and rejects outstanding persistence work."
+      - "After service recovery, an explicit relaunch creates a fresh connection/session; no old request is replayed."
+    depends_on:
+      - "1.2"
+      - "1.3"
     children: []
 
   "2":
