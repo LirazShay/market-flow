@@ -403,25 +403,24 @@ Must use the actual selected product shape:
 - any activated candidate-changing O2/O3/O4 mechanism.
 
 ## Scope
-- deterministic day-shaped history/workload;
+- before the deciding run, record deterministic day-shaped workload parameters: intended cadence/count or duration, representative universe-change/payload profile, C07 representative Scanner query + interval, and Current/Detail read activity; no hardcoded universe size;
 - normal collector cadence;
 - SQL persistence;
 - Current/Detail reads;
-- repeated representative Scanner query;
-- selected analytical optimization, if any;
+- repeated representative Scanner query from the predeclared C07 corpus and any selected O1 optimization;
 - one-owner runtime behavior;
-- record workload parameters and measured latency/memory/storage facts needed for future regression comparison;
-- verify explicit errors rather than corruption/silent loss.
+- record measured latency/memory/storage facts needed for future regression comparison;
+- verify exact cycle-integrity counters and explicit errors rather than corruption/silent loss.
 
 ## Observable acceptance
-- workload parameters are recorded and represent intended normal daily operation;
-- every injected provider cycle reaches a terminal state: committed or explicitly failed;
+- workload parameters are fixed before the deciding run and represent intended normal daily operation;
+- every injected provider cycle reaches a terminal state: committed or explicitly failed; each committed-success cycle has exact requested/received/unique accounting with zero duplicate/missing/unexpected IDs;
 - persistence queue/backlog shows no sustained monotonic growth during the steady-state portion;
 - Scanner executions never overlap;
 - representative Scanner executions repeatedly complete;
 - Current and Detail reads continue to complete during mixed load;
 - browser/runtime does not crash or hit OOM;
-- storage growth is measured and no quota/storage failure occurs for the required workload;
+- storage growth is measured; quota/storage failure before the required workload completes is a failing result that must be resolved or activate O4;
 - accumulated DB closes/reopens and expected committed state is readable;
 - measured latency/memory/storage observations are recorded; no universal threshold is invented after seeing results.
 
@@ -431,6 +430,7 @@ If a concrete responsiveness threshold is necessary for release, define it befor
 
 C11 may activate:
 - O2 advanced Scanner resource hardening;
+- O3 streaming/chunked result delivery when representative materialization proves unsafe/unusable;
 - O4 storage/export/fresh-DB workflow;
 - O5 target-Windows-specific evidence.
 
@@ -457,19 +457,18 @@ Verify the final candidate on authenticated Leumi and switch authority explicitl
 - no unresolved material data-integrity/security issue.
 
 ## Scope
-- bounded self-verifying final live run;
-- real collection + SQL commits;
-- Current/Detail healthy;
-- Scanner healthy when enabled;
-- real-origin two-tab ownership proof;
-- sanitized machine evidence;
-- explicit settled-boundary stop of old IndexedDB Recorder;
-- fresh production SQL history start;
-- verify first SQL production cycles/reads;
-- retain old working release for rollback;
-- rollback procedure: stop SQL release, preserve SQL DB, run old release;
-- remove temporary migration/probe scaffolding that has no continuing owner;
-- final docs/status handoff.
+- perform one no-overlap release transition: stop the old IndexedDB Recorder at a settled boundary before any SQL production owner/provider collection starts;
+- preserve legacy IndexedDB data;
+- launch the tested SQL candidate on the authenticated origin and prove the canonical C10 lock with two same-origin tabs: exactly one owner and one passive loser with no production Worker/DB/provider collection;
+- the granted owner opens/creates fresh production OPFS, completes readiness and only then starts SQL recording;
+- run a bounded self-verifying authenticated session with real collection + SQL commits/readback;
+- Current/Detail are healthy and one representative safe Scanner query/interval is explicitly activated and succeeds;
+- collect sanitized candidate/build + integrity/ownership/Scanner evidence;
+- verify first SQL production cycles/reads before accepting cutover;
+- retain the old working release for rollback;
+- on material post-stop/cutover failure: stop SQL runtime, preserve SQL DB, run old release; no auto-fallback or history synchronization;
+- remove temporary migration/probe scaffolding with no continuing owner while retaining minimal durable verifiers/regressions;
+- final docs/status handoff only after the accepted final state is verified.
 
 ## Non-scope
 - IndexedDB history import;
