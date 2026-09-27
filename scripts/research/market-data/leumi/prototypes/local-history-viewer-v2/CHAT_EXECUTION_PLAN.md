@@ -46,6 +46,127 @@ This is an orchestration strategy, not a new GitHub dependency graph. ROADMAP.md
 
 The serial order ensures every chat starts from a verified predecessor, makes C06 naturally own the shared Current→Detail→Back closure regression, postpones C10 until the actual runtime shape exists, and leaves C11 as the single final convergence point.
 
+## Strict serial chat protocol
+
+Every implementation prompt identifies itself explicitly:
+
+~~~text
+I am Chat NN of 12.
+My owner is Cxx / Issue #yy.
+I may start work only if STATUS.json points to my Cxx/#yy and all required predecessor verification is green.
+~~~
+
+The chat must validate that statement against GitHub before implementation.
+
+If STATUS.json does not point to that chat/Issue, the chat must **not** guess or continue from prompt text alone. It must reconcile GitHub state first. A stale prompt never overrides STATUS.json.
+
+Only one planned implementation chat is active at a time.
+
+~~~text
+Chat N active
+→ Chat N owns all blocking discoveries, implementation and required verification
+→ Chat N reaches its exit gate
+→ Issue closes
+→ STATUS points to Chat N+1
+→ only then open Chat N+1
+~~~
+
+The previous chat's prose is never an entry gate. GitHub is.
+
+### Completion signal
+
+For Chats 01..11, the chat may emit the agreed completion word only after all of these are true:
+
+- its owning Issue is closed;
+- all required verification is green;
+- every blocking/conditional discovery owned by that chat has rejoined;
+- STATUS.json points to the next chat/Issue;
+- there is no verification-pending state left behind.
+
+For Chat 12, the same completion signal is allowed only after C12 and the implementation master are genuinely closed and the final operating pointer is written.
+
+The completion word is therefore a **receipt of a committed GitHub handoff**, never merely "I finished coding."
+
+## Discovery/change protocol
+
+Unexpected findings are normal. They do not break the serial model.
+
+Every new finding discovered while Chat N is active is classified immediately into exactly one of these buckets:
+
+### A. Required-now defect
+
+Use when the finding:
+
+- violates an invariant/security/data-integrity rule;
+- breaks the current Issue acceptance contract;
+- invalidates a predecessor assumption required by the current work;
+- causes required verification to fail;
+- would make handing off to the next chat unsafe.
+
+Action:
+
+~~~text
+keep Chat N active
+→ add/update regression or proof when practical
+→ repair the owning code/spec/Issue/decision
+→ rerun the smallest affected earlier verification
+→ rerun Chat N verification
+→ only then close Chat N
+~~~
+
+Do not create a later-chat TODO for a defect that makes the current handoff false.
+
+### B. Evidence-triggered conditional O1..O6
+
+Use only when the exact documented trigger fires.
+
+Action:
+
+~~~text
+record the evidence
+→ create focused conditional Issue only if useful
+→ keep the triggering chat active
+→ implement smallest justified mechanism
+→ rerun affected contracts
+→ rejoin the triggering Cxx
+→ close only after green
+~~~
+
+The planned next chat does not start during this branch.
+
+### C. Necessary plan correction
+
+Use when implementation evidence proves the current executable plan itself is wrong or incomplete, but the correction is still needed for the product.
+
+Action:
+
+~~~text
+stop coding forward
+→ update the owning GitHub Issue / decision / ROADMAP or CHAT_EXECUTION_PLAN as appropriate
+→ update STATUS
+→ add/adjust guards if the contradiction is mechanically protectable
+→ continue in the same Chat N from the corrected source of truth
+~~~
+
+Do not preserve a known-bad plan merely to keep the original chat numbering intact.
+
+If the correction changes future chat ownership/boundaries materially, explicitly revise CHAT_EXECUTION_PLAN.md before proceeding. The serial protocol remains, but the durable plan is allowed to evolve from evidence.
+
+### D. Non-blocking future improvement
+
+Use only when the finding is genuinely not required for the current contract, safety, integrity, or downstream correctness.
+
+Action:
+
+- capture it in the appropriate durable planning location or focused future Issue if warranted;
+- do not silently expand the current Issue;
+- do not move the live STATUS pointer to it;
+- continue the current chat.
+
+### E. Historical/debug observation only
+
+If the observation has no durable product/implementation consequence, keep it out of HOT status and permanent planning.
+
 ## Standard startup contract
 
 Every fresh implementation chat fetches latest main and reads:
@@ -95,6 +216,21 @@ Before handing off:
 7. leave no material decision only in chat prose.
 
 If verification is pending, the same chat remains owner. Do not open the next implementation chat.
+
+At successful handoff, the chat's final report must state at minimum:
+
+- chat number and owning Cxx/#Issue;
+- implementation summary;
+- changed files;
+- tests added/changed;
+- Fast CI result;
+- Browser CI result when relevant;
+- live verification result when relevant;
+- conditional/discovery disposition;
+- closed Issue;
+- next STATUS pointer.
+
+Only after those GitHub facts are true may the chat emit the agreed completion signal.
 
 ---
 
