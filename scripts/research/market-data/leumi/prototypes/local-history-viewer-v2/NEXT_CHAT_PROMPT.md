@@ -1,6 +1,6 @@
-# Market Flow — V2 Browser SQL Planning Continuation Prompt
+# Market Flow — Browser SQL V2 Final Planning Handoff
 
-Continue the existing Market Flow repository:
+Continue the existing repository:
 
 ~~~text
 LirazShay/market-flow
@@ -9,287 +9,270 @@ branch: main
 
 Default response language: Hebrew. Code/identifiers/technical terms may remain English.
 
-## Critical boundary for this chat
+## Critical boundary
 
-This continuation is **planning/materialization only**.
+This next chat is **still planning-only**.
 
-Do **not** implement or modify product/runtime/browser code.
+Do **not** implement C01 or modify product/runtime/browser behavior.
 
-The goal is to finish the Browser SQL plan re-baseline/materialization completely through R8, leave GitHub as the single clear source of truth for future implementation, and only then close planning Issue #72.
+Your job is to finish the Browser SQL planning process completely, including the final critique/review stages, guards/CI and post-KISS planning freeze. Only after that may you prepare a separate implementation handoff for a new chat.
 
-Do not start C01 implementation in this chat.
-
-Do not use the word `סיימתי` until the entire planned Browser SQL planning process is fully complete, including final consistency checks and verification.
-
----
+Do not use the completion word requested by the user until the entire planning process is actually complete and verified.
 
 ## Startup — GitHub is source of truth
 
-Fetch latest `main`, then read:
+Fetch latest `main`, then read in this order:
 
 ~~~text
 AGENTS.md
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/README.md
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/AI_CONTEXT.md
+GitHub Issue #72
 ~~~
 
-Then read only the current planning sources needed for the exact STATUS pointer:
+Then read the current planning authority:
 
 ~~~text
 docs/project/decisions/D-043.md
 docs/project/decisions/D-044.md
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/ROADMAP.md
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-github-execution-structure.md
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-compact-execution-dag.md
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-compact-issue-specifications.md
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-pre-materialization-reconciliation-map.md
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/tests/TESTING_POLICY.md
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/tests/unit/browser-sql-current-plan.test.js
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-final-planning-freeze.md
 ~~~
 
-Also inspect planning Issue #72 and the old Browser SQL Master/Issue graph only when needed for the R4-R8 transition.
+Inspect GitHub Master #85 and C01-C12 #73-#84 directly.
 
-If this prompt conflicts with current `main`, follow `main` and state the discrepancy.
+Do not preload old 42-WP planning except when checking that it is correctly historical/retired.
 
----
+If this prompt conflicts with current GitHub main, follow main and state the discrepancy.
 
-## Current verified state at handoff
+## Current state
 
-At the handoff boundary:
+Already complete:
 
 ~~~text
-R0 historical archive/snapshot       = complete
-R1 durable-decision reconciliation  = complete
-R2 current docs/product reconciliation = complete
-R3 testing/guard reconciliation     = complete
-R4 compact GitHub graph creation    = next
+R0 historical archive/snapshot
+R1 durable-decision reconciliation
+R2 current docs/product reconciliation
+R3 testing-policy/current-plan guard reconciliation
+R4 compact GitHub graph materialization
+R5 current docs/navigation backfill
+R6 retirement of old #20-#71 execution graph
 ~~~
 
-`STATUS.json` is the only live progress authority.
-
-D-044 is the accepted post-KISS implementation baseline.
-
-Fast CI for R3 is green.
-
-Implementation remains intentionally paused.
-
----
-
-## Current Browser SQL implementation plan
-
-The mandatory executable graph is:
+Materialized graph:
 
 ~~~text
-C01  Real-origin DuckDB L-1
-C02  Minimum SQL runtime + schema
-C03  Atomic persistence + reopen/durability
-C04  Recorder integration + trusted reads
-C05  Current Universe SQL parity
-C06  Detail/History SQL parity + bounded L-2
-C07  Real analytical SQL + day-sized measurement
-C08  Scanner core
-C09  Scanner UI/results/integration
-C10  Exclusive Web Lock ownership
-C11  Representative daily mixed workload
-C12  Final live verification + cutover/rollback/cleanup
+Master #85
+
+C01 #73  Real-origin DuckDB L-1
+C02 #74  Minimum SQL runtime + schema
+C03 #75  Atomic persistence + reopen/durability
+C04 #76  Recorder integration + trusted reads
+C05 #77  Current Universe SQL parity
+C06 #78  Detail/History SQL parity + bounded L-2
+C07 #79  Real analytical SQL + day-sized measurement
+C08 #80  Scanner core
+C09 #81  Scanner UI/results/integration
+C10 #82 Exclusive Web Lock ownership
+C11 #83 Representative daily mixed workload
+C12 #84 Final live verification + cutover/rollback/cleanup
 ~~~
 
-GitHub materialization target:
+Old Master #20, Epics #21-#28 and superseded old WPs are closed. #29/#30 remain completed reusable evidence. #65 remains the closed duplicate.
 
-~~~text
-1 compact Master Issue
-+ C01..C12 executable Issues
-+ 0 navigation-only Epic/parent Issues
-+ 0 placeholder conditional Issues
-~~~
+**Planning is not frozen yet. Do not start C01.**
 
-Completed old evidence:
+## Remaining work — finish planning completely
 
-~~~text
-#29 = engine pin/manifest evidence
-#30 = deterministic Browser SQL Worker/Wasm/OPFS/reopen probe
-~~~
+### 1. Final adversarial planning critique
 
-Reuse them by reference. Do not reopen/reimplement them.
+Review the whole compact plan as if trying to break it.
 
----
+At minimum check:
 
-## Important KISS/product rules
+- each C01-C12 Issue has one clear owner/outcome;
+- Issue size is neither artificially tiny nor dangerously broad;
+- direct dependencies are necessary and only direct;
+- no transitive blocker is duplicated;
+- Current and Detail split is still justified;
+- C07 and C08/C09 parallelism is valid;
+- C10 Web Lock parallelism from C02 is valid;
+- C11 convergence dependencies are exactly right;
+- C12 is a bounded release operation, not a hidden migration platform;
+- O1-O6 are truly conditional and no missing standing work exists;
+- no old mechanism accidentally survived as mandatory through stale wording;
+- no important data-integrity/security requirement was lost during KISS simplification.
 
-Preserve:
+If the critique finds a real defect, fix the plan before proceeding.
 
-- existing authenticated V1 provider flow;
-- MapHeat2 dynamic universe;
-- sequential GetSecuritiesData;
-- exact complete-cycle validation;
-- canonical SecurityId = `String(PaperId or Key)`;
-- no hardcoded universe size;
-- full raw MapHeat + Security preservation;
-- `null != 0 != "" != undefined`;
-- successful cycle atomicity;
-- Viewer rereads SQL authority; notifications are hints;
-- Scanner read-only + no overlap;
-- one stable exclusive Web Lock owner;
-- no silent DB delete/reset.
+### 2. Fresh-AI dry runs
 
-Initial V2 does **not** require:
+Simulate a fresh implementation chat using only the intended HOT path.
 
-- fixed 8-horizon persisted schema;
-- mandatory predecessor links;
-- mandatory DealsDelta/MID persistence;
-- immutable Scanner query-version history;
-- anchored scheduler framework;
-- advanced cancellation/preemption by default;
-- mandatory streaming;
-- archive/rollover platform;
-- generalized DB/schema upgrade framework;
-- permanent shadow/dual-write;
-- automatic trading execution.
-
-Conditional complexity is created only from evidence triggers.
-
----
-
-## Remaining planning work — execute R4 through R8
-
-### R4 — Create the compact GitHub execution graph
-
-Create:
-
-~~~text
-1 new compact Browser SQL Master
-+ C01..C12 executable Issues
-~~~
-
-Use the corrected exact Issue bodies from:
-
-~~~text
-docs/browser-sql-compact-issue-specifications.md
-~~~
-
-Rules:
-- use C01..C12 as stable human IDs;
-- GitHub Issue numbers are assigned normally;
-- record only direct dependencies from the compact DAG;
-- link #29/#30 as historical evidence for C01;
-- no P1..P4 navigation Issues;
-- no O1..O6 placeholder Issues;
-- Master groups children only under headings:
-  - Feasibility + SQL Core
-  - V1 Product on SQL
-  - Analytics + Scanner
-  - Daily Readiness + Cutover
-- Master must point to STATUS for live progress and must not duplicate current status.
-
-After creation, verify every Issue body/title/dependency against the source specification before proceeding.
-
-### R5 — Backfill current repository navigation/context
-
-After actual Issue numbers exist:
-
-- rewrite `docs/browser-sql-github-execution-structure.md` to the new Master + C01..C12;
-- add stable GitHub Issue links/numbers to compact DAG/ROADMAP only where useful;
-- rewrite `AI_CONTEXT.md` into compact current technical continuation context;
-- update current docs navigation;
-- keep old planning rationale COLD under `docs/history/`;
-- Fast CI.
-
-`AI_CONTEXT.md` must not duplicate live current/next/completion status.
-
-### R6 — Retire the old GitHub graph safely
-
-Only after the new graph is verified:
-
-- transfer pending authenticated L-1 ownership from old #31 to new C01 explicitly;
-- comment each old open WP with successor / conditional / future disposition;
-- close old open WPs;
-- keep #29/#30 closed as historical completed evidence;
-- keep #65 closed duplicate;
-- close old Epics #21..#28;
-- close old Master #20 **last**.
-
-Do not rewrite old Issue bodies into the new plan.
-
-Do not temporarily leave live work ownerless.
-
-### R7 — Switch STATUS authority to the new graph
-
-Before changing live pointer:
-
-- archive a final pre-switch STATUS snapshot;
-- compact historical old-42-WP verification fields out of HOT STATUS;
-- preserve current useful engine/probe/CI evidence compactly;
-- update C01 live L-1 meaning so it proves authenticated-Leumi Worker/Wasm/OPFS/write/COMMIT/close-reopen;
-- remove real-origin Web Lock from the early C01 blocker; final real-origin ownership proof belongs to C12;
-- point `currentFocus` / `next` to new C01 only after docs, decisions, Issue graph and guards agree.
-
-### R8 — Final post-KISS planning freeze
-
-Before closing planning:
-
-1. run a fresh-AI dry run:
+Run at least three dry runs:
 
 ~~~text
 AGENTS
 → README
 → STATUS
 → AI_CONTEXT
-→ C01
+→ active Issue
+→ only directly touched current code/tests/specs
 ~~~
 
-2. run another fresh-AI dry run on a representative middle Issue (for example C06/C08) and C12;
-3. verify direct dependencies, current-doc authority, old-graph retirement, conditional triggers and fresh-chat context;
-4. run mechanical current-plan/decision/Issue consistency guards;
-5. run Fast CI;
-6. run Browser CI only if runtime/browser/test code changed during materialization, or if an actual browser test changed;
-7. rewrite `browser-sql-final-planning-freeze.md` as the **new** post-KISS freeze artifact;
-8. update STATUS to the implementation entry point;
-9. close Issue #72 only when all planning verification is green.
+Use:
+- C01/#73;
+- one representative middle Issue, preferably C06/#78 or C08/#80;
+- C12/#84.
 
-At that point the next chat may implement C01.
+For each dry run verify the fresh AI can answer without reading old planning:
+- what exactly to build;
+- what not to build;
+- direct dependencies;
+- public acceptance criteria;
+- required tests/CI/live evidence;
+- security/data-integrity constraints;
+- what completion means;
+- where STATUS must move next.
 
----
+Record/fix any ambiguity.
 
-## Old planning/history discipline
+### 3. Current-plan consistency audit
 
-Old 42-WP material is historical evidence, not current instruction.
+Verify all current authority surfaces agree:
 
-Keep it discoverable under:
+- D-043;
+- D-044;
+- ROADMAP;
+- AI_CONTEXT;
+- product shape;
+- live SQL product doc;
+- TESTING_POLICY;
+- current GitHub execution map;
+- Master #85;
+- C01-C12 Issue bodies;
+- conditional O1-O6 ownership/triggers;
+- L-1 runbook;
+- STATUS live planning pointer.
+
+Verify old 42-WP docs are clearly historical/superseded and do not look concurrently canonical.
+
+### 4. Mechanical guards
+
+Update/repair narrow guards so they protect the new materialized plan, including at least:
+
+- D-044 is current and D-037/D-042 are superseded;
+- ROADMAP contains Master #85 and C01-C12 #73-#84;
+- current execution map contains the exact materialized numbers/direct dependencies;
+- no current docs claim the old 42-WP graph is active;
+- old freeze is historical until replaced;
+- testing policy uses C01/C06/C12 semantics;
+- early C01 does not include real-origin Web Locks;
+- conditional work is not represented as standing Issues.
+
+Do not build a generic planning framework; guard only concrete drift risks.
+
+### 5. Verification
+
+Run Fast CI after final corrections.
+
+Browser CI is required only if a runtime/browser/Playwright test or behavior changed during this finalization. Docs/GitHub/Node-guard-only changes do not require it.
+
+If CI fails:
+- inspect logs;
+- fix the actual inconsistency;
+- rerun;
+- do not freeze until green.
+
+### 6. New post-KISS planning freeze
+
+Only after the critique, dry runs, consistency audit and required CI are green:
+
+Rewrite:
 
 ~~~text
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/history/
+docs/browser-sql-final-planning-freeze.md
 ~~~
 
-Do not delete historical evidence.
+as the **new** freeze authority.
 
-Do not leave old current-path docs claiming the 42-WP graph is still canonical.
+It should record, without duplicating live status:
+- D-043/D-044 authority;
+- Master #85 + C01-C12 #73-#84;
+- old graph retirement;
+- final guard/CI evidence;
+- fresh-AI dry-run result;
+- conditional/future scope policy;
+- implementation entry contract.
 
-Current implementation authority must be unambiguous.
+Do not revive the old Phase-W freeze as current.
 
----
+### 7. Close planning and prepare a separate implementation handoff
 
-## Verification policy during R4-R8
+Only after the new freeze is green:
 
-These are planning/docs/GitHub-structure changes.
+- update STATUS.json from planning to implementation entry C01/#73;
+- set C01 to verification-pending as appropriate;
+- close planning Issue #72;
+- replace NEXT_CHAT_PROMPT.md with a **new implementation-chat prompt** for a separate chat;
+- the implementation prompt must start from C01/#73 and must not ask the implementation chat to finish planning.
 
-- run Fast CI after coherent reconciliation/materialization batches;
-- Browser CI is not automatically required for docs/GitHub-only changes;
-- if a browser/Playwright test is changed, run it in Chromium after the final edit;
-- never weaken guards simply to make the rewrite pass;
-- keep public-contract/data-integrity/security invariants intact.
+Then, and only then, planning is complete.
 
----
+## Invariants to preserve during final planning review
 
-## End-of-work reporting
+- existing authenticated V1 provider flow;
+- MapHeat2 dynamic universe;
+- sequential GetSecuritiesData;
+- canonical SecurityId = `String(PaperId or Key)`;
+- no hardcoded universe size;
+- exact complete-cycle validation;
+- full raw MapHeat + Security preservation;
+- `null != 0 != "" != undefined`;
+- atomic successful-cycle persistence;
+- Viewer rereads SQL authority;
+- Scanner read-only/no overlap;
+- one exclusive Web Lock owner;
+- no silent DB deletion/reset;
+- no credentials/session/account data in repo/evidence.
 
-After each continuation unit, report briefly:
-- what changed;
-- files/Issues changed;
-- tests/guards changed;
+## KISS rules
+
+Do not reintroduce by default:
+
+- fixed 8-horizon persisted schema;
+- mandatory predecessor links;
+- mandatory DealsDelta/MID persistence;
+- immutable Scanner query history;
+- anchored scheduler framework;
+- mandatory streaming;
+- advanced preemption/cancellation;
+- archive/rollover platform;
+- generalized upgrade/migration platform;
+- permanent shadow/dual-write;
+- automatic trading/order execution.
+
+Conditional complexity exists only when the documented trigger proves it is needed.
+
+## Final reporting
+
+At the end of the planning-finalization chat, report:
+
+- final critique findings and fixes;
+- docs/decisions/Issues changed;
+- dry-run results;
+- guards/tests changed;
 - Fast CI result;
-- Browser CI result if relevant;
-- pending work;
-- exact next pointer from STATUS.json.
+- Browser CI result or why not required;
+- freeze artifact;
+- #72 closure;
+- exact implementation entry pointer;
+- path/content purpose of the new implementation NEXT_CHAT_PROMPT.
 
-When I say `תמשיך לשלב הבא`, advance the next sensible coherent unit according to STATUS and the R4-R8 order. Do not assume one message equals one full R-stage.
-
-Do not start product/runtime implementation until the planning stage is fully frozen and #72 is closed.
+Do not start C01 implementation in the planning-finalization chat.
