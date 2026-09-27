@@ -85,7 +85,7 @@ real SQL first
 Production ownership uses one stable exclusive Web Lock.
 
 Chromium proves the mechanism in C10.
-Authenticated-origin two-tab ownership proof belongs to C12 before cutover.
+Authenticated-origin two-tab ownership proof belongs inside the C12 no-overlap release transition, after the old Recorder is settled/stopped and before SQL production recording is accepted.
 
 It is **not** part of the early C01 feasibility blocker.
 
@@ -171,6 +171,10 @@ Provider auth remains inside the authenticated page context.
 
 ## History
 
-Pre-KISS 42-WP planning and detailed mechanism research are COLD history under `docs/history/`.
+Pre-KISS 42-WP planning and detailed mechanism research are COLD history.
 
-Use them only when the active Issue needs historical rationale/evidence.
+Cold-history index:
+
+`docs/history/README.md`
+
+Use it only when the active Issue needs historical rationale/evidence.
