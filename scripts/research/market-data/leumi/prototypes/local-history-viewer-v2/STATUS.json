@@ -10,9 +10,9 @@
     "coldHistory": "docs/history/README.md"
   },
   "currentFocus": {
-    "stage": "browser-sql-plan-rebaseline",
-    "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "Run fresh-AI dry runs against the audited HOT path and representative C01/C06-or-C08/C12 Issues",
+    "stage": "browser-sql-chat-execution-plan",
+    "substep": "chat-partition-design",
+    "title": "Design the durable multi-chat implementation split and handoff prompts before final planning freeze",
     "issue": 72,
     "status": "in-progress"
   },
@@ -23,7 +23,7 @@
   },
   "stageSummary": {
     "completed": "Master #85/C01-C12, the cross-cutting DAG and the KISS/current-doc/spec/guard audit are complete. HOT/WARM guidance is compact and aligned; misleading ND-era manuals are reference-only; Issue #72 now owns only the final planning-quality gate.",
-    "ready": "Implementation remains paused. Fresh-AI dry runs are next, followed by any repairs, final Fast CI and the post-KISS planning freeze.",
+    "ready": "Implementation remains paused. The current planning task is to define exact fresh-chat execution boundaries/prompts for the compact C01-C12 graph, then resume fresh-AI dry runs/final freeze.",
     "blockedAfterEntry": "Do not start C01 until the final planning freeze is green and #72 is closed."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -76,22 +76,28 @@
       "status": "not-required",
       "reason": "Planning/docs/Node-guard changes only; no production/runtime/browser/Playwright behavior changed."
     },
-    "specImpact": "Planning/docs/Node-guard only. No product/runtime/browser/Playwright behavior changed.",
+    "specImpact": "Planning/docs only. No product/runtime/browser behavior changed.",
     "planningAudit": {
       "status": "in-progress",
       "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + KISS/current-doc/spec/guard audit",
       "graph": "12 mandatory nodes; acyclic; intended parallel fronts and O1-O6 rejoin ownership verified.",
       "next": "Fresh-AI dry runs for C01, one middle Issue (C06 or C08), and C12; repair any ambiguity before final CI/freeze."
+    },
+    "chatExecutionPlan": {
+      "status": "in-progress",
+      "mandatoryChatCount": 8,
+      "currentStep": "Define and validate the natural chat boundaries; no durable chat-plan document written yet.",
+      "rule": "Conditional O1-O6 work remains evidence-triggered and is not counted as standing chats."
     }
   },
   "next": {
-    "action": "Perform fresh-AI dry runs from AGENTS → README → STATUS → AI_CONTEXT → active Issue for C01, a representative middle Issue, and C12. Fix any ambiguity, then run final Fast CI and prepare the post-KISS planning freeze.",
+    "action": "Review the proposed 8-chat split against dependencies, live gates, test/CI boundaries and conditional rejoin rules before writing the durable chat plan/prompts.",
     "issue": 72,
-    "workPackage": "PLAN-REBASELINE-FINALIZATION",
+    "workPackage": "CHAT-EXECUTION-PLAN",
     "rules": [
-      "Do not implement C01 or modify product/runtime/browser behavior in this planning-finalization chat.",
-      "Do not close #72 until dry runs, guards and required CI are green.",
-      "Only after final freeze may STATUS point to C01 #73."
+      "Do not implement C01 or downstream runtime/browser behavior.",
+      "Do not freeze planning until the chat split/prompts and remaining fresh-AI/final CI checks are verified.",
+      "Keep live progress only in STATUS.json."
     ]
   },
   "history": {
