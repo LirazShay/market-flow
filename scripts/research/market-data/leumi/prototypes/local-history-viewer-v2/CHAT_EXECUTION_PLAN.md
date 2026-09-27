@@ -74,6 +74,39 @@ Chat N active
 
 The previous chat's prose is never an entry gate. GitHub is.
 
+### Minimal launch command
+
+When Project Instructions include the Market Flow serial-chat launcher, the user does not need to paste the long prompt from CHAT_PROMPTS.md.
+
+This is sufficient:
+
+~~~text
+אני צאט 1 תתחיל
+~~~
+
+or for any later planned chat:
+
+~~~text
+אני צאט N תתחיל
+~~~
+
+The assistant must then reconstruct the full contract from GitHub:
+
+~~~text
+fetch main
+→ AGENTS.md
+→ workstream README.md
+→ STATUS.json
+→ AI_CONTEXT.md
+→ CHAT_EXECUTION_PLAN.md
+→ active Cxx Issue
+→ directly relevant code/tests/specs
+~~~
+
+The numeric chat request is only an identity hint. STATUS.json still decides eligibility. If the requested chat is not the live current chat, do not advance STATUS to satisfy the request.
+
+CHAT_PROMPTS.md remains a verbose fallback/reference, not a required user input when the Project Instructions launcher is installed.
+
 ### Completion signal
 
 For Chats 01..11, the chat may emit the agreed completion word only after all of these are true:
