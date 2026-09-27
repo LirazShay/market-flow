@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 3,
+  "workstream": "local-history-viewer-v2",
+  "updatedAt": "2026-09-27",
+  "overallStatus": "in-progress",
+  "authority": {
+    "operationalProgress": "STATUS.json",
+    "planAndOrder": "ROADMAP.md",
+    "fastTechnicalContext": "AI_CONTEXT.md",
+    "coldHistory": "docs/history/README.md"
+  },
+  "currentFocus": {
+    "stage": "browser-sql-plan-rebaseline",
+    "substep": "r7-r8-final-planning-audit-and-freeze",
+    "title": "Finish the post-KISS planning review, fresh-AI dry runs, guards/CI and final planning freeze",
+    "issue": 72,
+    "status": "in-progress"
+  },
+  "currentStage": {
+    "stage": "browser-sql-plan-rebaseline",
+    "title": "Finalize and verify the compact Browser SQL plan before implementation",
+    "status": "in-progress"
+  },
+  "stageSummary": {
+    "completed": "R0-R6 are complete: historical snapshot, decision/doc/testing reconciliation, compact Master #85 + C01-C12 #73-#84 materialization, current-doc backfill, and retirement of the old #20-#71 execution graph.",
+    "ready": "The compact graph is materialized and the old graph is retired. Planning is NOT frozen yet; implementation remains paused.",
+    "blockedAfterEntry": "Do not start C01. The next chat must finish R7-R8: final planning critique, fresh-AI dry runs, current-plan guard verification, Fast CI, new post-KISS freeze artifact, final STATUS switch, and closure of #72."
+  },
+  "activeMiniProject": "browser-sql-plan-rebaseline",
+  "verification": {
+    "planningBaseline": {
+      "status": "materialized-not-yet-finally-frozen",
+      "decision": "../../../../../../../docs/project/decisions/D-044.md",
+      "masterIssue": 85,
+      "executableIssues": {
+        "C01": 73,
+        "C02": 74,
+        "C03": 75,
+        "C04": 76,
+        "C05": 77,
+        "C06": 78,
+        "C07": 79,
+        "C08": 80,
+        "C09": 81,
+        "C10": 82,
+        "C11": 83,
+        "C12": 84
+      },
+      "oldGraph": "retired: #20-#28 and superseded WPs closed; #29/#30 retained as completed evidence; #65 retained closed duplicate"
+    },
+    "engineSelection": {
+      "status": "complete",
+      "target": "@duckdb/duckdb-wasm@1.32.0 / DuckDB core v1.4.3 (d1dc88f950d456d72493df452dabdcd13aa413dd)",
+      "manifest": "runtime/duckdb-engine-manifest.js"
+    },
+    "reusableProbeEvidence": {
+      "status": "complete",
+      "issues": [
+        29,
+        30
+      ],
+      "chromiumRunId": 36139339586,
+      "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
+    },
+    "currentPlanGuard": {
+      "status": "needs-final-verification",
+      "path": "tests/unit/browser-sql-current-plan.test.js",
+      "note": "Guard is being aligned to materialized Master #85 / C01-C12 #73-#84 and must pass in final planning CI."
+    },
+    "latestFastCi": {
+      "status": "pending-final-planning-run",
+      "result": "Run after final planning audit/guard corrections."
+    },
+    "browserCi": {
+      "status": "not-required-so-far",
+      "reason": "R4-R6 changed GitHub/docs/current-plan Node guard only; no runtime/browser/Playwright production behavior changed."
+    },
+    "specImpact": "Planning/materialization only. No product/runtime implementation has started."
+  },
+  "next": {
+    "action": "Finish planning only: run a fresh-AI dry run from the HOT path against C01, a representative middle Issue and C12; audit Issue bodies/direct dependencies/conditional triggers/current docs for contradictions or overengineering; repair guards/docs found by that audit; run Fast CI; rewrite browser-sql-final-planning-freeze.md as the new post-KISS freeze; only when all planning verification is green, update STATUS to implementation entry C01 #73, close #72, and write a separate implementation-chat handoff.",
+    "issue": 72,
+    "workPackage": "PLAN-REBASELINE-FINALIZATION",
+    "rules": [
+      "Do not implement C01 or modify product/runtime/browser code in the planning-finalization chat.",
+      "Do not close #72 until the final planning critique, fresh-AI dry runs, guards and required CI are green.",
+      "Treat Master #85 and C01-C12 #73-#84 as materialized candidates that still require final planning verification.",
+      "Reopen/revise planning if the final critique finds a material defect; do not freeze a known inconsistency.",
+      "Only after final freeze may STATUS point to C01 #73 and a separate implementation handoff be produced."
+    ]
+  },
+  "history": {
+    "index": "docs/history/README.md",
+    "preKissPlan": "docs/history/browser-sql-pre-kiss-42wp-plan/README.md",
+    "rule": "Historical planning remains COLD reference; live progress stays only here."
+  }
+}
