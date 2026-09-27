@@ -12,7 +12,7 @@
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
     "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "Continue the final post-KISS planning audit after individual + cross-cutting graph review; next KISS/docs/specs/guards contradiction audit",
+    "title": "KISS/docs/specs/guards audit complete after repairing HOT-context contradictions; next fresh-AI dry runs and final planning verification",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0-R6 are complete. R7 has now completed both the deep C01-C12 critique and the cross-cutting DAG audit. The mandatory 12-node graph is acyclic with no redundant direct dependency edges; C05/C06 parallel closure, pre-C10 single-tab L-2, O1-O6 blocking/rejoin ownership and C12 rollback readiness are now explicit.",
-    "ready": "Individual Issues and the mandatory/conditional dependency model have passed critique. Implementation remains paused until the KISS/current-doc/spec/guard contradiction review, fresh-AI dry runs, final repairs, Fast CI and planning freeze are complete.",
-    "blockedAfterEntry": "Do not start C01. The next chat must finish R7-R8: final planning critique, fresh-AI dry runs, current-plan guard verification, Fast CI, new post-KISS freeze artifact, final STATUS switch, and closure of #72."
+    "completed": "Master #85 and C01-C12 passed individual and cross-cutting critique. Current HOT/WARM guidance now matches the compact post-KISS graph, single-tab L-2 boundary, no-overlap C12 transition and change-surface CI policy.",
+    "ready": "Implementation remains paused. Next: fresh-AI dry runs, repair any findings, final current-plan/Fast CI verification, then planning freeze.",
+    "blockedAfterEntry": "Do not start C01 until the final planning freeze is green and #72 is closed."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -63,81 +63,35 @@
       "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
     },
     "currentPlanGuard": {
-      "status": "needs-final-verification",
+      "status": "verification-in-progress",
       "path": "tests/unit/browser-sql-current-plan.test.js",
-      "note": "Guard is being aligned to materialized Master #85 / C01-C12 #73-#84 and must pass in final planning CI."
+      "note": "Guard now covers materialized graph plus audited HOT/WARM live and CI boundaries."
     },
     "latestFastCi": {
-      "status": "pending-final-planning-run",
-      "result": "Run after final planning audit/guard corrections."
+      "status": "repairing",
+      "runId": 36300895053,
+      "result": "Fast CI exposed three documentation/context defects: STATUS > 8KB, missing explicit cold-history index path in AI_CONTEXT, and ROADMAP missing exact Security Detail/History wording. Sources are being corrected; rerun required."
     },
     "browserCi": {
-      "status": "not-required-so-far",
-      "reason": "R4-R6 changed GitHub/docs/current-plan Node guard only; no runtime/browser/Playwright production behavior changed."
+      "status": "not-required",
+      "reason": "Planning/docs/Node-guard changes only; no production/runtime/browser/Playwright behavior changed."
     },
-    "specImpact": "Planning-only cross-cutting corrections: C06/C12 executable contracts, compact specs/DAG, ROADMAP, GitHub execution navigation and Master conditional rules aligned. No product/runtime/browser implementation changed.",
+    "specImpact": "Planning-only. AGENTS, AI_CONTEXT, TESTING_POLICY, specs navigation and plan guards aligned; no product/runtime/browser implementation changed.",
     "planningAudit": {
       "status": "in-progress",
-      "reviewed": [
-        "Master #85",
-        "C01 #73",
-        "C02 #74",
-        "C03 #75",
-        "C04 #76",
-        "C05 #77",
-        "C06 #78",
-        "C07 #79",
-        "C08 #80",
-        "C09 #81",
-        "C10 #82",
-        "C11 #83",
-        "C12 #84"
-      ],
-      "corrections": [
-        "C02 separates runtime/build identity from schema/storage-format compatibility; ordinary build changes do not make an existing DB incompatible.",
-        "C03 keeps atomic persistence over the authoritative structures actually selected by C02 and does not mandate a duplicate latest structure.",
-        "Current V2 spec guidance no longer points at the retired WP-* execution graph.",
-        "C05/C06 define parity from the implemented public surface specs/tests rather than IndexedDB internals, preserve key Current/Detail observable behavior, and scope the final parity Unknown to the two product surfaces.",
-        "The second of C05/C06 to close owns the shared Current→Detail→Back regression so parallel execution cannot leave integration unverified.",
-        "C07 records its representative query corpus and day-sized workload parameters before deciding whether optimization is needed; no final trading formula or fixed horizon schema is implied.",
-        "C08 makes draft state non-executing, preserves the previous active config on failed activation, proves read-only safety on the exact pinned build without regex-only enforcement, uses deterministic single-runtime activation ordering, and keeps Scanner cadence independent from collection.",
-        "The current target architecture and SQL analytics direction were aligned to the compact post-KISS baseline, removing stale mandatory latest/fixed-horizon/immutable-version/anchored-scheduler design.",
-        "C09 makes runtime active/status authoritative over Viewer-local draft state, keeps result/error attribution tied to the producing execution, handles uncommon values truthfully and keeps Scanner UI isolated from provider/collector behavior.",
-        "C10 fixes one canonical stable Web Lock, fail-fast independent-tab acquisition, no weaker ownership fallback, diagnostic-only messaging/query surfaces, and release only after the old local runtime reaches its no-further-mutation teardown boundary.",
-        "D-040 and the multi-tab/target architecture docs were aligned so real-origin two-tab ownership is verified in C12 rather than as a stale early WP gate.",
-        "C11 fixes its deciding workload before measurement, verifies exact successful-cycle integrity, and includes O3 alongside O2/O4/O5 as an evidence-triggered branch with rerun requirements.",
-        "C12 is a no-overlap release transition: stop/settle old IndexedDB Recorder first, then prove real-origin ownership, start fresh SQL authority, exercise Current/Detail/Scanner, accept only after bounded verification, or explicitly rollback while preserving both data sets.",
-        "D-035 and current lifecycle/testing/target-architecture wording were aligned to remove stale fixed-horizon and pre-cutover-dual-run implications."
-      ],
-      "next": "Audit current KISS docs/specs/guards for stale pre-KISS contradictions or duplicated authority.",
-      "crossCuttingGraph": {
-        "status": "reviewed",
-        "mandatoryNodes": 12,
-        "result": "Acyclic; no redundant direct dependency edges; intended parallel fronts preserved.",
-        "parallelFronts": [
-          "C03 || C10 after C02",
-          "C05 || C06 after C04",
-          "C07 || C08→C09 after C05+C06"
-        ],
-        "corrections": [
-          "C05/C06 use second-to-close ownership for the shared Current→Detail→Back regression; no stale implementation-order wait remains.",
-          "C06 L-2 before C10 convergence is explicitly a controlled single-tab proof and not production cross-tab ownership evidence.",
-          "O1-O6 now have explicit blocking owner/rejoin rules; conditionals cannot become orphan side tasks.",
-          "C12 rollback is preflighted as a release path and executed only on material cutover failure; no mandatory rollback→recutover ceremony after success."
-        ]
-      }
+      "reviewedThrough": "Master #85 + C01-C12 + cross-cutting DAG + HOT/WARM KISS/docs/specs/guards",
+      "graph": "12 mandatory nodes; acyclic; intended parallel fronts and O1-O6 rejoin ownership verified.",
+      "next": "Fresh-AI dry runs, remaining repairs, final Fast CI, post-KISS freeze."
     }
   },
   "next": {
-    "action": "Continue planning only: run the KISS/current-doc/spec/guard contradiction audit; then perform fresh-AI dry runs, repair remaining issues, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
+    "action": "Continue planning only with fresh-AI dry runs against the HOT path and representative Issues; repair any ambiguity, then run final Fast CI and prepare the post-KISS planning freeze.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE-FINALIZATION",
     "rules": [
-      "Do not implement C01 or modify product/runtime/browser code in the planning-finalization chat.",
-      "Do not close #72 until the final planning critique, fresh-AI dry runs, guards and required CI are green.",
-      "Treat Master #85 and C01-C12 #73-#84 as materialized candidates that still require final planning verification.",
-      "Reopen/revise planning if the final critique finds a material defect; do not freeze a known inconsistency.",
-      "Only after final freeze may STATUS point to C01 #73 and a separate implementation handoff be produced."
+      "Do not implement C01 or modify product/runtime/browser behavior in this planning-finalization chat.",
+      "Do not close #72 until dry runs, guards and required CI are green.",
+      "Only after final freeze may STATUS point to C01 #73."
     ]
   },
   "history": {
