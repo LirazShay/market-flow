@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "r1-durable-decision-reconciliation",
-    "title": "Create D-044 and reconcile D-025..D-043 to the post-KISS Browser SQL baseline",
+    "substep": "r2-product-current-design-reconciliation",
+    "title": "Reconcile product docs, compact target architecture, ROADMAP and current-vs-history Browser SQL docs to D-044",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0 historical snapshot/archive complete.",
-    "ready": "The old A..W ROADMAP, 42-WP decomposition/execution/final audit/freeze and pre-rewrite STATUS are preserved byte-for-byte under docs/history/browser-sql-pre-kiss-42wp-plan/.",
-    "blockedAfterEntry": "Implementation remains paused; R1 must reconcile durable decisions before product/ROADMAP/testing authorities are rewritten."
+    "completed": "R0 historical snapshot/archive and R1 durable decision reconciliation complete.",
+    "ready": "D-044 is the current post-KISS Browser SQL implementation baseline; D-043 remains the product/provider authority; superseded mechanism decisions are marked historical for initial V2.",
+    "blockedAfterEntry": "Implementation remains paused; R2 must align product/current design/ROADMAP/docs navigation before testing guards and GitHub execution graph materialization."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -80,9 +80,9 @@
     },
     "latestFastCi": {
       "status": "success",
-      "runId": 36274371698,
-      "commit": "7a3e4a8f722c57cef5964b9451091e6c809828fd",
-      "result": "PASS — D-043 full consistency audit and product-shape guard."
+      "runId": 36286447558,
+      "commit": "dceb049ff08d8241909ade968a13972d40f108dd",
+      "result": "PASS — R1 D-044 decision reconciliation and D-043 compact-traceability guard."
     },
     "browserCi": {
       "status": "success-targeted",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: R0 archived exact pre-KISS/42-WP planning evidence and indexed it as COLD history. No durable decision, current ROADMAP, product/runtime code, or GitHub execution Issue was changed.",
+    "specImpact": "Planning-only: R1 created D-044, reconciled D-025..D-043 and updated the D-043 Node contract guard. No product/runtime/browser code or GitHub execution Issue changed.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,16 +130,16 @@
     }
   },
   "next": {
-    "action": "Execute R1 durable decision reconciliation: create D-044, amend/mark superseded D-025..D-043 exactly per the reconciliation map, update docs/project/decisions.md, and run Fast CI. Do not rewrite ROADMAP/product/testing docs until R1 is coherent.",
+    "action": "Execute R2 product/current-design reconciliation: amend product shape and live SQL requirement, rewrite the compact target architecture and ROADMAP to C01..C12, move/supersede stale Browser SQL mechanism docs from current authority, simplify docs/README current navigation, then run Fast CI.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
       "Do not create or retire GitHub execution Issues yet.",
-      "Use the archived pre-KISS snapshot as historical evidence; do not rewrite it.",
-      "Preserve D-043 product/provider invariants.",
-      "Prefer one compact successor D-044 over many replacement decisions.",
-      "Run Fast CI after R1."
+      "D-043 owns product/provider invariants; D-044 owns the implementation baseline.",
+      "ROADMAP must contain plan/scope/order only and no live completion state.",
+      "Preserve stale detailed planning as cold history rather than rewriting every old mechanism doc.",
+      "Run Fast CI after R2; Browser CI only if browser/runtime/Playwright code changes."
     ]
   },
   "history": {
