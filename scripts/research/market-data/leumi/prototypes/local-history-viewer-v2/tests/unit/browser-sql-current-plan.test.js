@@ -252,7 +252,12 @@ test(
 
         assert.match(
             freeze,
-            /planning Issue #72 is closed[\s\S]*STATUS\.json points to Chat 01 \/ C01 \/ #73/i
+            /planning Issue #72 is closed/i
+        );
+
+        assert.match(
+            freeze,
+            /STATUS\.json[\s\S]{0,80}points to Chat 01 \/ C01 \/ #73/i
         );
 
         assert.match(
@@ -272,7 +277,12 @@ test(
 
         assert.match(
             nextPrompt,
-            /planning Issue #72 is closed[\s\S]*STATUS\.json points to Chat 01 \/ C01 \/ #73/i
+            /planning Issue #72 is closed/i
+        );
+
+        assert.match(
+            nextPrompt,
+            /STATUS\.json[\s\S]{0,80}points to Chat 01 \/ C01 \/ #73/i
         );
     }
 );
