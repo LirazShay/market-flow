@@ -1,6 +1,6 @@
 # AI Context — Local History Viewer V2
 
-Compact continuation context only. Live current/next belongs only in `STATUS.json`.
+Compact technical continuation context only. Live current/next/completion state belongs only in `STATUS.json`.
 
 Fresh chat:
 
@@ -8,132 +8,168 @@ Fresh chat:
 README.md
 → STATUS.json
 → AI_CONTEXT.md
-→ current GitHub Issue
-→ only docs/tests/specs linked by that Issue
+→ active GitHub Issue
+→ only directly touched code/tests/specs
 ~~~
 
-## Target
+Do not preload historical Browser SQL planning unless the active Issue links a specific uncertainty to it.
+
+## Product target
 
 ~~~text
 authenticated Leumi page
-→ Recorder
-→ Runtime Controller
-→ one SQL Authority Worker
-   → DuckDB-Wasm + persistent OPFS
-   → atomic ingest + SQL scheduler
-→ Viewer client(s)
+→ preserved V1 collector/validation
+→ one Runtime Controller / SQL Authority Worker
+→ pinned DuckDB-Wasm + persistent OPFS
+→ atomic raw/current/history SQL authority
+→ trusted reads
+→ Current Universe + Security Detail/History
+→ simple read-only Dynamic SQL Scanner
 ~~~
 
-V1 remains frozen. Browser-only SQL is fixed unless evidence reopens D-025.
+D-043 owns provider/data continuity and the three product surfaces.
+D-044 owns the current post-KISS implementation baseline.
 
-## Execution baseline
+## Provider/data invariants
 
-Durable decisions: `D-025..D-043`.
+Preserve:
 
-~~~text
-Master #20
-Epics #21..#28
-WP-01..WP-42
-~~~
-
-Mapping: `docs/browser-sql-github-execution-structure.md`.
-
-Final assurance: `docs/browser-sql-final-planning-freeze.md`.
-
-## Product continuity
-
-- provider/API acquisition remains the proven V1 contract unless separate evidence requires change: authenticated page, MapHeat2 dynamic universe, sequential GetSecuritiesData, exact complete-cycle validation;
-- V2 changes the successful-cycle persistence authority to DuckDB-Wasm/OPFS; it does not invent different market data;
-- Viewer target has three surfaces: Current Universe, Security Detail/History, and a separate Dynamic SQL Scanner with user SQL + configurable interval;
-- SQL Scanner is additive; it does not replace the two V1-derived browsing surfaces;
-- no trading/order-execution workflow is in this scope.
-
-Product authority: `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md` / D-043.
-
-## Core invariants
-
-- security ID = `String(PaperId or Key)`;
+- authenticated page-context collection;
+- MapHeat2 dynamic universe;
+- sequential GetSecuritiesData baseline;
+- canonical SecurityId = `String(PaperId or Key)`;
 - no hardcoded universe size;
-- preserve full raw MapHeat + Security and `null != 0 != "" != undefined`;
-- one successful cycle is complete/atomic; no partial latest/history;
-- horizons = 10,20,30,60,90,120,300,600 seconds; missing history = NULL;
-- DealsDelta stays NULL until reset semantics are Verified.
+- exact requested/received/unique/duplicate/missing/unexpected validation;
+- full raw MapHeat + Security preservation;
+- `null != 0 != "" != undefined`;
+- no guessed provider semantics;
+- incomplete/corrupt cycles never advance authority.
 
-Ingest:
+## SQL/runtime invariants
 
-~~~text
-validated cycle + ingest_token
-→ bulk SQL enrichment
-→ one transaction
-→ COMMIT
-→ CHECKPOINT
-→ acknowledgement
-~~~
+- one SQL Authority Worker owns DuckDB-Wasm/OPFS;
+- one validated complete cycle is the atomic persistence unit;
+- Viewer never owns DuckDB/OPFS directly;
+- notifications are hints; clients reread authoritative state;
+- unsupported DB/schema blocks writable startup without destructive reset;
+- retain committed history; no silent prune/reset;
+- production durability/checkpoint/retry details are selected from evidence, not pre-fixed ceremony.
 
-SQL:
-- immutable query versions; read-only analytical gate + DuckDB hardening;
-- anchored independent cadence; no overlap/catch-up burst;
-- ingest preempts analytics;
-- user SQL runs on disposable analytics connection;
-- runtime-budget query is cancelled/suspended;
-- one complete waiting cycle maximum;
-- cancelled partial row count is never reported complete.
+## Scanner baseline
 
-Persistence:
-- one origin-scoped OPFS authority; no destructive auto-reset;
-- retain-all default; no automatic history deletion;
-- explicit archive + crash-recoverable rollover creates new database_epoch_id;
-- quota/durability/schema ambiguity blocks acknowledgement.
-
-Cross-tab:
-- stable exclusive Web Lock `market-flow:local-history-viewer-v2:runtime-owner`;
-- acquire before Worker/OPFS/provider startup;
-- second tab passive; no steal/heartbeat/BC authority.
-
-Upgrade:
-- runtime/package/core/storage/schema identities are separate;
-- compatible runtime-only release uses READ_ONLY preflight;
-- persistence-affecting upgrade uses side-by-side candidate;
-- rollback uses preserved old release + old DB snapshot.
-
-Viewer:
-- never opens DuckDB/OPFS;
-- attach/re-attach receives full state snapshot;
-- notifications are hints only;
-- latest execution != latest successful result;
-- preview memory is bounded.
-
-Security:
-- provider auth stays in authenticated page;
-- no cookies/tokens/auth headers/account/private session data in Worker/Viewer/repo/diagnostics;
-- diagnostics local/sanitized; no remote telemetry baseline.
-
-## Mandatory evidence gates
-
-Before WP-05+:
+Initial Scanner is intentionally small:
 
 ~~~text
-WP-03 real authenticated-Leumi probe:
-Bookmarklet/injected JS
-→ Blob Worker
-→ exact pinned Worker/Wasm
-→ OPFS COMMIT+CHECKPOINT+reopen
-→ two-tab exclusive Web Lock
+draft SQL + interval
+→ explicit Activate
+→ one active config
+→ read-only SQL
+→ one execution at a time
+→ no burst replay
+→ truthful result/error grid
 ~~~
 
-CI cannot substitute for live-only evidence.
+No mandatory immutable query history, anchored scheduler, streaming, collaboration or advanced cancellation/preemption.
 
-Testing:
+Analytical optimization is evidence-driven:
 
 ~~~text
-pure deterministic → Node
-Worker/Wasm/OPFS/runtime/Viewer → Playwright Chromium
-real Leumi behavior → live verification
-performance/capacity → target Windows/Chrome benchmark
+real SQL first
+→ representative measurement
+→ smallest targeted optimization only if needed
 ~~~
 
-Production cutover is blocked by correctness/shadow/security/performance/storage-lifecycle/upgrade gates.
+## Cross-tab ownership
 
-Read only the current Issue and its linked contracts. Do not preload all planning history.
+Production ownership uses one stable exclusive Web Lock.
 
-Cold rationale/history remains discoverable at `docs/history/README.md`; read it only when current Issue evidence is insufficient.
+Chromium proves the mechanism in C10.
+Authenticated-origin two-tab ownership proof belongs to C12 before cutover.
+
+It is **not** part of the early C01 feasibility blocker.
+
+## Live verification boundaries
+
+- C01 / #73: authenticated-origin Worker + exact Worker/Wasm + OPFS + synthetic SQL write/COMMIT + close/reopen/read marker. Existing probe CHECKPOINT usage does not define production checkpoint cadence.
+- C06 / #78: bounded real provider → validation → SQL → trusted-read L-2 proof.
+- C12 / #84: final integrated authenticated run + real-origin ownership proof + explicit cutover.
+
+## Current execution graph
+
+~~~text
+Master #85
+
+C01 #73
+C02 #74
+C03 #75
+C04 #76
+C05 #77
+C06 #78
+C07 #79
+C08 #80
+C09 #81
+C10 #82
+C11 #83
+C12 #84
+~~~
+
+Stable order/scope: `ROADMAP.md`.
+Exact live pointer: `STATUS.json`.
+Issue navigation: `docs/browser-sql-github-execution-structure.md`.
+
+Completed reusable evidence:
+
+~~~text
+#29 engine pin/manifest
+#30 deterministic Browser SQL probe
+~~~
+
+## Conditional/future scope
+
+No standing Issues exist for:
+
+- persisted analytical optimization unless C07 proves need;
+- advanced Scanner resource hardening unless C11 proves need;
+- streaming unless C09/C11 proves need;
+- storage/export/fresh-DB workflow unless C11 proves need;
+- target Windows evidence unless required by a material decision;
+- shadow unless C06 leaves one material live ambiguity.
+
+Generalized archive/rollover, schema/engine upgrade framework, multi-epoch history, collaboration and automated trading execution are not initial-V2 requirements.
+
+## Verification
+
+~~~text
+Node
+→ pure deterministic logic
+
+Chromium
+→ Worker/Wasm/OPFS/runtime/Viewer/Web Locks/Scanner integration
+
+authenticated Leumi
+→ real-origin/provider facts CI cannot prove
+~~~
+
+Permanent normal workflows remain Fast CI and Browser CI.
+
+## Security
+
+The repository is public.
+
+Never commit/copy:
+
+- cookies;
+- session tokens;
+- authorization headers;
+- credentials;
+- account numbers;
+- private browser/session data;
+- raw authenticated dumps not strictly sanitized.
+
+Provider auth remains inside the authenticated page context.
+
+## History
+
+Pre-KISS 42-WP planning and detailed mechanism research are COLD history under `docs/history/`.
+
+Use them only when the active Issue needs historical rationale/evidence.
