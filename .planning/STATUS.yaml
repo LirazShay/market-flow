@@ -6,6 +6,6 @@ current_node: "0"
 
 blockers: []
 
-next_action: "Run the whole-plan outside-in coverage audit and Final Planning Review, including the new offline Fake Leumi/test-pyramid requirement. If it passes, freeze and allocate every implementation-ready leaf exactly once in EXECUTION.yaml."
+next_action: "Re-run the Final Planning Review outside-in audit on the corrected tree. Freeze only if goal traceability, root sufficiency, boundaries, negative space, representative scenarios, leaf readiness and dependency/allocation checks all pass."
 
-last_review: "R-007"
+last_review: "R-008"
