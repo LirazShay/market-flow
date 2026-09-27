@@ -168,7 +168,7 @@ Persist one already-validated complete market cycle atomically and prove success
 
 - one bulk validated-cycle handoff into SQL;
 - defensive shape/completeness assertions at the authority seam where valuable;
-- atomically update raw/current/history/latest state for the cycle;
+- atomically update the selected authoritative raw/current/history state for the cycle; maintain a separate latest/current lookup structure only if C02 selected one as necessary;
 - preserve dynamic-universe additions/removals;
 - preserve raw MapHeat/Security facts and exact value distinctions;
 - failure before commit leaves the prior committed state unchanged;
@@ -189,7 +189,7 @@ Persist one already-validated complete market cycle atomically and prove success
 
 - one complete cycle appears atomically or not at all;
 - failed/partial/corrupt input cannot create a successful authoritative cycle;
-- current/history/latest remain mutually coherent;
+- all selected authoritative cycle/current/history structures remain mutually coherent; no separate latest structure is required unless C02 selected one;
 - raw facts and null/zero/empty/missing distinctions survive round-trip;
 - reopen returns the same committed state;
 - if the selected durable-success boundary admits committed-but-unacknowledged retry ambiguity, the chosen minimal retry/idempotency mechanism proves replay safety;
