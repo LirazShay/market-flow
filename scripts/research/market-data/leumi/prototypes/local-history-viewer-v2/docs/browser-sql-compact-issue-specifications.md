@@ -344,7 +344,7 @@ Make Security Detail/History work from SQL, close the V1 browsing-product migrat
 - live refresh keeps the selected Detail active and refreshes its authoritative summary/history without forcing a return to Current;
 - C05 and C06 remain parallel: whichever of the pair is second to close owns the shared Current→Detail→Back regression before closure, including preservation of the already-implemented Current sort/scroll state;
 - deterministic Detail/history/Viewer-lifecycle parity scenarios;
-- bounded self-verifying L-2 using real provider data through the normal Recorder→SQL→trusted-read path.
+- bounded self-verifying L-2 using real provider data through the normal Recorder→SQL→trusted-read path; until C10 is integrated this is a controlled single-tab verification session only, not proof of production-safe cross-tab ownership.
 
 ### Non-goals
 
@@ -360,7 +360,7 @@ Make Security Detail/History work from SQL, close the V1 browsing-product migrat
 - equal-timestamp paging has no duplicate/skip;
 - historical Detail remains available for a security no longer current;
 - reload/missed notification recovers by authoritative reread;
-- when C05 is available, Current→Detail navigation works using canonical SecurityId;
+- before both C05 and C06 may be considered closed, the second of the pair to close proves Current→Detail→Back using canonical SecurityId and preserves the implemented Current sort/scroll state;
 - existing Detail/History public-behavior regressions are reused or replaced by equivalent SQL-backed assertions rather than silently dropped;
 - L-2 reports exact requested/received/unique/duplicate/missing/unexpected accounting, successful SQL persistence/readback and no auth/session leakage;
 - no material parity Unknown remains for the scoped Current Universe + Detail/History product surfaces after C05 and C06 are both complete.
@@ -369,7 +369,7 @@ Make Security Detail/History work from SQL, close the V1 browsing-product migrat
 
 - deterministic Chromium Detail/history/lifecycle parity tests;
 - full Browser CI;
-- bounded authenticated L-2 PASS;
+- bounded authenticated single-tab L-2 PASS; C10/C12 remain the ownership proofs;
 - conditional shadow only if the documented trigger is met.
 
 ### Cleanup
@@ -738,7 +738,7 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 - one real-origin runtime owner and one passive loser are proven under the canonical lock;
 - SQL becomes the only new market-history authority after the explicit switch;
 - first production SQL cycles, Current/Detail trusted reads and one representative Scanner execution succeed;
-- rollback instructions are exercised at the release-procedure level, use the retained old release, preserve the SQL DB, and do not mutate/sync legacy history;
+- rollback readiness is verified before the switch by confirming the retained old release and exact stop-SQL/preserve-SQL/run-old procedure; an actual rollback is required only if the cutover materially fails, not as a mandatory rollback→recutover ceremony after a successful transition;
 - temporary migration/probe artifacts have explicit keep/remove disposition;
 - final repository has one unambiguous current execution/status truth.
 
