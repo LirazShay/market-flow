@@ -12,7 +12,7 @@
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
     "substep": "r7-r8-final-planning-audit-and-freeze",
-    "title": "Continue the final post-KISS planning audit after Master/C01-C12 review; next cross-cutting dependency/parallelism/conditional audit",
+    "title": "Continue the final post-KISS planning audit after individual + cross-cutting graph review; next KISS/docs/specs/guards contradiction audit",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,8 +22,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0-R6 are complete. R7 deep review has now validated Master #85 and C01-C12 after targeted corrections. C11 predeclares its deciding daily workload, includes O3 among evidence-triggered branches and checks exact cycle integrity. C12 is now one explicit no-overlap release transition: old IndexedDB Recorder settles/stops first, then real-origin ownership, fresh SQL production readiness, bounded integrated verification and explicit rollback on material failure.",
-    "ready": "All individual compact Issues C01-C12 have passed deep critique. Implementation remains paused until the remaining cross-cutting/KISS/docs review, fresh-AI dry runs, guards/CI and final planning freeze are complete.",
+    "completed": "R0-R6 are complete. R7 has now completed both the deep C01-C12 critique and the cross-cutting DAG audit. The mandatory 12-node graph is acyclic with no redundant direct dependency edges; C05/C06 parallel closure, pre-C10 single-tab L-2, O1-O6 blocking/rejoin ownership and C12 rollback readiness are now explicit.",
+    "ready": "Individual Issues and the mandatory/conditional dependency model have passed critique. Implementation remains paused until the KISS/current-doc/spec/guard contradiction review, fresh-AI dry runs, final repairs, Fast CI and planning freeze are complete.",
     "blockedAfterEntry": "Do not start C01. The next chat must finish R7-R8: final planning critique, fresh-AI dry runs, current-plan guard verification, Fast CI, new post-KISS freeze artifact, final STATUS switch, and closure of #72."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
@@ -75,7 +75,7 @@
       "status": "not-required-so-far",
       "reason": "R4-R6 changed GitHub/docs/current-plan Node guard only; no runtime/browser/Playwright production behavior changed."
     },
-    "specImpact": "Planning-only corrections: C11/C12 Issues and compact specs/DAG tightened; D-035, post-KISS lifecycle/testing guidance and target architecture aligned with the no-overlap final transition. No product/runtime/browser implementation changed.",
+    "specImpact": "Planning-only cross-cutting corrections: C06/C12 executable contracts, compact specs/DAG, ROADMAP, GitHub execution navigation and Master conditional rules aligned. No product/runtime/browser implementation changed.",
     "planningAudit": {
       "status": "in-progress",
       "reviewed": [
@@ -109,11 +109,27 @@
         "C12 is a no-overlap release transition: stop/settle old IndexedDB Recorder first, then prove real-origin ownership, start fresh SQL authority, exercise Current/Detail/Scanner, accept only after bounded verification, or explicitly rollback while preserving both data sets.",
         "D-035 and current lifecycle/testing/target-architecture wording were aligned to remove stale fixed-horizon and pre-cutover-dual-run implications."
       ],
-      "next": "Run the cross-cutting audit of direct dependencies, parallelism, conditionals and rejoin/rerun rules."
+      "next": "Audit current KISS docs/specs/guards for stale pre-KISS contradictions or duplicated authority.",
+      "crossCuttingGraph": {
+        "status": "reviewed",
+        "mandatoryNodes": 12,
+        "result": "Acyclic; no redundant direct dependency edges; intended parallel fronts preserved.",
+        "parallelFronts": [
+          "C03 || C10 after C02",
+          "C05 || C06 after C04",
+          "C07 || C08→C09 after C05+C06"
+        ],
+        "corrections": [
+          "C05/C06 use second-to-close ownership for the shared Current→Detail→Back regression; no stale implementation-order wait remains.",
+          "C06 L-2 before C10 convergence is explicitly a controlled single-tab proof and not production cross-tab ownership evidence.",
+          "O1-O6 now have explicit blocking owner/rejoin rules; conditionals cannot become orphan side tasks.",
+          "C12 rollback is preflighted as a release path and executed only on material cutover failure; no mandatory rollback→recutover ceremony after success."
+        ]
+      }
     }
   },
   "next": {
-    "action": "Continue planning only: cross-cutting audit of dependency edges, parallel work fronts, conditional triggers and rejoin/rerun rules; then KISS/docs/guards review, fresh-AI dry runs, repair any remaining issues, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
+    "action": "Continue planning only: run the KISS/current-doc/spec/guard contradiction audit; then perform fresh-AI dry runs, repair remaining issues, run Fast CI, rewrite the post-KISS planning freeze, and only when all planning verification is green switch STATUS to implementation entry C01 #73 and close #72.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE-FINALIZATION",
     "rules": [
