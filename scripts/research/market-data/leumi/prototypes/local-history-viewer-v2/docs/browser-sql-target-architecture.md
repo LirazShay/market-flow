@@ -191,13 +191,19 @@ Representative daily mixed workload is required before cutover.
 ~~~text
 stop old IndexedDB Recorder at settled boundary
 → preserve legacy local data
-→ start fresh SQL production history
-→ verify first cycles/reads
+→ launch tested SQL candidate on the authenticated origin
+→ prove canonical two-tab Web Lock ownership
+→ granted owner opens fresh production OPFS and completes readiness
+→ begin fresh SQL production history
+→ verify first cycles + Current/Detail + representative Scanner execution
+→ accept cutover
 ~~~
 
-Rollback is explicit: stop SQL release, preserve SQL DB, run retained old release.
+The normal transition has no old/new production-authority overlap.
 
-No history synchronization back to IndexedDB is required.
+Rollback is explicit on material failure: stop SQL release, preserve SQL DB, run retained old release.
+
+No automatic fallback or history synchronization back to IndexedDB is required.
 
 ## 14. Implementation map
 
