@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "compact-issue-specification",
-    "title": "Turn C01-C11 into concise executable Issue specifications and critique their boundaries before GitHub materialization",
+    "substep": "compact-issue-critique",
+    "title": "Critique C01-C11 Issue sizes, boundaries, dependencies and acceptance criteria before GitHub materialization",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Post-KISS audits, synthesis, and compact DAG design complete.",
-    "ready": "The new graph has 11 mandatory executable nodes, no checkpoint-only nodes, two intentional parallel fronts, and evidence-triggered conditional branches only.",
-    "blockedAfterEntry": "Implementation remains paused; specify/review C01-C11 Issue bodies before creating the new GitHub graph."
+    "completed": "Compact executable Issue specifications for C01-C11 are drafted.",
+    "ready": "Each mandatory node now has purpose, direct dependencies, scope/non-goals, observable acceptance, verification layer and cleanup without reintroducing conditional/future machinery.",
+    "blockedAfterEntry": "Implementation remains paused; run a dedicated issue-size/dependency critique and revise the drafts before creating the new GitHub graph."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: compact execution DAG added and indexed; no successor Issues created and no old Issues retired.",
+    "specImpact": "Planning-only: compact Issue specification draft added and indexed; no successor Issues created and no old Issues retired.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,16 +130,16 @@
     }
   },
   "next": {
-    "action": "Write concise executable specifications for C01-C11 with purpose, scope, non-goals, direct dependencies, observable acceptance criteria, tests/verification, security/data-integrity and cleanup. Then run an issue-size/dependency critique before GitHub materialization.",
+    "action": "Critique C01-C11 for giant/micro Issues, duplicated scope, missing ownership, artificial dependencies, hidden checkpoint bureaucracy, acceptance-test quality and fresh-chat executability. Revise the compact DAG/specifications if needed before any GitHub materialization.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
       "Do not create or retire GitHub execution Issues yet.",
-      "Use only direct dependencies from browser-sql-compact-execution-dag.md.",
-      "Do not create checkpoint-only Issues or standing conditional/future Issues.",
-      "Keep acceptance criteria observable and tests focused on public contracts.",
-      "Preserve #29/#30 as completed evidence and transfer pending L-1 ownership safely during later materialization."
+      "Prefer merging/splitting only for real engineering/test boundaries.",
+      "Check every direct dependency is necessary and no transitive edge is duplicated.",
+      "Check acceptance criteria are observable and do not lock unnecessary implementation details.",
+      "Ensure C01 safely inherits pending L-1 ownership and C11 remains a bounded release operation."
     ]
   },
   "history": {
