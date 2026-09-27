@@ -71,9 +71,9 @@
     },
     "latestFastCi": {
       "status": "pass",
-      "runId": 36306167443,
-      "commit": "7b1f0dd6c8e4a3ab6f697a7a9e6bab5a155a8581",
-      "result": "PASS — Fast CI green after D-045 authority correction, HOT-context compaction and guard realignment."
+      "runId": 36306504525,
+      "commit": "4935f8f6567a1b17af77cfe8dda69972284951b1",
+      "result": "PASS — Fast CI green after Stage-03 inventory/index/guard realignment."
     },
     "browserCi": {
       "status": "not-required-for-planning-freeze",
@@ -123,8 +123,9 @@
       "currentChat": 1,
       "stage02": "complete-green",
       "stage03": {
-        "status": "verification-pending",
-        "inventory": "docs/node-sql-migration-inventory.md"
+        "status": "complete-green",
+        "inventory": "docs/node-sql-migration-inventory.md",
+        "fastCiRunId": 36306504525
       }
     }
   },
