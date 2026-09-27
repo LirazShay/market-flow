@@ -1,43 +1,40 @@
-# Market Flow — Browser SQL V2 Planning Continuation
+# Market Flow — Browser SQL V2 — Implementation Entry
 
-Continue:
+Start **Chat 01 of 12**.
+
+Repository:
 
 ~~~text
 LirazShay/market-flow
 branch: main
 ~~~
 
-Default response language: Hebrew. Code/identifiers/technical terms may remain English.
-
-GitHub main is the source of truth.
-
-## Startup
-
-Read only the HOT path first:
+Copy the complete **Chat 01 — C01 / #73** prompt from:
 
 ~~~text
-AGENTS.md
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/README.md
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json
-scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/AI_CONTEXT.md
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/CHAT_PROMPTS.md
 ~~~
 
-Then follow the exact current pointer from `STATUS.json`.
+and follow it exactly.
 
-If planning is still open, also read GitHub Issue #72 and only the current planning authorities it links.
+Before implementation, that prompt must validate against GitHub that:
 
-Do not preload the old 42-WP/ND/Phase planning unless a current Issue links a specific historical uncertainty.
+~~~text
+planning Issue #72 is closed
+STATUS.json points to Chat 01 / C01 / #73
+required planning verification is green
+~~~
 
-## Boundary
+Do not bypass the entry gate and do not use this file as live status.
 
-While `STATUS.json` still points to Browser SQL planning finalization:
+Live truth remains:
 
-- remain planning-only;
-- do not implement C01 or downstream product/runtime/browser behavior;
-- repair any discovered contradiction in the owning GitHub Issue/decision/doc/guard;
-- keep live progress only in `STATUS.json`;
-- run the verification required by the current pointer.
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/STATUS.json
+~~~
 
-The current executable candidate is Master #85 with C01..C12 #73..#84. Stable scope/order belongs in `ROADMAP.md`; the exact live next step does not belong in this file.
+Stable chat boundaries:
 
-When planning is formally frozen and `STATUS.json` moves to implementation entry, replace this file with the implementation-chat handoff required by that final planning step.
+~~~text
+scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/CHAT_EXECUTION_PLAN.md
+~~~
