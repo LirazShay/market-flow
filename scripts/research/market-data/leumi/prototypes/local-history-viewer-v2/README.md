@@ -30,7 +30,13 @@ Stable chat boundaries, entry/exit gates, verification ownership and conditional
 CHAT_EXECUTION_PLAN.md
 ~~~
 
-This file does not own live progress. Always use `STATUS.json` to determine which chat/Issue is actually current.
+Ready-to-copy prompt for each Chat 01..12:
+
+~~~text
+CHAT_PROMPTS.md
+~~~
+
+These files do not own live progress. Always use `STATUS.json` to determine which chat/Issue is actually current.
 
 ## Baseline architecture
 
@@ -83,6 +89,7 @@ The internal `window.MarketFlow*` globals are intentionally still inherited. Do 
 | technical continuation context | `AI_CONTEXT.md` |
 | plan / scope | `ROADMAP.md` |
 | 12-chat implementation boundaries | `CHAT_EXECUTION_PLAN.md` |
+| copy/paste prompt for each chat | `CHAT_PROMPTS.md` |
 | normative contracts | `specs/README.md` |
 | inherited design/history | `docs/README.md` |
 | runtime usage | `runtime/README.md` |
