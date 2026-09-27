@@ -630,11 +630,11 @@ Verify the actual selected product shape can run like a normal daily local tool 
 
 ### Scope
 
-- deterministic day-shaped market history/workload;
+- before the deciding run, record the deterministic day-shaped workload parameters: intended cycle cadence/count or duration, representative universe-change pattern/payload profile, C07 representative Scanner query + interval, and Current/Detail read activity; do not hardcode universe size;
 - representative collection cadence and changing universe shape;
 - continuous SQL persistence;
 - Current/Detail reads;
-- representative active Scanner query/interval;
+- representative active Scanner query/interval from the predeclared C07 corpus, including any selected O1 optimization;
 - selected analytical optimization, if any;
 - one-owner runtime behavior;
 - record workload parameters and measured latency/memory/storage facts needed for future regression comparison;
@@ -644,6 +644,7 @@ Verify the actual selected product shape can run like a normal daily local tool 
 
 C11 may activate, only on evidence:
 - O2 advanced Scanner resource hardening;
+- O3 streaming/chunked result delivery if representative result materialization proves unsafe/unusable;
 - O4 storage/export/fresh-DB workflow;
 - O5 target Windows/Chrome evidence.
 
@@ -658,25 +659,25 @@ If any activated mechanism changes the candidate, rerun affected C11 workload ve
 
 ### Acceptance
 
-- workload parameters are recorded and represent intended normal daily operation;
-- every injected provider cycle reaches a terminal state: committed or explicitly failed;
+- workload parameters are fixed before the deciding run and represent intended normal daily operation;
+- every injected provider cycle reaches a terminal state: committed or explicitly failed; every committed-success cycle satisfies exact requested/received/unique accounting with zero duplicate/missing/unexpected IDs;
 - persistence queue/backlog shows no sustained monotonic growth during the steady-state portion;
 - Scanner executions never overlap;
 - representative Scanner executions repeatedly complete;
 - Current and Detail reads continue to complete during mixed load;
 - browser/runtime does not crash or hit OOM;
-- storage growth is measured and no quota/storage failure occurs for the required workload;
+- storage growth is measured; a quota/storage failure before the required workload completes is a failing result that must be resolved or activate O4, never silently accepted;
 - accumulated DB closes/reopens and expected committed state is readable;
 - measured latency/memory/storage observations are recorded for future regression comparison;
 - no data-integrity failure occurs;
-- every triggered conditional is resolved/reverified or explicitly blocks completion.
+- every triggered O2/O3/O4/O5 branch is resolved and affected verification rerun, or it explicitly blocks C11 completion.
 
 If a concrete responsiveness threshold is required for release, define it before the deciding run from real product use/baseline evidence; do not invent it after seeing the result.
 
 ### Verification
 
-- deterministic Chromium integrated workload;
-- repeatable workload parameters/results;
+- deterministic Chromium integrated workload using the predeclared parameters;
+- repeatable workload parameters/results plus exact cycle-integrity counters;
 - Fast CI;
 - full Browser CI;
 - optional target-Windows run only if evidence requires it.
@@ -702,26 +703,25 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 
 - current candidate Fast CI green;
 - full Browser CI green;
-- C11 green on final candidate;
-- L-1 and L-2 evidence valid for the compatible candidate;
+- C11 green on the final candidate after every candidate-changing conditional;
+- L-1 and L-2 evidence valid for the final candidate's relevant runtime/provider boundaries; if a later change can invalidate one of those live premises, rerun only the affected live proof before cutover;
+- the retained old IndexedDB release/rollback path is identified and available;
 - no unresolved material data-integrity/security issue.
 
 ### Scope
 
-- bounded self-verifying final authenticated run;
-- prove real provider cycles continue through SQL persistence;
-- Current/Detail healthy from SQL;
-- Scanner healthy if enabled;
-- real-origin two-tab exclusive ownership proof;
-- sanitized machine evidence;
-- stop old IndexedDB Recorder at an explicit settled boundary;
-- preserve legacy IndexedDB data;
-- open/start fresh production SQL history;
-- verify first production SQL cycles and trusted reads;
-- keep previous working release available;
-- document/verify simple rollback procedure: stop SQL release, preserve SQL DB, run prior release;
-- remove temporary migration/live-probe scaffolding that has no continuing purpose;
-- update durable docs/STATUS only after required verification is green.
+- perform one explicit no-overlap release transition: stop the old IndexedDB Recorder at a settled boundary before any SQL production owner/provider collection starts;
+- preserve legacy IndexedDB data unchanged;
+- launch the tested SQL candidate on the authenticated origin and prove the canonical C10 Web Lock with two same-origin tabs: exactly one owner, passive loser opens no production Worker/DB and performs no provider collection;
+- the granted owner opens/creates the fresh production OPFS DB, completes normal compatibility/readiness, and only then starts the SQL recording session;
+- run a bounded self-verifying authenticated session proving real provider cycles reach SQL persistence and trusted readback;
+- prove Current/Detail healthy from SQL and explicitly activate one representative safe Scanner query/interval so the third surface is exercised rather than merely present;
+- collect sanitized machine evidence with candidate/build identity and relevant integrity/ownership/Scanner counters;
+- verify the first production SQL cycles and trusted reads before accepting the cutover as successful;
+- keep the previous working release available;
+- if a material post-stop/cutover check fails, execute the simple explicit rollback: stop SQL runtime, preserve SQL DB, run the retained prior release; never auto-fallback or sync histories;
+- remove temporary migration/live-probe scaffolding that has no continuing purpose while retaining minimal reusable regressions/verifiers;
+- update durable docs/STATUS only after the accepted final state and required verification are green.
 
 ### Non-goals
 
@@ -733,11 +733,12 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 
 ### Acceptance
 
-- final authenticated run produces PASS with no secret leakage;
-- one real-origin runtime owner is proven;
+- the old IndexedDB Recorder is settled/stopped before SQL production ownership/provider collection begins, so no normal dual-authority window exists;
+- final authenticated transition produces PASS with no secret leakage;
+- one real-origin runtime owner and one passive loser are proven under the canonical lock;
 - SQL becomes the only new market-history authority after the explicit switch;
-- first production SQL cycles and Viewer reads succeed;
-- rollback instructions use the retained old release and do not mutate/sync legacy history;
+- first production SQL cycles, Current/Detail trusted reads and one representative Scanner execution succeed;
+- rollback instructions are exercised at the release-procedure level, use the retained old release, preserve the SQL DB, and do not mutate/sync legacy history;
 - temporary migration/probe artifacts have explicit keep/remove disposition;
 - final repository has one unambiguous current execution/status truth.
 
@@ -746,8 +747,8 @@ Verify the final candidate in the authenticated Leumi environment, switch author
 - Fast CI;
 - full Browser CI;
 - C11 final workload evidence;
-- final authenticated self-verifying run;
-- explicit first-production-cycle/readback checks;
+- final authenticated no-overlap transition/self-verifying run, including real-origin two-tab ownership and representative Scanner execution;
+- explicit first-production-cycle/readback checks with exact cycle-integrity counters;
 - final security/static guards and docs consistency checks.
 
 ### Cleanup
