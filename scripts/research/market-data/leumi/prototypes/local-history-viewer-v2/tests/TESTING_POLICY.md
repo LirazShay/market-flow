@@ -232,10 +232,10 @@ C01
 → real-origin Worker/Wasm/OPFS premise
 
 C06 / L-2
-→ real provider → complete validation → SQL → trusted read
+→ controlled single-tab real provider → complete validation → SQL → trusted read
 
 C12
-→ final integrated real-origin run + two-tab ownership before cutover
+→ no-overlap authenticated transition: old Recorder settled/stopped → real-origin two-tab ownership → fresh SQL authority → Current/Detail + representative Scanner verification
 ~~~
 
 Each live artifact must self-verify as far as technically possible and emit sanitized machine-readable PASS/FAIL evidence.
