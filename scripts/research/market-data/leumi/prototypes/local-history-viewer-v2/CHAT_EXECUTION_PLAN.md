@@ -9,6 +9,7 @@ STATUS.json = live progress/current/verification
 ROADMAP.md = stable product implementation order/scope
 Master #85 + C01..C12 = executable GitHub work
 CHAT_EXECUTION_PLAN.md = stable fresh-chat boundaries
+CHAT_PROMPTS.md = copy/paste launcher for each planned chat
 ~~~
 
 ## Why exactly 12 chats
@@ -415,7 +416,7 @@ On material post-stop/cutover failure: stop SQL, preserve SQL DB, run retained o
 
 Verification: Fast + full Browser CI, C11 evidence, authenticated no-overlap self-verifier, real two-tab ownership, first-cycle exact integrity, final security/static/docs consistency.
 
-Exit: SQL is the only new market-history authority; legacy IndexedDB preserved; rollback readiness documented; temporary release/probe artifacts dispositioned; C12 closed; Master #85 closes when all child/conditional obligations are closed; STATUS moves to the next normal V2 operating/development pointer.
+Exit: SQL is the only new market-history authority; legacy IndexedDB preserved; rollback readiness documented; temporary release/probe artifacts dispositioned; C12 closed; Master #85 closes when all child/conditional obligations are closed; STATUS moves to the truthful post-release/normal-operation state. Do not invent Chat 13 or a new feature merely to populate a next pointer; if no further work is planned, record that stable operating state explicitly.
 
 ---
 
