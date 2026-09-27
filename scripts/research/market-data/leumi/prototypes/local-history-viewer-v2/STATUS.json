@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "r0-historical-snapshot-archive",
-    "title": "Create the pre-KISS historical snapshot/archive boundary before mutating durable decisions",
+    "substep": "r1-durable-decision-reconciliation",
+    "title": "Create D-044 and reconcile D-025..D-043 to the post-KISS Browser SQL baseline",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pre-materialization reconciliation map complete.",
-    "ready": "The safe rewrite order R0-R8 is defined, including D-044, ROADMAP/product/testing reconciliation, new Master+C01-C12 materialization, old-graph retirement, STATUS switch and final fresh-AI freeze.",
-    "blockedAfterEntry": "Implementation remains paused; execute R0 historical snapshot/archive before changing current durable decisions or creating new execution Issues."
+    "completed": "R0 historical snapshot/archive complete.",
+    "ready": "The old A..W ROADMAP, 42-WP decomposition/execution/final audit/freeze and pre-rewrite STATUS are preserved byte-for-byte under docs/history/browser-sql-pre-kiss-42wp-plan/.",
+    "blockedAfterEntry": "Implementation remains paused; R1 must reconcile durable decisions before product/ROADMAP/testing authorities are rewritten."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: reconciliation map added and indexed. No product/runtime code, durable decision status, or GitHub execution graph changed.",
+    "specImpact": "Planning-only: R0 archived exact pre-KISS/42-WP planning evidence and indexed it as COLD history. No durable decision, current ROADMAP, product/runtime code, or GitHub execution Issue was changed.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,21 +130,21 @@
     }
   },
   "next": {
-    "action": "Execute R0: preserve the current pre-KISS/42-WP planning state as cold history before changing durable decisions. Archive the old ROADMAP A-W, old implementation decomposition/execution structure/final audit/freeze and a STATUS snapshot, then update docs/history navigation without changing current implementation authority yet.",
+    "action": "Execute R1 durable decision reconciliation: create D-044, amend/mark superseded D-025..D-043 exactly per the reconciliation map, update docs/project/decisions.md, and run Fast CI. Do not rewrite ROADMAP/product/testing docs until R1 is coherent.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
       "Do not create or retire GitHub execution Issues yet.",
-      "Do not mutate D-025..D-043 in R0.",
-      "Preserve exact historical evidence before replacing current-plan documents.",
-      "Keep archived material clearly COLD and keep STATUS.json as the only live progress source.",
-      "Run Fast CI after the archive/navigation changes."
+      "Use the archived pre-KISS snapshot as historical evidence; do not rewrite it.",
+      "Preserve D-043 product/provider invariants.",
+      "Prefer one compact successor D-044 over many replacement decisions.",
+      "Run Fast CI after R1."
     ]
   },
   "history": {
     "index": "docs/history/README.md",
     "rule": "Completed planning rationale stays in phase docs/decisions, not HOT status.",
-    "latestArchive": "docs/history/status-snapshots/2026-09-23-pre-context-compaction.json"
+    "latestArchive": "docs/history/browser-sql-pre-kiss-42wp-plan/README.md"
   }
 }
