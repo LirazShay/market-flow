@@ -114,7 +114,9 @@ The word:
 סיימתי
 ~~~
 
-is reserved for completion of the full planned process/version, not a Stage/checkpoint.
+normally marks completion of the full planned process/version, not an arbitrary Stage/checkpoint.
+
+Exception: when an active workstream has a durable serial-chat protocol that explicitly defines one chat as a complete verified handoff unit, the word may be used at the end of that chat **only after** its documented exit gate is fully true in GitHub (owning Issue closed, required verification green, no verification-pending, and STATUS advanced).
 
 ---
 
