@@ -178,7 +178,7 @@ nodes:
   "2.2":
     status: approved
     strategy: "DuckDB has a minimal durable schema that preserves raw market facts and the current/history authority contract."
-    tactic: "Add local-service/database.mjs and schema-v1.sql; open @duckdb/node-api file local-service/data/market-flow-v2.duckdb by default (MARKET_FLOW_DB_PATH override for tests), ignore local-service/data/ in Git, and create schema_info plus sessions, universe, cycles, history and latest tables. Universe stores security_id, paper_name, updated_at_ms, map_heat_date_change + raw_map_heat JSON; history/latest store cycle/session/security/chunk/time metadata + raw_security JSON; cycles/sessions keep their lifecycle/count metadata with chunks/error/config JSON; timestamps use BIGINT epoch-ms."
+    tactic: "Add local-service/database.mjs and schema-v1.sql; open @duckdb/node-api file local-service/data/market-flow-v2.duckdb by default (MARKET_FLOW_DB_PATH override for tests), ignore local-service/data/ in Git, and create schema_info plus sessions, universe, cycles, history and latest tables. Open the shared DuckDB instance with external access, extension autoload/autoinstall/community extensions and persistent secrets disabled, then lock configuration. Universe stores security_id, paper_name, updated_at_ms, map_heat_date_change + raw_map_heat JSON; history/latest store cycle/session/security/chunk/time metadata + raw_security JSON; cycles/sessions keep lifecycle/count metadata with chunks/error/config JSON; timestamps use BIGINT epoch-ms; schema v1 creates no sequences."
     parallel_assumptions:
       - "Keeping raw provider objects in JSON preserves unanticipated fields without building a large typed schema first."
       - "Metadata columns needed for identity/time/current/history queries can stay relational while raw source facts remain complete."
@@ -198,7 +198,7 @@ nodes:
   "2.3":
     status: approved
     strategy: "Producer session, universe, heartbeat, failure and stop state are durable without making failed data current."
-    tactic: "Implement local-service/producer-lifecycle.mjs on the serialized writer connection: allocate session IDs from a DuckDB sequence; start a running session; replace the complete validated universe in one transaction; update heartbeat/session counters; persist failed-cycle diagnostics only to cycles/session state; and stop the owning session explicitly."
+    tactic: "Implement local-service/producer-lifecycle.mjs on the serialized writer connection: allocate session IDs as COALESCE(MAX(session_id),0)+1 inside the serialized write transaction; start a running session; replace the complete validated universe in one transaction; update heartbeat/session counters; persist failed-cycle diagnostics only to cycles/session state; and stop the owning session explicitly."
     parallel_assumptions:
       - "The existing browser adapter sends already validated universe/cycle/failure objects, but Node still validates protocol/lifecycle ownership before persistence."
       - "Universe is a complete snapshot, so DELETE + bulk append inside one transaction is simpler than diff/upsert logic."
@@ -218,7 +218,7 @@ nodes:
   "2.4":
     status: approved
     strategy: "Each validated complete cycle becomes one atomic, coherent DuckDB authority update."
-    tactic: "Implement local-service/cycle-persistence.mjs on the writer connection: BEGIN; allocate cycle_id; insert the complete cycle metadata/chunks; bulk append one history row per security; DELETE all latest rows; bulk append the same complete cycle as the new latest snapshot; update owning session counters/heartbeat; flush/close appenders; COMMIT; return cycleId only after COMMIT, otherwise ROLLBACK and return an explicit error."
+    tactic: "Implement local-service/cycle-persistence.mjs on the writer connection: BEGIN; allocate cycle_id as COALESCE(MAX(cycle_id),0)+1 on the serialized writer; insert the complete cycle metadata/chunks; bulk append one history row per security; DELETE all latest rows; bulk append the same complete cycle as the new latest snapshot; update owning session counters/heartbeat; flush/close appenders; COMMIT; return cycleId only after COMMIT, otherwise ROLLBACK and return an explicit error."
     parallel_assumptions:
       - "Every successful browser cycle is already a complete validated universe snapshot, so replacing latest wholesale is both simpler and semantically correct."
       - "DuckDB appenders use the connection transaction context, allowing bulk history/latest writes within one explicit transaction."
@@ -389,18 +389,112 @@ nodes:
     children: []
 
   "4":
-    status: draft
+    status: approved
     strategy: "The Dynamic SQL Scanner provides safe, truthful user-defined analytics on committed DuckDB history."
-    tactic: "Run one active read-only Scanner configuration inside Node, schedule without overlap/burst replay, validate SQL safety before execution and return truthful schema/results/errors to the Viewer."
+    tactic: "Harden the shared DuckDB instance, admit exactly one parsed SELECT statement, execute it on a dedicated Scanner connection, keep the repeat scheduler/config in one browser runtime controller, and render the exact SQL result schema/rows with no hidden analytical semantics."
     parallel_assumptions:
-      - "Running Scanner beside DuckDB avoids browser SQL/CSP limitations and keeps collector cadence independent."
-      - "One active configuration is sufficient for the initial product."
+      - "The user is the local tool operator, but Scanner SQL still must not mutate market authority or access unrelated host files/network state."
+      - "Browser-side scheduling is sufficient because the product does not require headless Scanner execution, query-version persistence or anchored scheduling."
+      - "A separate Scanner connection on the same DuckDB instance sees committed state while producer writes remain owned by the serialized writer connection."
     necessary_assumptions:
       - "Dynamic SQL is an explicit V2 product requirement and cannot be replaced by hard-coded application ranking logic."
+    sufficiency_assumptions:
+      - "Database hardening/admission, one stateless Node execution request, one browser scheduler/controller and one schema-driven UI cover all required Scanner behavior."
+      - "Advanced cancellation, streaming, query history and resource-governance mechanisms remain correctly excluded until evidence requires them."
+    success_evidence:
+      - "SELECT/JOIN/WHERE/GROUP BY/HAVING/ORDER BY/LIMIT/window/history/ranking queries execute against committed DuckDB data."
+      - "Multi-statement, non-SELECT, external-file/network and configuration-changing SQL is rejected before authority mutation."
+      - "0 rows is successful, query errors are visible, and returned column order/names/rows follow SQL exactly with no hidden LIMIT/sort/filter."
+      - "At most one Scanner query executes at a time; interval misses do not queue or burst; collector cadence continues independently."
+      - "A result row with a canonical security_id/SecurityId value may open the shared Detail/History surface without treating other result columns as authority."
+    depends_on: []
+    children:
+      - "4.1"
+      - "4.2"
+      - "4.3"
+      - "4.4"
+
+  "4.1":
+    status: approved
+    strategy: "Scanner SQL cannot mutate the market database or escape into unrelated external state."
+    tactic: "Harden the single DuckDBInstance at creation with enable_external_access=false, allow_community_extensions=false, autoinstall_known_extensions=false, autoload_known_extensions=false, allow_persistent_secrets=false and lock_configuration=true. Add local-service/scanner-sql-guard.mjs: reject empty SQL; connection.extractStatements(sql) must return count=1; prepare statement 0; prepared.statementType must equal StatementType.SELECT; destroy rejected/prepared resources cleanly. Execute accepted SQL only through the prepared statement on a dedicated Scanner connection. Schema v1 contains no sequences, so SELECT nextval cannot mutate durable ID state."
+    parallel_assumptions:
+      - "DuckDB's prepared-statement StatementType is parser/binder evidence and is stronger than text-prefix filtering."
+      - "Global external-access/config hardening is compatible with Market Flow because the service needs only its already-open database file and built-in SQL."
+      - "SELECT-only plus no durable sequences removes the known database-mutation path available from a SELECT expression."
+    necessary_assumptions:
+      - "Without engine-level hardening plus parsed statement admission, editable SQL could mutate authority or access host/network state."
     sufficiency_assumptions: []
     success_evidence:
-      - "Representative SELECT/JOIN/GROUP/HAVING/window queries return correct results; mutating SQL is rejected; zero rows and errors are rendered truthfully; executions never overlap."
-    depends_on: []
+      - "Unit/integration tests accept representative analytical SELECT/CTE/JOIN/window queries."
+      - "Tests reject 0 statements, 2+ statements and prepared StatementTypes INSERT/UPDATE/DELETE/CREATE/DROP/ALTER/COPY/PRAGMA/SET/CALL/ATTACH/LOAD/TRANSACTION and other non-SELECT values."
+      - "read_csv/read_parquet/read_json/external attach or extension loading fails under engine configuration even when referenced from SELECT."
+      - "Scanner tests prove no sequence object exists and failed/rejected Scanner SQL leaves sessions/cycles/history/latest unchanged."
+    depends_on:
+      - "2.2"
+    children: []
+
+  "4.2":
+    status: approved
+    strategy: "Node executes one admitted Scanner query and returns a truthful JSON-safe result without storing Scanner state."
+    tactic: "Extend the shared protocol with scanner.execute {sql}. Implement local-service/scanner-execution.mjs on one dedicated connection: admit via 4.1, execute the prepared SELECT, read all rows, return {columns:[{name,type}],rows,rowCount,executedAtMs,durationMs} using columnNames(), columnTypes().toString() and getRowsJson(). Preserve duplicate column names/order by returning rows as arrays, not row objects. Do not inject LIMIT/ORDER/filter or persist SQL/config/results."
+    parallel_assumptions:
+      - "The initial product explicitly requires truthful 0..N results and does not require mandatory streaming or hidden limits."
+      - "Json result conversion avoids BigInt/non-JSON wire failures while retaining typed column metadata separately."
+    necessary_assumptions:
+      - "Without one exact execution/result contract, browser scheduling/UI would have to understand DuckDB internals or invent analytical semantics."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "0 rows returns success with exact columns and empty rows."
+      - "Duplicate/ordered column names and row values round-trip without object-key loss."
+      - "SQL errors return response.error and never stop/rollback unrelated Recorder ingest."
+      - "Queries run on a separate Scanner connection and observe only committed database state."
+    depends_on:
+      - "1.1"
+      - "2.2"
+      - "4.1"
+    children: []
+
+  "4.3":
+    status: approved
+    strategy: "One browser runtime owns the active Scanner config and repeats executions without overlap or catch-up bursts."
+    tactic: "Add scanner/controller.js in the opener runtime with draft state plus one active {sql,intervalMs,generation}. activate() validates non-empty SQL and positive-integer intervalMs, replaces the active generation, runs immediately when no execution is active, then schedules the next run with setTimeout(intervalMs) only after the prior run settles. If Activate occurs during a run, do not cancel it; ignore its stale result and start the newest generation after it settles. stop() clears future scheduling. Reuse viewer/node-data-client for scanner.execute; no persistence/background reconnect/query history."
+    parallel_assumptions:
+      - "Completion-based delay satisfies the product because anchored scheduling is explicitly not required."
+      - "Generation replacement is enough to switch configs without implementing query cancellation/preemption."
+    necessary_assumptions:
+      - "Without one controller, UI timers can overlap queries or create multiple active configs."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Activation is explicit and runs the selected SQL once immediately."
+      - "Slow execution never overlaps a second execution; missed time creates no queued catch-up."
+      - "Re-activation during a run never cancels it, never renders its stale result, and continues only with the newest config."
+      - "stop(), Viewer/runtime close and transport failure leave no scheduled execution."
+      - "Changing Scanner SQL/interval never changes Recorder config/cadence."
+    depends_on:
+      - "3.2"
+      - "4.2"
+    children: []
+
+  "4.4":
+    status: approved
+    strategy: "Scanner UI exposes only the user's SQL/config and the exact execution result/status."
+    tactic: "Add a third Scanner surface to the existing Viewer shell with editable SQL text, interval control, Activate and Stop controls, active/running/error timestamps/status, and a result table built directly from result.columns/result.rows. 0 rows renders a successful empty result with headers. Do not add hidden filtering, ranking, sorting or LIMIT. If a result column is named security_id or SecurityId and its row value canonicalizes to a non-empty string, row activation may open the shared Node-backed Detail/History surface for that ID."
+    parallel_assumptions:
+      - "The existing Viewer shell/state/navigation can host the additive third surface without a frontend framework."
+      - "Scanner rows are analytical output; only explicit SecurityId navigation crosses into the authoritative Detail surface."
+    necessary_assumptions:
+      - "Without a truthful schema-driven UI, the Dynamic SQL feature is not usable even if Node execution works."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Editable SQL/interval remain draft until Activate; the active config/status is visible."
+      - "0, 1 and many-row results render exact SQL column order/names and values."
+      - "Query errors remain visible while the last successful market authority and Recorder continue unaffected."
+      - "No client-side sort/filter/rank/limit changes query meaning."
+      - "SecurityId navigation uses Node 3 Detail/History and unknown IDs show the existing explicit not-found behavior."
+    depends_on:
+      - "3.4"
+      - "4.3"
     children: []
 
   "5":
