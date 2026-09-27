@@ -1,24 +1,28 @@
-# Browser SQL Live Gate L-1 — WP-03 Runbook
+# Browser SQL Live Gate L-1 — C01 Runbook
 
-This document defines the safe live-verification procedure for the Browser SQL implementation-entry gate.
+This document defines the safe authenticated-origin verification for C01 / GitHub Issue #73.
 
-Operational progress and the current gate result belong only in `../STATUS.json`.
+Operational progress/result belongs only in `../STATUS.json`.
 
 ## Purpose
 
-WP-03 verifies capabilities that deterministic CI cannot prove on the real authenticated Leumi origin:
+C01 proves only the Browser SQL feasibility facts that deterministic CI cannot prove on the real authenticated Leumi origin:
 
 - injected JavaScript execution;
 - Blob Worker creation;
 - exact pinned DuckDB Worker loading;
 - exact pinned DuckDB Wasm instantiation;
 - OPFS open/write;
-- COMMIT + CHECKPOINT;
-- Worker teardown/reopen;
-- page refresh/relaunch + reopen;
-- exclusive Web Locks behavior across two authenticated same-origin tabs.
+- synthetic SQL write + COMMIT;
+- Worker/runtime close + reopen;
+- persisted marker readback;
+- probe-owned cleanup.
 
-This is a capability probe only. It must not call Leumi provider APIs and must not open the production Market Flow database.
+This probe does **not** call Leumi provider APIs and does not open the production Market Flow database.
+
+Cross-tab Web Locks are **not** part of C01. Chromium owns Web Lock implementation verification in C10 / #82, and the authenticated-origin two-tab ownership proof belongs to C12 / #84 before cutover.
+
+The existing probe may execute CHECKPOINT as part of its current synthetic sequence. That is capability evidence only; it does **not** define production CHECKPOINT cadence or the C03 durability/acknowledgement policy.
 
 ## Safety boundary
 
@@ -37,9 +41,7 @@ Only sanitized PASS/FAIL stage results and non-sensitive capability observations
 
 ## Inputs
 
-Use the exact WP-02 probe generated from the repository commit being verified.
-
-Build:
+Use the exact pinned probe generated from the repository commit being verified.
 
 ~~~text
 npm ci
@@ -53,55 +55,32 @@ runtime/dist/market-flow-v2.browser-sql-probe.js
 runtime/dist/market-flow-v2.browser-sql-probe.bookmarklet.txt
 ~~~
 
-The probe owns only:
+Probe-owned DB names remain isolated from production identities.
 
-~~~text
-market-flow-browser-sql-probe-v2.duckdb
-market-flow-browser-sql-probe-v2.duckdb.wal
-~~~
+## Deterministic preflight
 
-The synthetic Web Lock name used below is:
+Before live execution, real Chromium CI proves all browser mechanics that do not require the authenticated Leumi origin, including:
 
-~~~text
-market-flow:wp03:web-lock-probe
-~~~
-
-It is not the production runtime-owner lock.
-
-## Deterministic CI preflight
-
-Before live execution, GitHub Actions runs a synthetic authenticated-Leumi-like page in real Chromium. The preflight verifies the browser mechanics that can be proven without credentials:
-
-- injected probe execution on a same-origin synthetic page;
-- Blob Worker creation;
-- exact pinned Worker/Wasm loading;
-- OPFS write, COMMIT, CHECKPOINT and reopen;
-- persisted-marker visibility across two same-origin tabs;
-- page reload/reopen;
-- exclusive Web Lock denial while another tab holds the lock;
-- acquisition after explicit release;
-- browser lock release after owner-tab close;
+- injected probe bootstrap on a synthetic page;
+- Blob Worker;
+- exact Worker/Wasm loading;
+- OPFS write/COMMIT/reopen;
+- sanitized failure classification;
 - probe-only cleanup.
 
-The compatible synthetic page uses an explicit CSP allow-list for the pinned CDN Worker import and WebAssembly compilation. A separate negative CSP fixture intentionally omits WebAssembly compilation permission and must fail at the sanitized `wasm-instantiate` stage. This proves the harness distinguishes CSP compatibility from generic Chromium capability.
+CI evidence is not upgraded to `Verified` for the live Leumi origin.
 
-CI evidence from this preflight is **not** live-origin evidence. For the real authenticated Leumi page these outcomes remain `Inferred` until Part A/Part B below are directly observed there.
+## Live procedure
 
-## Part A — Worker/Wasm/OPFS probe
+C01 should use a generated self-verifying artifact so the human role is limited to launching it inside an already-authenticated Leumi market page.
 
-### A1. Initial run
-
-Open an already-authenticated Leumi market page and execute the generated Browser SQL probe Bookmarklet.
-
-The probe auto-runs by default and writes only a synthetic marker.
-
-The sanitized result is logged as:
+Required result:
 
 ~~~text
-Market Flow Browser SQL probe: { ... }
+status = passed
 ~~~
 
-Required stages:
+Required capability stages are the probe's equivalents of:
 
 ~~~text
 bookmarklet-bootstrap
@@ -110,172 +89,18 @@ blob-worker-create
 worker-asset-load
 wasm-instantiate
 opfs-open
-write-commit-checkpoint
-reopen-verify
+synthetic-write-commit
+close-reopen-verify
+probe-cleanup
 ~~~
 
-Every required stage must be `passed`.
+If the current generated probe still names the write stage `write-commit-checkpoint`, a passing stage is acceptable as evidence of write/COMMIT/reopen capability; CHECKPOINT itself is not an initial-V2 production policy decision.
 
-Do not copy unrelated console/network output.
-
-### A2. Page refresh/relaunch persistence proof
-
-After A1 passed:
-
-1. refresh the same authenticated Leumi page;
-2. before injecting the probe again, set:
-
-~~~js
-window.__MARKET_FLOW_BROWSER_SQL_PROBE_AUTO_RUN__ = false;
-~~~
-
-3. execute the same generated Browser SQL probe Bookmarklet;
-4. run only the persisted-marker verification:
-
-~~~js
-await MarketFlowBrowserSqlProbe.verify();
-~~~
-
-Expected sanitized result:
-
-~~~text
-status = "passed"
-marker = "market-flow-browser-sql-probe-synthetic-v1"
-~~~
-
-This proves the probe database survived page refresh/relaunch and reopened coherently without rewriting the marker first.
-
-### A3. Probe-only cleanup
-
-After persistence verification, run:
-
-~~~js
-await MarketFlowBrowserSqlProbe.cleanup();
-~~~
-
-Expected:
-
-~~~text
-status = "passed"
-deletedEntries contains only the two probe-owned filenames
-~~~
-
-Never delete arbitrary OPFS entries or clear the Leumi origin storage.
-
-## Part B — two-tab Web Locks proof
-
-Use two independently opened authenticated Leumi tabs on the same origin and browser profile.
-
-### B1. Capability check in both tabs
-
-Run:
-
-~~~js
-({
-  locksAvailable:
-    typeof navigator !== "undefined" &&
-    navigator.locks &&
-    typeof navigator.locks.request === "function"
-})
-~~~
-
-Required: `locksAvailable === true`.
-
-### B2. Tab A acquires and holds the synthetic exclusive lock
-
-Run in Tab A:
-
-~~~js
-window.__mfWp03LockRelease = null;
-window.__mfWp03LockRequest = navigator.locks.request(
-  "market-flow:wp03:web-lock-probe",
-  {
-    mode: "exclusive",
-    ifAvailable: true
-  },
-  lock => {
-    if (!lock) {
-      console.log({
-        probe: "wp03-web-lock",
-        acquired: false
-      });
-      return;
-    }
-
-    console.log({
-      probe: "wp03-web-lock",
-      acquired: true
-    });
-
-    return new Promise(resolve => {
-      window.__mfWp03LockRelease = () => {
-        window.__mfWp03LockRelease = null;
-        resolve();
-      };
-    });
-  }
-);
-~~~
-
-Required sanitized observation:
-
-~~~text
-acquired = true
-~~~
-
-Keep Tab A open and do not call the release function yet.
-
-### B3. Tab B must fail fast while Tab A holds the lock
-
-Run in Tab B:
-
-~~~js
-await navigator.locks.request(
-  "market-flow:wp03:web-lock-probe",
-  {
-    mode: "exclusive",
-    ifAvailable: true
-  },
-  lock => ({
-    acquired: Boolean(lock)
-  })
-);
-~~~
-
-Required:
-
-~~~text
-acquired = false
-~~~
-
-No waiting election, heartbeat, localStorage, IndexedDB or `steal:true` may be used.
-
-### B4. Release Tab A
-
-Run in Tab A:
-
-~~~js
-window.__mfWp03LockRelease();
-await window.__mfWp03LockRequest;
-~~~
-
-Alternatively, closing Tab A is acceptable for the release-on-owner-loss observation.
-
-### B5. Tab B acquires after release
-
-Run the B3 request again in Tab B.
-
-Required:
-
-~~~text
-acquired = true
-~~~
-
-This confirms the second tab can become owner only after the first exclusive holder releases/closes.
+C01 implementation may adapt the probe/reporting so the final live artifact emits one compact sanitized PASS/FAIL object and performs/requests only probe-owned cleanup.
 
 ## Evidence classification
 
-Every material item must be recorded as exactly one of:
+For live-origin facts use exactly:
 
 ~~~text
 Verified
@@ -283,60 +108,50 @@ Inferred
 Unknown
 ~~~
 
-`Verified` means directly observed on the real authenticated Leumi origin.
+`Verified` means directly observed by the self-verifying artifact on the authenticated Leumi origin.
 
-Do not upgrade CI evidence to `Verified` for the live origin.
+## Sanitized evidence shape
 
-## Sanitized evidence template
-
-Record only the following shape or an equivalent sanitized summary:
+An equivalent compact shape is sufficient:
 
 ~~~json
 {
   "repositoryCommit": "<commit>",
   "browser": "<browser/version>",
-  "workerWasmOpfs": {
+  "probe": "C01-L1",
+  "status": "passed|failed",
+  "failedStage": null,
+  "capabilities": {
     "bookmarkletBootstrap": "Verified|Inferred|Unknown",
-    "browserCapabilities": "Verified|Inferred|Unknown",
     "blobWorkerCreate": "Verified|Inferred|Unknown",
     "workerAssetLoad": "Verified|Inferred|Unknown",
     "wasmInstantiate": "Verified|Inferred|Unknown",
     "opfsOpen": "Verified|Inferred|Unknown",
-    "writeCommitCheckpoint": "Verified|Inferred|Unknown",
-    "workerReopenVerify": "Verified|Inferred|Unknown",
-    "pageRefreshRelaunchReopen": "Verified|Inferred|Unknown",
+    "syntheticWriteCommit": "Verified|Inferred|Unknown",
+    "closeReopenReadback": "Verified|Inferred|Unknown",
     "probeCleanup": "Verified|Inferred|Unknown"
-  },
-  "webLocks": {
-    "apiAvailable": "Verified|Inferred|Unknown",
-    "tabAAcquiresExclusive": "Verified|Inferred|Unknown",
-    "tabBDeniedWhileAHolds": "Verified|Inferred|Unknown",
-    "tabBAcquiresAfterRelease": "Verified|Inferred|Unknown",
-    "stealUsed": false,
-    "fallbackElectionUsed": false
   },
   "sanitization": {
     "cookiesPersisted": false,
     "tokensPersisted": false,
     "authorizationHeadersPersisted": false,
     "accountDataPersisted": false,
-    "harPersisted": false,
-    "privateScreenshotsPersisted": false
+    "privateSessionArtifactsPersisted": false
   }
 }
 ~~~
 
 ## Gate decision
 
-PASS requires every required Worker/Wasm/OPFS/page-reopen/Web-Locks capability above to be directly `Verified`.
+PASS requires the required C01 Worker/Wasm/OPFS/write/COMMIT/close-reopen/cleanup capabilities to be directly `Verified`.
 
-If any required capability fails or remains `Unknown`:
+If a required capability fails or remains `Unknown`:
 
 ~~~text
-WP-03 remains open
-WP-05+ remains blocked
-record the exact failed/unknown capability
-revisit the relevant runtime-delivery assumption before dependent implementation
+C01 / #73 remains open
+C02 / #74 remains blocked
+record only the sanitized failed/unknown stage
+revisit the specific runtime-delivery premise
 ~~~
 
-Do not weaken the architecture with an unverified fallback merely to pass this gate.
+Do not introduce an unverified fallback merely to force the gate green.
