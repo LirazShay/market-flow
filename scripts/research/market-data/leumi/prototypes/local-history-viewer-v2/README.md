@@ -20,6 +20,18 @@ README.md
 
 After HOT context, read only the current task scope, target code/tests and owning SPEC(s).
 
+## Implementation across fresh chats
+
+Browser SQL V2 implementation is intentionally partitioned into **12 planned fresh chats: one chat per executable C01..C12 Issue**.
+
+Stable chat boundaries, entry/exit gates, verification ownership and conditional rejoin rules:
+
+~~~text
+CHAT_EXECUTION_PLAN.md
+~~~
+
+This file does not own live progress. Always use `STATUS.json` to determine which chat/Issue is actually current.
+
 ## Baseline architecture
 
 ~~~text
@@ -70,6 +82,7 @@ The internal `window.MarketFlow*` globals are intentionally still inherited. Do 
 | progress / next | `STATUS.json` |
 | technical continuation context | `AI_CONTEXT.md` |
 | plan / scope | `ROADMAP.md` |
+| 12-chat implementation boundaries | `CHAT_EXECUTION_PLAN.md` |
 | normative contracts | `specs/README.md` |
 | inherited design/history | `docs/README.md` |
 | runtime usage | `runtime/README.md` |
