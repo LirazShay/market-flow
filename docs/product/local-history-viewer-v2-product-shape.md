@@ -173,32 +173,36 @@ Implementation baseline:
 docs/project/decisions/D-044.md
 ~~~
 
-Conceptual implementation ownership:
+Current implementation ownership:
 
 ~~~text
-C02-C04
+Master #85
+
+C02-C04 = #74-#76
   minimum SQL authority, atomic cycle persistence, Recorder integration and trusted reads
 
-C05
+C05 = #77
   Current Universe SQL parity
 
-C06
+C06 = #78
   Detail/History SQL parity + bounded real-provider L-2
 
-C07
+C07 = #79
   real analytical SQL + evidence-driven optimization decision
 
-C08-C09
+C08-C09 = #80-#81
   simple Scanner core + Scanner UI/results
 
-C10-C11
+C10-C11 = #82-#83
   single-owner runtime + representative daily mixed workload
 
-C12
+C12 = #84
   final live verification + explicit cutover/rollback/cleanup
 ~~~
+
+C01/#73 owns the real-origin DuckDB feasibility premise before C02.
 
 The compact dependency source is:
 `scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-compact-execution-dag.md`.
 
-Actual GitHub Issue numbers are added only after materialization; live completion state remains only in `STATUS.json`.
+Live completion/current-next state remains only in the V2 `STATUS.json`.
