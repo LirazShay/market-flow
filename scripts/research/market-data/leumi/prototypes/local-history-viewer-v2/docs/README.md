@@ -33,6 +33,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | post-KISS testing/CI audit | [browser-sql-post-kiss-testing-ci-audit.md](browser-sql-post-kiss-testing-ci-audit.md) |
 | post-KISS GitHub execution-structure audit | [browser-sql-post-kiss-github-structure-audit.md](browser-sql-post-kiss-github-structure-audit.md) |
 | post-KISS synthesis | [browser-sql-post-kiss-synthesis.md](browser-sql-post-kiss-synthesis.md) |
+| compact post-KISS execution DAG | [browser-sql-compact-execution-dag.md](browser-sql-compact-execution-dag.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
 | official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
