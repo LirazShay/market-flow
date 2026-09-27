@@ -200,10 +200,13 @@ Medium. Write-path integration and semantic reads meet at the SQL-authority seam
 Move the Current Universe browsing surface to trusted SQL reads while preserving intentional V1 public behavior.
 
 ## Scope
+- use the implemented public Current behavior/spec/tests as the parity oracle, not IndexedDB store mechanics;
 - Current Universe reads SQL through the trusted API;
 - current membership follows the latest committed validated universe;
-- preserve intended values, sort behavior and missing/zero rendering;
+- preserve observable column/value semantics, deterministic sorting/ties, missing/empty/zero rendering and Current refresh/empty/error behavior;
+- an authoritative current row is not silently dropped solely because optional descriptive/universe metadata is unavailable;
 - open-after-existing-data and reload reread authoritative SQL state;
+- notification/manual refresh rereads authority without provider calls and preserves selected sort;
 - missed notifications do not make cached UI state authoritative;
 - Current remains independent of Scanner state/errors;
 - row selection/navigation emits only the canonical SecurityId needed by Detail.
@@ -227,13 +230,14 @@ Medium. Current already has its own substantial module and Chromium suite.
 Move Security Detail/History to trusted SQL reads, close the existing V1 browsing-product migration, and prove the real provider→SQL→read path once.
 
 ## Scope
+- use the implemented public Detail/History behavior/spec/tests as the parity oracle, not IndexedDB query/index mechanics;
 - Detail/History reads SQL through the trusted API;
 - newest-first bounded history paging;
 - equal-timestamp-safe continuation with no duplicate/skip;
 - detail remains meaningful for known history when the security is no longer current;
 - reload/open-after-existing-data/missed-notification rereads authority;
-- integrated Current→Detail navigation check once Current exists;
-- compact V1 parity scenarios for Detail/history/Viewer lifecycle;
+- live refresh keeps the selected Detail active and refreshes authoritative summary/history;
+- compact public-behavior parity scenarios for Detail/history/Viewer lifecycle;
 - bounded self-verifying authenticated L-2:
   - real provider flow;
   - exact complete-cycle accounting;
@@ -546,7 +550,7 @@ Final convergence is C11.
 # 16. Soft coordination, not blockers
 
 Do not encode these as GitHub blockers:
-- C06's navigation check may wait for C05 without blocking C06's core implementation;
+- C05 and C06 may implement in parallel; the second of the pair to close owns the shared Current→Detail→Back regression (including existing Current sort/scroll preservation) before closure;
 - C07 may inform Scanner default/example SQL/help text;
 - C10 ownership diagnostics may later appear in Viewer health;
 - C03 storage errors may inform C05/C06/C09 display wording;
