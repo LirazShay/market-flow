@@ -71,9 +71,9 @@
     },
     "latestFastCi": {
       "status": "pass",
-      "runId": 36303002607,
-      "commit": "771ec6968b767a12f4165da63644faea637a09e5",
-      "result": "PASS — final implementation-entry STATUS points to Chat 01 / C01 / #73 after planning Issue #72 closure."
+      "runId": 36303396160,
+      "commit": "a49a041cf65e61a417d2dfc75c274ee0c6b45635",
+      "result": "PASS — compact Project Instructions, minimal 'אני צאט N תתחיל' launcher, serial completion semantics and HOT-context guards are green."
     },
     "browserCi": {
       "status": "not-required-for-planning-freeze",
