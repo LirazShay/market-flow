@@ -459,12 +459,12 @@ test(
 
         assert.match(
             specsIndex,
-            /D-044\.md/
+            /D-045\.md/
         );
 
         assert.match(
             specsIndex,
-            /browser-sql-compact-issue-specifications\.md/
+            /node-sql-migration-inventory\.md/
         );
 
         assert.match(
@@ -512,12 +512,12 @@ test(
 
         assert.match(
             docsIndex,
-            /Current Browser SQL authorities table/i
+            /Current Node-SQL authorities/i
         );
 
         assert.match(
             docsIndex,
-            /reference\/evidence only/i
+            /Browser-SQL history\/reference/i
         );
 
         const c01Runbook =
@@ -743,6 +743,66 @@ test(
         assert.match(
             readme,
             /CHAT_PROMPTS\.md/
+        );
+    }
+);
+
+
+test(
+    "Stage 03 Node-SQL migration inventory classifies all repository surface types before retirement",
+    () => {
+        const inventory =
+            readWorkstream(
+                "docs/node-sql-migration-inventory.md"
+            );
+
+        for (const classification of [
+            "KEEP",
+            "ADAPT",
+            "ARCHIVE",
+            "RETIRE"
+        ]) {
+            assert.match(
+                inventory,
+                new RegExp("\\b" + classification + "\\b")
+            );
+        }
+
+        for (const requiredSurface of [
+            "Durable decisions",
+            "GitHub Issues",
+            "Product/spec contracts",
+            "Browser-SQL runtime/probe assets",
+            "Tests",
+            "CI workflows",
+            "npm/package surface",
+            "Security classification"
+        ]) {
+            assert.equal(
+                inventory.includes(requiredSurface),
+                true,
+                "Migration inventory lost surface: " + requiredSurface
+            );
+        }
+
+        assert.match(
+            inventory,
+            /#74\.\.#84 \/ C02\.\.C12[\s\S]*RETIRE/i
+        );
+
+        assert.match(
+            inventory,
+            /runtime\/browser-sql-probe\.js/
+        );
+
+        assert.match(
+            inventory,
+            /local-history-viewer-v2-wp02-probe-ci\.yml/
+        );
+
+        assert.match(
+            inventory,
+            /successor ownership must exist before RETIRE actions execute/i
         );
     }
 );
