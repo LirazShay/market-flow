@@ -47,7 +47,7 @@ same validated complete cycle
 → add a separate Dynamic SQL Scanner
 ~~~
 
-The product authority is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`; durable decision D-043 owns this boundary.
+The product authority is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`; D-043 owns the provider/product boundary and D-044 owns the current post-KISS Browser SQL implementation baseline.
 
 ## V1 / V2 isolation
 

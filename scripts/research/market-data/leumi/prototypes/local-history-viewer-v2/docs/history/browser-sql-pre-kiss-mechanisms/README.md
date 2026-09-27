@@ -1,14 +1,10 @@
-# Browser SQL Migration and Cutover — Superseded pre-KISS design
+# Browser SQL — Pre-KISS Mechanism Planning Archive
 
 Status: **Historical / superseded for initial V2 by D-044.**
 
-The full pre-KISS document is preserved at:
+This folder preserves the exact pre-KISS requirement/mechanism documents before their current paths were replaced by short superseded pointers during R2.
 
-~~~text
-docs/history/browser-sql-pre-kiss-mechanisms/browser-sql-migration-cutover.md
-~~~
-
-Current initial-V2 authorities:
+Current initial-V2 implementation authority:
 
 ~~~text
 docs/project/decisions/D-043.md
@@ -18,6 +14,4 @@ scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/brows
 scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-compact-execution-dag.md
 ~~~
 
-Live progress/current-next state belongs only in `STATUS.json`.
-
-Do not use this superseded mechanism design as an implementation instruction unless a current Issue explicitly links it as historical evidence.
+These archived files remain useful for rationale/RCA only. Do not execute them unless a current Issue explicitly links them as historical evidence.

@@ -1,451 +1,132 @@
-# Local History Viewer V2 — Browser SQL Planning Roadmap
+# Local History Viewer V2 — Browser SQL Implementation Roadmap
 
-This file owns the planning project's phases, scope, order and major dependencies.
+This file owns stable implementation scope and order.
 
-Live progress and the exact current pointer belong only in `STATUS.json`.
+Live progress, current focus and verification results belong only in `STATUS.json`.
 
-This roadmap is deliberately a planning roadmap. It is not authorization to implement Browser SQL. The final planning phase will evolve this file into the implementation roadmap only after architecture, contracts, verification strategy and executable GitHub Issues are ready.
-
-## Fixed planning constraints
-
-- Browser-only SQL is a fixed constraint for this planning cycle.
-- Real user-defined SQL is first-class.
-- SQL runs repeatedly at a configurable interval independent from collector cadence.
-- IndexedDB is not the target analytical engine.
-- DuckDB-Wasm + persistent OPFS is the selected target design; exact pinned package/assets and real Leumi suitability remain implementation evidence gates.
-- localhost / Node / .NET / native DuckDB are not active candidates in this planning project.
-- A future non-browser contingency requires a new explicit architecture decision.
-- V1 remains frozen.
-- The proven V1 provider/data acquisition contract remains the V2 collection baseline; Browser SQL migration changes storage/analytical authority, not the provider API contract by default.
-- V2 preserves the Current Universe and Security Detail/History product surfaces and adds a separate Dynamic SQL Scanner with user SQL + configurable repeat interval.
-- No implementation begins until this planning project completes.
-
-Durable decision:
+Durable boundaries:
 
 ~~~text
-docs/project/decisions/D-025.md
+D-043 = provider/data continuity + three product surfaces
+D-044 = post-KISS Browser SQL implementation baseline
 ~~~
 
-## Planning Phase A — Current-state audit
-
-Understand what V1/V2 already prove before designing replacement architecture.
+## Fixed product and integrity constraints
 
-Deliverables:
+- preserve the proven V1 authenticated MapHeat2 → sequential GetSecuritiesData contract;
+- canonical SecurityId = `String(PaperId or Key)`;
+- no hardcoded universe size;
+- validate complete-cycle requested/received/unique/duplicate/missing/unexpected accounting;
+- preserve full raw MapHeat and Security facts;
+- preserve `null != 0 != "" != undefined`;
+- incomplete/corrupt cycles do not advance authoritative state;
+- successful cycle persistence is atomic;
+- DuckDB-Wasm/OPFS becomes the sole new market-history authority after cutover;
+- Viewer uses trusted reads; notifications are hints;
+- Scanner is read-only and non-overlapping;
+- one exclusive Web Lock owner controls production DB/Recorder;
+- no silent DB delete/reset.
 
-- current-state audit;
-- preliminary retain/adapt/replace/remove matrix;
-- gap inventory;
-- stale/contradictory planning inventory.
-
-No implementation.
-
-## Planning Phase B — Requirements consolidation
-
-Consolidate:
-
-- Browser-only SQL;
-- arbitrary user SQL;
-- query interval;
-- committed-data consistency;
-- full raw preservation;
-- canonical IDs;
-- snapshot identity;
-- temporal/horizon needs;
-- LAST change / Deals delta / MID;
-- result/error semantics;
-- query traceability;
-- analytical read-only safety;
-- observability;
-- explicit non-goals.
-
-Deliverables:
-
-- requirement catalog;
-- end-to-end acceptance scenarios;
-- decision / requirement / assumption / unknown classification.
-
-## Planning Phase C — Browser architecture constraints
-
-Define:
-
-- Chrome/Chromium on Windows target;
-- origin ownership;
-- same-origin implications;
-- CSP/CORS/module/Worker/WASM constraints;
-- page/tab lifecycle;
-- background throttling;
-- persistence/quota/eviction expectations;
-- security boundary;
-- possible one-writer requirement.
-
-Deliverable: browser constraint matrix.
-
-## Planning Phase D — External capability research
-
-Verify current official documentation for:
-
-- DuckDB-Wasm current release/API;
-- OPFS/persistence;
-- Worker architecture;
-- SQL features;
-- transactions/concurrency/locking;
-- reopen/recovery;
-- interruption/cancellation;
-- JSON;
-- Arrow/bulk ingest;
-- EXPLAIN/profiling;
-- browser memory/runtime limitations;
-- package/runtime loading.
-
-Rules:
-
-- official documentation first;
-- Verified / Inferred / Unknown;
-- no spike implementation.
-
-Deliverable: capability matrix with references.
-
-## Planning Phase E — Target architecture
-
-Choose browser-only boundaries for:
-
-- collector;
-- enrichment;
-- SQL engine/Worker owner;
-- Browser SQL source of truth;
-- scheduler;
-- result delivery;
-- viewer;
-- notifications;
-- startup/recovery ownership.
-
-Deliverables:
-
-- target architecture diagram;
-- responsibility matrix;
-- sequence flows;
-- durable decisions where justified.
-
-## Planning Phase F — Relational data model
-
-Plan:
-
-- Cycle;
-- Snapshot;
-- universe/security metadata;
-- stable SnapshotId;
-- time model;
-- full raw representation;
-- typed promoted columns;
-- current/latest representation;
-- query definition/execution metadata if needed;
-- horizon/temporal representation;
-- naming/types/units/null semantics;
-- schema versioning.
-
-Deliverables:
-
-- relational model;
-- typing strategy;
-- raw-vs-column strategy;
-- selected schema direction.
-
-## Planning Phase G — Ingest, enrichment and atomicity
-
-Plan:
-
-- validated-cycle handoff;
-- bulk ingest;
-- transaction boundary;
-- current/history coherence;
-- enrichment ownership;
-- compute-once/query-many;
-- rollback;
-- query visibility during writes;
-- rebuild/recovery implications.
-
-Deliverables:
-
-- ingest sequence;
-- atomicity/isolation contract;
-- enrichment decision.
-
-## Planning Phase H — SQL execution and scheduler
-
-Plan:
-
-- active query;
-- read-only user SQL boundary;
-- DDL/admin separation;
-- scheduling clock semantics;
-- collector cadence independence;
-- overrun behavior;
-- no uncontrolled overlap;
-- cancellation/timeout;
-- errors;
-- latest execution vs latest successful result;
-- result size/materialization;
-- query versioning.
-
-Deliverable: SQL execution/scheduler contract.
-
-## Planning Phase I — Persistence and recovery
-
-Plan:
-
-- persistent authority;
-- startup/open/reopen;
-- refresh;
-- tab close/reopen;
-- schema upgrade;
-- migration failure;
-- quota exhaustion;
-- corruption;
-- retention;
-- export/backup scope.
-
-Deliverables:
-
-- persistence lifecycle;
-- recovery matrix;
-- schema migration policy.
-
-## Planning Phase J — Runtime delivery and browser integration
-
-Plan:
-
-- WASM/Worker loading;
-- dynamic/module imports;
-- CSP/CORS;
-- asset pinning;
-- caching/integrity;
-- Bookmarklet practicality;
-- alternative browser-only delivery if needed;
-- distribution/update flow.
-
-Deliverable: runtime delivery decision.
-
-## Planning Phase K — Viewer and result delivery
-
-Classify and design:
-
-- preserve the V1-derived Current Universe surface over SQL-authority reads;
-- preserve the V1-derived Security Detail/History surface over SQL-authority reads;
-- add a separate Dynamic SQL Scanner surface;
-- provide user SQL + configurable repeat interval on the scanner;
-- render the scanner result grid from the active SQL result schema without a second hidden filter/ranking layer;
-- allow scanner rows carrying canonical SecurityId to reuse the existing detail surface;
-- retain/adapt diagnostics;
-- result delivery;
-- DB reread vs pushed result;
-- multi-viewer behavior;
-- query/result/error/timing display.
-
-Deliverable: three-surface viewer/result architecture.
-
-## Planning Phase L — Testing and verification
-
-Plan:
-
-- pure/unit tests;
-- Playwright Chromium;
-- OPFS/WASM/Worker integration;
-- SQL correctness fixtures;
-- atomicity;
-- refresh/reopen;
-- query failure isolation;
-- live-provider boundary;
-- CI matrix;
-- public behavior contracts.
-
-Deliverable: testing/verification strategy.
-
-## Planning Phase M — Performance and benchmark strategy
-
-Plan workloads:
-
-- current universe SELECT/WHERE/ORDER/LIMIT;
-- current/history JOIN;
-- recent-window aggregation;
-- GROUP BY/HAVING;
-- window functions;
-- cross-security ranking;
-- scheduled SQL;
-- continuous ingest + query;
-- reopen;
-- multi-million rows;
-- WASM/Worker startup;
-- JS↔WASM/result materialization;
-- persistence/commit;
-- memory/DB growth;
-- background and long-running behavior.
-
-Deliverable: benchmark datasets, metrics, run classes and decision gates.
-
-## Planning Phase N — Migration and cutover
-
-Plan:
-
-- isolated Browser SQL proof boundary;
-- temporary coexistence if required;
-- single authority at every point;
-- existing IndexedDB history decision;
-- incremental cutover;
-- rollback boundaries;
-- point where IndexedDB ceases to be authoritative.
-
-Deliverable: migration/cutover sequence.
-
-## Planning Phase O — Failure, security and observability
-
-Plan:
-
-- failure-mode inventory;
-- recovery/integrity expectation per failure;
-- security/secrets boundary;
-- cycle/query/runtime telemetry;
-- DB size/quota visibility;
-- last success/error;
-- debug bundle evolution.
-
-Deliverable: failure/recovery/security/observability matrix.
+## Group 1 — Feasibility + SQL Core
 
-## Planning Phase P — Implementation decomposition
+~~~text
+completed evidence #29/#30
+→ C01 real-origin DuckDB L-1
+→ C02 minimum SQL runtime + schema
+→ C03 atomic persistence + reopen/durability
+→ C04 Recorder integration + trusted reads
+~~~
 
-Only after architecture is coherent, decompose natural vertical implementation slices.
+C10 Web Lock ownership may start after C02 in parallel with C03-C09 work.
 
-Each future implementation issue must include:
+## Group 2 — V1 Product on SQL
 
-- Purpose / Why;
-- Scope / Non-scope;
-- prerequisites/dependencies;
-- observable behavior;
-- expected artifacts;
-- implementation guidance;
-- data-integrity requirements;
-- tests;
-- verification;
-- acceptance criteria;
-- Definition of Done;
-- risks/traps;
-- references.
+~~~text
+C04
+├→ C05 Current Universe SQL parity
+└→ C06 Detail/History SQL parity + bounded L-2
+~~~
 
-Deliverable: reviewed issue drafts and dependency graph.
+C05 and C06 are separate preserved product surfaces and may progress in parallel.
 
-## Planning Phase Q — GitHub execution structure
+Both must be complete before new analytical product work becomes the active dependency path.
 
-Create only after decomposition is reviewed:
+## Group 3 — Analytics + Scanner
 
-- navigation/epic issue;
-- implementation issues;
-- useful milestones;
-- controlled labels;
-- dependency references/sub-issues/checklists where supported;
-- parallelization notes.
+~~~text
+C05 + C06
+├→ C07 real analytical SQL + representative day-sized measurement
+└→ C08 Scanner core → C09 Scanner UI/results/integration
+~~~
 
-ROADMAP remains phase/order ownership, not a duplicate issue list.
+C07 and C08/C09 intentionally run in parallel.
 
-## Planning Phase R — Final plan audit and implementation handoff
+The Scanner does not depend on precomputed enrichment.
 
-Audit:
+C07 may conclude that dynamic SQL is sufficient and no persisted analytical optimization is needed.
 
-- missing requirements;
-- contradictions;
-- duplicated truth;
-- unowned behavior;
-- missing/circular dependencies;
-- giant/micro issues;
-- missing tests/performance/recovery/security/docs;
-- traceability from product requirement → design/spec → issue → test → verification.
+## Group 4 — Daily Readiness + Cutover
 
-Then:
+~~~text
+C07 + C09 + C10
+→ C11 representative daily mixed workload
+→ C12 final authenticated verification + explicit cutover/rollback/cleanup
+~~~
 
-- finalize target planning artifacts;
-- evolve ROADMAP into the approved implementation phase plan;
-- point STATUS.json to the first implementation issue;
-- leave enough context for a fresh AI to execute without this planning conversation.
+Cutover starts fresh SQL production history. There is no required legacy IndexedDB history import, permanent dual authority or automatic fallback.
 
-The initial Phase-R audit triggered a deeper pre-implementation red-team review. Implementation remains blocked until the added assurance phases below are complete.
+## Conditional work — create only from evidence
 
-## Planning Phase S — Data lifecycle, retention and archive/rollover
+No standing Issues exist for these paths.
 
-Close retention/export/backup lifecycle:
+- **O1 analytical optimization** — only if C07 shows an important query is materially too slow/awkward.
+- **O2 Scanner resource hardening** — only if C11 shows Scanner materially harms ingest after simpler fixes fail.
+- **O3 streaming/chunked results** — only if C09/C11 shows simple materialization is unsafe/unusable.
+- **O4 storage/export/fresh-DB workflow** — only if C11 shows retain-all cannot support required daily use.
+- **O5 target Windows/Chrome evidence** — only if normal Chromium evidence is insufficient for a material target-environment decision.
+- **O6 temporary shadow comparison** — only if C06 leaves one specific material live parity uncertainty unresolved.
 
-- retain-all vs automatic deletion;
-- storage-pressure warning;
-- archive semantics;
-- database epoch identity;
-- explicit crash-recoverable rollover;
-- OPFS deletion safety under the Leumi origin;
-- quota recovery without false VACUUM assumptions.
+Any candidate-changing conditional must rerun the affected verification before C12.
 
-Deliverable: durable lifecycle policy + implementation owner.
+## Verification model
 
-## Planning Phase T — Analytical resource isolation and runaway-query safety
+~~~text
+Node
+→ pure deterministic logic
 
-Close the gap where an arbitrary long-running analytical query can starve market ingest even though scheduler overlap is prevented.
+Chromium
+→ Worker/Wasm/OPFS/runtime/Viewer/Web Locks/Scanner integration
 
-Plan:
+authenticated Leumi
+→ only real-origin/provider facts that CI cannot prove
+~~~
 
-- query admission/resource budgets;
-- timeout/cancellation capability evidence in the exact pinned Wasm API;
-- behavior when cancellation is unavailable;
-- ingest starvation bound;
-- large-result backpressure;
-- query health/block/disable policy.
+Permanent normal workflows remain Fast CI and Browser CI.
 
-Deliverable: resource-isolation contract + implementation owner.
+## Initial-V2 non-goals
 
-## Planning Phase U — Multi-tab ownership and split-brain prevention
+- generalized engine/schema migration framework;
+- automatic archive/rollover orchestration;
+- restore/import or multi-epoch query federation;
+- immutable history of every SQL edit;
+- collaborative SQL editing;
+- generic cancellation/preemption platform;
+- rich telemetry/incident platform;
+- final trading formula;
+- order placement/execution.
 
-Prove how two independent authenticated Leumi tabs cannot create competing SQL Authorities against the same OPFS database.
+## Execution authority
 
-Plan:
+The compact dependency/design source is:
 
-- owner discovery/election;
-- stale-owner detection;
-- takeover after page death;
-- independent-tab Bookmarklet invocation;
-- Viewer-only vs Recorder-owner roles;
-- OPFS exclusivity failure handling.
+~~~text
+docs/browser-sql-compact-execution-dag.md
+~~~
 
-Deliverable: cross-tab ownership protocol + tests/issues.
+The executable Issue-body source before GitHub materialization is:
 
-## Planning Phase V — Engine/schema upgrade and release compatibility lifecycle
+~~~text
+docs/browser-sql-compact-issue-specifications.md
+~~~
 
-Plan post-cutover upgrades, not only initial pinning:
-
-- DuckDB-Wasm engine upgrade compatibility;
-- storage-version compatibility;
-- schema migrations across app releases;
-- rollback when a newer engine has touched the DB;
-- release manifest compatibility gates;
-- upgrade verification evidence.
-
-Deliverable: upgrade/release lifecycle contract.
-
-## Planning Phase W — Final planning assurance and freeze
-
-Run a final independent planning QA pass:
-
-- mechanical requirements→decision→Issue→test traceability;
-- dependency DAG and hard-gate audit;
-- fresh-AI dry runs against representative Issues (early/core/live/cutover/cleanup);
-- temporary-scaffolding ownership;
-- unresolved-unknown inventory;
-- Issue-body completeness;
-- HOT-context budget/ownership guards;
-- final Fast CI.
-
-Only a green Phase-W planning freeze may hand the next chat to WP-01 implementation.
-
-## Planning non-goals
-
-This planning project does not implement DuckDB-Wasm, OPFS integration, SQL runtime, scheduler, viewer replacement, migration, benchmark harness or production code.
-
-It also does not define the final trading formula, entry/exit execution logic or a fixed analytical query.
-
-
-## Implementation execution handoff
-
-After the Phase-W freeze is green, execution order is owned by the GitHub Master/Epic/Work-Issue graph documented in `docs/browser-sql-github-execution-structure.md`. The first executable package is WP-01 / Issue #29. Live current/next state remains exclusively in `STATUS.json`.
+After materialization, GitHub Master + C01..C12 own executable work. This ROADMAP continues to own only stable scope/order, while `STATUS.json` remains the only live progress pointer.

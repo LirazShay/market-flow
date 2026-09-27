@@ -1,116 +1,40 @@
 # Local History Viewer V2 — Design Docs
 
-This directory contains stable V2 design/evidence documents, not operational status.
+This directory contains durable V2 design/evidence. It does **not** own live progress; use `../STATUS.json`.
 
-## Current Browser SQL planning direction
+## Current Browser SQL authorities
 
-| Need | File |
+| Need | Authority |
 |---|---|
-| current-state migration audit | [browser-sql-current-state-audit.md](browser-sql-current-state-audit.md) |
-| consolidated requirements + acceptance scenarios | [browser-sql-requirements-and-acceptance.md](browser-sql-requirements-and-acceptance.md) |
-| D-043 product-backward capability map | [browser-sql-product-capability-map.md](browser-sql-product-capability-map.md) |
-| execution-plan re-baseline WP audit | [browser-sql-work-package-rebaseline-audit.md](browser-sql-work-package-rebaseline-audit.md) |
-| backlog-wide re-baseline synthesis | [browser-sql-work-package-rebaseline-synthesis.md](browser-sql-work-package-rebaseline-synthesis.md) |
-| missing-work audit | [browser-sql-missing-work-audit.md](browser-sql-missing-work-audit.md) |
-| replacement dependency DAG | [browser-sql-rebaseline-dependency-dag.md](browser-sql-rebaseline-dependency-dag.md) |
-| V1-on-SQL implementation manual | [browser-sql-v1-on-sql-implementation-manual.md](browser-sql-v1-on-sql-implementation-manual.md) |
-| V1↔V2 parity verification plan | [browser-sql-v1-parity-verification-plan.md](browser-sql-v1-parity-verification-plan.md) |
-| self-verifying live gates plan | [browser-sql-self-verifying-live-gates-plan.md](browser-sql-self-verifying-live-gates-plan.md) |
-| V1-on-SQL checkpoint gate matrix | [browser-sql-v1-on-sql-checkpoint.md](browser-sql-v1-on-sql-checkpoint.md) |
-| analytical enrichment implementation manual | [browser-sql-enrichment-implementation-manual.md](browser-sql-enrichment-implementation-manual.md) |
-| enrichment decision benchmark plan | [browser-sql-enrichment-benchmark-plan.md](browser-sql-enrichment-benchmark-plan.md) |
-| enrichment integration plan | [browser-sql-enrichment-integration-plan.md](browser-sql-enrichment-integration-plan.md) |
-| Dynamic SQL Scanner implementation manual | [browser-sql-scanner-implementation-manual.md](browser-sql-scanner-implementation-manual.md) |
-| Dynamic SQL Scanner verification plan | [browser-sql-scanner-verification-plan.md](browser-sql-scanner-verification-plan.md) |
-| conditional shadow verification audit | [browser-sql-shadow-verification-audit.md](browser-sql-shadow-verification-audit.md) |
-| storage lifecycle / archive / rollover audit | [browser-sql-storage-lifecycle-audit.md](browser-sql-storage-lifecycle-audit.md) |
-| KISS scope reset | [browser-sql-kiss-scope-reset.md](browser-sql-kiss-scope-reset.md) |
-| post-KISS decision/product audit | [browser-sql-post-kiss-decision-audit.md](browser-sql-post-kiss-decision-audit.md) |
-| post-KISS V1-on-SQL audit | [browser-sql-post-kiss-v1-on-sql-audit.md](browser-sql-post-kiss-v1-on-sql-audit.md) |
-| post-KISS enrichment audit | [browser-sql-post-kiss-enrichment-audit.md](browser-sql-post-kiss-enrichment-audit.md) |
-| post-KISS Scanner audit | [browser-sql-post-kiss-scanner-audit.md](browser-sql-post-kiss-scanner-audit.md) |
-| post-KISS lifecycle/hardening audit | [browser-sql-post-kiss-lifecycle-audit.md](browser-sql-post-kiss-lifecycle-audit.md) |
-| post-KISS testing/CI audit | [browser-sql-post-kiss-testing-ci-audit.md](browser-sql-post-kiss-testing-ci-audit.md) |
-| post-KISS GitHub execution-structure audit | [browser-sql-post-kiss-github-structure-audit.md](browser-sql-post-kiss-github-structure-audit.md) |
-| post-KISS synthesis | [browser-sql-post-kiss-synthesis.md](browser-sql-post-kiss-synthesis.md) |
-| compact post-KISS execution DAG | [browser-sql-compact-execution-dag.md](browser-sql-compact-execution-dag.md) |
-| compact executable Issue specifications | [browser-sql-compact-issue-specifications.md](browser-sql-compact-issue-specifications.md) |
-| compact Issue critique | [browser-sql-compact-issue-critique.md](browser-sql-compact-issue-critique.md) |
-| pre-materialization reconciliation map | [browser-sql-pre-materialization-reconciliation-map.md](browser-sql-pre-materialization-reconciliation-map.md) |
-| browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
-| official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
-| selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
-| selected Browser SQL relational data model | [browser-sql-relational-data-model.md](browser-sql-relational-data-model.md) |
-| ingest / enrichment / atomicity plan | [browser-sql-ingest-enrichment-atomicity.md](browser-sql-ingest-enrichment-atomicity.md) |
-| SQL execution / scheduler contract | [browser-sql-execution-scheduler.md](browser-sql-execution-scheduler.md) |
-| OPFS persistence / reopen / recovery contract | [browser-sql-persistence-recovery.md](browser-sql-persistence-recovery.md) |
-| runtime delivery / authenticated-browser integration | [browser-sql-runtime-delivery.md](browser-sql-runtime-delivery.md) |
-| Viewer / result-delivery contract | [browser-sql-viewer-result-delivery.md](browser-sql-viewer-result-delivery.md) |
-| Browser SQL testing / verification strategy | [browser-sql-testing-verification-strategy.md](browser-sql-testing-verification-strategy.md) |
-| Browser SQL migration / cutover strategy | [browser-sql-migration-cutover.md](browser-sql-migration-cutover.md) |
-| Browser SQL failure / security / observability contract | [browser-sql-failure-security-observability.md](browser-sql-failure-security-observability.md) |
-| Browser SQL implementation decomposition | [browser-sql-implementation-decomposition.md](browser-sql-implementation-decomposition.md) |
-| Browser SQL GitHub execution structure | [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
-| Browser SQL final plan audit / implementation handoff | [browser-sql-final-plan-audit.md](browser-sql-final-plan-audit.md) |
-| Browser SQL data lifecycle / retention / archive / rollover | [browser-sql-data-lifecycle-retention.md](browser-sql-data-lifecycle-retention.md) |
-| Browser SQL analytical resource isolation / runaway-query safety | [browser-sql-analytical-resource-isolation.md](browser-sql-analytical-resource-isolation.md) |
-| Browser SQL multi-tab ownership / split-brain prevention | [browser-sql-multi-tab-ownership.md](browser-sql-multi-tab-ownership.md) |
-| Browser SQL engine/schema/release upgrade lifecycle | [browser-sql-upgrade-release-lifecycle.md](browser-sql-upgrade-release-lifecycle.md) |
-| Browser SQL final planning assurance / freeze | [browser-sql-final-planning-freeze.md](browser-sql-final-planning-freeze.md) |
-| SQL architecture direction | [sql-live-analytics-design.md](sql-live-analytics-design.md) |
-| Browser SQL benchmark planning | [sql-live-engine-benchmark-plan.md](sql-live-engine-benchmark-plan.md) |
-| Browser-only durable decision | [D-025](../../../../../../../docs/project/decisions/D-025.md) |
-| single SQL authority durable decision | [D-026](../../../../../../../docs/project/decisions/D-026.md) |
-| relational schema durable decision | [D-027](../../../../../../../docs/project/decisions/D-027.md) |
-| atomic ingest durable decision | [D-028](../../../../../../../docs/project/decisions/D-028.md) |
-| SQL scheduler durable decision | [D-029](../../../../../../../docs/project/decisions/D-029.md) |
-| persistence/recovery durable decision | [D-030](../../../../../../../docs/project/decisions/D-030.md) |
-| runtime delivery durable decision | [D-031](../../../../../../../docs/project/decisions/D-031.md) |
-| Viewer/result-delivery durable decision | [D-032](../../../../../../../docs/project/decisions/D-032.md) |
-| Browser SQL verification durable decision | [D-033](../../../../../../../docs/project/decisions/D-033.md) |
-| Browser SQL benchmark/headroom durable decision | [D-034](../../../../../../../docs/project/decisions/D-034.md) |
-| Browser SQL migration/cutover durable decision | [D-035](../../../../../../../docs/project/decisions/D-035.md) |
-| Browser SQL failure/security/observability durable decision | [D-036](../../../../../../../docs/project/decisions/D-036.md) |
-| Browser SQL implementation decomposition durable decision | [D-037](../../../../../../../docs/project/decisions/D-037.md) |
-| Browser SQL data-lifecycle durable decision | [D-038](../../../../../../../docs/project/decisions/D-038.md) |
-| Browser SQL analytical-resource durable decision | [D-039](../../../../../../../docs/project/decisions/D-039.md) |
-| Browser SQL multi-tab ownership durable decision | [D-040](../../../../../../../docs/project/decisions/D-040.md) |
-| Browser SQL engine/schema/release upgrade durable decision | [D-041](../../../../../../../docs/project/decisions/D-041.md) |
-| Browser SQL planning-freeze durable decision | [D-042](../../../../../../../docs/project/decisions/D-042.md) |
-| V2 collection continuity + three-surface durable decision | [D-043](../../../../../../../docs/project/decisions/D-043.md) |
-| V2 product continuity + three Viewer surfaces | [product shape](../../../../../../../docs/product/local-history-viewer-v2-product-shape.md) |
-| product SQL requirement | [repository product doc](../../../../../../../docs/product/live-sql-query-execution.md) |
-| planning phases/order | [../ROADMAP.md](../ROADMAP.md) |
+| product/provider continuity + three surfaces | [product shape](../../../../../../../docs/product/local-history-viewer-v2-product-shape.md) + [D-043](../../../../../../../docs/project/decisions/D-043.md) |
+| post-KISS implementation baseline | [D-044](../../../../../../../docs/project/decisions/D-044.md) |
+| live user SQL product behavior | [live SQL requirement](../../../../../../../docs/product/live-sql-query-execution.md) |
+| compact target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
+| implementation dependency rationale | [browser-sql-compact-execution-dag.md](browser-sql-compact-execution-dag.md) |
+| executable Issue-body source before materialization | [browser-sql-compact-issue-specifications.md](browser-sql-compact-issue-specifications.md) |
+| reconciliation/materialization plan | [browser-sql-pre-materialization-reconciliation-map.md](browser-sql-pre-materialization-reconciliation-map.md) |
+| testing policy | [../tests/TESTING_POLICY.md](../tests/TESTING_POLICY.md) |
+| stable plan/order | [../ROADMAP.md](../ROADMAP.md) |
+| GitHub execution navigation | [browser-sql-github-execution-structure.md](browser-sql-github-execution-structure.md) |
 
-## Implemented inherited baseline
+## Historical Browser SQL planning
 
-| Need | File |
-|---|---|
-| inherited requirements baseline | [requirements.md](requirements.md) |
-| inherited component architecture | [architecture.md](architecture.md) |
-| inherited schema/data model | [data-model.md](data-model.md) |
-| inherited IndexedDB growth evidence | [storage-growth-report.md](storage-growth-report.md) |
-| testing design | [test-plan.md](test-plan.md) |
-
-The inherited baseline documents describe currently implemented V1-derived behavior. They do not override the Browser SQL planning target.
-
-## Superseded research
-
-The abandoned IndexedDB-primary analytical evaluation is preserved at:
+Pre-KISS 42-WP planning and superseded mechanism designs are COLD history:
 
 ~~~text
-history/superseded-indexeddb-primary-evaluation/
+history/README.md
 ~~~
 
-It is historical context only and no longer governs the V2 roadmap.
+Start there only when a current Issue explicitly needs historical rationale/evidence.
 
-## Truth ownership
+The post-KISS audit trail is also planning rationale rather than normal implementation startup context. Prefer D-044, the compact DAG and the active Issue.
+
+## Source-of-truth reminder
 
 ~~~text
-../STATUS.json = live progress
-../ROADMAP.md = planning/implementation phase order
-../AI_CONTEXT.md = compact continuation context
-../specs/ = currently implemented normative contracts until deliberately replaced
-docs/ = durable design/evidence
-docs/history/ = superseded/completed cold evidence
+STATUS.json = live progress/current/verification
+ROADMAP.md   = stable plan/scope/order
+GitHub Issue = active executable work unit
+D-043/D-044  = durable product/implementation decisions
+docs/history = cold historical evidence
 ~~~

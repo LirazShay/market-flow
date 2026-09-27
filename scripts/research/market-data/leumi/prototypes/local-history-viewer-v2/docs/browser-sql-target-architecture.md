@@ -1,447 +1,206 @@
-# Browser SQL — Target Architecture
+# Browser SQL V2 — Compact Target Architecture
 
-This document is the Phase E target-architecture artifact for Local History Viewer V2.
+## Role
 
-It defines component ownership and system flow. It intentionally does not define the relational schema, exact Arrow payload shape, query-overrun policy, retention policy, runtime packaging or implementation backlog.
+This is the current architecture for initial Browser SQL V2.
 
-Live progress remains owned by `../STATUS.json`.
+Durable product/data boundary:
+`../../../../../../../docs/project/decisions/D-043.md`
 
-Durable architecture decision:
+Durable implementation baseline:
+`../../../../../../../docs/project/decisions/D-044.md`
 
-~~~text
-../../../../../../../docs/project/decisions/D-026.md
-~~~
+Live progress belongs only in `../STATUS.json`.
 
-## 1. Selected topology
-
-Target:
+## 1. Topology
 
 ~~~text
 Authenticated Leumi page
 │
-├─ Runtime Controller
-│  ├─ Recorder / Collector
-│  ├─ SQL Worker bridge
-│  └─ Viewer bridge
+├─ existing Recorder / Collector
+│  └─ MapHeat2 → sequential GetSecuritiesData → exact complete-cycle validation
 │
-└─ Dedicated SQL Authority Worker
-   ├─ DuckDB-Wasm
-   ├─ one persistent OPFS DuckDB database
-   ├─ serialized DB command coordination
-   ├─ successful-cycle transaction execution
-   ├─ active SQL + query scheduler
-   └─ query execution + result/error production
+└─ Runtime Controller
+   ├─ production-owner boundary
+   ├─ SQL Worker bridge
+   └─ Viewer bridge
+        │
+        ▼
+   one SQL Authority Worker
+   ├─ pinned DuckDB-Wasm
+   ├─ one persistent OPFS DB
+   ├─ atomic raw/current/history writes
+   ├─ trusted application reads
+   └─ read-only Scanner execution
 
-Viewer window(s)
-└─ read-only clients of the active Runtime Controller / SQL Authority
-   └─ no direct OPFS/DuckDB ownership
+Viewer surface(s)
+├─ Current Universe
+├─ Security Detail/History
+└─ Dynamic SQL Scanner
 ~~~
 
-The architectural baseline is single-threaded DuckDB-Wasm.
+Viewer surfaces are clients. They do not independently own DuckDB/OPFS.
 
-The threaded `coi` bundle is not part of the required architecture and may only become an optimization after real-page evidence proves cross-origin isolation and stability.
-
-## 2. Authority model
-
-### Collection contract continuity
-
-The SQL migration does not redefine the working provider acquisition contract.
+## 2. Provider continuity
 
 ~~~text
-authenticated Leumi page
+authenticated page
 → MapHeat2 dynamic universe
-→ sequential GetSecuritiesData chunks
-→ exact complete-cycle validation
-→ same validated-cycle content handed to the SQL boundary
+→ sequential GetSecuritiesData
+→ exact validation
+→ one validated complete cycle
 ~~~
 
-Provider endpoints/request semantics/raw field meanings are not changed merely because persistence changes. Full raw MapHeat and Security records, canonical IDs and null/zero/empty/missing distinctions remain preserved.
+Preserve canonical IDs, dynamic universe, exact accounting, full raw facts and null/zero/empty/missing distinctions. Unknown provider semantics remain unknown.
 
-### Market-history authority
+## 3. SQL authority
 
-The persistent Browser SQL database owned by the SQL Authority Worker is the target authoritative market-history store.
+The SQL Worker owns the persistent DuckDB-Wasm/OPFS database.
 
-After migration completes:
+After cutover:
 
 ~~~text
-DuckDB-Wasm + OPFS database
-= market-history source of truth
+DuckDB/OPFS = only new market-history authority
 ~~~
 
-IndexedDB may exist temporarily during migration, but must not remain a co-equal authority after cutover.
+The minimum initial schema supports cycle/snapshot identity, current/latest state, raw MapHeat, raw Security history, stable history ordering and small trusted reads.
 
-### Write authority
+No fixed persisted horizon/metric/predecessor matrix is required.
 
-Exactly one SQL Authority Worker coordinates successful market-cycle writes.
-
-Collector, Viewer and other browser windows do not independently mutate authoritative SQL market history.
-
-### Query authority
-
-The same SQL Authority Worker owns execution of the active analytical SQL.
-
-This avoids assuming unverified multi-instance or cross-tab OPFS semantics.
-
-### Viewer authority
-
-Viewer state is presentation state only.
-
-The product has three Viewer surfaces over the same authority:
-
-1. Current Universe — V1-derived latest/all-securities bank-data browsing;
-2. Security Detail/History — V1-derived single-security drill-down/history;
-3. Dynamic SQL Scanner — separate user-SQL + interval + result-grid surface.
-
-The third surface is additive and does not replace the first two.
-
-Viewer windows do not become a second source of truth and do not open independent authoritative DuckDB/OPFS handles in the baseline architecture.
-
-## 3. Component responsibilities
-
-| Component | Owns | Does not own |
-|---|---|---|
-| Authenticated Leumi page | provider session/origin | SQL persistence internals |
-| Recorder / Collector | universe discovery, provider calls, chunking, complete-cycle validation | durable SQL writes, user SQL execution |
-| Runtime Controller | lifecycle orchestration, singleton ownership, Worker bridge, Viewer bridge | authoritative market history, SQL execution |
-| SQL Authority Worker | DuckDB-Wasm instance, persistent DB handle, serialized DB operations, active SQL runtime, scheduler, query execution | provider authentication/fetching, UI rendering |
-| Persistent DuckDB/OPFS DB | committed market-history authority | ephemeral UI state |
-| Viewer | query input/control surface, results/diagnostics presentation | provider calls, authoritative market writes, direct DB ownership |
-| Messaging bridge | control/result/notification transport | authoritative durable market state |
-
-## 4. Why one dedicated SQL Authority Worker
-
-This is the simplest architecture consistent with current evidence.
-
-Current research established:
-
-- normal DuckDB-Wasm is Worker-based and single-threaded;
-- OPFS uses Worker-only synchronous handles;
-- an OPFS file may be held by only one handle at a time;
-- cross-tab/multi-instance OPFS behavior is not sufficiently proven for our target;
-- at Phase E, query cancellation was not yet a verified Wasm primitive; Phase T later established a preemption/resource-isolation contract and requires exact pinned-build proof in WP-40.
-
-Therefore the architecture deliberately avoids:
+## 4. Successful cycle
 
 ~~~text
-Viewer A → opens DB
-Viewer B → opens DB
-Recorder tab → opens DB
-another Worker → opens DB
-~~~
-
-Instead:
-
-~~~text
-all authoritative DB operations
-→ one SQL Authority Worker
-~~~
-
-This is KISS plus correctness, not an optimization claim.
-
-## 5. DB-operation coordination
-
-The SQL Authority Worker owns one logical serialization boundary for DB-affecting work.
-
-Conceptually:
-
-~~~text
-validated cycle commit
-scheduled analytical query
-query-definition update
-maintenance/checkpoint command
-recovery/admin command
-→ one authority
-→ deterministic coordination
-~~~
-
-The later ingest and scheduler phases will define priority, queuing, backpressure and overrun semantics.
-
-Phase E only fixes this rule:
-
-> No uncontrolled concurrent owners may race against the authoritative database.
-
-The implementation may use one or more internal DuckDB connections only if later evidence proves that safe and useful; internal connection count is not an architecture contract.
-
-## 6. Startup sequence
-
-Target startup:
-
-~~~text
-1. user launches Market Flow on authenticated Leumi page
-2. Runtime Controller enforces one active owner for that page/runtime identity
-3. Controller creates SQL Authority Worker
-4. Worker loads pinned DuckDB-Wasm assets
-5. Worker opens/reopens the persistent OPFS database
-6. Worker completes required recovery/schema-readiness checks
-7. Worker reports READY
-8. Controller starts/resumes Recorder
-9. Worker starts/resumes active SQL scheduling according to later scheduler contract
-10. Viewer may attach/re-attach through Controller
-~~~
-
-Important rule:
-
-The Recorder must not expose a successful durable cycle before the SQL Authority confirms commit.
-
-Exact startup failure/retry policy belongs to Phase I / O.
-
-## 7. Successful collection cycle
-
-Target data path:
-
-~~~text
-Recorder
-→ discover/fetch provider data
-→ validate exact complete cycle
-→ immutable validated-cycle handoff
-→ Runtime Controller bridge
-→ SQL Authority Worker
-→ BEGIN transaction
-→ write full cycle + required related state
-→ COMMIT
-→ durability/checkpoint behavior per persistence contract
+Recorder collects
+→ exact validation
+→ one validated-cycle handoff
+→ SQL transaction
+→ atomic current/history/latest state
+→ selected proven durability boundary
 → success acknowledgement
-→ Recorder may expose successful committed cycle
-→ Viewer notification/result refresh
+→ notification hint
+→ clients reread authority
 ~~~
 
-The collector never marks the cycle durably successful merely because provider collection succeeded.
+Failed provider validation or SQL persistence does not create a successful authoritative cycle.
 
-The exact relational writes and Arrow/bulk-ingest representation are deferred to Phases F and G.
+The exact CHECKPOINT/retry/idempotency mechanism is evidence-driven and owned by C03.
 
-## 8. Failed collection cycle
+## 5. Trusted reads
 
-If provider collection or validation fails:
+Approximate semantic read surface:
 
 ~~~text
-no validated-cycle handoff
-→ no authoritative DB mutation for that attempted cycle
+getCurrentUniverse()
+getSecurityCurrent(SecurityId)
+getSecurityHistoryPage(SecurityId, cursor, limit)
+getHealth/readiness()
 ~~~
 
-If SQL persistence fails before successful commit:
+Viewer code should not depend on physical table layout.
+
+## 6. Scanner
 
 ~~~text
-transaction fails/rolls back
-→ no successful-cycle acknowledgement
-→ previous committed state remains authoritative
-→ failure is observable
+draft SQL + interval
+→ explicit Activate
+→ one active config
+→ read-only SQL
+→ one execution at a time
+→ truthful result/error
 ~~~
 
-This preserves the V1/V2 integrity contract while changing the storage engine.
+Committed-state reads only; zero rows is success; no hidden analytical semantics; no overlap or burst replay.
 
-## 9. Scheduled analytical SQL flow
+Persist only the current active config for initial restart usefulness.
 
-Target:
+Immutable query history, anchored scheduler machinery, mandatory streaming and advanced cancellation/preemption are not baseline architecture.
+
+## 7. Analytical optimization
 
 ~~~text
-SQL Authority Worker
-→ scheduler reaches due execution
-→ capture active SQL identity/version
-→ execute against committed authoritative DB state
-→ 0..N rows or explicit error
-→ record execution metadata
-→ publish result/error to Runtime Controller
-→ Viewer client(s)
+real query
+→ representative day-sized measurement
+→ sufficient? stop
+→ insufficient? smallest targeted optimization
 ~~~
 
-A query failure:
+Typed promotions, engine-specific optimizations, predecessor references or derived metrics are optional and must earn their cost.
 
-- does not invalidate committed market history;
-- does not silently stop the Recorder;
-- does not overwrite the identity of the previous successful result;
-- must leave the DB command coordinator usable for subsequent work.
-
-Exact scheduling interval, overrun and timeout behavior are Phase H decisions.
-
-## 10. Query update flow
-
-Target:
+## 8. Cross-tab ownership
 
 ~~~text
-Dynamic SQL Scanner
-→ Runtime Controller
-→ SQL Authority Worker
-→ activate a new SQL definition/version at a deterministic boundary
-→ later scheduled executions use that version
+stable exclusive Web Lock
+→ holder starts production runtime
+→ loser remains passive
 ~~~
 
-The Viewer does not rewrite application/collector source code to change analysis.
+No heartbeat election, localStorage authority or `steal:true`.
 
-The exact persistence of query definitions and activation semantics are deferred.
+Authenticated-origin ownership proof belongs before final cutover, not as an early blocker for all SQL work.
 
-## 11. Viewer model
-
-Viewer windows are clients, not DB owners.
-
-Baseline target:
+## 9. Storage and compatibility
 
 ~~~text
-Viewer
-→ request/control message
-→ Runtime Controller
-→ SQL Authority Worker when DB/query work is needed
-
-SQL Authority Worker
-→ result/status/error message
-→ Runtime Controller
-→ one or more Viewer windows
+retain committed history
+→ no silent pruning
+→ no silent reset
+→ explicit failure if safe persistence cannot continue
 ~~~
 
-Consequences:
+Unsupported DB/schema compatibility blocks writable startup and preserves the DB unchanged.
 
-- no direct OPFS handle per Viewer;
-- no duplicated DB authority;
-- no requirement for SharedWorker merely to support multiple Viewers;
-- closing a Viewer does not stop Recorder/SQL authority;
-- reopening a Viewer attaches to the active runtime and reconstructs presentation from authoritative/runtime state.
+Archive/rollover and generalized upgrade machinery are conditional/future.
 
-The exact messaging mechanism remains Phase K work. BroadcastChannel may be reused where useful, but is not mandated by this architecture.
-
-## 12. Page refresh / owner loss
-
-A Dedicated Worker is tied to its owning page/runtime and may disappear when that owner is refreshed or closed.
-
-The architecture therefore relies on persistent DB state, not Worker memory, for market-history recovery.
-
-Conceptually after refresh:
-
-~~~text
-new Runtime Controller
-→ new SQL Authority Worker
-→ reopen same persistent DB
-→ recovery/readiness
-→ resume collection/query runtime
-~~~
-
-Exact WAL/checkpoint/reopen semantics, query-definition persistence and interrupted-operation handling belong to Phase I.
-
-## 13. Background/hidden tab behavior
-
-Phase D did not prove exact hidden-tab/Worker scheduling behavior on the authenticated Leumi site.
-
-Therefore:
-
-- correctness must not depend on an undocumented promise that timers run at exact cadence while hidden;
-- the scheduler remains logically owned by the SQL Authority Worker;
-- cadence precision and degraded/background behavior require Phase H/L/M verification.
-
-This does not move the scheduler back into the main page; page timers have the same class of browser-lifecycle uncertainty and would duplicate ownership.
-
-## 14. Security boundary
-
-Provider credentials/session material remain in the authenticated page/browser session.
-
-The Worker receives:
-
-- validated market data;
-- query/configuration commands;
-- schema/admin commands defined by Market Flow.
-
-It does not need copied browser cookies, authorization headers or account secrets merely to execute analytics.
-
-Viewer/result messages must not become a secret-bearing transport.
-
-## 15. Single-thread-first rule
-
-The target architecture assumes the normal single-thread DuckDB-Wasm path.
-
-No architecture requirement depends on:
-
-- SharedArrayBuffer;
-- cross-origin isolation;
-- `coi`;
-- Wasm parallel query execution.
-
-If later evidence proves threaded execution available and materially useful, it can optimize the SQL Authority internally without changing the authority boundary.
-
-## 16. Phase-E deferred decisions and later ownership
-
-Phase E intentionally did not decide the items below. Later phases F–V resolved them or assigned exact evidence to implementation Issues; this is historical phase-boundary context, not a current unowned list:
-
-- table names/columns/types;
-- SnapshotId physical representation;
-- raw JSON vs promoted columns;
-- temporal-link schema;
-- Arrow batch schema;
-- exact transaction statements;
-- query scheduling skip/delay/timeout policy;
-- hard cancellation behavior;
-- OPFS checkpoint cadence;
-- retention/cleanup;
-- asset packaging/Bookmarklet replacement;
-- exact result payload format;
-- exact Viewer transport;
-- migration/import of old IndexedDB rows;
-- exact pinned DuckDB-Wasm version.
-
-These belong to later dedicated planning phases.
-
-## 17. Architecture sequence summary
-
-### Startup
-
-~~~text
-Page
-→ Controller
-→ SQL Worker
-→ open/recover DB
-→ READY
-→ Recorder + Scheduler
-~~~
-
-### Ingest
-
-~~~text
-Provider
-→ Recorder
-→ validated complete cycle
-→ SQL Worker
-→ atomic commit
-→ success acknowledgement
-~~~
-
-### Query
-
-~~~text
-SQL Worker scheduler
-→ active SQL
-→ committed DB
-→ result/error
-→ Controller
-→ Viewer(s)
-~~~
-
-### Recovery
+## 10. Runtime restart
 
 ~~~text
 page/runtime restarts
-→ recreate Worker
-→ reopen persistent DB
-→ recover
-→ resume
+→ reacquire ownership when allowed
+→ create Worker
+→ reopen same DB
+→ compatibility/readiness
+→ resume Recorder
+→ load active Scanner config
+→ run Scanner fresh
 ~~~
 
-## 18. Phase E completion result
+Correctness relies on persisted authoritative state, not Worker memory.
 
-Selected architectural boundary:
+## 11. Security
+
+Provider credentials/session state remain in the authenticated page/browser session.
+
+The SQL Worker receives validated market data and application/query commands, not copied authentication secrets.
+
+## 12. Verification
 
 ~~~text
-one authenticated page runtime
-+
-one Recorder
-+
-one dedicated single-authority SQL Worker
-+
-one persistent DuckDB-Wasm/OPFS market-history database
-+
-SQL scheduler inside that authority
-+
-Viewer clients without direct DB ownership
+Node → pure deterministic logic
+Chromium → Worker/Wasm/OPFS/runtime/Viewer/Web Locks/Scanner
+authenticated Leumi → real origin/provider facts only
 ~~~
 
-This architecture is now the basis for Phase F relational data-model planning.
+Representative daily mixed workload is required before cutover.
 
+## 13. Cutover
 
-## Phase U authority gate
+~~~text
+stop old IndexedDB Recorder at settled boundary
+→ preserve legacy local data
+→ start fresh SQL production history
+→ verify first cycles/reads
+~~~
 
-The Runtime Controller is now cross-tab singular, not merely page-local. Before constructing SQL Authority Worker it must hold the stable exclusive V2 runtime-owner Web Lock. A second independent tab is passive and never opens production storage. The owner lock covers Recorder + storage authority across shadow, production, rollover and cutover phases.
+Rollback is explicit: stop SQL release, preserve SQL DB, run retained old release.
+
+No history synchronization back to IndexedDB is required.
+
+## 14. Implementation map
+
+Dependency rationale:
+`browser-sql-compact-execution-dag.md`
+
+Issue-body source before GitHub materialization:
+`browser-sql-compact-issue-specifications.md`
+
+Actual Issue numbers belong in the GitHub execution map after materialization. Live completion remains only in `STATUS.json`.

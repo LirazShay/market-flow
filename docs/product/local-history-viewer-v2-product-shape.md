@@ -2,46 +2,40 @@
 
 ## Role
 
-This is the product requirement for the V2 user-facing shape.
+This is the durable product requirement for the V2 user-facing shape.
 
 It contains no live progress. Operational current/next state belongs only in the V2 `STATUS.json`.
 
-V2 is an evolution of the proven Local History Viewer V1 behavior, not a new market-data product invented from scratch.
+V2 evolves the proven Local History Viewer V1 behavior; changing persistence does not redefine the working provider/data contract.
 
 ## 1. Provider/data collection continuity
 
-The Browser SQL migration does **not** create a product requirement to change the Leumi collection contract that already works in V1.
-
-The preserved collection behavior is:
+The preserved acquisition contract is:
 
 ~~~text
 authenticated Leumi page
 → MapHeat2 dynamic universe
 → sequential GetSecuritiesData chunks
-→ exact completeness validation
+→ exact complete-cycle validation
 → one validated complete cycle
 ~~~
 
-The following remain part of the V2 contract unless separate evidence explicitly requires a later provider change:
+The following remain product invariants unless later evidence explicitly changes the provider contract:
 
-- the existing authenticated page-context collection model;
+- existing authenticated page-context collection;
 - MapHeat2 dynamic-universe discovery;
-- the proven GetSecuritiesData request/chunking flow;
+- proven sequential GetSecuritiesData flow;
 - canonical security ID = `String(PaperId or Key)`;
 - no hardcoded universe size;
-- exact requested/received/unique/missing/unexpected validation;
-- full raw MapHeat record preservation;
-- full raw GetSecuritiesData Security object preservation;
+- exact requested/received/unique/duplicate/missing/unexpected validation;
+- full raw MapHeat preservation;
+- full raw GetSecuritiesData Security preservation;
 - `null != 0 != "" != undefined`;
 - unknown provider-field semantics are not guessed.
 
-Changing the storage engine is not, by itself, justification for changing provider endpoints, request semantics, response interpretation or complete-cycle validation.
+Changing storage/analytics is not itself justification for changing provider endpoints, request semantics or response interpretation.
 
 ## 2. What V2 changes
-
-At the successful-cycle handoff, V1 and the Browser SQL target diverge.
-
-Conceptually:
 
 ~~~text
 V1:
@@ -49,27 +43,35 @@ validated complete cycle
 → IndexedDB atomic persistence
 → Viewer reads IndexedDB
 
-V2 target:
+V2:
 same validated complete cycle
-→ SQL Authority
-→ DuckDB-Wasm + persistent OPFS atomic persistence
-→ SQL-backed Viewer/read APIs
+→ one SQL Authority
+→ pinned DuckDB-Wasm + persistent OPFS
+→ atomic raw/current/history persistence
+→ trusted SQL-backed reads
 ~~~
 
-After production cutover, DuckDB/OPFS becomes the market-history authority. IndexedDB is not kept as a co-equal production authority.
+After explicit production cutover, DuckDB/OPFS is the only new market-history authority. IndexedDB is not a co-equal production authority.
 
 V2 also adds:
 
-- SQL-side enrichment needed by the Browser SQL model;
-- a user-defined analytical SQL runtime;
-- a configurable SQL repeat interval independent from collection cadence;
-- a third Viewer surface for dynamic SQL scanning.
+- real user-defined analytical SQL;
+- a configurable SQL repeat interval independent from collector cadence;
+- a third Viewer surface for Dynamic SQL scanning.
 
-## 3. Viewer surface 1 — Current Universe
+Analytical optimization is evidence-driven:
 
-V2 preserves the V1 all-securities/latest-data experience as a first-class surface.
+~~~text
+real SQL first
+→ measure on representative history
+→ persist/promote only what proves useful
+~~~
 
-Purpose:
+No fixed horizon/predecessor/derived-metric schema is a product requirement.
+
+## 3. Surface 1 — Current Universe
+
+Current Universe remains a first-class V1-derived browsing surface:
 
 ~~~text
 all current securities
@@ -77,113 +79,126 @@ all current securities
 → deterministic table/sorting
 ~~~
 
-The data source changes from direct IndexedDB reads to Runtime Controller / SQL Authority reads after cutover.
+The source changes from IndexedDB to trusted Runtime Controller / SQL Authority reads.
 
-The product behavior does not disappear merely because persistence changes.
+Missing/null/zero distinctions remain truthful.
 
-This surface continues to expose the relevant current bank fields already available in V1, subject to the same truthfulness rules for missing/null/zero values.
+## 4. Surface 2 — Security Detail and History
 
-## 4. Viewer surface 2 — Security Detail and History
-
-V2 preserves the V1 per-security drill-down as a first-class surface.
-
-Purpose:
+Security Detail/History remains a separate first-class V1-derived surface:
 
 ~~~text
-selected SecurityId
+selected canonical SecurityId
 → current/detail data
-→ persisted chronological history for that security
+→ persisted chronological history
 ~~~
 
-The source changes from IndexedDB to Runtime Controller / SQL Authority reads after cutover.
+The source changes from IndexedDB to trusted Runtime Controller / SQL Authority reads.
 
-V2 may enrich the stored/queryable data, but it must not remove the basic ability to inspect one security and its history.
+The surface must remain useful for known persisted history even when a security is no longer in the current universe.
 
-## 5. Viewer surface 3 — Dynamic SQL Scanner
+## 5. Surface 3 — Dynamic SQL Scanner
 
-V2 adds a separate SQL-driven scanner surface. It does not replace either V1-derived surface.
+The Scanner is additive; it does not replace Current or Detail/History.
 
-The scanner contains, at minimum:
+Minimum behavior:
 
 - editable user SQL;
-- a user-selectable repeat interval X;
-- activation/status/error feedback;
-- execution timing/status;
-- a result grid driven by the active SQL result schema;
-- 0..N result rows, where zero rows is a successful empty result.
+- configurable repeat interval;
+- explicit activation;
+- one active SQL/config;
+- read-only execution against committed coherent data;
+- at most one Scanner execution at a time;
+- missed intervals do not burst into overlapping catch-up runs;
+- status/error feedback;
+- result grid driven by SQL result schema;
+- 0 rows is successful empty output.
 
-Its conceptual baseline is the current/latest universe, so a simple query can display all current securities and their latest committed values.
+The user SQL may use, where supported and safe:
 
-The user may then change SQL to express filtering, sorting, selected columns, joins, history predicates, aggregation, `GROUP BY`, `HAVING`, ranking/window logic and `LIMIT` without changing collector/application code.
+- SELECT / JOIN / WHERE;
+- GROUP BY / HAVING;
+- ORDER BY / LIMIT;
+- window functions;
+- history/time predicates;
+- cross-security comparison/ranking.
 
-The active SQL is the authority for what the scanner shows. The UI must not secretly apply a second independent filtering/ranking algorithm that changes the SQL result meaning.
+The UI must not silently add a second filter/rank/sort or hidden LIMIT that changes SQL meaning.
 
-The SQL repeat interval is independent from the market-data collector cadence.
+## 6. Navigation and authority
 
-## 6. Navigation between surfaces
+All three surfaces are clients of one Runtime Controller / SQL Authority.
 
-The three surfaces are different views over one runtime/data authority.
+Notifications are hints. Viewer state is rebuilt from authoritative reads.
 
-A SQL result row that exposes the canonical SecurityId may reuse the existing Security Detail/History surface for drill-down rather than invent another security-detail implementation.
+A Scanner row exposing canonical SecurityId may navigate to the shared Detail/History surface; other Scanner columns are not treated as independent current-market authority.
 
-That navigation is still observational research UI.
+Cross-tab production ownership is singular: only one runtime may own production DB/Recorder work.
 
-The current V2 scope does **not** add:
+## 7. Explicit product non-goals
+
+Initial V2 does not add:
 
 - order placement;
 - automatic trade selection/execution;
-- a downstream position-management workflow;
-- a final trading formula.
+- downstream position management;
+- a final trading formula;
+- a long-term historical warehouse product;
+- a collaborative SQL editor.
 
-Those may be separate later product work.
+## 8. Acceptance shape
 
-## 7. Acceptance shape
+A completed V2 must demonstrate together:
 
-A completed V2 Viewer/runtime integration must demonstrate all of the following together:
+1. the preserved V1 provider contract still produces validated complete raw cycles;
+2. successful cycles become coherent SQL authority state;
+3. Current Universe works from committed SQL reads;
+4. Security Detail/History works from committed SQL reads;
+5. Dynamic SQL Scanner accepts user SQL + interval and repeatedly displays truthful 0..N results;
+6. changing Scanner SQL/interval does not change collector code/cadence;
+7. all surfaces share one coherent committed authority and do not create independent DB owners;
+8. representative daily mixed use is viable before cutover.
 
-1. the proven V1 provider/data-collection contract still produces the same class of complete raw market cycle;
-2. that cycle is persisted through the SQL authority rather than the V1 IndexedDB authority;
-3. the Current Universe surface still shows all latest committed securities/bank data;
-4. the Security Detail/History surface still supports one-security historical inspection;
-5. the separate Dynamic SQL Scanner accepts user SQL + interval and repeatedly displays the resulting 0..N table;
-6. changing scanner SQL/interval does not require collector code changes;
-7. all three surfaces read one coherent committed authority and do not create independent DB owners.
+## 9. Traceability
 
-## 8. Traceability
-
-Durable decision:
+Product/provider authority:
 
 ~~~text
 docs/project/decisions/D-043.md
 ~~~
 
-Implementation ownership:
+Implementation baseline:
 
 ~~~text
-WP-09..WP-14 / #37..#42
-  preserve the validated V1 cycle/raw-data contract through SQL ingest
-
-WP-23 / #51
-  integrate the unchanged provider/Recorder contract with SQL persistence
-
-WP-24 / #52
-  live provider compatibility/equivalence
-
-WP-25 / #53
-  Viewer bridge for all three surfaces
-
-WP-26 / #54
-  Dynamic SQL Scanner editor + interval activation
-
-WP-27 / #55
-  Dynamic SQL Scanner result-grid presentation
-
-WP-28 / #56
-  Current Universe + Security Detail/History on SQL reads
-
-WP-29 / #57
-  integrated three-surface checkpoint
-
-WP-36..WP-38 / #64, #66, #67
-  preserve the same contract through cutover, live endurance and final cleanup
+docs/project/decisions/D-044.md
 ~~~
+
+Conceptual implementation ownership:
+
+~~~text
+C02-C04
+  minimum SQL authority, atomic cycle persistence, Recorder integration and trusted reads
+
+C05
+  Current Universe SQL parity
+
+C06
+  Detail/History SQL parity + bounded real-provider L-2
+
+C07
+  real analytical SQL + evidence-driven optimization decision
+
+C08-C09
+  simple Scanner core + Scanner UI/results
+
+C10-C11
+  single-owner runtime + representative daily mixed workload
+
+C12
+  final live verification + explicit cutover/rollback/cleanup
+~~~
+
+The compact dependency source is:
+`scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/docs/browser-sql-compact-execution-dag.md`.
+
+Actual GitHub Issue numbers are added only after materialization; live completion state remains only in `STATUS.json`.

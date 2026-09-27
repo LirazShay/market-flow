@@ -1,42 +1,28 @@
 # Live SQL Query Execution — Product Requirement
 
-Market Flow's live opportunity discovery must support a real, user-changeable SQL query as a first-class product capability.
+Market Flow must support real, user-changeable SQL as a first-class analytical capability.
 
-This is a product-level requirement. It fixes the current process boundary as **Browser-only SQL**, while leaving the concrete browser SQL engine and physical design to engineering research/planning.
+The current V2 boundary is **Browser-only SQL using the pinned DuckDB-Wasm + persistent OPFS design**. Exact package/asset identity is engineering/runtime metadata, not a user-facing product contract.
 
 ## Core behavior
 
-The user must be able to define SQL and have Market Flow execute it automatically every configured X seconds against coherently committed market data.
-
-Conceptually:
-
 ~~~text
-continuous market-data ingest
+continuous committed market-data history
 +
 active SQL text
 +
-repeat interval X seconds
-→ repeated SQL executions
-→ 0..N result rows
+repeat interval X
+→ repeated read-only SQL executions
+→ 0..N result rows or an explicit query error
 ~~~
 
-Changing the SQL should not normally require changing application code.
+Changing the SQL should not normally require application/collector code changes.
 
-## V2 presentation boundary
-
-For Local History Viewer V2, this capability is exposed through a **separate Dynamic SQL Scanner surface** with editable SQL, configurable repeat interval and SQL-driven result grid.
-
-It is additive to the V1-derived Current Universe and Security Detail/History surfaces; it does not replace them.
-
-The detailed V2 product shape is owned by:
-
-~~~text
-docs/product/local-history-viewer-v2-product-shape.md
-~~~
+For Local History Viewer V2 this is exposed through the separate Dynamic SQL Scanner alongside Current Universe and Security Detail/History.
 
 ## Query capability
 
-The selected engine should support the SQL constructs needed for live analytical exploration, including where relevant:
+The Scanner should support the analytical SQL needed by the product, including where relevant:
 
 - SELECT;
 - JOIN;
@@ -46,51 +32,67 @@ The selected engine should support the SQL constructs needed for live analytical
 - ORDER BY;
 - LIMIT;
 - window functions;
-- historical/time-window conditions;
+- historical/time-window predicates;
 - cross-security comparison/ranking.
 
-The exact query is intentionally not a product contract. It will evolve frequently.
+The exact query is intentionally not fixed.
 
 ## Runtime behavior
 
-- zero result rows is valid;
-- a query error is observable and must not corrupt stored market data;
-- query failure must not silently stop market-data ingestion;
-- execution duration and result row count should be observable;
-- the system must define deterministic behavior when a query takes longer than its configured repeat interval;
-- queries operate only on committed coherent data.
+- activation is explicit;
+- one active SQL/config is sufficient for initial V2;
+- zero rows is success;
+- query errors are visible and do not corrupt stored market data;
+- query failure does not silently stop market-data ingestion;
+- queries see committed coherent data;
+- at most one Scanner execution runs at a time;
+- if execution exceeds the configured interval, another execution does not overlap it and missed intervals do not burst later;
+- result schema/order follows SQL;
+- the UI adds no hidden analytical semantics.
+
+Immutable query-version history, anchored scheduling, mandatory streaming and advanced cancellation/preemption are not product requirements. They may be added only if evidence shows a current need.
 
 ## Data requirement
 
-The analytical store must preserve sufficiently rich raw historical market data so future SQL can use fields that were not anticipated when the data was collected.
+The SQL authority preserves sufficiently rich raw historical market facts so future queries can use fields not anticipated when data was collected.
 
-Derived columns/views may be added for repeated high-value computations, but they must not replace raw source facts.
+Derived/typed/persisted optimizations are optional:
 
-## Architecture implication
+~~~text
+real query
+→ measure
+→ smallest useful optimization only if needed
+~~~
 
-A SQL-capable engine is required for the analytical layer.
+They never replace preserved raw source facts.
 
-IndexedDB by itself is not the target analytical query interface.
-
-For the current V2 planning cycle, the required boundary is:
+## Architecture boundary
 
 ~~~text
 authenticated browser
-→ collector
-→ Browser SQL engine
-→ persistent browser SQL database
-→ scheduled SQL
-→ results
+→ existing collector/validation
+→ Runtime Controller / one SQL Authority Worker
+→ DuckDB-Wasm + persistent OPFS
+→ read-only repeated SQL
+→ Scanner results
 ~~~
 
-The concrete Browser SQL engine remains an engineering decision until current capabilities are researched and the design is completed.
+IndexedDB is not the target analytical query interface.
 
-localhost / Node / .NET / native database services are not active alternatives in this planning cycle. Reopening that boundary requires a future explicit architecture decision based on evidence that Browser SQL cannot meet a required capability.
+localhost / Node / .NET / native database services are not active initial-V2 alternatives. Reopening the browser-only boundary requires a new evidence-backed architecture decision.
 
 ## Security
 
-Authenticated provider collection remains in the browser.
+Provider authentication remains in the authenticated browser page.
 
-Repository artifacts must not contain cookies, session tokens, authorization headers, credentials, account numbers or private session data.
+Repository/runtime evidence must not contain cookies, session tokens, authorization headers, credentials, account numbers or private session data.
 
-Browser SQL planning must preserve that boundary rather than creating a second authentication path.
+The SQL Worker needs validated market data and application/query commands, not copied provider secrets.
+
+## Traceability
+
+Product shape:
+`docs/product/local-history-viewer-v2-product-shape.md`
+
+Durable implementation baseline:
+`docs/project/decisions/D-044.md`

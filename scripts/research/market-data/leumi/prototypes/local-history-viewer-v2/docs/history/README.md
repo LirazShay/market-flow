@@ -1,49 +1,37 @@
-# Local History Viewer V2 — Historical Work Notes
+# Local History Viewer V2 — Historical Documentation
 
-Historical evidence is **cold context**. The normal continuation path remains:
+This directory contains **COLD** historical evidence and superseded planning. It is discoverable for RCA/research but is not normal fresh-chat startup context.
 
-~~~text
-README.md
-→ STATUS.json
-→ AI_CONTEXT.md
-~~~
-
-Current V2 operational state lives only in:
+Current implementation direction is owned by:
 
 ~~~text
 ../../STATUS.json
+../../ROADMAP.md
+../browser-sql-compact-execution-dag.md
+../../../../../../../../docs/project/decisions/D-043.md
+../../../../../../../../docs/project/decisions/D-044.md
 ~~~
 
-## V2 history
+## Browser SQL history
 
-### 2026-09-24 — V2 bootstrap from frozen V1
+### Pre-KISS 42-WP baseline
 
 ~~~text
-v2-bootstrap/2026-09-24-v2-bootstrap.md
+browser-sql-pre-kiss-42wp-plan/
 ~~~
 
-Records the exact V1 clone provenance, V2 namespace isolation, verification runs and bootstrap failure review.
+Preserves the old A..W roadmap, 42-WP decomposition/execution/final audit/freeze and STATUS snapshot exactly as historical evidence.
 
-### 2026-09-27 — Pre-KISS Browser SQL 42-WP planning snapshot
+### Pre-KISS mechanism designs and requirements
 
 ~~~text
-browser-sql-pre-kiss-42wp-plan/README.md
+browser-sql-pre-kiss-mechanisms/
 ~~~
 
-Preserves the old A..W ROADMAP, 42-WP implementation decomposition/GitHub execution map/final audit/freeze, and a STATUS snapshot from immediately before the post-KISS canonical rewrite. It is cold historical evidence only.
+Preserves mechanism-level planning that was useful research but is no longer current initial-V2 instruction after D-044.
 
-## Inherited V1 baseline history
+## Other historical areas
 
-The remaining historical material under this directory was copied with the exact V1 baseline. It is retained as provenance/evidence for the implementation V2 started from; it is **not** V2 live status.
+Existing folders for V1 freeze/bootstrap, testing refactors, runtime optimization and live-verification evidence remain historical owners for their respective work.
 
-Useful inherited entries include:
-
-~~~text
-status-snapshots/2026-09-23-pre-context-compaction.json
-live-verification/2026-09-23-stage-19-live-report.md
-v1-freeze/2026-09-23-stage-20-v1-freeze.md
-test-runtime-optimization/2026-09-23-browser-ci-optimization.md
-testing-refactor/
-~~~
-
-Read inherited history only when the current V2 task needs V1 rationale or evidence. Current repository policy/specs and current V2 `STATUS.json` always win.
+Do not copy live current/next status into this directory.
