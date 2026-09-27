@@ -15,16 +15,16 @@
     "title": "Chat 01/12 — C01 / #73 — prove pinned DuckDB-Wasm on authenticated Leumi",
     "issue": 73,
     "chat": 1,
-    "status": "ready"
+    "status": "in-progress"
   },
   "currentStage": {
     "stage": "browser-sql-implementation",
     "title": "Browser SQL V2 compact implementation — C01",
-    "status": "ready"
+    "status": "in-progress"
   },
   "stageSummary": {
     "completed": "Post-KISS planning is frozen and verified. Planning Issue #72 is closed. Master #85 with C01-C12 #73-#84 is the executable graph; the 12-chat serial plan/prompts are verified and HOT-visible.",
-    "ready": "Implementation entry is Chat 01 / C01 / #73. Start only through the Chat 01 prompt in CHAT_PROMPTS.md and revalidate its entry gate against GitHub.",
+    "ready": "Chat 01 / C01 / #73 is active. Deterministic probe/preflight is being revalidated before authenticated L-1 evidence.",
     "blockedAfterEntry": "None from planning. Any new implementation evidence is handled by the active-chat discovery protocol."
   },
   "activeMiniProject": "browser-sql-c01",
@@ -100,7 +100,7 @@
     }
   },
   "next": {
-    "action": "Open a fresh Chat 01 and paste the complete Chat 01 / C01 / #73 prompt from CHAT_PROMPTS.md. The chat must fetch main, confirm #72 is closed and confirm STATUS points to C01/#73 before implementation.",
+    "action": "Complete Chat 01 / C01 / #73 deterministic preflight, then run the sanitized authenticated L-1 self-verifier on the Leumi origin. Do not start C02 until #73 closes and STATUS advances.",
     "issue": 73,
     "workPackage": "C01",
     "chat": 1,
