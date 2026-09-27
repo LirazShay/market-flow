@@ -264,17 +264,18 @@ Medium-to-large but cohesive. Detail/history is a distinct existing surface; L-2
 Use SQL history directly before deciding that any persisted analytical optimization is needed.
 
 ## Scope
-- define a small set of real useful analytical queries;
+- record the representative analytical query corpus and deterministic day-sized workload parameters before the deciding measurement;
+- derive representative scale/cadence from intended daily use without hardcoding a universe-size product invariant;
+- use real useful analytical capabilities, not a fixed final trading formula;
 - include representative short-horizon/cross-security/history/group/ranking use cases as needed;
-- run them against representative day-sized deterministic history;
-- record correctness and practical latency;
-- identify useful typed source fields if raw JSON is ergonomically/performance-costly;
+- prove deterministic expected results and measure the same corpus in the browser runtime;
+- identify useful typed source fields only when a concrete query/correctness/ergonomics/performance reason exists;
 - conclude explicitly:
 
 ~~~text
-dynamic SQL is sufficient
+dynamic SQL is sufficient for the predeclared corpus
 or
-one specific optimization is required
+one specific evidence-backed optimization is required
 ~~~
 
 ## Output
@@ -297,20 +298,21 @@ Medium. This is analysis through executable SQL/measurement evidence, not a gene
 Implement the minimum safe repeating SQL engine.
 
 ## Scope
-- draft SQL + interval;
-- explicit Activate;
-- one active SQL/interval;
-- persist current active config only;
-- parser/engine-backed read-only safety;
-- representative allowed/blocked SQL corpus;
+- draft SQL + interval; draft edits do not execute or alter active state;
+- explicit Activate validates before replacement; invalid activation preserves the prior active config;
+- persist only the current successfully activated SQL/interval;
+- parser/engine-backed read-only classification on the exact pinned build plus the smallest available engine hardening; no regex-only safety;
+- representative allowed/blocked SQL corpus, including mutation/DDL/transaction/admin/configuration/external-access/extension-loading/multi-statement paths;
 - committed-state reads;
 - one execution at a time;
 - simple no-overlap timer;
 - no burst replay;
-- query replacement attribution when a prior query is still finishing;
+- minimal in-memory config/execution identity for correct query-replacement attribution, not durable version history;
+- deterministic last-successfully-processed activation wins when Viewer commands race; no OCC subsystem;
+- Scanner SQL/interval never changes collector/provider cadence;
 - zero rows = success;
 - query errors are isolated;
-- fresh active-query run after runtime restart.
+- after runtime restart, load the last successful active config only when SQL authority is ready and run fresh.
 
 ## Non-scope
 - rich editor/grid UX;
