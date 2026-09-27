@@ -1,5 +1,8 @@
 # Browser SQL V2 — Dynamic SQL Scanner Verification Plan
 
+> **Reference-only / superseded verification guidance.** Current Scanner verification belongs to C08/C09 and C11 under `tests/TESTING_POLICY.md`; ND-25/ND-27 are not current execution gates.
+
+
 ## Role
 
 This is Pass E9 of Issue #72.
