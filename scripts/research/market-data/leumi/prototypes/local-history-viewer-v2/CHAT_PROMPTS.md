@@ -37,7 +37,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 התכנון הסופי קפוא וירוק, Issue #72 סגור, ו-STATUS.json מצביע על C01/#73.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C01/#73, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C01/#73, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 להוכיח L-1 על authenticated Leumi origin עם ה-runtime המדויק שכבר נבחר: Blob Worker, pinned Worker/Wasm, probe-only OPFS, synthetic write/COMMIT, close/reopen/readback ו-cleanup.
@@ -125,7 +125,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C01/#73 סגור וירוק, ו-STATUS.json מצביע על C02/#74.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C02/#74, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C02/#74, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לבנות את ה-production-shaped SQL authority המינימלי: Runtime Controller יחיד, SQL Worker יחיד, production OPFS DB identity, minimum schema, runtime/build identity נפרד מ-storage compatibility, readiness ו-incompatible-storage blocking ללא reset.
@@ -213,7 +213,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C02/#74 סגור וירוק, ו-STATUS.json מצביע על C03/#75.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C03/#75, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C03/#75, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לממש persistence אטומי של complete validated cycle, coherence של authority שנבחרה, raw fidelity, failure-before-commit semantics, reopen/durability boundary, ורק אם הראיות דורשות — retry/idempotency מינימלי.
@@ -301,7 +301,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C03/#75 סגור וירוק, ו-STATUS.json מצביע על C04/#76.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C04/#76, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C04/#76, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לחבר את V1 provider/validation path ל-SQL authority ולחשוף trusted semantic reads קטנים ל-current universe/current security/bounded history/readiness, עם committed-only visibility ו-notification-as-hint.
@@ -389,7 +389,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C04/#76 סגור וירוק, ו-STATUS.json מצביע על C05/#77.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C05/#77, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C05/#77, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 להעביר את Current Universe ל-trusted SQL reads תוך שמירת public V1 behavior הרלוונטי: membership, values, sort/ties, missing/empty/zero, EMPTY vs ERROR, reload/refresh, no provider call, canonical SecurityId navigation.
@@ -477,7 +477,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C05/#77 סגור וירוק, ו-STATUS.json מצביע על C06/#78.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C06/#78, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C06/#78, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 להעביר Security Detail/History ל-SQL, לסגור paging/lifecycle/navigation parity, להריץ Current→Detail→Back regression, ואז bounded authenticated single-tab L-2: real provider→validation→SQL→trusted read.
@@ -568,7 +568,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C05/#77 ו-C06/#78 סגורים וירוקים, ו-STATUS.json מצביע על C07/#79.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C07/#79, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C07/#79, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לקבע מראש representative query corpus + day-sized workload, להוכיח correctness, למדוד באותו workload, ולהחליט evidence-first האם dynamic SQL מספיק או שנדרש optimization ממוקד. אין להמציא final trading formula.
@@ -659,7 +659,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C05/C06 סגורים; בסדר הסדרתי גם C07 סגור; STATUS.json מצביע על C08/#80.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C08/#80, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C08/#80, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לבנות Scanner core מינימלי ובטוח: draft לא מריץ, validated Activate, failed Activate שומר active קודם, exact-engine read-only safety, committed reads, one execution at a time, no burst replay, attribution, isolated errors, restart פשוט, collector cadence בלתי תלוי.
@@ -747,7 +747,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C08/#80 סגור וירוק, ו-STATUS.json מצביע על C09/#81.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C09/#81, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C09/#81, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לבנות את Scanner כ-surface שלישי: editor/interval/Activate, runtime-authoritative active state, dynamic truthful result grid, type fidelity, zero rows vs error, truthful truncation, result/config attribution, isolation מ-provider/Recorder/Current/Detail.
@@ -838,7 +838,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C02 כבר סגור; בסדר הסדרתי C03-C09 גם סגורים; STATUS.json מצביע על C10/#82.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C10/#82, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C10/#82, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לעטוף את runtime הסופי ב-canonical exclusive Web Lock: same-tab singleton reuse, fail-fast independent-tab acquisition, passive loser, teardown-before-release, reacquire/readiness, בלי heartbeat/election/steal/fallback.
@@ -926,7 +926,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C07/#79, C09/#81 ו-C10/#82 סגורים; כל conditional מוקדם חזר לבעלים; STATUS.json מצביע על C11/#83.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C11/#83, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C11/#83, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לקבע workload parameters מראש ואז להריץ collection + SQL persistence + Current/Detail + representative Scanner + one-owner runtime יחד; למדוד integrity/backlog/overlap/memory/storage/reopen בלי post-hoc thresholds.
@@ -1017,7 +1017,7 @@ GitHub main הוא מקור האמת. STATUS.json הוא מקור האמת הי�
 ENTRY GATE שלי:
 C11 סגור על final candidate; Fast + full Browser CI ירוקים; L-1/L-2 עדיין תקפים; old IndexedDB rollback release מזוהה; STATUS.json מצביע על C12/#84.
 
-לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C12/#84, אל תנחש ואל תתחיל implementation מהפרומפט הזה. בדוק למה, תקן/יישב את source of truth הנכון, ודווח מה חוסם.
+לפני implementation אמת את ה-entry gate מול GitHub. אם STATUS.json לא מצביע על C12/#84, אל תנחש ואל תתחיל implementation מהפרומפט הזה. פרומפט stale לעולם לא גובר על STATUS.json. אל תשנה STATUS רק כדי להפוך את הפרומפט ל-eligible. בדוק האם יש עבודה קודמת פעילה/pending, prompt לא נכון, או סתירה אמיתית בריפו. רק אם GitHub עצמו סותר את כללי ה-source-of-truth, תקן את הסתירה לפי ownership; אחרת עצור ודווח מה חוסם.
 
 המטרה המרכזית של הצ'אט:
 לבצע no-overlap authenticated production transition: stop/settle old Recorder, preserve legacy IndexedDB, real-origin two-tab canonical Web Lock, fresh production OPFS/readiness, begin SQL recording, bounded provider verification, Current/Detail + representative Scanner, first production cycles/readback, accept cutover או explicit rollback.
