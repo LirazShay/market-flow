@@ -115,11 +115,11 @@ Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema
 - one Runtime Controller owns one SQL Worker;
 - deterministic generated runtime/build identity using pinned assets;
 - one production DB identity;
-- simple schema/build compatibility metadata;
+- simple schema/storage-format compatibility metadata; runtime/build identity remains diagnostic/traceability metadata and does not itself make an existing DB incompatible;
 - minimal tables/structures for cycle identity, current universe, raw MapHeat, raw Security history and stable snapshot/cycle ordering;
 - latest/current lookup structure only where needed by trusted reads;
 - startup/open/readiness states required for normal use;
-- unsupported schema/build compatibility blocks writable startup;
+- unsupported schema/storage-format compatibility blocks writable startup; an ordinary runtime build change does not block startup unless it intentionally changes the declared storage compatibility contract;
 - no silent delete/recreate/reset;
 - minimal storage/runtime error reporting.
 
@@ -136,13 +136,13 @@ Create one production-shaped DuckDB-Wasm/OPFS authority with the smallest schema
 
 - runtime opens the intended OPFS DB through one Worker authority;
 - schema represents minimum raw/current/history needs without fixed enrichment columns;
-- runtime identity and schema compatibility are explicit;
+- runtime identity and schema/storage compatibility are explicit and separate;
 - unsupported DB is preserved and writable startup fails visibly;
 - repeated startup does not silently recreate/reset the DB.
 
 ### Verification
 
-- Node tests only for pure manifest/schema compatibility logic;
+- Node tests only for pure manifest identity and schema/storage compatibility logic;
 - Chromium tests for Worker/Wasm/OPFS open/reopen and incompatible-schema blocking;
 - Fast CI;
 - full Browser CI because shared runtime/storage surfaces change.
