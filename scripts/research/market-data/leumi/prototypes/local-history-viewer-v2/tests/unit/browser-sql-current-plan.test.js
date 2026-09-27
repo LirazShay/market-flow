@@ -218,7 +218,7 @@ test(
 );
 
 test(
-    "current Browser SQL navigation keeps old decomposition and old freeze historical",
+    "current Browser SQL navigation keeps old decomposition historical and freezes the post-KISS plan",
     () => {
         const decomposition =
             readWorkstream(
@@ -230,6 +230,11 @@ test(
                 "docs/browser-sql-final-planning-freeze.md"
             );
 
+        const nextPrompt =
+            readWorkstream(
+                "NEXT_CHAT_PROMPT.md"
+            );
+
         assert.match(
             decomposition,
             /Superseded for current initial V2 by D-044/i
@@ -237,12 +242,37 @@ test(
 
         assert.match(
             freeze,
-            /old Phase-W \/ 42-WP planning freeze is historical/i
+            /Post-KISS Final Planning Freeze/i
         );
 
         assert.match(
             freeze,
-            /post-KISS final planning freeze will replace this path only after/i
+            /Chat 01 ↔ C01\/#73[\s\S]*Chat 12 ↔ C12\/#84/i
+        );
+
+        assert.match(
+            freeze,
+            /planning Issue #72 is closed[\s\S]*STATUS\.json points to Chat 01 \/ C01 \/ #73/i
+        );
+
+        assert.match(
+            freeze,
+            /Do not keep a bad plan merely because it was frozen/i
+        );
+
+        assert.match(
+            nextPrompt,
+            /Start \*\*Chat 01 of 12\*\*/i
+        );
+
+        assert.match(
+            nextPrompt,
+            /CHAT_PROMPTS\.md/
+        );
+
+        assert.match(
+            nextPrompt,
+            /planning Issue #72 is closed[\s\S]*STATUS\.json points to Chat 01 \/ C01 \/ #73/i
         );
     }
 );
