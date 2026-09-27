@@ -23,8 +23,8 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "S&T Node 2 is locally approved: loopback service ownership, minimal DuckDB schema/file, lifecycle persistence, atomic full-cycle commit and restart recovery are implementation-ready leaves.",
-    "ready": "Decompose S&T Node 3 for Current Universe and Security Detail/History reads over the Node authority.",
+    "completed": "S&T Node 3 is locally approved: four Node read operations, one shared viewer-role client, Node-backed Current/diagnostics, SQL-keyset Detail/History and existing BroadcastChannel refresh/recovery are implementation-ready.",
+    "ready": "Decompose S&T Node 4 for Dynamic SQL Scanner and resolve the open read-only SQL enforcement decision D-006.",
     "blockedAfterEntry": "No production implementation while .planning/STATUS.yaml plan_state is active."
   },
   "activeMiniProject": "node-sql-replan",
@@ -54,19 +54,21 @@
       "goal": ".planning/GOAL.md",
       "tree": ".planning/TREE.yaml",
       "planState": "active",
-      "currentNode": "3",
+      "currentNode": "4",
       "node1": "approved-reviewed",
-      "node2": "approved-reviewed"
+      "node2": "approved-reviewed",
+      "node3": "approved-reviewed"
     }
   },
   "next": {
-    "action": "Continue S&T planning from node 3: preserve Current Universe + Security Detail/History over Node/DuckDB.",
+    "action": "Continue S&T planning from node 4: Dynamic SQL Scanner; resolve D-006 read-only enforcement before approving leaves.",
     "issue": 73,
     "workPackage": "SNT-NODE-SQL-PLAN",
     "chat": 1,
     "rules": [
       "Planning source is .planning.",
       "Do not implement production work until plan_state is frozen.",
+      "D-006 is the only current material planning blocker and belongs to Node 4.",
       "Conversation pacing remains one planning unit per user message unless the user changes it."
     ]
   },
