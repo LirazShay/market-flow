@@ -99,3 +99,36 @@
 **Resolution basis / rationale:** Current `@duckdb/node-api` exposes statement extraction, but the exact statement-type/safety surface must be verified before the leaf is implementation-ready.
 
 **What would reopen this:** N/A while open.
+
+---
+
+## D-007 — Loopback access and producer ownership boundary
+
+**Status:** resolved
+
+**Related S&T node(s):** 1, 2
+
+**Question:** What minimum local access control is required without turning a single-machine tool into an authentication system?
+
+**Resolution:** Production Node binds only to `127.0.0.1:8765`, accepts browser upgrades only from the exact approved Leumi Origin `https://hb2.bankleumi.co.il`, and permits one active `role=producer` connection at a time. Multiple viewer-role clients are allowed later. Test harnesses may override the allowed Origin explicitly. No local password/token is added initially.
+
+**Resolution basis / rationale:** Loopback + exact browser Origin blocks ordinary remote and unrelated-web-page access while avoiding secret-distribution machinery. A local process capable of spoofing Origin is already inside the local-machine trust boundary; a copied token would not materially improve that threat model.
+
+**What would reopen this:** A concrete requirement for remote access, a browser Origin change, or evidence of a local threat the current boundary does not address.
+
+---
+
+## D-008 — Connection loss/retry policy
+
+**Status:** resolved
+
+**Related S&T node(s):** 1.2, 1.3, 1.4, 2
+
+**Question:** Should the initial version automatically reconnect, queue or replay producer writes?
+
+**Resolution:** No. Transport failure is fail-closed: pending requests fail, Recorder stops, and the user/runtime must explicitly relaunch after the local service is available. No producer message replay or offline queue exists in the initial version.
+
+**Resolution basis / rationale:** This removes duplicate/idempotency/replay machinery and matches the current single-machine daily workflow. WebSocket/TCP already provides ordered delivery while connected; an ACK lost after a durable server commit may make browser diagnostics conservative, but no automatic resend can duplicate the cycle.
+
+**What would reopen this:** Observed local-service instability that makes manual relaunch materially harmful to daily use.
+
