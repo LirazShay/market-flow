@@ -281,13 +281,17 @@ Make the Current Universe surface work from SQL while preserving intentional V1 
 
 ### Scope
 
+- parity oracle is the currently implemented public Current-surface behavior in `specs/viewer.spec.md` plus the existing public-behavior tests; IndexedDB store names/joins and other storage internals are not parity requirements, and D-043/product-shape requirements win if an inherited detail conflicts;
 - Current Universe reads SQL through the trusted API;
 - current membership follows the latest committed validated universe;
-- preserve intended values, default/user sorting and missing/zero rendering;
+- preserve the Current surface's observable column/value semantics, deterministic default/user sorting (including tie behavior), and missing/empty/zero rendering;
+- a valid authoritative current row is not silently dropped solely because optional descriptive/universe metadata is unavailable;
 - open-after-existing-data and reload reread authoritative SQL state;
+- notification/manual refresh rereads authority, never calls the market-data provider, preserves the selected Current sort, and keeps EMPTY distinct from read ERROR;
 - missed notifications do not make cached Viewer state authoritative;
 - Current remains independent of Scanner state/errors;
-- row selection/navigation emits the canonical SecurityId needed by Detail.
+- row selection/navigation emits the canonical SecurityId needed by Detail;
+- C05 and C06 remain parallel: whichever of the pair is second to close owns the shared Current→Detail→Back regression before closure, including preservation of the already-implemented Current sort/scroll state.
 
 ### Non-goals
 
@@ -298,7 +302,9 @@ Make the Current Universe surface work from SQL while preserving intentional V1 
 
 ### Acceptance
 
-- Current membership/values/sort/rendering match intended V1 public behavior on deterministic scenarios;
+- Current membership/columns/values/sort/rendering and empty/error/refresh behavior match the scoped parity oracle on deterministic scenarios;
+- existing Current public-behavior regressions are reused or replaced by equivalent SQL-backed assertions rather than silently dropped;
+- a valid current row is not lost solely because optional descriptive/universe metadata is absent;
 - a committed cycle refreshes Current from authoritative SQL;
 - reload/open-after-existing-data reconstructs Current from SQL;
 - missing notification is recovered by authoritative reread;
@@ -329,12 +335,14 @@ Make Security Detail/History work from SQL, close the V1 browsing-product migrat
 
 ### Scope
 
+- parity oracle is the currently implemented public Detail/History behavior in `specs/viewer.spec.md` plus the existing public-behavior tests; IndexedDB query/index mechanics are not parity requirements, and D-043/product-shape requirements win if an inherited detail conflicts;
 - Detail/History reads SQL through the trusted API;
 - newest-first bounded history paging;
 - equal-timestamp-safe continuation with no duplicate/skip;
 - detail remains meaningful for known history when the security is no longer current;
 - reload/open-after-existing-data/missed-notification rereads authority;
-- integrated Current→Detail navigation check once C05 exists;
+- live refresh keeps the selected Detail active and refreshes its authoritative summary/history without forcing a return to Current;
+- C05 and C06 remain parallel: whichever of the pair is second to close owns the shared Current→Detail→Back regression before closure, including preservation of the already-implemented Current sort/scroll state;
 - deterministic Detail/history/Viewer-lifecycle parity scenarios;
 - bounded self-verifying L-2 using real provider data through the normal Recorder→SQL→trusted-read path.
 
@@ -353,8 +361,9 @@ Make Security Detail/History work from SQL, close the V1 browsing-product migrat
 - historical Detail remains available for a security no longer current;
 - reload/missed notification recovers by authoritative reread;
 - when C05 is available, Current→Detail navigation works using canonical SecurityId;
-- L-2 reports exact provider accounting, successful SQL persistence/readback and no auth/session leakage;
-- no material V1-on-SQL parity Unknown remains after C05 and C06 are both complete.
+- existing Detail/History public-behavior regressions are reused or replaced by equivalent SQL-backed assertions rather than silently dropped;
+- L-2 reports exact requested/received/unique/duplicate/missing/unexpected accounting, successful SQL persistence/readback and no auth/session leakage;
+- no material parity Unknown remains for the scoped Current Universe + Detail/History product surfaces after C05 and C06 are both complete.
 
 ### Verification
 
