@@ -49,7 +49,7 @@ C04
 └→ C06 Detail/History SQL parity + bounded L-2
 ~~~
 
-C05 and C06 are separate preserved product surfaces and may progress in parallel.
+C05 Current Universe and C06 Security Detail/History are separate preserved product surfaces and may progress in parallel.
 
 Both must be complete before new analytical product work becomes the active dependency path.
 
