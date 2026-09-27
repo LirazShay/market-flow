@@ -6,6 +6,6 @@ current_node: "0"
 
 blockers: []
 
-next_action: "Run the whole-plan outside-in coverage audit and Final Planning Review. If it passes, mark every internal node approved, freeze plan_state, allocate every implementation-ready leaf exactly once in EXECUTION.yaml, and realign workstream STATUS for S&T execution."
+next_action: "Run the whole-plan outside-in coverage audit and Final Planning Review, including the new offline Fake Leumi/test-pyramid requirement. If it passes, freeze and allocate every implementation-ready leaf exactly once in EXECUTION.yaml."
 
-last_review: "R-006"
+last_review: "R-007"
