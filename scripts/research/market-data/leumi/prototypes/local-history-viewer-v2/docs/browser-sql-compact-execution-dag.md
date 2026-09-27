@@ -530,7 +530,7 @@ C06 Detail/History + L-2
 
 may proceed in parallel.
 
-C06 can implement Detail/history independently; its integrated Current→Detail check runs once C05 exists.
+C05 and C06 implement independently. Whichever is second to close owns the shared Current→Detail→Back regression before closure; neither waits merely for implementation order.
 
 ## After C05 + C06
 
@@ -698,6 +698,32 @@ Shadow never becomes production authority or a normal cutover step.
 
 ---
 
+# 22A. Conditional resolution / rejoin rules
+
+Every activated conditional has exactly one blocking owner and one rejoin rule. No conditional may remain as an orphan side task.
+
+| Conditional | Trigger owner | What happens to the trigger | Mandatory rejoin before progression |
+|---|---|---|---|
+| O1 analytical optimization | C07 | C07 may record the measured decision and create focused O1 work | C11 cannot start on the optimized candidate until O1 is complete; rerun every earlier public/runtime contract actually touched by O1, including C08/C09 if Scanner-consumed surfaces changed |
+| O2 Scanner resource hardening | C11 | C11 stays open | rerun affected Scanner correctness and then C11 |
+| O3 streaming/chunked results | C09 or C11 | if C09 triggers it, C09 stays open; if C11 triggers it, C11 stays open | rerun affected C09 result tests; rerun C11 whenever resource behavior/candidate changed |
+| O4 storage/export/fresh-DB workflow | C11 | C11 stays open | rerun affected storage/reopen behavior and C11 before C12 |
+| O5 target Windows/Chrome evidence | C11 | C11 stays open until the required target evidence is green | no code branch is implied; complete only the specific target-environment proof that triggered O5 |
+| O6 temporary shadow comparison | C06 | C06 stays open because its parity Unknown is unresolved | resolve the named ambiguity, remove/retire temporary shadow scaffolding, rerun affected C06 proof, then close C06 |
+
+General rule:
+
+~~~text
+conditional changes code/schema/runtime behavior
+→ rerun the smallest directly affected earlier public-contract verification
+→ rejoin the owning node
+→ only then allow downstream closure
+~~~
+
+A conditional does not create a new permanent phase, checkpoint family or parallel source of truth.
+
+---
+
 # 23. Effective compact DAG
 
 ~~~text
@@ -788,7 +814,7 @@ Therefore C07 → C08 is deliberately not a hard edge.
 
 # 26. Why C10 is not a Recorder/Viewer blocker
 
-Web Lock ownership is mandatory before production daily operation, but basic SQL persistence and Viewer behavior can be built/tested deterministically without making every step wait for final ownership integration.
+Web Lock ownership is mandatory before production daily operation, but basic SQL persistence and Viewer behavior can be built/tested deterministically without making every step wait for final ownership integration. C01 and C06 authenticated verification before C10 convergence are controlled single-tab proof sessions only; they are not production cross-tab ownership evidence.
 
 Therefore:
 
