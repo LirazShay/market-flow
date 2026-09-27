@@ -40,3 +40,16 @@ jobs:
 
       - name: Run targeted WP-02 Chromium spec
         run: npx playwright test tests/automation/specs/browser-sql-probe.spec.js
+
+      - name: Build C01 live probe artifacts
+        run: npm run build:browser-sql-probe
+
+      - name: Upload C01 live probe artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-history-viewer-v2-c01-live-probe-${{ github.sha }}
+          path: |
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/dist/market-flow-v2.browser-sql-probe.js
+            scripts/research/market-data/leumi/prototypes/local-history-viewer-v2/runtime/dist/market-flow-v2.browser-sql-probe.bookmarklet.txt
+          if-no-files-found: error
+          retention-days: 7

@@ -55,6 +55,14 @@ runtime/dist/market-flow-v2.browser-sql-probe.js
 runtime/dist/market-flow-v2.browser-sql-probe.bookmarklet.txt
 ~~~
 
+The targeted probe workflow also uploads those two generated files as a short-lived GitHub Actions artifact named:
+
+~~~text
+local-history-viewer-v2-c01-live-probe-<commit-sha>
+~~~
+
+Use the artifact from the exact green commit being verified. The generated bookmarklet TXT file is the intended live-launch artifact.
+
 Probe-owned DB names remain isolated from production identities.
 
 ## Deterministic preflight
@@ -96,7 +104,28 @@ probe-cleanup
 
 If the current generated probe still names the write stage `write-commit-checkpoint`, a passing stage is acceptable as evidence of write/COMMIT/reopen capability; CHECKPOINT itself is not an initial-V2 production policy decision.
 
-C01 implementation may adapt the probe/reporting so the final live artifact emits one compact sanitized PASS/FAIL object and performs/requests only probe-owned cleanup.
+The current C01 artifact auto-runs the complete live gate after launch:
+
+~~~text
+run
+→ close/reopen/read marker
+→ probe-owned cleanup
+→ sanitized C01-L1 result
+~~~
+
+The sanitized result is written to:
+
+~~~text
+window.__MARKET_FLOW_BROWSER_SQL_L1_RESULT__
+~~~
+
+and logged as a one-line JSON value prefixed by:
+
+~~~text
+Market Flow Browser SQL C01 L-1:
+~~~
+
+The result contains only engine/candidate identity, capability classifications, failed stage (if any), and explicit sanitization flags. It does not include raw browser/session/provider data.
 
 ## Evidence classification
 
