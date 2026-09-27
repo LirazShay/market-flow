@@ -109,11 +109,11 @@ Create the smallest production-shaped SQL authority that can receive later cycle
 - one Runtime Controller / SQL Worker boundary;
 - deterministic runtime/build/asset identity;
 - one production DB identity;
-- simple schema/build compatibility identity;
+- simple schema/storage-format compatibility identity; runtime/build identity is recorded separately for traceability and does not itself make a DB incompatible;
 - minimal raw/current/history schema;
 - stable cycle/snapshot ordering identity;
 - startup/preflight/readiness needed to open the DB;
-- explicit unsupported-schema refusal;
+- explicit unsupported schema/storage-format refusal; ordinary runtime build changes do not block startup unless they intentionally change the declared storage compatibility contract;
 - no silent destructive reset;
 - minimal runtime/storage health.
 
