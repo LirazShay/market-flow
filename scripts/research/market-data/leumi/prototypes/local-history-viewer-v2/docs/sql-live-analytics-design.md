@@ -1,173 +1,217 @@
-# SQL-First LIVE Analytics — Design Direction
+# SQL-First LIVE Analytics — Current V2 Design Direction
 
-This document captures the durable V2 design direction before detailed Browser SQL architecture is finalized.
+## Role
 
-It contains no operational progress. STATUS.json owns live status.
+This document describes the durable SQL-first analytical direction for Local History Viewer V2 after the post-KISS re-baseline.
+
+It contains no live progress. `../STATUS.json` owns operational current/next state.
+
+Product authority:
+`../../../../../../../docs/product/live-sql-query-execution.md`
+
+Product/provider boundary:
+`../../../../../../../docs/project/decisions/D-043.md`
+
+Implementation baseline:
+`../../../../../../../docs/project/decisions/D-044.md`
 
 ## Core requirement
 
-Market Flow must support:
+Market Flow supports:
 
 ~~~text
+continuous committed market history
++
 user-defined SQL
 +
-configurable repeat interval X seconds
-+
-continuous fresh market data
-→ SQL result set
+user-selected repeat interval
+→ repeated read-only SQL results
 ~~~
 
-Changing analytical logic should normally mean changing SQL, not modifying collector/application code.
+Changing analytical logic should normally mean changing SQL rather than changing collector code.
 
-## Fixed architecture boundary
+The exact trading formula/query is intentionally not fixed by V2.
 
-Browser-only SQL is a current architecture constraint, not merely a preference.
+## Architecture boundary
 
 ~~~text
-Authenticated Leumi browser
-→ Collector
-→ Browser SQL engine
-→ persistent browser SQL database
-→ scheduled SQL
-→ results
+authenticated Leumi page
+→ preserved V1 collection + exact complete-cycle validation
+→ one Runtime Controller / SQL Authority Worker
+→ pinned DuckDB-Wasm + persistent OPFS
+→ coherent committed raw/current/history state
+→ Dynamic SQL Scanner
 ~~~
 
-Durable decision:
+Current Universe and Security Detail/History remain separate first-class surfaces. The Scanner is additive.
 
-~~~text
-docs/project/decisions/D-025.md
-~~~
+Viewer clients never become independent DuckDB/OPFS owners.
 
-A local/native server is outside the active planning scope. Reopening that process boundary later requires a new architecture decision.
+## Data strategy
 
-## Engine status
+Initial SQL storage preserves sufficiently rich raw facts so later SQL can answer questions that were not anticipated when the data was collected.
 
-Leading candidate:
+Required principles:
 
-~~~text
-DuckDB-Wasm
-+
-browser persistence
-~~~
-
-It is not yet an implementation commitment.
-
-The planning research phase must verify current official documentation for release/API, persistence/OPFS, SQL features, transactions/concurrency, Worker requirements, cancellation, JSON/Arrow/bulk ingest, memory/runtime limits, loading/package constraints and reopen/recovery.
-
-Another browser SQL engine may be considered only if evidence shows a material advantage.
-
-## Consequence for IndexedDB
-
-IndexedDB remains the implemented V2 baseline and may temporarily coexist during migration.
-
-It is no longer the target analytical query engine.
-
-The prior IndexedDB-primary evaluation is preserved under:
-
-~~~text
-docs/history/superseded-indexeddb-primary-evaluation/
-~~~
-
-The target architecture must eventually have one unambiguous market-history source of truth.
-
-## Preserved behavior from V1/V2
-
-The provider/data acquisition side is a preserved contract, not merely a reuse candidate. Storage migration alone must not change the authenticated MapHeat2 / sequential GetSecuritiesData / exact complete-cycle behavior or the raw data meanings already proven in V1.
-
-Strong reuse candidates:
-
-- authenticated browser collection;
-- dynamic universe;
-- no hardcoded universe size;
+- dynamic universe; no hardcoded universe size;
 - canonical `String(PaperId or Key)`;
-- full raw MapHeat and Security preservation;
-- complete membership validation;
-- complete-cycle handoff;
-- atomic successful-cycle visibility;
-- null/zero/empty/missing distinction;
+- full raw MapHeat preservation;
+- full raw Security preservation;
+- `null != 0 != "" != missing`;
 - unknown provider semantics are not guessed;
-- one Recorder owner;
-- generated delivery from repository source;
-- behavioral unit + Chromium test discipline.
+- validated complete cycles become visible atomically.
 
-These are contracts, not a requirement to preserve IndexedDB/BroadcastChannel/Bookmarklet implementation choices.
+No fixed horizon matrix, predecessor-link matrix, persisted derived-metric set or separate latest structure is mandatory merely because an earlier plan proposed one.
 
-## Target conceptual flow
+## Analytical optimization
 
-~~~text
-authenticated browser
-→ collect complete cycle
-→ validate
-→ enrich where justified
-→ commit coherent cycle to Browser SQL
-→ scheduler executes active SQL every configured interval
-→ results + execution metadata/error
-→ Viewer surfaces
-   1. Current Universe
-   2. Security Detail/History
-   3. Dynamic SQL Scanner
-~~~
-
-SQL sees only committed coherent data.
-
-Query failure must not stop ingestion or corrupt persistence.
-
-The SQL Scanner is a separate third surface. It accepts user SQL and an interval and shows the SQL-driven result table. It does not replace the V1-derived current-universe or per-security-history surfaces.
-
-Product authority: `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md` / D-043.
-
-## Compute once, query many
-
-For cheap, repeated, high-value facts:
+Use the simplest sequence:
 
 ~~~text
-compute once
-→ store once
-→ query many
+predeclare representative useful query corpus
+→ run it correctly on representative day-sized history
+→ measure the same corpus in the browser runtime
+→ sufficient? stop
+→ insufficient? add one smallest targeted optimization
+→ remeasure the affected query
 ~~~
 
-Core candidates include LAST change, Deals delta after provider semantics are Verified, and MID.
+Representative queries may exercise short-horizon/history predicates, cross-security comparisons, filters, GROUP BY/HAVING, ordering/ranking and window functions where useful.
 
-Do not precompute every arbitrary cross-time combination.
+They demonstrate analytical capability; they do not define a final trading formula.
 
-## Core horizons
+Typed promotions, indexes, predecessor references or persisted derived metrics are optional implementation choices only when a concrete query/correctness/ergonomics/performance reason justifies them.
+
+## Scanner activation
+
+Initial Scanner state is deliberately small:
 
 ~~~text
-10s
-20s
-30s
-60s
-90s
-120s
-300s
-600s
+draft SQL + draft interval
+→ explicit Activate
+→ validate candidate
+→ if invalid: keep previous active config
+→ if valid: replace and persist one active SQL + interval
 ~~~
 
-Missing historical context remains NULL.
+Editing draft state does not execute SQL.
 
-Natural collection jitter does not require exact millisecond equality.
+No immutable query-version history, collaborative editor protocol or optimistic-concurrency subsystem is required.
 
-## SQL scheduler direction
+If multiple Viewer activations race, the single runtime processes them deterministically; the last successfully processed activation is active.
 
-The future scheduler must distinguish active SQL, query identity/version, interval, execution start/end, duration, row count, current execution status/error and latest successful result.
+## Read-only safety
 
-No uncontrolled overlapping executions.
+User SQL is untrusted analytical input.
 
-Collector cadence and SQL cadence remain separate concepts.
+The Scanner allows one result-producing read-only statement and must prove its safety boundary on the exact pinned DuckDB-Wasm build.
 
-User analytical SQL should be isolated from schema/admin mutation unless a future explicit requirement changes that rule.
+Use:
 
-## Selected runtime topology
+- parser/engine-backed statement classification;
+- the smallest available DuckDB hardening controls;
+- a representative allowed/blocked regression corpus.
 
-Phase E selected one dedicated SQL Authority Worker owning DuckDB-Wasm + the persistent OPFS database, successful-cycle writes, active SQL scheduling and query execution. Viewer windows are read-only clients through the runtime bridge and do not open independent authoritative DB handles.
+Regex-only classification is insufficient.
 
-Durable decision: `../../../../../../../docs/project/decisions/D-026.md`.
+Block mutation, DDL, transaction control, admin/configuration changes, external access, extension loading and multi-statement execution from the user-SQL path.
 
-Phase F selects a snapshot-centric schema with full raw JSON, a small promoted typed set, wide core-horizon link/metric columns and a latest_snapshot pointer table. Phase G selects one immutable validated-cycle handoff, one bulk cycle operation, set-based SQL enrichment and one atomic transaction that advances current_universe/latest_snapshot only at commit. Phase H now selects immutable query versions, a parser-level read-only analytical boundary, fixed anchored cadence, no-overlap/coalescing, ingest priority and distinct latest-execution/latest-success state. Phase I selects one origin-scoped OPFS authority, COMMIT → CHECKPOINT → acknowledgement for durable market cycles, ingest-token reconciliation and non-destructive reopen/schema/quota recovery. Phase J selects a generated self-contained Market Flow runtime with bundled pinned DuckDB main JS, exact versioned external Worker/Wasm assets, Blob Worker bootstrap under the page origin and an explicit CSP/capability gate. Phase K selects detachable Viewer clients of one Runtime Controller, full state snapshots on attach, notification-as-hint semantics, bounded in-memory latest-success previews and optimistic query activation for multi-Viewer safety. Phase L assigns verification to Node, real Chromium or authenticated-Leumi live gates, with an early real-page Worker/Wasm/OPFS compatibility probe required before heavy dependent implementation. Phase M fixes the benchmark contract: parameterized synthetic workloads, durable-ingest/CHECKPOINT/query/mixed-load measurement, full-session + 2x-session capacity evidence and cadence-relative headroom gates. Phase N selects an explicit fresh-history cutover: optional isolated SQL shadow while IndexedDB is authoritative, then a settled-cycle stop boundary and a fresh production OPFS authority with no legacy-history import or permanent dual-read/write fallback. Phase O defines scoped failure semantics, worst-active health precedence, boundary-specific retries, secret/redaction rules and sanitized local observability without an external telemetry or generic event-log authority.
+Trusted application schema/admin SQL remains a separate application-controlled path.
 
-## Physical design still open
+## Execution policy
 
-Not yet decided:
+Initial scheduling is intentionally simple:
 
-- retention/export;
-- cancellation/result-size policy.
+~~~text
+successful Activate
+→ run promptly
+→ repeat opportunities every configured interval
+→ if one Scanner execution is still running: do not start another
+→ no burst replay of missed opportunities
+~~~
+
+At most one Scanner execution runs at a time.
+
+If query A is still running when B becomes active, A may finish but its result remains attributable to A. Only minimal in-memory config/execution identity is needed for this.
+
+Scanner SQL or interval changes never change collector/provider cadence.
+
+Hard cancellation/preemption is not a baseline requirement.
+
+## Restart
+
+~~~text
+runtime restart
+→ SQL authority ready
+→ load last successfully activated config
+→ discard interrupted/old in-memory execution state
+→ execute active SQL fresh
+~~~
+
+There is no requirement to reconstruct old execution objects, old result tables, scheduler anchors or cancellation state.
+
+## Result boundary
+
+C08 owns Scanner execution/safety/state. C09 owns user-facing result rendering/integration.
+
+Core result semantics remain:
+
+- zero rows is success;
+- query error is explicit;
+- result belongs to the config that produced it;
+- query failure cannot corrupt market authority or turn a provider cycle into success;
+- the Viewer does not add hidden filter/rank/sort/LIMIT semantics.
+
+Streaming/chunking is conditional only if representative result-size evidence proves simple materialization unsafe or unusable.
+
+## Resource evidence
+
+The simple one-query-at-a-time design is measured before advanced resource machinery is added.
+
+C11 later combines:
+
+~~~text
+normal collection + SQL persistence
++ Current/Detail reads
++ representative repeating Scanner query
+~~~
+
+Only measured problems may trigger targeted resource hardening such as a separate analytics connection, cancellation or streaming.
+
+## Explicit non-goals for initial V2
+
+Do not prebuild:
+
+- fixed analytical horizons;
+- mandatory persisted metrics;
+- immutable query history;
+- anchored scheduler machinery;
+- collaboration/OCC;
+- generic benchmark platform;
+- mandatory streaming;
+- advanced cancellation/preemption;
+- generic migration/backfill for analytical enrichments;
+- a final trading formula.
+
+## Execution ownership
+
+Current executable ownership:
+
+~~~text
+C07 / #79
+→ representative real analytical SQL + measurement + optional O1 trigger
+
+C08 / #80
+→ simple safe Scanner core
+
+C09 / #81
+→ Scanner UI/results/integration
+
+C11 / #83
+→ representative mixed daily workload
+~~~
+
+Dependency rationale:
+`browser-sql-compact-execution-dag.md`
+
+Live progress remains only in `../STATUS.json`.
