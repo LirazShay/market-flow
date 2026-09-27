@@ -11,21 +11,21 @@
   },
   "currentFocus": {
     "stage": "node-sql-replan",
-    "substep": "chat-01-stage-02-authority-boundary",
-    "title": "Chat 01/5 — Node SQL migration re-plan — Stage 02/100",
+    "substep": "chat-01-stage-03-migration-inventory",
+    "title": "Chat 01/5 — Node SQL migration re-plan — Stage 03/100",
     "issue": 73,
     "chat": 1,
     "status": "in-progress"
   },
   "currentStage": {
     "stage": "architecture-correction",
-    "title": "Node.js localhost authority boundary fixed by D-045",
+    "title": "Browser-SQL inventory classified for Node-SQL migration",
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "D-045 fixes authenticated Leumi collector → loopback WebSocket → one localhost Node.js service → native DuckDB as the replacement authority boundary. D-043 provider/product continuity remains current.",
-    "ready": "Inventory Browser-SQL artifacts, decisions and Issues and classify each keep/adapt/archive/retire before designing the replacement execution graph.",
-    "blockedAfterEntry": "Old Browser-SQL ROADMAP/C01-C12 prompts are frozen and not executable."
+    "completed": "Stage 03 classified Browser-SQL decisions, Issues, docs, runtime/probes, specs, tests, CI and package surface as KEEP/ADAPT/ARCHIVE/RETIRE in docs/node-sql-migration-inventory.md.",
+    "ready": "Derive one canonical Node-SQL requirement/invariant matrix from D-043, D-045 and the migration inventory without reloading historical Browser-SQL planning.",
+    "blockedAfterEntry": "No retire/delete/Issue-close action may execute before replacement ownership exists."
   },
   "activeMiniProject": "node-sql-replan",
   "verification": {
@@ -65,9 +65,9 @@
       "result": "PASS — deterministic Chromium proved Blob Worker, exact pinned Worker/Wasm, OPFS write/COMMIT/CHECKPOINT/reopen, marker verification and sanitized cleanup/failure classification. Probe CHECKPOINT usage does not define production cadence."
     },
     "currentPlanGuard": {
-      "status": "green-final-freeze",
+      "status": "transitioning-to-node-sql",
       "path": "tests/unit/browser-sql-current-plan.test.js",
-      "note": "Guards cover compact graph, HOT/WARM authority, 12 serial prompts and final post-KISS freeze/Chat 01 entry handoff."
+      "note": "D-045 and Stage-03 inventory are guarded; historical Browser-SQL graph guards remain only until replacement Node-SQL graph is materialized."
     },
     "latestFastCi": {
       "status": "pass",
@@ -119,20 +119,24 @@
       "totalStages": 100,
       "totalChats": 5,
       "stagesPerChat": 20,
-      "currentStage": 2,
+      "currentStage": 3,
       "currentChat": 1,
-      "stage02": "complete-green"
+      "stage02": "complete-green",
+      "stage03": {
+        "status": "verification-pending",
+        "inventory": "docs/node-sql-migration-inventory.md"
+      }
     }
   },
   "next": {
-    "action": "Stage 03/100 — inventory Browser-SQL artifacts/decisions/Issues and classify each keep, adapt, archive or retire.",
+    "action": "Stage 04/100 — derive the canonical Node-SQL requirements/invariants matrix from D-043, D-045 and the migration inventory.",
     "issue": 73,
     "workPackage": "NODE-SQL-REPLAN",
     "chat": 1,
     "rules": [
       "One planned stage equals one chat message.",
-      "D-045 is the current runtime/process authority boundary.",
-      "Do not start implementation before the replacement plan is complete."
+      "Use the Stage-03 inventory instead of rereading all Browser-SQL history.",
+      "Do not implement production code before the replacement plan is complete."
     ]
   },
   "history": {
