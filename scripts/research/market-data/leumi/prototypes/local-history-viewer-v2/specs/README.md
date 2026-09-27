@@ -1,24 +1,22 @@
 # Local History Viewer V2 — Specs
 
-The files in this directory are the durable observable contracts inherited from the frozen V1 baseline at V2 creation time.
+The files in this directory are durable observable contracts inherited from the frozen V1 baseline at V2 creation time.
 
-They describe the **currently implemented V2 baseline behavior**, not the future Browser SQL target.
+They describe the currently implemented V2 baseline behavior; they do not by themselves claim the Node-SQL target is already implemented.
 
-Browser SQL is currently a planning/implementation target governed by:
+Current target ownership:
 
 ~~~text
-../ROADMAP.md
 ../STATUS.json
-../../../../../../../docs/project/decisions/D-025.md
 ../../../../../../../docs/project/decisions/D-043.md
-../../../../../../../docs/project/decisions/D-044.md
-../docs/browser-sql-compact-issue-specifications.md
+../../../../../../../docs/project/decisions/D-045.md
+../docs/node-sql-migration-inventory.md
 ../../../../../../../docs/product/local-history-viewer-v2-product-shape.md
 ~~~
 
-D-043 is target behavior, not a claim that the inherited V1-backed specs already implement the three-surface SQL design. As the owning compact Browser SQL implementation work changes observable behavior, the affected V2 specs must be evolved in the same implementation batch.
+The former Browser-SQL target/compact graph under D-044 is historical for current V2.
 
-When V2 intentionally changes runtime behavior:
+As Node-SQL work changes observable behavior:
 
 ~~~text
 requirement
@@ -29,7 +27,7 @@ requirement
 → verification
 ~~~
 
-Do not edit the sibling V1 specs to express V2 behavior.
+Do not edit sibling V1 specs to express V2 behavior.
 
 Current spec files:
 
@@ -43,6 +41,6 @@ Current spec files:
 - `debug-bundle.spec.md`
 - `research-evolution.spec.md`
 
-Some bodies still contain inherited V1-era wording/identifiers. Where such text conflicts with verified V2 runtime identity, treat it as baseline documentation debt identified by the Browser SQL current-state audit, not as authority over current code. Correct these surfaces before they are reused as Browser SQL normative contracts.
+Stage 03/100 classifies `provider-data-contract.spec.md` and still-valid public Recorder/Viewer behavior as KEEP, while system/persistence/messaging/viewer/runtime-delivery ownership must be ADAPTED to the Node.js localhost boundary.
 
 Exact live progress belongs only in `../STATUS.json`.
