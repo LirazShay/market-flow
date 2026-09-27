@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "post-kiss-audit-enrichment",
-    "title": "Audit enrichment implementation, benchmark and UI-integration plans against the KISS daily-product scope",
+    "substep": "post-kiss-audit-scanner",
+    "title": "Audit Scanner implementation and verification plans against the KISS daily-product scope",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Post-KISS decisions/product audit and V1-on-SQL planning audit complete.",
-    "ready": "V1-on-SQL is reduced to five coherent executable units and six closure checks while preserving provider integrity, atomic SQL persistence, trusted reads, Current/Detail parity and bounded live proof.",
-    "blockedAfterEntry": "Implementation remains paused; continue the post-KISS audit with enrichment before Scanner/lifecycle/CI review."
+    "completed": "Post-KISS decisions/product, V1-on-SQL and enrichment audits complete.",
+    "ready": "Enrichment is reduced to real-query-first optimization; persisted horizons/metrics/backfill/UI exposure are optional and may be unnecessary before Scanner.",
+    "blockedAfterEntry": "Implementation remains paused; continue the post-KISS audit with Scanner before lifecycle/CI and final graph rebuild."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: V1-on-SQL audit added; E1-E4 detailed docs are retained as cold reference but marked for canonical simplification in Pass G.",
+    "specImpact": "Planning-only: enrichment audit added; E5-E7 detailed docs are retained as cold reference but marked for canonical simplification.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Audit enrichment implementation, benchmark and integration planning after KISS. Separate the few analytical needs worth initial V2 work from generic horizon/metric/schema experimentation, and reduce the plan to the smallest evidence-driven enrichment slice.",
+    "action": "Audit Scanner implementation and verification planning after KISS. Keep the smallest useful product: SQL editor, interval, explicit activation, read-only safety, one execution at a time, truthful result table/errors, optional SecurityId drill-down. Remove unearned lifecycle/scheduler/result-delivery machinery.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Start from raw/history SQL capability; persistence must earn its complexity.",
-      "Do not preselect horizons, metrics, indexes or backfill machinery without a current product need.",
-      "Keep unknown provider semantics out of persisted derived data."
+      "Prefer one active query/config and one execution at a time.",
+      "Do not add version history, collaboration, streaming or cancellation unless evidence requires it.",
+      "Keep read-only safety, result truthfulness and isolation from Recorder/Current/Detail mandatory."
     ]
   },
   "history": {
