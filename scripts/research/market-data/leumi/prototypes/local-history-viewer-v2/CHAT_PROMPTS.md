@@ -1052,7 +1052,7 @@ EXIT GATE:
 - Issue #84 סגור;
 - כל required verification ירוק;
 - כל blocking discovery/conditional חזר ל-owner ונסגר;
-- STATUS.json עודכן ומצביע על ה-pointer התפעולי/פיתוחי הבא של V2 אחרי סגירת C12 ו-Master #85;
+- C12 ו-Master #85 נסגרו, ו-STATUS.json עבר ל-post-release/normal-operation pointer שמוגדר ע"י מצב הריפו לאחר הקאטאובר; אל תמציא Chat 13, feature חדש או Issue חדש רק כדי למלא next pointer. אם אין עבודה מתוכננת נוספת, רשום state תפעולי יציב ואמיתי במקום להמציא המשך;
 - אין verification-pending;
 - אין החלטה מהותית שנשארה רק בטקסט של הצ'אט;
 - נוקה scaffolding זמני שאין לו תפקיד durable.
