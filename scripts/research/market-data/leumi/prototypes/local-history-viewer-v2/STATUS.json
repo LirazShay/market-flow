@@ -24,7 +24,7 @@
   },
   "stageSummary": {
     "completed": "Post-KISS planning is frozen and verified. Planning Issue #72 is closed. Master #85 with C01-C12 #73-#84 is the executable graph; the 12-chat serial plan/prompts are verified and HOT-visible.",
-    "ready": "C01 implementation and deterministic preflight are green. The only remaining exit-gate item is the authenticated-Leumi L-1 self-verifier result from the exact green probe artifact.",
+    "ready": "C01 deterministic preflight is green; authenticated Leumi L-1 is the only pending exit gate.",
     "blockedAfterEntry": "None from planning. Any new implementation evidence is handled by the active-chat discovery protocol."
   },
   "activeMiniProject": "browser-sql-c01",
@@ -98,34 +98,22 @@
       "guard": "tests/unit/browser-sql-current-plan.test.js verifies exactly 12 Chat/Cxx/#Issue mappings, serial STATUS gating, stale-prompt protection, discovery protocol, next pointers and final Chat 12 semantics.",
       "rule": "One planned fresh chat per C01-C12, strictly serial; blocking discoveries stay with the active chat and evidence may explicitly revise the durable plan."
     },
-    "c01DeterministicPreflight": {
-      "status": "pass",
-      "runtimeCommit": "198fd49cc681b6943381a67b2b855de00037ced7",
-      "currentHead": "7e63a3bbf01e0701279e184be51aff94c602fae4",
-      "targetedChromiumRunId": 36304029077,
-      "syntheticLeumiRunId": 36303907029,
-      "result": "PASS — auto-run C01-L1 result, pinned Worker/Wasm, OPFS write/COMMIT/reopen, failure classification and probe-owned cleanup are green in deterministic Chromium.",
-      "liveArtifact": {
-        "artifactId": 10926746330,
-        "name": "local-history-viewer-v2-c01-live-probe-7e63a3bbf01e0701279e184be51aff94c602fae4",
-        "expiresAt": "2026-10-04T07:44:58Z"
-      }
-    },
-    "c01AuthenticatedL1": {
-      "status": "pending",
-      "requirement": "Run the exact green C01 live-probe bookmarklet inside an already-authenticated Leumi market page and return the sanitized window.__MARKET_FLOW_BROWSER_SQL_L1_RESULT__ object.",
-      "acceptedStatus": "passed"
+    "c01": {
+      "status": "verification-pending",
+      "fastCiRunId": 36304029050,
+      "chromiumRunId": 36304029077,
+      "artifactId": 10926746330,
+      "live": "pending-authenticated-l1"
     }
   },
   "next": {
-    "action": "Run the exact C01 live probe artifact from GitHub Actions run 36304029077 on the authenticated Leumi market page. Paste only the sanitized C01-L1 result. Chat 01 remains owner until PASS is recorded, #73 closes and STATUS advances to C02/#74.",
+    "action": "Run the exact C01 artifact from Actions run 36304029077 on authenticated Leumi and return only its sanitized C01-L1 result.",
     "issue": 73,
     "workPackage": "C01",
     "chat": 1,
     "prompt": "CHAT_PROMPTS.md#chat-01--c01--73",
     "rules": [
-      "Do not start Chat 02 until authenticated C01 L-1 is Verified, #73 closes, required verification is green and STATUS points to C02/#74.",
-      "Do not paste cookies, tokens, headers, account data, HAR, screenshots or provider payloads; only the probe's sanitized C01-L1 result.",
+      "Do not start Chat 02 until C01 L-1 passes, #73 closes and STATUS points to C02/#74.",
       "Live progress remains only in STATUS.json."
     ]
   },
