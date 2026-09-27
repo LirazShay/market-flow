@@ -30,6 +30,7 @@ This directory contains stable V2 design/evidence documents, not operational sta
 | post-KISS enrichment audit | [browser-sql-post-kiss-enrichment-audit.md](browser-sql-post-kiss-enrichment-audit.md) |
 | post-KISS Scanner audit | [browser-sql-post-kiss-scanner-audit.md](browser-sql-post-kiss-scanner-audit.md) |
 | post-KISS lifecycle/hardening audit | [browser-sql-post-kiss-lifecycle-audit.md](browser-sql-post-kiss-lifecycle-audit.md) |
+| post-KISS testing/CI audit | [browser-sql-post-kiss-testing-ci-audit.md](browser-sql-post-kiss-testing-ci-audit.md) |
 | browser/platform constraint matrix | [browser-sql-browser-constraints.md](browser-sql-browser-constraints.md) |
 | official Browser SQL / DuckDB-Wasm capability research | [browser-sql-official-capability-research.md](browser-sql-official-capability-research.md) |
 | selected Browser SQL target architecture | [browser-sql-target-architecture.md](browser-sql-target-architecture.md) |
