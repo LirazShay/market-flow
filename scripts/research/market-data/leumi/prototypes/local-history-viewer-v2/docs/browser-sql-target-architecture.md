@@ -131,12 +131,14 @@ Typed promotions, engine-specific optimizations, predecessor references or deriv
 ## 8. Cross-tab ownership
 
 ~~~text
-stable exclusive Web Lock
-→ holder starts production runtime
+exclusive Web Lock `market-flow:local-history-viewer-v2:runtime-owner`
+→ only granted holder starts production runtime/storage
 → loser remains passive
 ~~~
 
-No heartbeat election, localStorage authority or `steal:true`.
+Use fail-fast independent-tab acquisition; same-tab relaunch reuses its local singleton. No heartbeat election, timeout displacement, localStorage/IndexedDB/BroadcastChannel authority or `steal:true`.
+
+The lock spans the full mutation-capable runtime lifetime; explicit release occurs only after normal local teardown reaches its no-further-mutation boundary.
 
 Authenticated-origin ownership proof belongs before final cutover, not as an early blocker for all SQL work.
 
