@@ -394,14 +394,15 @@ Use the actual SQL queries the product needs before deciding that persisted anal
 
 ### Scope
 
-- define a small representative query set from real product needs;
+- before measuring, record a small representative query corpus and the deterministic day-sized workload parameters it will run against; derive scale/cadence from intended daily use without hardcoding a universe-size product invariant;
+- define the representative queries from real analytical capabilities/product needs, not a fixed final trading formula;
 - include useful short-horizon/history/cross-security/filter/group/ranking patterns as required;
-- run against representative day-sized deterministic history;
-- measure practical query latency/correctness;
+- run the predeclared corpus against representative day-sized deterministic history;
+- prove expected query results on deterministic fixtures and measure practical browser-runtime latency/resource behavior for that same corpus;
 - identify source fields whose typed promotion is truly useful;
-- document one explicit conclusion:
+- document one explicit conclusion for the predeclared corpus:
   - dynamic SQL is sufficient; or
-  - activate one narrowly scoped optimization task.
+  - activate one narrowly scoped O1 optimization task tied to a specific measured/query problem.
 
 ### Non-goals
 
@@ -413,10 +414,11 @@ Use the actual SQL queries the product needs before deciding that persisted anal
 
 ### Acceptance
 
-- representative analytical questions are expressible correctly from current SQL history;
+- the representative query corpus and workload parameters are recorded before the deciding measurement, so the pass/optimization decision is not fitted after seeing results;
+- representative analytical questions are expressible correctly from current SQL history without requiring a final trading formula;
 - day-sized behavior is measured rather than guessed;
-- every proposed persisted optimization has a concrete measured/query reason;
-- no optimization is selected by default.
+- every proposed persisted optimization has a concrete measured/query reason and an explicit affected-query remeasurement plan;
+- at most the smallest specific optimization justified by evidence is activated; no optimization is selected by default.
 
 ### Verification
 
@@ -445,21 +447,24 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 
 ### Scope
 
-- draft SQL + draft interval;
-- explicit Activate;
-- one active SQL + interval persisted;
+- draft SQL + draft interval; editing draft state does not execute SQL or alter the active config;
+- explicit Activate validates the candidate config before replacing the active config;
+- invalid SQL/interval/safety validation leaves the prior active config unchanged and reports the failure;
+- persist only the current successfully activated SQL + interval;
 - validate positive finite interval without silent clamping;
-- parser/engine-backed read-only enforcement on pinned DuckDB-Wasm;
-- allow representative SELECT/CTE/JOIN/GROUP BY/HAVING/window/order/limit queries;
-- block mutation/admin/external-access/multi-statement paths;
+- prove the read-only boundary on the exact pinned DuckDB-Wasm build using parser/engine-backed classification plus the smallest available engine hardening; regex-only classification is insufficient;
+- allow one result-producing read-only statement with representative SELECT/CTE/JOIN/GROUP BY/HAVING/window/order/limit queries;
+- block mutation/DDL/transaction/admin/configuration/external-access/extension-loading/multi-statement paths before user SQL can affect authority;
 - committed-state reads only;
 - run promptly after activation according to the selected simple policy;
 - one execution at a time;
 - if already running, skip/coalesce the timer opportunity; no burst replay;
-- when B is activated while A runs, A may finish but is never attributed to B;
+- when B is activated while A runs, A may finish but is never attributed to B; use only the minimal in-memory config/execution identity needed for attribution, not durable query-version history;
+- if multiple Viewer activations race, the single runtime's deterministic processing order applies and the last successfully processed activation becomes active; no optimistic-concurrency/version subsystem is required;
 - zero rows is success;
 - query error is isolated from Recorder and market data;
-- runtime restart loads active config and executes fresh.
+- Scanner SQL/interval changes do not change collector/provider cadence;
+- runtime restart loads the last successfully activated config only after SQL authority is ready and executes it fresh; interrupted/previous result state is not reconstructed.
 
 ### Non-goals
 
@@ -471,10 +476,13 @@ Provide one active read-only SQL statement running at a configurable repeat inte
 
 ### Acceptance
 
-- safe read-only SQL works for the intended analytical language subset;
+- changing draft state alone executes nothing and changes no active runtime config;
+- a failed Activate preserves the previous active config;
+- safe read-only SQL works for the intended analytical language subset on the exact pinned build;
 - unsafe SQL cannot mutate authority or access forbidden external/admin capabilities;
 - no Scanner overlap occurs;
-- interval changes require Activate;
+- interval changes require successful Activate and are never silently clamped;
+- Scanner SQL/interval changes leave collector/provider cadence unchanged;
 - query results remain attributable to the config that produced them;
 - query errors never corrupt or stop successful Recorder persistence;
 - restart behavior is deterministic and simple.
