@@ -20,9 +20,11 @@ README.md
 
 After HOT context, read only the current task scope, target code/tests and owning SPEC(s).
 
-## Implementation across fresh chats
+## Current re-plan across fresh chats
 
-Browser SQL V2 uses **12 serial fresh chats: one per C01..C12 Issue**. Chat N+1 starts only after verified closure of Chat N and the `STATUS.json` handoff.
+The Browser-SQL C01-C12 execution graph is frozen after authenticated C01 failed at `wasm-instantiate`.
+
+The current architecture migration is being replanned as **100 stages across 5 fresh chats, 20 stages per chat**. During this re-plan, one stage equals one user-visible chat message. `STATUS.json` is the live pointer; the old 12-chat files remain reference-only until replacement planning is materialized.
 
 ~~~text
 CHAT_EXECUTION_PLAN.md = stable chat boundaries/rules
@@ -57,16 +59,18 @@ This architecture is inherited as the starting baseline, not a restriction on fu
 
 V2 preserves the V1-proven Leumi provider/data acquisition contract; it does not redesign that collector merely because storage changes. The authenticated MapHeat2 → sequential GetSecuritiesData → exact complete-cycle validation contract and full raw data semantics remain the collection baseline.
 
-The target change is:
+The current target change is:
 
 ~~~text
-same validated complete cycle
-→ DuckDB-Wasm / OPFS SQL authority instead of IndexedDB
+same validated complete cycle in authenticated Leumi page
+→ loopback WebSocket
+→ one localhost Node.js service
+→ native DuckDB SQL authority
 → preserve Current Universe + Security Detail/History
 → add a separate Dynamic SQL Scanner
 ~~~
 
-The product authority is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`; D-043 owns the provider/product boundary and D-044 owns the current post-KISS Browser SQL implementation baseline.
+The product authority is `../../../../../../../docs/product/local-history-viewer-v2-product-shape.md`; D-043 owns provider/product continuity and D-045 owns the current runtime/process boundary.
 
 ## V1 / V2 isolation
 
@@ -79,7 +83,7 @@ Viewer window:   market-flow-leumi-v2-viewer
 Runtime files:   market-flow-v2.*
 ~~~
 
-The internal `window.MarketFlow*` globals are intentionally still inherited. Do not inject V1 and V2 into the same page context without a refresh. V1 and V2 keep separate persistent data/channel/window identities. Within the V2 SQL target itself, production Recorder/DB ownership is singular: C10 uses one stable exclusive Web Lock so independent V2 tabs cannot become competing production owners.
+The internal `window.MarketFlow*` globals are intentionally still inherited. Do not inject V1 and V2 into the same page context without a refresh. V1 and V2 keep separate persistent data/channel/window identities. Under D-045, the target DuckDB database is owned only by the localhost Node.js service. Browser producer/session ownership details are re-planning work; the old C10 Web-Lock DB-ownership rule is historical.
 
 ## Where to look
 
