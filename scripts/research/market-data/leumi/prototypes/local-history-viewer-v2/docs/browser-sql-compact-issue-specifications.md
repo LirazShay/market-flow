@@ -2,14 +2,16 @@
 
 ## Role
 
-This document defines the corrected executable Issue specifications for C01..C12 after the compact-Issue critique.
+This document preserves the corrected design/specification source for C01..C12 after the compact-Issue critique.
 
-It is the direct pre-materialization source for the new GitHub execution graph.
+The executable Issues are materialized as:
 
-It is still planning-only:
-- no successor GitHub Issues created yet;
-- no old #20..#71 Issues retired yet;
-- no product/runtime implementation.
+~~~text
+Master #85
+C01..C12 = #73..#84
+~~~
+
+GitHub Issue bodies own executable work. This file remains the durable specification/reference used for consistency checks.
 
 Canonical dependency source:
 
@@ -757,9 +759,9 @@ Do not create placeholder conditional Issues.
 
 ---
 
-# Compact Master draft
+# Compact Master
 
-Create **one** compact Master Issue. Do not create navigation-only parent/Epic Issues.
+The compact Master is materialized as **#85**. There are no navigation-only parent/Epic Issues.
 
 The Master should explain only:
 
@@ -811,4 +813,4 @@ These corrected drafts are ready for materialization review only if:
 - C12 owns final cutover/rollback/cleanup without becoming a generalized release platform;
 - no navigation-only parent Issues are required.
 
-Next step: run a focused consistency check across the corrected DAG/specifications before creating GitHub Issues.
+Materialization is complete; use the current GitHub execution map and STATUS pointer for implementation.
