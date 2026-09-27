@@ -1,5 +1,8 @@
 # Browser SQL V2 — Dynamic SQL Scanner Implementation Manual
 
+> **Reference-only / superseded implementation guidance.** Current Scanner ownership is C08/C09 under D-044 and the compact Issue specifications. There is no mandatory enrichment checkpoint, immutable query-version system, or ND-25/ND-27 checkpoint flow.
+
+
 ## Role
 
 This is Pass E8 of Issue #72.
