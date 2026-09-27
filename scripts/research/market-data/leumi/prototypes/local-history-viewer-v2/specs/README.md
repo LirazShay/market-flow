@@ -2,7 +2,7 @@
 
 The files in this directory are durable observable contracts inherited from the frozen V1 baseline at V2 creation time.
 
-They describe the currently implemented V2 baseline behavior; they do not by themselves claim the Node-SQL target is already implemented.
+They describe the currently implemented V2 baseline behavior. This is not a claim that the Node-SQL target is already implemented.
 
 Current target ownership:
 
