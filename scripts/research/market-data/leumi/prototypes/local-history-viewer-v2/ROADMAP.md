@@ -95,7 +95,14 @@ No standing Issues exist for these paths.
 - **O5 target Windows/Chrome evidence** — only if C11/#83 shows normal Chromium evidence is insufficient for a material target decision.
 - **O6 temporary shadow comparison** — only if C06/#78 leaves one specific material live parity uncertainty unresolved.
 
-Any candidate-changing conditional must rerun the affected verification before C12.
+Conditional rejoin rules are strict:
+- O1 may be triggered by C07, but C11 cannot start on the optimized candidate until O1 is complete and every earlier contract actually touched by it is reverified;
+- O2/O4 and C11-triggered O3 keep C11 open until the branch rejoins and C11 is green again;
+- C09-triggered O3 keeps C09 open until affected result behavior is green;
+- O5 is evidence-only unless its result forces a candidate change; C11 remains open until that target evidence is green;
+- O6 keeps C06 open until the named parity ambiguity is resolved, temporary shadow is retired and affected C06 proof is green.
+
+No conditional creates a permanent extra phase or independent source of truth.
 
 ## Verification model
 
