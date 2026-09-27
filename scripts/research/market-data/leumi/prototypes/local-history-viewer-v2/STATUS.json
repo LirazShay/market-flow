@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "r2-product-current-design-reconciliation",
-    "title": "Reconcile product docs, compact target architecture, ROADMAP and current-vs-history Browser SQL docs to D-044",
+    "substep": "r3-testing-guard-reconciliation",
+    "title": "Align TESTING_POLICY and plan guards to D-044 / C01-C12",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "R0 historical snapshot/archive and R1 durable decision reconciliation complete.",
-    "ready": "D-044 is the current post-KISS Browser SQL implementation baseline; D-043 remains the product/provider authority; superseded mechanism decisions are marked historical for initial V2.",
-    "blockedAfterEntry": "Implementation remains paused; R2 must align product/current design/ROADMAP/docs navigation before testing guards and GitHub execution graph materialization."
+    "completed": "R0 archive, R1 decisions and R2 current-doc reconciliation complete.",
+    "ready": "Product, ROADMAP, target architecture and navigation now align to D-043/D-044; superseded mechanisms are COLD history.",
+    "blockedAfterEntry": "Implementation remains paused; R3 testing/guard reconciliation is next."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -80,9 +80,9 @@
     },
     "latestFastCi": {
       "status": "success",
-      "runId": 36286447558,
-      "commit": "dceb049ff08d8241909ade968a13972d40f108dd",
-      "result": "PASS — R1 D-044 decision reconciliation and D-043 compact-traceability guard."
+      "runId": 36287188671,
+      "commit": "a6014b56612285a5c14ba48c2992e563d6c2b93d",
+      "result": "PASS — R2 D-044 current-doc/history reconciliation and compact product guard."
     },
     "browserCi": {
       "status": "success-targeted",
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: R1 created D-044, reconciled D-025..D-043 and updated the D-043 Node contract guard. No product/runtime/browser code or GitHub execution Issue changed.",
+    "specImpact": "Planning/docs + Node guard only: R2 aligned current product/architecture/ROADMAP/navigation to D-044 and archived 13 superseded mechanism docs. No runtime/browser code or GitHub execution Issue changed.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,16 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute R2 product/current-design reconciliation: amend product shape and live SQL requirement, rewrite the compact target architecture and ROADMAP to C01..C12, move/supersede stale Browser SQL mechanism docs from current authority, simplify docs/README current navigation, then run Fast CI.",
+    "action": "Execute R3: update Browser SQL TESTING_POLICY to C01-C12/KISS semantics, finish product guard cleanup, add one narrow current-plan guard, deliberately update context/history guards, then run Fast CI.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
-      "No product/runtime implementation in this planning chat.",
-      "Do not create or retire GitHub execution Issues yet.",
-      "D-043 owns product/provider invariants; D-044 owns the implementation baseline.",
-      "ROADMAP must contain plan/scope/order only and no live completion state.",
-      "Preserve stale detailed planning as cold history rather than rewriting every old mechanism doc.",
-      "Run Fast CI after R2; Browser CI only if browser/runtime/Playwright code changes."
+      "No product/runtime implementation and no GitHub execution-Issue mutation.",
+      "Keep Node/Chromium/live layering and public-contract testing.",
+      "Remove obsolete WP/Phase mechanism obligations.",
+      "Add only a narrow compact-plan guard.",
+      "Run Fast CI; Browser CI only for browser/runtime/Playwright changes."
     ]
   },
   "history": {
