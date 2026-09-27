@@ -31,9 +31,9 @@
   "verification": {
     "latestFastCi": {
       "status": "pass",
-      "runId": 36307771020,
-      "commit": "07b39074848ad27c6007bf4e772e32b610ebdfa4",
-      "result": "PASS — Fast CI green after S&T Node 2 decomposition/review and handoff to Node 3."
+      "runId": 36308200680,
+      "commit": "244e6ebac7e22061bdd5ad1b12540e8ecb233da0",
+      "result": "PASS — Fast CI green after S&T Node 3 decomposition/review and handoff to Node 4."
     },
     "architectureTrigger": {
       "browserSql": "FAIL — authenticated C01 stopped at wasm-instantiate; Issue #73 owns the evidence.",
