@@ -131,18 +131,131 @@ nodes:
     children: []
 
   "2":
-    status: draft
+    status: approved
     strategy: "One local Node.js process is the sole durable SQL/history authority and commits complete cycles correctly."
-    tactic: "Implement one loopback WebSocket service around a pinned native DuckDB Node API, a minimal raw/current/history schema and atomic/idempotent complete-cycle persistence."
+    tactic: "Run one loopback-only WebSocket service with one file-backed DuckDB instance, one serialized producer write path, a minimal relational/raw-JSON schema, atomic full-cycle commits, and explicit restart recovery."
     parallel_assumptions:
-      - "DuckDB's maintained Node API supports a persistent local database and normal SQL execution."
-      - "One service process removes the OPFS/Web-Lock/multi-owner complexity that invalidated the browser design."
+      - "The maintained DuckDB Node API supports file-backed instances, normal SQL transactions and connection-scoped bulk appenders."
+      - "The existing complete-cycle contract already gives Node all facts required for atomic persistence."
+      - "One process/one writer removes the browser OPFS/Web-Lock ownership problem instead of relocating it."
     necessary_assumptions:
       - "Without one durable authority, history/current/Scanner cannot share coherent committed state."
+    sufficiency_assumptions:
+      - "Service ownership/security, schema/bootstrap, lifecycle persistence, successful-cycle atomicity, and restart recovery together cover the authority responsibilities needed before Viewer/Scanner read features are added."
+      - "Viewer-specific read protocol and Scanner execution remain correctly owned by Nodes 3 and 4."
+    success_evidence:
+      - "A fresh service creates/reopens one local DuckDB file and becomes ready only after schema validation succeeds."
+      - "Exactly one approved producer can mutate persistence; all producer writes execute serially."
+      - "A successful complete cycle atomically appends history, replaces latest, records the cycle and updates session state before ACK."
+      - "Any transaction failure leaves the previous latest/history authority coherent."
+      - "After service restart, committed history/latest remain readable and stale running sessions are marked interrupted before a new producer session begins."
+    depends_on: []
+    children:
+      - "2.1"
+      - "2.2"
+      - "2.3"
+      - "2.4"
+      - "2.5"
+
+  "2.1":
+    status: approved
+    strategy: "The local service has one secure, deterministic process/connection ownership boundary."
+    tactic: "Add local-service/server.mjs using ws@8.21.3, bind only 127.0.0.1:8765, set maxPayload to 16 MiB, validate the exact production Origin before upgrade/hello, accept roles from the shared protocol, allow only one producer socket at a time, allow multiple viewer sockets, and dispatch producer writes through one serialized Promise chain."
+    parallel_assumptions:
+      - "Port binding already provides single service-process ownership; a second PID/lock-file system is unnecessary."
+      - "A simple Promise tail is sufficient to prevent heartbeat/lifecycle/cycle transactions from interleaving on the writer connection."
+    necessary_assumptions:
+      - "Without server-side ownership/origin enforcement and serialized mutation, multiple clients can create ambiguous or overlapping authority."
     sufficiency_assumptions: []
     success_evidence:
-      - "Service opens/reopens one local database, accepts one producer, commits or rolls back a whole cycle, and exposes coherent current/history state after restart."
+      - "Node integration tests reject non-loopback binding configuration, wrong/missing Origin, unknown role, oversized payload and a second producer."
+      - "Two viewer-role clients may coexist while the one producer remains active."
+      - "Concurrent producer commands are observed executing in submission order, one at a time."
+    depends_on:
+      - "1.1"
+    children: []
+
+  "2.2":
+    status: approved
+    strategy: "DuckDB has a minimal durable schema that preserves raw market facts and the current/history authority contract."
+    tactic: "Add local-service/database.mjs and schema-v1.sql; open @duckdb/node-api file local-service/data/market-flow-v2.duckdb by default (MARKET_FLOW_DB_PATH override for tests), ignore local-service/data/ in Git, and create schema_info plus sessions, universe, cycles, history and latest tables with raw provider objects/chunk/error/config stored as DuckDB JSON and timestamps as BIGINT epoch-ms."
+    parallel_assumptions:
+      - "Keeping raw provider objects in JSON preserves unanticipated fields without building a large typed schema first."
+      - "Metadata columns needed for identity/time/current/history queries can stay relational while raw source facts remain complete."
+      - "A fresh-authority V1 schema is sufficient because legacy IndexedDB import is a non-goal."
+    necessary_assumptions:
+      - "Without a stable file/schema contract, persistence and later SQL reads cannot agree on durable meaning."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Fresh DB bootstrap is deterministic and reopening the same file preserves rows."
+      - "schema_info contains exactly version 1; an unknown schema version fails startup clearly instead of destructive reset or implicit migration."
+      - "history primary key is (cycle_id, security_id); latest primary key is security_id; canonical IDs are VARCHAR."
+      - "JSON round-trip tests preserve null, zero, empty string and missing-property distinctions from representative raw fixtures."
+      - "No secondary indexes or migration framework are added before measured need."
     depends_on: []
+    children: []
+
+  "2.3":
+    status: approved
+    strategy: "Producer session, universe, heartbeat, failure and stop state are durable without making failed data current."
+    tactic: "Implement local-service/producer-lifecycle.mjs on the serialized writer connection: allocate session IDs from a DuckDB sequence; start a running session; replace the complete validated universe in one transaction; update heartbeat/session counters; persist failed-cycle diagnostics only to cycles/session state; and stop the owning session explicitly."
+    parallel_assumptions:
+      - "The existing browser adapter sends already validated universe/cycle/failure objects, but Node still validates protocol/lifecycle ownership before persistence."
+      - "Universe is a complete snapshot, so DELETE + bulk append inside one transaction is simpler than diff/upsert logic."
+    necessary_assumptions:
+      - "Without durable lifecycle ownership, cycle writes cannot prove which producer/session is allowed to mutate authority or expose truthful diagnostics."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "A producer can mutate only its active session; stale/wrong client/session commands fail."
+      - "Universe replace is all-or-nothing and preserves full raw MapHeat JSON."
+      - "Failed cycle persistence adds no history/latest rows and increments only failed-session diagnostics."
+      - "Heartbeat cannot move backward and stop prevents later writes for that session."
+    depends_on:
+      - "2.1"
+      - "2.2"
+    children: []
+
+  "2.4":
+    status: approved
+    strategy: "Each validated complete cycle becomes one atomic, coherent DuckDB authority update."
+    tactic: "Implement local-service/cycle-persistence.mjs on the writer connection: BEGIN; allocate cycle_id; insert the complete cycle metadata/chunks; bulk append one history row per security; DELETE all latest rows; bulk append the same complete cycle as the new latest snapshot; update owning session counters/heartbeat; flush/close appenders; COMMIT; return cycleId only after COMMIT, otherwise ROLLBACK and return an explicit error."
+    parallel_assumptions:
+      - "Every successful browser cycle is already a complete validated universe snapshot, so replacing latest wholesale is both simpler and semantically correct."
+      - "DuckDB appenders use the connection transaction context, allowing bulk history/latest writes within one explicit transaction."
+      - "No automatic request replay means cycle-level idempotency keys are not required initially."
+    necessary_assumptions:
+      - "Without one transaction spanning cycle/history/latest/session state, readers can observe a partial or mixed-cycle authority."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "For N securities, one commit produces exactly N history rows for the new cycle and exactly N latest rows, all with one returned cycleId."
+      - "Fault injection at cycle insert, history append, latest replacement and session update proves rollback leaves previous latest/history/counters unchanged."
+      - "ACK/cycleId is produced only after COMMIT completes."
+      - "An ACK-lost/browser-disconnect case never triggers automatic resend; the already committed DB state remains valid."
+    depends_on:
+      - "2.2"
+      - "2.3"
+    children: []
+
+  "2.5":
+    status: approved
+    strategy: "Service startup, shutdown and restart preserve only committed authority and recover stale runtime state clearly."
+    tactic: "Add local-service/runtime.mjs to open DB and validate schema before listening, mark any persisted running session interrupted on startup, expose service readiness only after recovery, route protocol commands to lifecycle/cycle modules, and on SIGINT/SIGTERM stop accepting work, mark an active producer session interrupted if it did not stop normally, close sockets/connections and exit; add npm start:local-service as the single daily launch command."
+    parallel_assumptions:
+      - "DuckDB persistence already provides crash durability for committed transactions; application recovery only needs to repair stale session status, not replay market writes."
+      - "The browser fail-closed policy guarantees a service restart disconnects the producer and requires an explicit fresh browser relaunch."
+    necessary_assumptions:
+      - "Without deterministic startup/restart behavior, stale running sessions or listening-before-ready states can violate the single-authority contract."
+    sufficiency_assumptions: []
+    success_evidence:
+      - "Restart after committed cycles preserves latest/history and marks the old running session interrupted before accepting a new producer."
+      - "Startup with invalid/unknown schema never opens the WebSocket listener."
+      - "Graceful shutdown with a stopped session leaves it stopped; abrupt-service simulation leaves it interrupted, not running."
+      - "One documented npm command starts the service; no Docker/service manager is required."
+    depends_on:
+      - "2.1"
+      - "2.2"
+      - "2.3"
+      - "2.4"
     children: []
 
   "3":
