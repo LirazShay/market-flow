@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "post-kiss-audit-synthesis",
-    "title": "Synthesize all post-KISS audits into one compact canonical-plan input before designing the new execution graph",
+    "substep": "compact-dag-design",
+    "title": "Design the exact compact post-KISS execution DAG and natural Issue boundaries before GitHub materialization",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Post-KISS audits now cover decisions/product, V1-on-SQL, enrichment, Scanner, lifecycle/hardening, testing/CI and the old GitHub execution structure.",
-    "ready": "The old #20-#71 graph is fully dispositioned: completed evidence is preserved, open legacy WPs will be superseded only after fresh compact successors exist, and conditional/future mechanisms get no standing initial-V2 Issues.",
-    "blockedAfterEntry": "Implementation remains paused; synthesize the audits into one compact-plan contract before creating the replacement graph."
+    "completed": "Seven post-KISS audits plus the synthesis are complete.",
+    "ready": "The compact initial-V2 contract is now explicit: seven mini-projects, approximately 10-12 natural executable Issues, conditional work only on evidence triggers, and no standing enterprise lifecycle machinery.",
+    "blockedAfterEntry": "Implementation remains paused; design/review the exact compact DAG before creating replacement GitHub Issues."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: GitHub structure audit added. No old Issue was mutated; retirement order and successor rules are recorded for Pass G.",
+    "specImpact": "Planning-only: post-KISS synthesis added and indexed. No product/runtime code or old canonical Issues were changed.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,16 @@
     }
   },
   "next": {
-    "action": "Create the post-KISS synthesis that turns all seven audits into one compact canonical-plan input: fixed product/integrity invariants, mandatory mini-projects, conditional triggers, future-only scope, compact verification rules, and candidate executable Issue boundaries. Do not create GitHub successor Issues yet.",
+    "action": "Design the exact compact DAG and Issue boundaries from browser-sql-post-kiss-synthesis.md. Classify each dependency as hard technical, hard product, soft/parallel, or conditional; remove artificial serialization; then review Issue sizes before any GitHub successor Issues are created.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "No product/runtime implementation in this planning chat.",
-      "Do not mutate old canonical Issues or create the replacement graph yet.",
-      "Use the seven post-KISS audits as inputs; resolve contradictions explicitly.",
-      "Prefer fewer natural Issues over target counts.",
-      "Preserve #29/#30 evidence and ensure pending L-1 ownership is never lost."
+      "Do not create or retire GitHub execution Issues yet.",
+      "Use the synthesis as the primary compact-plan input.",
+      "Prefer natural engineering boundaries over a target Issue count.",
+      "Preserve #29/#30 evidence and keep pending L-1 owned until its successor exists.",
+      "Do not reintroduce checkpoint-only or future/conditional mechanisms as standing Issues."
     ]
   },
   "history": {
