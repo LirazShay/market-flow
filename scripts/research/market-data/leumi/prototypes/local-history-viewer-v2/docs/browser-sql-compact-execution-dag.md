@@ -6,10 +6,14 @@ This document defines the exact compact implementation graph derived from the po
 
 It replaces the provisional ND-01..ND-33 graph and the earlier 11-node compact draft as the planning input for GitHub materialization.
 
-It is still planning-only:
-- no product/runtime implementation;
-- no successor GitHub Issues created yet;
-- no old #20..#71 Issues retired yet.
+The graph has been materialized in GitHub:
+
+~~~text
+Master #85
+C01..C12 = #73..#84
+~~~
+
+This document remains the durable dependency rationale. GitHub Issue bodies own executable work; live progress belongs only in STATUS.json.
 
 Dependency classes:
 
@@ -831,13 +835,11 @@ Examples of old checkpoint concepts that do not become successor Issues:
 
 # 29. GitHub materialization shape
 
-Do not create navigation-only Epic/parent Issues.
-
-Recommended structure:
+Materialized structure:
 
 ~~~text
-1 compact Master Issue
-+ 12 executable child Issues C01..C12
+1 compact Master Issue #85
++ 12 executable Issues C01..C12 = #73..#84
 + 0 standing conditional/future Issues
 ~~~
 
@@ -869,11 +871,8 @@ This keeps implementation aligned with the repository HOT/WARM/COLD context poli
 
 ---
 
-# 31. Next planning step
+# 31. Execution handoff
 
-Use this corrected 12-node graph together with the corrected executable specifications as the final pre-materialization basis.
+The graph is materialized. Use `browser-sql-github-execution-structure.md` for Issue numbers and `STATUS.json` for the current pointer.
 
-Before GitHub Issue creation:
-- run a focused consistency check across both documents;
-- ensure no stale C01..C11 or P1..P4-as-Issues language remains in the canonical compact planning surfaces;
-- then materialize the new Master + C01..C12 graph.
+Do not create navigation-only parent Issues or placeholder conditional Issues.
