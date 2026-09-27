@@ -85,13 +85,13 @@
     },
     "chatExecutionPlan": {
       "status": "in-progress",
-      "mandatoryChatCount": 8,
-      "currentStep": "Define and validate the natural chat boundaries; no durable chat-plan document written yet.",
-      "rule": "Conditional O1-O6 work remains evidence-triggered and is not counted as standing chats."
+      "mandatoryChatCount": 12,
+      "currentStep": "Validated one executable Issue per chat as the cleanest boundary; define durable visible plan/prompts next.",
+      "rule": "Baseline execution is one sequential fresh chat per C01-C12. O1-O6 remain evidence-triggered work inside their owning chat and do not increase the planned chat count."
     }
   },
   "next": {
-    "action": "Review the proposed 8-chat split against dependencies, live gates, test/CI boundaries and conditional rejoin rules before writing the durable chat plan/prompts.",
+    "action": "Write the durable 12-chat execution plan in a prominent workstream location and link it from the HOT README, without duplicating live status. Then prepare one copy/paste prompt per chat.",
     "issue": 72,
     "workPackage": "CHAT-EXECUTION-PLAN",
     "rules": [
