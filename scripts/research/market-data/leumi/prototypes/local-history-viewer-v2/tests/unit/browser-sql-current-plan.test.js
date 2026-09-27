@@ -627,6 +627,29 @@ test(
             }
         }
 
+        const chat12Start =
+            headings[11].index;
+
+        const chat12Block =
+            prompts.slice(
+                chat12Start
+            );
+
+        assert.match(
+            chat12Block,
+            /אל תמציא Chat 13/
+        );
+
+        assert.match(
+            chat12Block,
+            /post-release\/normal-operation pointer/
+        );
+
+        assert.match(
+            plan,
+            /CHAT_PROMPTS\.md = copy\/paste launcher for each planned chat/
+        );
+
         assert.match(
             plan,
             /Only one planned implementation chat is active at a time/
