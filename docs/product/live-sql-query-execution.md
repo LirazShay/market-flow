@@ -2,7 +2,7 @@
 
 Market Flow must support real, user-changeable SQL as a first-class analytical capability.
 
-The current V2 boundary is **Browser-only SQL using the pinned DuckDB-Wasm + persistent OPFS design**. Exact package/asset identity is engineering/runtime metadata, not a user-facing product contract.
+The current V2 boundary is **authenticated Leumi collection → loopback WebSocket → localhost Node.js → native DuckDB**, as fixed by D-045. Exact package/runtime identity is engineering metadata, not a user-facing product contract.
 
 ## Core behavior
 
@@ -69,17 +69,16 @@ They never replace preserved raw source facts.
 ## Architecture boundary
 
 ~~~text
-authenticated browser
+authenticated Leumi browser
 → existing collector/validation
-→ Runtime Controller / one SQL Authority Worker
-→ DuckDB-Wasm + persistent OPFS
-→ read-only repeated SQL
+→ loopback WebSocket
+→ one localhost Node.js service
+→ native DuckDB
+→ read-only Scanner execution
 → Scanner results
 ~~~
 
-IndexedDB is not the target analytical query interface.
-
-localhost / Node / .NET / native database services are not active initial-V2 alternatives. Reopening the browser-only boundary requires a new evidence-backed architecture decision.
+IndexedDB is not the target analytical query interface. D-045 owns this evidence-backed replacement of the failed Browser-SQL runtime boundary.
 
 ## Security
 
@@ -94,5 +93,8 @@ The SQL Worker needs validated market data and application/query commands, not c
 Product shape:
 `docs/product/local-history-viewer-v2-product-shape.md`
 
-Durable implementation baseline:
-`docs/project/decisions/D-044.md`
+Durable runtime/process boundary:
+`docs/project/decisions/D-045.md`
+
+Active implementation planning:
+`.planning/TREE.yaml`
