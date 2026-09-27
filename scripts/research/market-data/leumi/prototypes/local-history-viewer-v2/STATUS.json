@@ -11,8 +11,8 @@
   },
   "currentFocus": {
     "stage": "browser-sql-plan-rebaseline",
-    "substep": "pass-f1-shadow-audit",
-    "title": "Re-justify shadow comparison as a conditional verification fallback rather than mandatory migration architecture",
+    "substep": "pass-f2-archive-rollover-audit",
+    "title": "Re-justify archive/export/rollover as conditional capacity-driven lifecycle work rather than mandatory initial-V2 scope",
     "issue": 72,
     "status": "in-progress"
   },
@@ -22,9 +22,9 @@
     "status": "in-progress"
   },
   "stageSummary": {
-    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, and Pass E1-E9 completed.",
-    "ready": "E9 defines exact ND-25/ND-27 Scanner verification gates, permanent regression targets, evidence freshness and conditional CND-03 proof only for mechanisms actually selected.",
-    "blockedAfterEntry": "Implementation remains paused; Pass F now re-justifies operational/lifecycle mechanisms before canonical Issue materialization."
+    "completed": "Pass A, all Pass B audits, Pass C1-C6, Pass D1-D3, Pass E1-E9, and Pass F1 shadow audit completed.",
+    "ready": "F1 removes mandatory shadow migration from the initial path: CND-01 activates only for a specific unresolved live uncertainty, remains bounded/non-authoritative, and must be removed before ND-16 is reclosed.",
+    "blockedAfterEntry": "Implementation remains paused; Pass F continues re-justifying lifecycle/hardening mechanisms before canonical Issue materialization."
   },
   "activeMiniProject": "browser-sql-plan-rebaseline",
   "verification": {
@@ -91,7 +91,7 @@
       "result": "PASS — synthetic Leumi POC: compatible-CSP Worker/Wasm/OPFS/reopen, cross-tab persistence, exclusive Web Locks, owner-close release, cleanup, and negative Wasm-CSP classification.",
       "fullBrowserCi": "not-required; only test/docs surfaces changed and targeted Chromium ran the changed Playwright tests."
     },
-    "specImpact": "Planning-only: Dynamic SQL Scanner verification plan added and indexed; no product/runtime implementation and no canonical Issue mutation.",
+    "specImpact": "Planning-only: conditional shadow verification audit added and indexed; old WP-32/WP-33 mandatory shadow semantics are marked for Pass-G retirement/replacement and D-035 reconciliation.",
     "browserSqlProbe": {
       "status": "complete",
       "implementationCommit": "db3cfc1c708256b6dc19553aaf0230ba5eaa70be",
@@ -130,15 +130,15 @@
     }
   },
   "next": {
-    "action": "Execute Issue #72 Pass F1: audit the old shadow-comparison requirement and decide the exact evidence conditions that activate a temporary shadow path, its bounded scope, exit evidence, cleanup ownership, and why it must not become a permanent second market-data authority.",
+    "action": "Execute Issue #72 Pass F2: audit archive/export/rollover requirements and define the exact capacity/storage evidence that promotes them from conditional CND-02 into initial-release work, including safe epoch semantics, explicit user action, failure recovery, and re-verification before L-3.",
     "issue": 72,
     "workPackage": "PLAN-REBASELINE",
     "rules": [
       "Do not implement product/runtime code in this planning chat.",
       "Do not mutate canonical GitHub Issues yet.",
-      "Shadow is conditional by default; promote it only for a material uncertainty deterministic/browser/live evidence cannot resolve.",
-      "Never create permanent dual storage authority.",
-      "Any temporary shadow path must have explicit removal/disposition before final integration/cutover."
+      "Archive/rollover is conditional by default and must be activated by measured storage/capacity risk.",
+      "No silent pruning or automatic history deletion is allowed.",
+      "If CND-02 changes the release candidate, final capacity evidence must be rerun before L-3."
     ]
   },
   "history": {
