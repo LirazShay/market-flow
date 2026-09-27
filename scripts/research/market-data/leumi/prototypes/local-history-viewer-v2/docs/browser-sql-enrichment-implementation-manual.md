@@ -1,5 +1,8 @@
 # Browser SQL V2 — Analytical Enrichment Implementation Manual
 
+> **Reference-only / superseded implementation guidance.** Initial V2 has no mandatory enrichment mini-project. C07 first measures real SQL; only evidence may create focused O1 work. Do not implement the ND-18..ND-21 sequence from this file.
+
+
 ## Role
 
 This is Pass E5 of Issue #72.
