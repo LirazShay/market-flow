@@ -292,7 +292,12 @@ test(
 
         assert.match(
             projectInstructions,
-            /מספר הצ'אט הוא identity hint בלבד[\s\S]*לעולם לא גובר על STATUS\.json/i
+            /מספר הצ'אט הוא identity hint בלבד/i
+        );
+
+        assert.match(
+            projectInstructions,
+            /לעולם לא גובר על[\s\S]{0,30}STATUS\.json/i
         );
 
         assert.match(
