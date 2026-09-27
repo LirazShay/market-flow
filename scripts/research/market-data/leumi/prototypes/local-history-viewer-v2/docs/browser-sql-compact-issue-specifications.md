@@ -515,16 +515,17 @@ Expose C08 as the third user-facing surface without adding hidden analytical sem
 - SQL editor;
 - interval control;
 - Activate action;
-- draft vs active/status visibility;
+- draft vs active/status visibility; Viewer-local draft is non-authoritative while active config/status comes from the Runtime Controller, and successful activation/resync cannot make a stale local draft look active;
 - dynamic result columns in SQL order;
 - row order exactly as SQL returns it;
-- truthful rendering of NULL, boolean, integer/float/decimal, BigInt-safe values, text, date/time/timestamp and JSON/raw text used by real queries;
+- truthful rendering of NULL, boolean, integer/float/decimal, BigInt-safe values, text, date/time/timestamp and JSON/raw text used by real queries; uncommon/unsupported values use a truthful safe representation or an explicit unsupported-value/type state rather than silent coercion;
 - zero-row successful table;
 - clear query error distinct from empty result;
-- if only first N rows are rendered, say so clearly without silently rewriting SQL;
+- if only first N rows are rendered, say so clearly without silently rewriting SQL; when the full materialized row count is known, distinguish total rows from rendered rows;
+- result/error/status remains attributable to the SQL/config that produced it; later draft edits or activation changes do not relabel an older result;
 - previous successful result may remain visibly previous/stale after a later error within one runtime;
 - optional canonical SecurityId drill-down to shared Detail;
-- Scanner isolation from Recorder/Current/Detail.
+- Scanner UI actions do not call provider APIs or alter collector cadence, and Scanner failure/disablement remains isolated from Recorder/Current/Detail.
 
 ### Non-goals
 
@@ -535,8 +536,10 @@ Expose C08 as the third user-facing surface without adding hidden analytical sem
 
 ### Acceptance
 
+- active/status presentation comes from runtime authority rather than local draft state, including after another Viewer activates a config;
 - grid schema/order comes from SQL result only;
-- values are not silently coerced into misleading forms;
+- values are not silently coerced into misleading forms; unsupported/uncommon values remain explicit;
+- result/error/status is never attributed to a different draft/active config than the execution that produced it;
 - no hidden sort/filter/rank/LIMIT is added;
 - errors and zero-row success are distinguishable;
 - Scanner can fail/disable without breaking Current/Detail or Recorder;
@@ -544,9 +547,9 @@ Expose C08 as the third user-facing surface without adding hidden analytical sem
 
 ### Verification
 
-- Chromium UI/result/type tests;
-- practical representative result-size test;
-- Scanner isolation/navigation regressions;
+- Chromium UI/result/type tests, including runtime-active vs local-draft resync and execution/result attribution;
+- practical representative result-size/truncation-truth test;
+- Scanner isolation/navigation regressions, including zero provider calls from Scanner UI actions;
 - Fast CI + full Browser CI.
 
 ### Cleanup
@@ -570,16 +573,18 @@ Prevent two independent same-origin tabs from opening competing production SQL/R
 
 ### Scope
 
-- one stable exclusive Web Lock name;
-- same-tab repeated launch reuses local singleton;
-- lock holder may start production Worker/DB/Recorder;
-- loser/passive tab starts no production DB or provider collection;
-- owner holds lock for runtime lifetime;
-- owner close/release allows a later explicit owner to acquire;
+- one stable exclusive Web Lock name: `market-flow:local-history-viewer-v2:runtime-owner`, unchanged across builds/DB revisions;
+- same-tab repeated launch reuses the local singleton instead of requesting the same owner lock again;
+- an independent tab uses fail-fast exclusive acquisition (`ifAvailable: true`); only the granted-lock callback may start production Worker/DB/Recorder;
+- loser/passive tab starts no production Worker, production DB, or provider collection;
+- owner holds the lock for the full mutation-capable runtime lifetime;
+- explicit stop/release completes the local runtime teardown boundary before ownership is released, so a later owner cannot start while the old local runtime can still mutate authority;
+- owner close/agent termination relies on browser lock release; a later explicit owner may then acquire;
 - new owner runs normal readiness/reopen before recording;
-- no steal:true;
-- no heartbeat/localStorage/IndexedDB election fallback;
-- BroadcastChannel may be notification/presence hint only.
+- no `steal:true`;
+- no heartbeat/localStorage/IndexedDB election fallback or timeout-based displacement;
+- BroadcastChannel may be notification/presence hint only;
+- `navigator.locks.query()` is diagnostic only and can never authorize production startup.
 
 ### Non-goals
 
@@ -589,16 +594,18 @@ Prevent two independent same-origin tabs from opening competing production SQL/R
 
 ### Acceptance
 
-- racing Chromium pages yield exactly one active production owner;
+- racing Chromium pages yield exactly one active production owner under the canonical lock name;
 - passive tab performs no provider collection and opens no production DB;
-- owner close permits later acquisition without silent reset;
+- repeated launch in the owner tab reuses the existing local runtime and does not self-deadlock;
+- explicit owner stop releases only after the local runtime teardown boundary; owner close/termination permits a later explicit acquisition followed by normal readiness without silent reset;
 - hidden/background owner is not displaced by timeout;
-- absence/failure of Web Locks blocks production ownership rather than falling back to weaker authority.
+- absence/failure of Web Locks blocks production ownership rather than falling back to weaker authority;
+- BroadcastChannel silence and `navigator.locks.query()` snapshots cannot create ownership.
 
 ### Verification
 
-- Chromium multi-page Web Lock/runtime tests;
-- runtime reopen/readiness after ownership transfer;
+- Chromium multi-page Web Lock/runtime tests covering race, passive loser, same-tab relaunch, hidden owner, unavailable/SecurityError and diagnostic-only messaging/query behavior;
+- explicit-stop teardown-before-release and runtime reopen/readiness after later ownership transfer;
 - Fast CI + full Browser CI.
 
 ### Cleanup
